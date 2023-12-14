@@ -18,8 +18,8 @@ function LoginForm() {
   const {
     register,
     handleSubmit,
-    formState: { errors, isValid, isSubmitted },
-  } = useForm<LoginFormData & { hiddenResult: boolean }>()
+    formState: { errors, isValid },
+  } = useForm<LoginFormData>()
 
   const { closeModal } = useModal()
 
