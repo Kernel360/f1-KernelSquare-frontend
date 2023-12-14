@@ -18,7 +18,7 @@ function LoginForm() {
   const {
     register,
     handleSubmit,
-    formState: { errors, isValid },
+    formState: { errors, isValid, isSubmitted },
   } = useForm<LoginFormData & { hiddenResult: boolean }>()
 
   const { closeModal } = useModal()
@@ -30,16 +30,28 @@ function LoginForm() {
   ])
 
   const onSubmit = async (data: LoginFormData) => {
-    console.log({ data })
+    try {
+      console.log({ data })
+      // closeModal();
+      // update
+    } catch (error) {
+      /*
+        서버에서 유효하지 않은 응답이 오는 경우
+        (ex. status 401)
+      */
 
-    // closeModal();
-    // update
+      // [TODO] show Toast
+      alert(
+        "등록되지 않은 아이디이거나, 아이디 또는 비밀번호를 잘못 입력했습니다",
+      )
+    }
   }
 
   const onInvalid = (errors: FieldErrors<LoginFormData>) => {
-    console.log({ errors })
-
     // [TODO] show Toast
+    alert(
+      "등록되지 않은 아이디이거나, 아이디 또는 비밀번호를 잘못 입력했습니다",
+    )
   }
 
   const handleClose = (e: React.MouseEvent<HTMLAnchorElement>) => {
@@ -61,7 +73,7 @@ function LoginForm() {
         error={!!errors.email}
         errorMessage={errors.email?.message}
         {...register("email", {
-          required: "이메일을 입력해주세요",
+          required: true,
           validate: (email) => {
             const { allCheck } = validator.validateEmail(email)
 
@@ -76,7 +88,7 @@ function LoginForm() {
         error={!!errors.password}
         errorMessage={errors.password?.message}
         {...register("password", {
-          required: "비밀번호를 입력해주세요",
+          required: true,
           validate: (password) => {
             const { allCheck } = validator.validatePassword(password)
 
@@ -96,16 +108,6 @@ function LoginForm() {
           로그인
         </Button>
       </div>
-      <Input
-        hidden
-        error={!!errors.email || !!errors.password}
-        errorMessage={"일치하는 유저 없음"}
-        {...register("hiddenResult", {
-          validate: () => {
-            return !!errors.email || !!errors.password
-          },
-        })}
-      />
       <Spacing size={24} />
       {/* helper menu */}
       {/* [TODO] 수정될 경우 변경 (href 등) */}
