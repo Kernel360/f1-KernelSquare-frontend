@@ -11,8 +11,8 @@ export class Validator {
 
   validateEmail(email: string = "") {
     return {
-      all() {
-        return this.format() && this.length()
+      get allCheck() {
+        return () => this.format() && this.length()
       },
       format() {
         return validator.isEmail(email)
@@ -25,8 +25,8 @@ export class Validator {
 
   validateNickname(nickname: string = "") {
     return {
-      all() {
-        return this.format() && this.length()
+      get allCheck() {
+        return () => this.format() && this.length()
       },
       format() {
         if (!nickname) {
@@ -36,6 +36,7 @@ export class Validator {
         // [TODO] 숫자허용시 수정
 
         const regexp = new RegExp(`[가-힣a-zA-Z]{${nickname.length}}`)
+
         return regexp.test(nickname)
       },
       length() {
@@ -46,8 +47,8 @@ export class Validator {
 
   validatePassword(password: string = "") {
     return {
-      all() {
-        return this.format() && this.length()
+      get allCheck() {
+        return () => this.format() && this.length()
       },
       format() {
         return validator.isStrongPassword(password, {

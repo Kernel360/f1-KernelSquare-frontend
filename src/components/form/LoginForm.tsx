@@ -12,15 +12,18 @@ import { RxDividerVertical } from "react-icons/rx"
 import LabelDivider from "../shared/divider/LabelDivider"
 import useModal from "@/hooks/useModal"
 import SocialButton from "../SocialButton"
+import { Validator } from "@/util/validate"
 
 function LoginForm() {
   const {
     register,
     handleSubmit,
-    formState: { errors },
-  } = useForm<LoginFormData>()
+    formState: { errors, isValid },
+  } = useForm<LoginFormData & { hiddenResult: boolean }>()
 
   const { closeModal } = useModal()
+
+  const validator = new Validator()
 
   const linkClassNames = twJoin([
     "text-sm text-colorsDarkGray underline underline-offset-4",
@@ -44,17 +47,27 @@ function LoginForm() {
   }
 
   return (
-    <form onSubmit={handleSubmit(onSubmit, onInvalid)} className="w-[320px]">
+    <form
+      onSubmit={handleSubmit(onSubmit, onInvalid)}
+      className="w-full sm:w-[320px]"
+    >
       <h3 className="text-center text-3xl font-bold">KernalSquare</h3>
       <Spacing size={24} />
       <Input
-        {...register("email", { required: "이메일을 입력해주세요" })}
         className="px-2"
+        fullWidth
         placeholder="이메일"
         autoComplete="off"
         error={!!errors.email}
         errorMessage={errors.email?.message}
-        fullWidth
+        {...register("email", {
+          required: "이메일을 입력해주세요",
+          validate: (email) => {
+            const { allCheck } = validator.validateEmail(email)
+
+            return allCheck()
+          },
+        })}
       />
       <Spacing size={12} />
       <PasswordField
@@ -62,14 +75,37 @@ function LoginForm() {
         fullWidth
         error={!!errors.password}
         errorMessage={errors.password?.message}
-        {...register("password", { required: "비밀번호를 입력해주세요" })}
+        {...register("password", {
+          required: "비밀번호를 입력해주세요",
+          validate: (password) => {
+            const { allCheck } = validator.validatePassword(password)
+
+            return allCheck()
+          },
+        })}
       />
       <Spacing size={12} />
       <div>
-        <Button type="submit" fullWidth buttonTheme="primary">
+        <Button
+          type="submit"
+          fullWidth
+          buttonTheme="primary"
+          className="disabled:bg-colorsGray"
+          disabled={!isValid}
+        >
           로그인
         </Button>
       </div>
+      <Input
+        hidden
+        error={!!errors.email || !!errors.password}
+        errorMessage={"일치하는 유저 없음"}
+        {...register("hiddenResult", {
+          validate: () => {
+            return !!errors.email || !!errors.password
+          },
+        })}
+      />
       <Spacing size={24} />
       {/* helper menu */}
       {/* [TODO] 수정될 경우 변경 (href 등) */}

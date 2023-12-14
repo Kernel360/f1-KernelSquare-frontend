@@ -1,42 +1,54 @@
-"use client";
+"use client"
 
-import Tab from "@/components/shared/tab/Tab";
-import { layoutMeta } from "@/constants/layoutMeta";
-import { navigationRoutes } from "@/constants/navigationRoute";
-import { matchLayoutMetaKey } from "@/util/layoutMeta";
-import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { twMerge } from "tailwind-merge";
+import Tab from "@/components/shared/tab/Tab"
+import { navigationRoutes } from "@/constants/navigationRoute"
+import Link from "next/link"
+import { useSelectedLayoutSegment } from "next/navigation"
+import { twMerge } from "tailwind-merge"
 
-function NavigationTab() {
-  const currentPath = usePathname();
+interface NavigationTabProps {
+  hasHeader: boolean
+}
 
-  const pathKey = matchLayoutMetaKey(currentPath);
+interface NavigationTabItemProps
+  extends Pick<(typeof navigationRoutes)[0], "label" | "to"> {}
+
+function NavigationTab({ hasHeader }: NavigationTabProps) {
+  const currentSegment = useSelectedLayoutSegment()
 
   const wrapperClassNames = twMerge([
     "sticky w-full top-[--height-header] z-navigation py-1 bg-white sm:hidden",
-    !layoutMeta[pathKey].containLayout.header && "top-0",
-  ]);
+    !hasHeader && "top-0",
+  ])
 
   return (
     <nav className={wrapperClassNames}>
       <Tab
         defaultTab={
-          navigationRoutes.find((route) => route.to === currentPath)?.label
+          navigationRoutes.find((route) =>
+            currentSegment === null
+              ? route.to === "/"
+              : route.to.startsWith(`/${currentSegment}`),
+          )?.label
         }
         className="mt-4"
         tabs={navigationRoutes.map(({ label, to }) => {
           return {
             label,
-            content: <Link href={to}>{label}</Link>,
-            active: currentPath === to,
-          };
+            content: <NavigationTabItem label={label} to={to} />,
+            active:
+              currentSegment === null
+                ? to === "/"
+                : to.startsWith(`/${currentSegment}`),
+          }
         })}
       />
     </nav>
-  );
+  )
 }
 
-function NavigationTabItem() {}
+function NavigationTabItem({ label, to }: NavigationTabItemProps) {
+  return <Link href={to}>{label}</Link>
+}
 
-export default NavigationTab;
+export default NavigationTab

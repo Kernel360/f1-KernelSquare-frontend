@@ -6,6 +6,7 @@ import {
   QueryClientConfig,
   QueryClientProvider,
 } from "@tanstack/react-query"
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools"
 
 function ReactQueryProvider({ children }: PropsWithChildren) {
   const config: QueryClientConfig = {
@@ -13,13 +14,19 @@ function ReactQueryProvider({ children }: PropsWithChildren) {
       queries: {
         refetchOnWindowFocus: false,
         refetchInterval: false,
+        retry: false,
       },
     },
   }
 
   const [client] = useState(() => new QueryClient(config))
 
-  return <QueryClientProvider client={client}>{children}</QueryClientProvider>
+  return (
+    <QueryClientProvider client={client}>
+      {children}
+      <ReactQueryDevtools />
+    </QueryClientProvider>
+  )
 }
 
 export default ReactQueryProvider

@@ -9,7 +9,7 @@ function Layout({ children }: { children: React.ReactNode }) {
       <Header />
       <Inner className="flex w-full flex-col sm:flex-row">
         <Navigation />
-        <div className="min-h-screen flex-1">{children}</div>
+        <main className="min-h-screen flex-1">{children}</main>
       </Inner>
       <Footer />
     </>

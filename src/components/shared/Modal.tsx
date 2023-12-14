@@ -41,7 +41,7 @@ function Modal() {
 
 const Container = ({ children }: PropsWithChildren) => {
   return (
-    <div className="fixed left-0 top-0 w-full h-full z-modalContainer flex justify-center items-center">
+    <div className="fixed left-0 top-0 w-full h-full z-modalContainer flex justify-center items-center p-4">
       {children}
     </div>
   )
@@ -50,7 +50,7 @@ const Container = ({ children }: PropsWithChildren) => {
 const Dim = ({ onClose }: ModalDimProps) => {
   return (
     <div
-      className="absolute left-0 top-0 w-full h-full bg-black/30 flex justify-center items-center box-border p-4 z-modalDim"
+      className="absolute left-0 top-0 w-full h-full bg-black/30 flex justify-center items-center box-border z-modalDim"
       onClick={onClose}
     />
   )

@@ -1,6 +1,6 @@
-type LayoutMetaKey = "/" | "signup" | "notice" | "chat" | "faq"
+export type LayoutMetaKey = "/" | "signup" | "notice" | "chat" | "faq"
 
-type LayoutMeta = {
+export type LayoutMeta = {
   title: string
   description: string
   containLayout: {
@@ -9,6 +9,8 @@ type LayoutMeta = {
     footer: boolean
   }
 }
+
+export const NOTMATCH_SEGMENT = "__DEFAULT__"
 
 export const layoutMeta = {
   "/": {

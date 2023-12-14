@@ -1,16 +1,23 @@
 "use client"
 
 import Inner from "@/components/shared/Inner"
-import { layoutMeta } from "@/constants/layoutMeta"
-import { matchLayoutMetaKey } from "@/util/layoutMeta"
-import { usePathname } from "next/navigation"
+import { NOTMATCH_SEGMENT } from "@/constants/layoutMeta"
+import { matchSegmentToLayoutMetaKey } from "@/util/layoutMeta"
+import { useSelectedLayoutSegment } from "next/navigation"
 
 function Footer() {
-  const currentPath = usePathname()
+  const currentSegment = useSelectedLayoutSegment()
 
-  const pathKey = matchLayoutMetaKey(currentPath)
+  // NotFoundPage
+  if (currentSegment === NOTMATCH_SEGMENT) {
+    return null
+  }
 
-  return layoutMeta[pathKey]?.containLayout.footer ? (
+  const matchedLayout = matchSegmentToLayoutMetaKey(currentSegment)
+
+  const open = matchedLayout.containLayout.footer
+
+  return open ? (
     <Inner>
       <footer>footer</footer>
     </Inner>

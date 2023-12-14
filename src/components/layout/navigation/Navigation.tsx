@@ -1,22 +1,29 @@
-"use client";
+"use client"
 
-import { usePathname } from "next/navigation";
-import NavigationTab from "./NavigationTab";
-import SideNavigation from "./SideNavigation";
-import { layoutMeta } from "@/constants/layoutMeta";
-import { matchLayoutMetaKey } from "@/util/layoutMeta";
+import { useSelectedLayoutSegment } from "next/navigation"
+import NavigationTab from "./NavigationTab"
+import SideNavigation from "./SideNavigation"
+import { matchSegmentToLayoutMetaKey } from "@/util/layoutMeta"
+import { NOTMATCH_SEGMENT } from "@/constants/layoutMeta"
 
 function Navigation() {
-  const currentPath = usePathname();
+  const currentSegment = useSelectedLayoutSegment()
 
-  const pathKey = matchLayoutMetaKey(currentPath);
+  // NotFoundPage
+  if (currentSegment === NOTMATCH_SEGMENT) return null
 
-  return layoutMeta[pathKey]?.containLayout.navigation ? (
+  const matchedLayout = matchSegmentToLayoutMetaKey(currentSegment)
+
+  const hasHeader = matchedLayout.containLayout.header
+
+  const open = matchedLayout.containLayout.navigation
+
+  return open ? (
     <>
-      <SideNavigation />
-      <NavigationTab />
+      <SideNavigation hasHeader={hasHeader} />
+      <NavigationTab hasHeader={hasHeader} />
     </>
-  ) : null;
+  ) : null
 }
 
-export default Navigation;
+export default Navigation
