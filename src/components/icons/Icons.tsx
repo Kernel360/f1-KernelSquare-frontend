@@ -6,9 +6,10 @@ import { LuCode2 } from "react-icons/lu"
 import { AiOutlineNotification } from "react-icons/ai"
 import { HiOutlineChatBubbleLeftRight } from "react-icons/hi2"
 import { TbMessage2Question } from "react-icons/tb"
+import { GrDocumentUser } from "react-icons/gr"
 
 type IconsKey = "Search" | "Notification" | "UserProfile"
-type NavigationIconsKey = "QnA" | "Chat" | "Notice" | "FaQ"
+type NavigationIconsKey = "QnA" | "Chat" | "Notice" | "FaQ" | "MyPage"
 export type Icon = (props: IconBaseProps) => JSX.Element
 
 export const Icons: Record<IconsKey, Icon> = {
@@ -35,5 +36,8 @@ export const NavigationIcons: Record<NavigationIconsKey, Icon> = {
   },
   FaQ(props) {
     return <TbMessage2Question {...props} />
+  },
+  MyPage(props) {
+    return <GrDocumentUser {...props} />
   },
 }

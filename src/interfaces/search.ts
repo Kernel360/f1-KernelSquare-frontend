@@ -1,3 +1,6 @@
+export type SearchFilter = "nickname" | "title" | "tag"
+
 export interface SearchState {
-  searchKeyword: string
+  value: string
+  filter: SearchFilter
 }

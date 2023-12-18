@@ -1,5 +1,5 @@
 import { layoutMeta } from "@/constants/layoutMeta"
-import QnA from "@/page/QnA"
+import QnA from "@/page/qna/QnA"
 import { Metadata } from "next"
 
 export const metadata: Metadata = {
@@ -7,6 +7,6 @@ export const metadata: Metadata = {
   description: `${layoutMeta["/"].description}`,
 }
 
-export default function Main() {
+export default async function Main() {
   return <QnA />
 }

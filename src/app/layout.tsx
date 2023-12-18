@@ -1,10 +1,14 @@
 import type { Metadata } from "next"
 import "./globals.css"
+import "rc-dropdown/assets/index.css"
+import "react-loading-skeleton/dist/skeleton.css"
 import RecoilProvider from "@/recoil/RecoilProvider"
 import Layout from "@/components/layout/Layout"
 import Modal from "@/components/shared/Modal"
 import ReactQueryProvider from "@/react-query/ReactQueryProvider"
 import MSW from "@/msw/MSW"
+
+export const dynamic = "force-dynamic"
 
 export const metadata: Metadata = {
   title: {
