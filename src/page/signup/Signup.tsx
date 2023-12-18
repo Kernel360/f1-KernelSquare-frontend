@@ -8,7 +8,9 @@ import Guideline from "@/components/shared/input/Guideline"
 import { Input } from "@/components/shared/input/Input"
 import PasswordField from "@/components/shared/input/PasswordField"
 import { SignupFormData } from "@/interfaces/form"
+import { signup } from "@/service/auth"
 import { Validator } from "@/util/validate"
+import { useRouter } from "next/navigation"
 import { useState } from "react"
 import { useForm } from "react-hook-form"
 
@@ -20,6 +22,8 @@ interface GuidelineOpen {
 // [TODO] 이미지 업로드
 
 function Signup() {
+  const { replace } = useRouter()
+
   const {
     register,
     handleSubmit,
@@ -41,11 +45,11 @@ function Signup() {
     email,
     nickname,
     password,
-    profile,
+    image_url,
   }: SignupFormData) => {
-    console.log("submit signup", { email, nickname, password, profile })
+    await signup({ email, password, nickname, image_url })
 
-    // [TODO] signup
+    replace("/")
   }
 
   return (
@@ -194,8 +198,6 @@ function Signup() {
         {/* social signup */}
         <LabelDivider label={"간편 회원가입"} />
         <div className="flex w-full justify-center items-center gap-2">
-          <SocialButton social="kakao" action="signup" />
-          <SocialButton social="google" action="signup" />
           <SocialButton social="github" action="signup" />
         </div>
       </form>

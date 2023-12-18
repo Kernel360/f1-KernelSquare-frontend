@@ -1,4 +1,10 @@
-export type LayoutMetaKey = "/" | "signup" | "notice" | "chat" | "faq"
+export type LayoutMetaKey =
+  | "/"
+  | "signup"
+  | "notice"
+  | "chat"
+  | "faq"
+  | "profile"
 
 export type LayoutMeta = {
   title: string
@@ -52,6 +58,15 @@ export const layoutMeta = {
   faq: {
     title: "FAQ",
     description: "FAQ",
+    containLayout: {
+      header: true,
+      navigation: true,
+      footer: false,
+    },
+  },
+  profile: {
+    title: "내 프로필",
+    description: "내 프로필",
     containLayout: {
       header: true,
       navigation: true,

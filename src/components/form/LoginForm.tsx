@@ -8,11 +8,12 @@ import PasswordField from "../shared/input/PasswordField"
 import Spacing from "../shared/Spacing"
 import Link from "next/link"
 import { twJoin } from "tailwind-merge"
-import { RxDividerVertical } from "react-icons/rx"
 import LabelDivider from "../shared/divider/LabelDivider"
 import useModal from "@/hooks/useModal"
 import SocialButton from "../SocialButton"
 import { Validator } from "@/util/validate"
+import { login } from "@/service/auth"
+import { useQueryClient } from "@tanstack/react-query"
 
 function LoginForm() {
   const {
@@ -21,19 +22,32 @@ function LoginForm() {
     formState: { errors, isValid },
   } = useForm<LoginFormData>()
 
+  const queryClient = useQueryClient()
+
   const { closeModal } = useModal()
 
   const validator = new Validator()
 
   const linkClassNames = twJoin([
-    "text-sm text-colorsDarkGray underline underline-offset-4",
+    "flex justify-center items-center text-sm text-primary underline underline-offset-4",
   ])
 
   const onSubmit = async (data: LoginFormData) => {
     try {
-      console.log({ data })
-      // closeModal();
+      await login({ email: data.email, password: data.password })
+
       // update
+      // 현재는 id로만 member 데이터를 가져올 수 있음
+      // 쿠키에서 토큰을 가져오고, jwt를 파싱해서 진행해야 하는데
+      // 프론트에서 필요한 로직일지 의문
+      //
+      // token만 가지고 유저 정보를 가져올 수 있는
+      // api를 백엔드에 요청해볼 예정
+
+      // react query 유저 쿼리 캐시 초기화
+      queryClient.invalidateQueries({ queryKey: ["user"] })
+
+      closeModal()
     } catch (error) {
       /*
         서버에서 유효하지 않은 응답이 오는 경우
@@ -110,16 +124,8 @@ function LoginForm() {
       </div>
       <Spacing size={24} />
       {/* helper menu */}
-      {/* [TODO] 수정될 경우 변경 (href 등) */}
       <div className="flex w-full justify-center items-center">
-        <Link href="/" className={linkClassNames} onClick={handleClose}>
-          아이디(이메일) 찾기
-        </Link>
-        <RxDividerVertical className="text-sm text-black mt-1" />
-        <Link href="/" className={linkClassNames} onClick={handleClose}>
-          비밀번호 찾기
-        </Link>
-        <RxDividerVertical className="text-sm text-black mt-1" />
+        <span className="text-sm">처음이신가요?&nbsp;&nbsp;</span>
         <Link href="/signup" className={linkClassNames} onClick={handleClose}>
           회원가입
         </Link>
@@ -129,8 +135,6 @@ function LoginForm() {
       <Spacing size={12} />
       {/* social login button */}
       <div className="flex w-full justify-center gap-2">
-        <SocialButton social="kakao" action="login" />
-        <SocialButton social="google" action="login" />
         <SocialButton social="github" action="login" />
       </div>
     </form>
