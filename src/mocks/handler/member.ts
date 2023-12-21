@@ -22,7 +22,7 @@ export const memberHandler = [
       if (!existMockUser)
         return HttpResponse.json(
           {
-            status: HttpStatusCode.InternalServerError,
+            code: HttpStatusCode.InternalServerError,
             msg: "유저를 찾을 수 없습니다",
           },
           { status: HttpStatusCode.InternalServerError },
@@ -32,7 +32,7 @@ export const memberHandler = [
 
       return HttpResponse.json(
         {
-          status: HttpStatusCode.Ok,
+          code: HttpStatusCode.Ok,
           msg: "",
           data: {
             ...user,
@@ -54,7 +54,7 @@ export const memberHandler = [
 
       return HttpResponse.json(
         {
-          status: HttpStatusCode.Ok,
+          code: HttpStatusCode.Ok,
           msg: "회원 정보 수정 완료",
         },
         { status: HttpStatusCode.Ok },

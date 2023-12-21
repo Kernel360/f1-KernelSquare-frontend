@@ -15,7 +15,7 @@ function Profile({ profileImage, className, onClick }: ProfileProps) {
   const [imageLoaded, setImageLoaded] = useState(false)
 
   const classNames = {
-    noProfile: twMerge("text-2xl fill-colorsGray", className),
+    noProfile: twMerge("w-8 h-8 p-0", className),
     withProfile: twMerge(
       "relative w-8 h-8 rounded-full overflow-hidden p-0",
       className,
@@ -24,8 +24,8 @@ function Profile({ profileImage, className, onClick }: ProfileProps) {
 
   if (!profileImage)
     return (
-      <Button className="w-8 h-8 p-0">
-        <Icons.UserProfile className="text-2xl fill-colorsGray shrink-0" />
+      <Button className={classNames.noProfile}>
+        <Icons.UserProfile className="text-[30px] leading-8 fill-colorsGray shrink-0" />
       </Button>
     )
 

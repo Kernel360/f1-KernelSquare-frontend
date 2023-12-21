@@ -28,6 +28,8 @@ function NavigationTab({ hasHeader }: NavigationTabProps) {
           navigationRoutes.find((route) =>
             currentSegment === null
               ? route.to === "/"
+              : currentSegment === "question"
+              ? route.to === "/"
               : route.to.startsWith(`/${currentSegment}`),
           )?.label
         }
@@ -38,6 +40,8 @@ function NavigationTab({ hasHeader }: NavigationTabProps) {
             content: <NavigationTabItem label={label} to={to} />,
             active:
               currentSegment === null
+                ? to === "/"
+                : currentSegment === "question"
                 ? to === "/"
                 : to.startsWith(`/${currentSegment}`),
           }

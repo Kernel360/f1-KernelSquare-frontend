@@ -1,5 +1,6 @@
 export type LayoutMetaKey =
   | "/"
+  | "question"
   | "signup"
   | "notice"
   | "chat"
@@ -20,6 +21,15 @@ export const NOTMATCH_SEGMENT = "__DEFAULT__"
 
 export const layoutMeta = {
   "/": {
+    title: "개발자 Q&A",
+    description: "Q&A",
+    containLayout: {
+      header: true,
+      navigation: true,
+      footer: false,
+    },
+  },
+  question: {
     title: "개발자 Q&A",
     description: "Q&A",
     containLayout: {
