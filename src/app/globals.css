@@ -2,26 +2,44 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --foreground-rgb: 0, 0, 0;
-  --background-start-rgb: 214, 219, 220;
-  --background-end-rgb: 255, 255, 255;
-}
+@import "pretendard/dist/web/static/pretendard.css";
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --foreground-rgb: 255, 255, 255;
-    --background-start-rgb: 0, 0, 0;
-    --background-end-rgb: 0, 0, 0;
-  }
+:root {
+  --colors-primary: #00c471;
+  --colors-secondary: #343a40;
+  --colors-gray: #ced4da;
+  --colors-light-gray: #f6f6f6;
+  --colors-dark-gray: #616568;
+  --colors-success: #198754;
+  --colors-danger: #dc3545;
+  --bg-socialKakao: #fae500;
+  --bg-socialGoogle: #f8f8f8;
+  --bg-socialGithub: #3c4043;
+  --zIndex-header: 8;
+  --zIndex-navigation: 7;
+  --zIndex-modal-container: 9;
+  --zIndex-modal-dim: 10;
+  --zIndex-modal: 11;
+  --height-header: 64px;
 }
 
 body {
-  color: rgb(var(--foreground-rgb));
-  background: linear-gradient(
-      to bottom,
-      transparent,
-      rgb(var(--background-end-rgb))
-    )
-    rgb(var(--background-start-rgb));
+  font-family: Pretendard, -apple-system, BlinkMacSystemFont, system-ui, Roboto,
+    "Helvetica Neue", "Segoe UI", "Apple SD Gothic Neo", "Noto Sans KR",
+    "Malgun Gothic", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol",
+    sans-serif;
+}
+
+/* scroll-bar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--colors-gray);
+  border-radius: 16px;
 }
