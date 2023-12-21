@@ -32,6 +32,9 @@ dependencies:
   jsonwebtoken:
     specifier: ^9.0.2
     version: 9.0.2
+  lottie-react:
+    specifier: ^2.4.0
+    version: 2.4.0(react-dom@18.2.0)(react@18.2.0)
   next:
     specifier: 14.0.4
     version: 14.0.4(react-dom@18.2.0)(react@18.2.0)
@@ -62,6 +65,9 @@ dependencies:
   react-loading-skeleton:
     specifier: ^3.3.1
     version: 3.3.1(react@18.2.0)
+  react-paginate:
+    specifier: ^8.2.0
+    version: 8.2.0(react@18.2.0)
   recoil:
     specifier: ^0.7.7
     version: 0.7.7(react-dom@18.2.0)(react@18.2.0)
@@ -91,6 +97,9 @@ devDependencies:
   '@types/react-dom':
     specifier: ^18
     version: 18.2.17
+  '@types/react-paginate':
+    specifier: ^7.1.4
+    version: 7.1.4
   '@types/validator':
     specifier: ^13.11.7
     version: 13.11.7
@@ -857,6 +866,12 @@ packages:
 
   /@types/react-dom@18.2.17:
     resolution: {integrity: sha512-rvrT/M7Df5eykWFxn6MYt5Pem/Dbyc1N8Y0S9Mrkw2WFCRiqUgw9P7ul2NpwsXCSM1DVdENzdG9J5SreqfAIWg==}
+    dependencies:
+      '@types/react': 18.2.43
+    dev: true
+
+  /@types/react-paginate@7.1.4:
+    resolution: {integrity: sha512-6fqZvDzRJHubOGl6c7cGFC9ysgQSWYy0Gpus9HjORpydlcXgPnT8x+aKgqwCdtpZrRTwcBz2Q7JWAOYaRrsXGg==}
     dependencies:
       '@types/react': 18.2.43
     dev: true
@@ -2734,6 +2749,21 @@ packages:
     dependencies:
       js-tokens: 4.0.0
 
+  /lottie-react@2.4.0(react-dom@18.2.0)(react@18.2.0):
+    resolution: {integrity: sha512-pDJGj+AQlnlyHvOHFK7vLdsDcvbuqvwPZdMlJ360wrzGFurXeKPr8SiRCjLf3LrNYKANQtSsh5dz9UYQHuqx4w==}
+    peerDependencies:
+      react: ^16.8.0 || ^17.0.0 || ^18.0.0
+      react-dom: ^16.8.0 || ^17.0.0 || ^18.0.0
+    dependencies:
+      lottie-web: 5.12.2
+      react: 18.2.0
+      react-dom: 18.2.0(react@18.2.0)
+    dev: false
+
+  /lottie-web@5.12.2:
+    resolution: {integrity: sha512-uvhvYPC8kGPjXT3MyKMrL3JitEAmDMp30lVkuq/590Mw9ok6pWcFCwXJveo0t5uqYw1UREQHofD+jVpdjBv8wg==}
+    dev: false
+
   /lru-cache@6.0.0:
     resolution: {integrity: sha512-Jo6dJ04CmSjuznwJSS3pUeWmd/H0ffTlkXXgwZi+eq1UCmqQwCh+eLsYOYCwY991i2Fah4h1BEMCx4qThGbsiA==}
     engines: {node: '>=10'}
@@ -3341,6 +3371,15 @@ packages:
     peerDependencies:
       react: '>=16.8.0'
     dependencies:
+      react: 18.2.0
+    dev: false
+
+  /react-paginate@8.2.0(react@18.2.0):
+    resolution: {integrity: sha512-sJCz1PW+9PNIjUSn919nlcRVuleN2YPoFBOvL+6TPgrH/3lwphqiSOgdrLafLdyLDxsgK+oSgviqacF4hxsDIw==}
+    peerDependencies:
+      react: ^16 || ^17 || ^18
+    dependencies:
+      prop-types: 15.8.1
       react: 18.2.0
     dev: false
 

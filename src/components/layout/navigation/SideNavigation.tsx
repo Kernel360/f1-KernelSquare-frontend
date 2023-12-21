@@ -34,6 +34,8 @@ function SideNavigation({ hasHeader }: SideNavigationProps) {
             const active =
               currentSegment === null
                 ? to === "/"
+                : currentSegment === "question"
+                ? to === "/"
                 : to.startsWith(`/${currentSegment}`)
 
             return (

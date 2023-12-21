@@ -45,7 +45,7 @@ export const authHandler = [
       if (invalidFields.length) {
         return HttpResponse.json(
           {
-            status: HttpStatusCode.BadRequest,
+            code: HttpStatusCode.BadRequest,
             msg: "잘못된 요청입니다",
           },
           { status: HttpStatusCode.BadRequest },
@@ -60,7 +60,7 @@ export const authHandler = [
       if (!existMockUser || !equalPassword) {
         return HttpResponse.json(
           {
-            status: HttpStatusCode.BadRequest,
+            code: HttpStatusCode.BadRequest,
             msg: "잘못된 요청입니다",
           },
           { status: HttpStatusCode.BadRequest },
@@ -69,7 +69,7 @@ export const authHandler = [
 
       const res = HttpResponse.json(
         {
-          status: HttpStatusCode.Ok,
+          code: HttpStatusCode.Ok,
           msg: "로그인 성공",
         },
         {
@@ -102,7 +102,7 @@ export const authHandler = [
 
       setCookie(REFRESH_TOKEN_KEY, refreshToken, {
         path: "/",
-        maxAge: 60 * 60 * 24,
+        maxAge: 60 * 60 * 24 * 14,
       })
 
       return res
@@ -129,7 +129,7 @@ export const authHandler = [
 
       if (invalidFields.length) {
         return HttpResponse.json(
-          { status: HttpStatusCode.BadRequest, msg: "잘못된 요청입니다" },
+          { code: HttpStatusCode.BadRequest, msg: "잘못된 요청입니다" },
           { status: HttpStatusCode.BadRequest },
         )
       }
@@ -150,7 +150,7 @@ export const authHandler = [
 
       return HttpResponse.json(
         {
-          status: HttpStatusCode.Ok,
+          code: HttpStatusCode.Ok,
           msg: "회원 가입 성공",
         },
         {
@@ -172,7 +172,7 @@ export const authHandler = [
       if (!email || !validator.validateEmail(email).allCheck()) {
         return HttpResponse.json(
           {
-            status: HttpStatusCode.BadRequest,
+            code: HttpStatusCode.BadRequest,
             msg: "잘못된 요청입니다.",
           },
           {
@@ -184,7 +184,7 @@ export const authHandler = [
       if (mockUsers.some((user) => user.email === email)) {
         return HttpResponse.json(
           {
-            status: HttpStatusCode.Conflict,
+            code: HttpStatusCode.Conflict,
             msg: "사용중인 이메일 입니다.",
           },
           {
@@ -195,7 +195,7 @@ export const authHandler = [
 
       return HttpResponse.json(
         {
-          status: HttpStatusCode.Ok,
+          code: HttpStatusCode.Ok,
           msg: "이메일 중복 확인 성공",
         },
         {
@@ -217,7 +217,7 @@ export const authHandler = [
       if (!nickname || !validator.validateNickname(nickname).allCheck()) {
         return HttpResponse.json(
           {
-            status: HttpStatusCode.BadRequest,
+            code: HttpStatusCode.BadRequest,
             msg: "잘못된 요청입니다.",
           },
           { status: HttpStatusCode.BadRequest },
@@ -227,7 +227,7 @@ export const authHandler = [
       if (mockUsers.some((user) => user.nickname === nickname)) {
         return HttpResponse.json(
           {
-            status: HttpStatusCode.Conflict,
+            code: HttpStatusCode.Conflict,
             msg: "사용중인 닉네임 입니다",
           },
           { status: HttpStatusCode.Conflict },
@@ -235,7 +235,7 @@ export const authHandler = [
       }
 
       return HttpResponse.json({
-        status: HttpStatusCode.Ok,
+        code: HttpStatusCode.Ok,
         msg: "닉네임 중복 확인 성공",
       })
     },
@@ -249,7 +249,7 @@ export const authHandler = [
       // }
 
       return HttpResponse.json(
-        { status: HttpStatusCode.Ok, msg: "로그아웃 성공" },
+        { code: HttpStatusCode.Ok, msg: "로그아웃 성공" },
         { status: HttpStatusCode.Ok },
       )
     },

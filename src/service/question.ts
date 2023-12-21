@@ -1,17 +1,18 @@
-import { GetQuestionListRequest } from "@/interfaces/dto/question/get-questionlist.dto"
+import {
+  GetQuestionListRequest,
+  GetQuestionListResponse,
+} from "@/interfaces/dto/question/get-questionlist.dto"
 import { apiInstance } from "./axios"
 import { RouteMap } from "./route-map"
-import { APIPagenationResponse } from "@/interfaces/dto/api-response"
 
-export async function getQuestionList({
-  page = 0,
-  limit = 10,
-}: GetQuestionListRequest) {
+export async function getQuestionList(
+  { page = 0, size = 5 }: GetQuestionListRequest = { page: 0, size: 5 },
+) {
   const searchParams = new URLSearchParams()
   searchParams.set("page", `${page}`)
-  searchParams.set("limit", `${limit}`)
+  searchParams.set("size", `${size}`)
 
-  const res = await apiInstance.get<APIPagenationResponse>(
+  const res = await apiInstance.get<GetQuestionListResponse>(
     `${RouteMap.question.getQuestionList}?${searchParams.toString()}`,
   )
 
