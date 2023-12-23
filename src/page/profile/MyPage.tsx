@@ -1,13 +1,9 @@
 "use client"
 
-import { Icons } from "@/components/icons/Icons"
-import Spacing from "@/components/shared/Spacing"
-import Button from "@/components/shared/button/Button"
 import { mockUsers } from "@/mocks/db/user"
 import Image from "next/image"
-import { useState } from "react"
-import Skeleton from "react-loading-skeleton"
-import type { ImageProps, TitleProps } from "./MyPage.type"
+import type { TitleProps } from "./MyPage.type"
+import ProfileImage from "./components/ProfileImage"
 
 // msw 및 API call 로직 구현 후 삭제 예정
 const mock = mockUsers[0]
@@ -44,41 +40,6 @@ function Title({ title }: TitleProps) {
   return <div className="font-bold text-lg mb-[20px]">{title}</div>
 }
 
-function ProfileImage({ image_url }: ImageProps) {
-  const [imageLoaded, setImageLoaded] = useState(false)
-
-  if (!image_url)
-    return (
-      <Icons.UserProfile className="text-[30px] leading-8 fill-colorsGray shrink-0" />
-    )
-
-  return (
-    <div>
-      <div className="w-[150px] h-[150px] relative">
-        <Image
-          src={image_url}
-          alt="프로필이미지"
-          fill
-          onLoad={() => setImageLoaded(true)}
-          className="object-cover rounded-full"
-        />
-        {imageLoaded ? null : (
-          <Skeleton
-            circle
-            width={150}
-            height={150}
-            className="absolute left-0 top-0"
-          />
-        )}
-      </div>
-      <Spacing size={10} />
-      <Button buttonTheme="primary" className="w-[150px] h-[30px] rounded">
-        프로필 변경
-      </Button>
-    </div>
-  )
-}
-
 function ExperiencePoint() {
   return (
     <div className="mb-[50px]">
@@ -87,9 +48,9 @@ function ExperiencePoint() {
         <div className="w-4/24 text-center mr-4">0</div>
         <div className="m-auto w-full text-center flex justify-center">
           <div className="relative w-[90%] mx-[10px]">
-            <div className="z-0 bg-gray-300 rounded-md h-[20px] "></div>
+            <div className="z-0 bg-gray-300 rounded-md h-[25px] "></div>
             {/*임시 사이즈이며 실제 경험치 표시 예정: 해당 level 달성 기준에 대한 experience 비율*/}
-            <div className="absolute top-0 z-5 bg-primary rounded-md w-[10%] h-[20px] text-white text-center">
+            <div className="absolute top-0 z-5 bg-primary rounded-md w-[10%] h-[25px] text-white text-center">
               {mock.experience}
             </div>
           </div>
