@@ -37,13 +37,6 @@ function LoginForm() {
       await login({ email: data.email, password: data.password })
 
       // update
-      // 현재는 id로만 member 데이터를 가져올 수 있음
-      // 쿠키에서 토큰을 가져오고, jwt를 파싱해서 진행해야 하는데
-      // 프론트에서 필요한 로직일지 의문
-      //
-      // token만 가지고 유저 정보를 가져올 수 있는
-      // api를 백엔드에 요청해볼 예정
-
       // react query 유저 쿼리 캐시 초기화
       queryClient.invalidateQueries({ queryKey: ["user"] })
 
