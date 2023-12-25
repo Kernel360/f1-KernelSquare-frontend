@@ -45,7 +45,7 @@ export async function duplicateCheckNickname({
   const res = await apiInstance.post<
     DuplicateCheckNickNameRequest,
     AxiosResponse<DuplicateCheckNickNameResponse>
-  >(RouteMap.auth.duplicateCheckEmail, {
+  >(RouteMap.auth.duplicateCheckNickname, {
     nickname,
   })
 

@@ -8,6 +8,7 @@ import { useRecoilState } from "recoil"
 type OpenModalPayload = {
   classNames?: ModalState["classNames"]
   containsHeader?: ModalState["containsHeader"]
+  closeableDim?: ModalState["closeableDim"]
   content: NonNullable<ModalState["content"]>
   onClose?: ModalState["onClose"]
 }
@@ -19,6 +20,7 @@ function useModal() {
     ({
       content,
       containsHeader = true,
+      closeableDim = true,
       classNames,
       onClose,
     }: OpenModalPayload) => {
@@ -27,6 +29,7 @@ function useModal() {
         open: true,
         ...(classNames && { classNames }),
         containsHeader,
+        closeableDim,
         content,
         onClose,
       }))
