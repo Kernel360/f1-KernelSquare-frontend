@@ -18,7 +18,10 @@ export class Validator {
         return validator.isEmail(email)
       },
       length() {
-        return validator.isLength(email, { min: 6, max: 40 })
+        return validator.isLength(email.replaceAll(" ", ""), {
+          min: 6,
+          max: 40,
+        })
       },
     }
   }
@@ -40,7 +43,10 @@ export class Validator {
         return regexp.test(nickname)
       },
       length() {
-        return validator.isLength(nickname, { min: 2, max: 8 })
+        return validator.isLength(nickname.replaceAll(" ", ""), {
+          min: 2,
+          max: 8,
+        })
       },
     }
   }
@@ -60,7 +66,10 @@ export class Validator {
         })
       },
       length() {
-        return validator.isLength(password, { min: 8, max: 16 })
+        return validator.isLength(password.replaceAll(" ", ""), {
+          min: 8,
+          max: 16,
+        })
       },
     }
   }

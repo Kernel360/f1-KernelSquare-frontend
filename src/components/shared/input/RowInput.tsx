@@ -2,7 +2,7 @@ import { ForwardedRef, forwardRef, useRef } from "react"
 import { Input, InputProps } from "./Input"
 import { twMerge } from "tailwind-merge"
 
-interface RowInputProps extends Omit<InputProps, "className"> {
+export interface RowInputProps extends Omit<InputProps, "className"> {
   sideField: React.ReactNode
   classNames?: {
     container?: string
@@ -60,12 +60,16 @@ function RowInput(
   }
 
   return (
-    <div className={containerClassNames}>
+    <div
+      className={containerClassNames}
+      aria-disabled={props.disabled ? "true" : "false"}
+    >
       <div
         ref={wrapperRef}
         className={wrapperClassNames}
         onFocus={handleFocus}
         onBlur={handleBlur}
+        aria-disabled={props.disabled ? "true" : "false"}
       >
         <div className="flex-1">
           <Input ref={ref} fullWidth className={inputClassNames} {...props} />
