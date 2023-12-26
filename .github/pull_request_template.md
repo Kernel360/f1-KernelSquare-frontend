@@ -1,6 +1,6 @@
 ## 관련 이슈
 
-close: #(Isuue Number)
+close: [#이슈번호](https://github.com/KernelSquare/Frontend/issues/이슈번호)
 
 ## 개요
 
