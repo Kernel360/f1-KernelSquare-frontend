@@ -1,4 +1,5 @@
-import { Icons } from "@/components/icons/Icons"
+"use client"
+
 import Spacing from "@/components/shared/Spacing"
 import Button from "@/components/shared/button/Button"
 import { useRef, useState } from "react"
@@ -35,11 +36,6 @@ function ProfileImage({ image_url }: ImageProps) {
     const fileInput = imageUploadRef?.current
     if (fileInput) fileInput.click()
   }
-
-  if (!image_url)
-    return (
-      <Icons.UserProfile className="text-[30px] leading-8 fill-colorsGray shrink-0" />
-    )
 
   return (
     <div>

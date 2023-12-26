@@ -18,7 +18,7 @@ export const mockUsers = [
     email: "testMentor1@email.com",
     password: "Mentor1!",
     nickname: "홍주광",
-    experience: 4000,
+    experience: 2000,
     level: 4,
     authorities: ["ROLE_USER", "ROLE_MENTOR"],
     account_status: ACCOUNT_STATUS.TRUE,
