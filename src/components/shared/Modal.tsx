@@ -30,7 +30,7 @@ function Modal() {
 
   return modal.open ? (
     <Container>
-      <Dim onClose={handleClose} />
+      <Dim onClose={modal.closeableDim ? handleClose : undefined} />
       <Wrapper className={modal.classNames}>
         {modal.containsHeader ? <Header onClose={handleClose} /> : null}
         {modal.content}

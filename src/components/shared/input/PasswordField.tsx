@@ -1,18 +1,19 @@
 import { ForwardedRef, forwardRef, useState } from "react"
 import { InputProps } from "./Input"
-import RowInput from "./RowInput"
+import RowInput, { RowInputProps } from "./RowInput"
 import { RxEyeOpen, RxEyeClosed } from "react-icons/rx"
 import Button from "../button/Button"
 
-interface PasswordFieldProps extends InputProps {}
+interface PasswordFieldProps extends Omit<RowInputProps, "sideField"> {}
 
 interface PasswordVisibleButtonProps {
+  disabled?: boolean
   onPasswordVisibleChange: (changedVisible: boolean) => void
 }
 
 function PasswordField(
   {
-    className,
+    disabled,
     fullWidth,
     error,
     errorMessage,
@@ -28,11 +29,13 @@ function PasswordField(
     <RowInput
       ref={ref}
       type={type}
+      disabled={disabled}
       sideField={
         <PasswordVisibleButton
           onPasswordVisibleChange={(passwordvisible) =>
             setType(passwordvisible ? "text" : "password")
           }
+          disabled={disabled}
         />
       }
       fullWidth={fullWidth}
@@ -46,6 +49,7 @@ function PasswordField(
 
 function PasswordVisibleButton({
   onPasswordVisibleChange,
+  disabled,
 }: PasswordVisibleButtonProps) {
   const [passwordVisible, setPasswordVisible] = useState(false)
 
@@ -57,7 +61,7 @@ function PasswordVisibleButton({
   }
 
   return (
-    <Button onClick={handlePasswordVisible}>
+    <Button disabled={disabled} onClick={handlePasswordVisible}>
       {passwordVisible ? (
         <RxEyeClosed className="text-lg" />
       ) : (
