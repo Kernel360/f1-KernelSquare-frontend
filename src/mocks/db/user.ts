@@ -12,6 +12,7 @@ export const mockUsers = [
     account_status: ACCOUNT_STATUS.FALSE,
     image_url:
       "https://mobirise.com/bootstrap-template//profile-template/assets/images/timothy-paul-smith-256424-1200x800.jpg",
+    introduction: "안녕하세요, 홍주광입니다. ",
   },
   {
     id: 2,
