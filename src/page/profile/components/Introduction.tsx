@@ -9,17 +9,21 @@ import { FormEvent } from "react"
 import { updateMemberInfo } from "@/service/member"
 
 interface IntroductionProps {
+  id: number
   introduction?: string
 }
 
-const EditBox: React.FC<{ previous?: string }> = ({ previous }) => {
+const EditBox: React.FC<{ previous?: string; id: number }> = ({
+  previous,
+  id,
+}) => {
   const { closeEditMode, introduction, setIntroduction } = useMyPage()
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     try {
       updateMemberInfo({
-        id: 2,
+        id,
         introduction: introduction,
       }).then((res) => {
         console.log("res", res.data.msg, res.config.data)
@@ -51,7 +55,7 @@ const EditBox: React.FC<{ previous?: string }> = ({ previous }) => {
   )
 }
 
-const Introduction = ({ introduction }: IntroductionProps) => {
+const Introduction = ({ id, introduction }: IntroductionProps) => {
   const { isEditMode, handleEditMode } = useMyPage()
 
   return (
@@ -64,7 +68,7 @@ const Introduction = ({ introduction }: IntroductionProps) => {
         />
       </div>
       {isEditMode ? (
-        <EditBox previous={introduction} />
+        <EditBox previous={introduction} id={id} />
       ) : (
         <div>{introduction || instructions.noIntroduction}</div>
       )}

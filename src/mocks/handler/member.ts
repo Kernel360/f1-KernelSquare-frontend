@@ -28,7 +28,7 @@ export const memberHandler = [
           { status: HttpStatusCode.InternalServerError },
         )
 
-      const { id, password, ...user } = existMockUser
+      const { password, ...user } = existMockUser
 
       return HttpResponse.json(
         {
@@ -54,7 +54,7 @@ export const memberHandler = [
 
       return HttpResponse.json(
         {
-          code: HttpStatusCode.Ok,
+          code: 1242,
           msg: "회원 정보 수정 완료",
         },
         { status: HttpStatusCode.Ok },

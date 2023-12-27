@@ -3,5 +3,6 @@ export interface TitleProps {
 }
 
 export interface ImageProps {
+  id: number
   image_url: string
 }

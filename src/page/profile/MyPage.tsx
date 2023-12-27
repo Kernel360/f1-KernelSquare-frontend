@@ -14,7 +14,7 @@ import { twMerge } from "tailwind-merge"
 // 아이디 값 관련 로직 수정 예정
 function MyPage() {
   const { data: member, refetch, isPending } = useUser()
-  console.log("useuser", member?.data.data)
+  console.log("useuser", member?.data)
 
   useEffect(() => {
     refetch()
@@ -27,6 +27,7 @@ function MyPage() {
       <div className="max-w-[60%] m-auto mt-[50px]">
         <div className="w-full flex justify-evenly mb-[50px]">
           <ProfileImage
+            id={member?.data.data.id}
             image_url={
               member?.data.data.image_url &&
               typeof member?.data.data.image_url === "string"
@@ -53,7 +54,10 @@ function MyPage() {
           exp={member?.data.data.experience}
         />
         <Divider className="mb-[50px]" />
-        <Introduction introduction={member?.data.data.introduction} />
+        <Introduction
+          introduction={member?.data.data.introduction}
+          id={member?.data.data.id}
+        />
         <Divider />
       </div>
     )

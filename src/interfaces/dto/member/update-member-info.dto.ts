@@ -6,4 +6,7 @@ export interface UpdateMemberInfoRequest
   id: number
 }
 
-export interface UpdateMemberInfoResponse extends APIResponse {}
+export interface UpdateMemberInfoResponse extends APIResponse {
+  code: number
+  msg: string
+}
