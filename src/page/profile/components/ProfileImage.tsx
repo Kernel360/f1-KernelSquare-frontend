@@ -8,11 +8,14 @@ import Skeleton from "react-loading-skeleton"
 import type { ImageProps } from "../MyPage.type"
 import Image from "next/image"
 import { updateMemberInfo } from "@/service/member"
+import { useQueryClient } from "@tanstack/react-query"
 
 function ProfileImage({ id, image_url }: ImageProps) {
   const [image, setImage] = useState<string | ArrayBuffer | null>(image_url)
   const [imageLoaded, setImageLoaded] = useState(false)
   const imageUploadRef = useRef<HTMLInputElement>(null)
+
+  const queryClient = useQueryClient()
 
   const handleSaveImage = (image: string) => {
     const userResponse = window.confirm("변경된 사진으로 저장하시겠습니까?")
@@ -25,6 +28,7 @@ function ProfileImage({ id, image_url }: ImageProps) {
           console.log("res", res)
           if (res.data.code === 1242) {
             alert(res.data.msg)
+            queryClient.invalidateQueries({ queryKey: ["user"] })
           }
         })
       } catch (error) {

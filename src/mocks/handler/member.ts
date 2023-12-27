@@ -55,7 +55,8 @@ export const memberHandler = [
 
       const target = mockUsers.find((user) => user.id === Number(userId))!
 
-      target.introduction = introduction
+      if (introduction) target.introduction = introduction
+      if (image_url) target.image_url = image_url
 
       return HttpResponse.json(
         {
