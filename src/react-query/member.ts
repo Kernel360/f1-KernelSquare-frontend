@@ -1,7 +1,8 @@
 import queryKey from "@/constants/queryKey"
 import { GetMemberRequest } from "@/interfaces/dto/member/get-member.dto"
-import { getMemeber } from "@/service/member"
-import { keepPreviousData, useQuery } from "@tanstack/react-query"
+import { UpdateMemberInfoRequest } from "@/interfaces/dto/member/update-member-info.dto"
+import { getMemeber, updateMemberInfo } from "@/service/member"
+import { keepPreviousData, useMutation, useQuery } from "@tanstack/react-query"
 
 const useMemberData = ({ id }: GetMemberRequest) =>
   useQuery({
@@ -14,6 +15,17 @@ const useMemberData = ({ id }: GetMemberRequest) =>
     },
   })
 
+const useUpdateInfo = ({
+  id,
+  image_url,
+  introduction,
+}: UpdateMemberInfoRequest) =>
+  useMutation({
+    mutationKey: [queryKey.member, queryKey.updateInfo],
+    mutationFn: () => updateMemberInfo({ id, image_url, introduction }),
+  })
+
 export const memberQueries = {
   useMemberData,
+  useUpdateInfo,
 }

@@ -3,7 +3,7 @@
 import { ButtonHTMLAttributes } from "react"
 import { twMerge } from "tailwind-merge"
 
-type ButtonColorTheme = "primary" | "secondary"
+type ButtonColorTheme = "primary" | "secondary" | "third"
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   buttonTheme?: ButtonColorTheme
@@ -29,6 +29,7 @@ function Button({
       (ghost
         ? "text-secondary hover:text-white hover:bg-secondary"
         : "text-white bg-secondary hover:bg-[#464e57]"),
+    buttonTheme === "third" && "text-black border-[1px] border-primary",
     ghost && "bg-transparent",
   ])
 

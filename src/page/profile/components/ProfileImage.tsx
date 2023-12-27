@@ -7,6 +7,7 @@ import type { ChangeEvent, FormEvent } from "react"
 import Skeleton from "react-loading-skeleton"
 import type { ImageProps } from "../MyPage.type"
 import Image from "next/image"
+import { updateMemberInfo } from "@/service/member"
 
 function ProfileImage({ image_url }: ImageProps) {
   const [image, setImage] = useState<string | ArrayBuffer | null>(image_url)
@@ -15,8 +16,17 @@ function ProfileImage({ image_url }: ImageProps) {
 
   const onSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-
-    console.log("Submitted Image URL:", image)
+    if (typeof image === "string")
+      try {
+        updateMemberInfo({
+          id: 2,
+          image_url: image,
+        }).then((res) => {
+          console.log("res", res.data.msg, res.config.data)
+        })
+      } catch (err) {
+        console.error("error", err)
+      }
   }
 
   const handleImageChange = (event: ChangeEvent<HTMLInputElement>) => {

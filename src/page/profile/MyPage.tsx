@@ -7,12 +7,20 @@ import { basic_profile } from "@/assets/images/basic"
 import badge_url from "@/assets/images/badges"
 import ContentLoading from "@/components/shared/animation/ContentLoading"
 import { memberQueries } from "@/react-query/member"
-import instructions from "@/constants/instructions"
-import { Icons } from "@/components/icons/Icons"
+import Introduction from "./components/Introduction"
+import { useEffect } from "react"
 
 // 아이디 값 관련 로직 수정 예정
 function MyPage() {
-  const { data: member, isPending } = memberQueries.useMemberData({ id: 1 })
+  const {
+    data: member,
+    isPending,
+    refetch,
+  } = memberQueries.useMemberData({ id: 2 })
+
+  useEffect(() => {
+    refetch()
+  }, [])
 
   if (isPending) return <Loading />
 
@@ -43,13 +51,7 @@ function MyPage() {
         </div>
         <ExperiencePoint level={member.level} exp={member.experience} />
         <Divider />
-        <div className="mb-[50px]">
-          <div className="flex font-bold text-lg mb-[20px]">
-            <div>자기소개</div>{" "}
-            <Icons.EditIntro className="ml-[10px] text-[25px] leading-8 shrink-0 cursor-pointer" />
-          </div>
-          <div>{member.introduction || instructions.noIntroduction}</div>
-        </div>
+        <Introduction introduction={member.introduction} />
         <Divider />
       </div>
     )
@@ -58,7 +60,7 @@ function MyPage() {
 export default MyPage
 
 function Divider() {
-  return <div className="bg-slate-400 h-[2px] w-full mb-[50px]"></div>
+  return <div className="bg-slate-400 h-[1px] w-full mb-[50px]"></div>
 }
 
 function Loading() {

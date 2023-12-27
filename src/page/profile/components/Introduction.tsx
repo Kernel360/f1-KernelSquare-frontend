@@ -1,0 +1,75 @@
+"use client"
+
+import { Icons } from "@/components/icons/Icons"
+import Button from "@/components/shared/button/Button"
+import Textarea from "@/components/shared/textarea/Textarea"
+import instructions from "@/constants/instructions"
+import useMyPage from "../hooks/useMyPage"
+import { FormEvent } from "react"
+import { updateMemberInfo } from "@/service/member"
+
+interface IntroductionProps {
+  introduction?: string
+}
+
+const EditBox: React.FC<{ previous?: string }> = ({ previous }) => {
+  const { closeEditMode, introduction, setIntroduction } = useMyPage()
+
+  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+    try {
+      updateMemberInfo({
+        id: 2,
+        introduction: introduction,
+      }).then((res) => {
+        console.log("res", res.data.msg, res.config.data)
+      })
+    } catch (err) {
+      console.error("error", err)
+    }
+    closeEditMode()
+  }
+
+  return (
+    <div>
+      <form className="w-full" onSubmit={(e) => handleSubmit(e)}>
+        <Textarea fullWidth={true} rows={5} defaultValue={previous} />
+        <div className="flex justify-center mt-[20px]">
+          <Button
+            buttonTheme="third"
+            className="w-[70px] mr-[10px]"
+            onClick={closeEditMode}
+          >
+            취소
+          </Button>
+          <Button buttonTheme="primary" className="w-[70px]" type="submit">
+            저장
+          </Button>
+        </div>
+      </form>
+    </div>
+  )
+}
+
+const Introduction = ({ introduction }: IntroductionProps) => {
+  const { isEditMode, handleEditMode } = useMyPage()
+
+  return (
+    <div className="mb-[50px]">
+      <div className="flex font-bold text-lg mb-[20px]">
+        <div>자기소개</div>
+        <Icons.EditIntro
+          className="ml-[10px] text-[25px] leading-8 shrink-0 cursor-pointer"
+          onClick={handleEditMode}
+        />
+      </div>
+      {isEditMode ? (
+        <EditBox previous={introduction} />
+      ) : (
+        <div>{introduction || instructions.noIntroduction}</div>
+      )}
+    </div>
+  )
+}
+
+export default Introduction
