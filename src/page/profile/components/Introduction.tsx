@@ -7,6 +7,7 @@ import instructions from "@/constants/instructions"
 import useMyPage from "../hooks/useMyPage"
 import { FormEvent } from "react"
 import { updateMemberInfo } from "@/service/member"
+import { useQueryClient } from "@tanstack/react-query"
 
 interface IntroductionProps {
   id: number
@@ -17,6 +18,7 @@ const EditBox: React.FC<{ previous?: string; id: number }> = ({
   previous,
   id,
 }) => {
+  const queryClient = useQueryClient()
   const { closeEditMode, introduction, setIntroduction } = useMyPage()
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
@@ -24,9 +26,11 @@ const EditBox: React.FC<{ previous?: string; id: number }> = ({
     try {
       updateMemberInfo({
         id,
-        introduction: introduction,
+        introduction,
       }).then((res) => {
         console.log("res", res.data.msg, res.config.data)
+        setIntroduction(res.config.data["introduction"])
+        queryClient.invalidateQueries({ queryKey: ["user"] })
       })
     } catch (err) {
       console.error("error", err)
@@ -37,7 +41,12 @@ const EditBox: React.FC<{ previous?: string; id: number }> = ({
   return (
     <div>
       <form className="w-full" onSubmit={(e) => handleSubmit(e)}>
-        <Textarea fullWidth={true} rows={5} defaultValue={previous} />
+        <Textarea
+          fullWidth={true}
+          rows={5}
+          defaultValue={previous}
+          onChange={(e) => setIntroduction(e.target.value)}
+        />
         <div className="flex justify-center mt-[20px]">
           <Button
             buttonTheme="third"

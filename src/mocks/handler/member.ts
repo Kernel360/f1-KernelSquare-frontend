@@ -48,9 +48,14 @@ export const memberHandler = [
     UpdateMemberInfoResponse
   >(
     `${process.env.NEXT_PUBLIC_SERVER}${RouteMap.member.updateMemberInfo()}`,
-    async ({ request }) => {
+    async ({ request, params }) => {
       // 정보 수정
+      const userId = params.id
       const { nickname, introduction, image_url } = await request.json()
+
+      const target = mockUsers.find((user) => user.id === Number(userId))!
+
+      target.introduction = introduction
 
       return HttpResponse.json(
         {

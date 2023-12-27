@@ -10,7 +10,7 @@ export interface TextareaProps
 }
 
 const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
-  ({ className, fullWidth = false, rows, ...props }, ref) => {
+  ({ className, fullWidth = false, rows, onChange, ...props }, ref) => {
     const wrapperClassNames = twMerge([
       "flex-col align-top",
       fullWidth && "w-full",
@@ -24,7 +24,13 @@ const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
 
     return (
       <div className={wrapperClassNames}>
-        <textarea ref={ref} className={classNames} rows={rows} {...props} />
+        <textarea
+          ref={ref}
+          className={classNames}
+          rows={rows}
+          onChange={onChange}
+          {...props}
+        />
       </div>
     )
   },
