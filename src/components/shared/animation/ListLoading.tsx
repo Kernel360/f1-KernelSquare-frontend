@@ -1,9 +1,10 @@
 "use client"
 
 import Lottie, { useLottie } from "lottie-react"
-import listLoading from "@/assets/lottie/list-loading.json"
+import ing from "@/assets/lottie/list-loading.json"
 import { CSSProperties, useLayoutEffect } from "react"
 import { twMerge } from "tailwind-merge"
+import listLoading from "@/assets/lottie/list-loading.json"
 
 interface ListLoadingProps {
   style?: CSSProperties
