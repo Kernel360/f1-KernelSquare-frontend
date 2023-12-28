@@ -13,7 +13,7 @@ const Question: React.FC<{ id: number }> = ({ id }) => {
 
   if (question)
     return (
-      <div className="max-w-full box-border border border-colorsGray rounded-lg p-5 my-5">
+      <div className="max-w-full box-border border border-colorsGray rounded-lg p-10 my-5">
         <div className="font-bold text-2xl mb-5">
           <span className="mr-[10px]">Q.</span>
           <span className="text-[#444444]">{question.title}</span>
