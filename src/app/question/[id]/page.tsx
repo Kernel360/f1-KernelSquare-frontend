@@ -1,4 +1,5 @@
 import { layoutMeta } from "@/constants/layoutMeta"
+import QnADetail from "@/page/qna-detail/QnADetail"
 import { Metadata } from "next"
 
 interface QuestionDetailPage {
@@ -18,5 +19,5 @@ export const metadata: Metadata = {
 }
 
 export default function QuestionDetailPage({ params }: QuestionDetailPage) {
-  return <div>question {params.id} detail</div>
+  return <QnADetail id={params.id} />
 }

@@ -4,7 +4,8 @@ export const mockQuestions: Array<Question> = [
   {
     id: 1,
     title: "질문1",
-    content: "콘텐츠1",
+    content:
+      "## 🥏 다시 돌아온 SSR!/ - 이전에 Next.js를 사용하게 된 이유에서도 정리했지만,/ - React, Angular, Vue와 같은 SPA 프레임워크들이 사용하던 CSR 방식에 문제점이 발견되기 시작했다.",
     created_by: "zl존",
     image_url: null,
     level: 4,
@@ -18,7 +19,8 @@ export const mockQuestions: Array<Question> = [
     id: 2,
     title:
       "question2질문2question2질문2question 2질문2 question2질문2 question2질문2question2질문2 question2질문2",
-    content: "콘텐츠2",
+    content:
+      "### 🖥️ TTV - Time To View - 사용자가 웹 사이트를 볼 수 있는 시간 ### 🖱️ TTI  - Time To Interact - 사용자가 웹 사이트와 상호작용(클릭 등)을 할 수 있는 시간",
     created_by: "홍주광",
     image_url: null,
     level: 3,
@@ -32,7 +34,8 @@ export const mockQuestions: Array<Question> = [
     id: 3,
     title:
       "질문3질문3질문3질문3질문3질문3질문3질문3질문3질문3질문3질문3질문3질문3질문3질문3질문3질문3질문3질문3질문3질문3",
-    content: "콘텐츠3",
+    content:
+      "### <code>getServerSideProps( )</code> ```js function Page({ data }) { // 데이터를 렌더링하는 코드~ } // 모든 요청에서 호출된다. export async function getServerSideProps() { // 외부 API에서 전송되는 데이터를 fetch const res = await fetch(`https://.../data`); const data = await res.json(); // Props를 사용해 페이지로 데이터를 전달한다. return { props: { data } };} export default Page;```",
     created_by: "testUser1",
     image_url: null,
     level: 4,
@@ -45,7 +48,8 @@ export const mockQuestions: Array<Question> = [
   {
     id: 4,
     title: "질문4",
-    content: "콘텐츠4",
+    content:
+      "## 🥏 다시 돌아온 SSR!/ - 이전에 Next.js를 사용하게 된 이유에서도 정리했지만,/ - React, Angular, Vue와 같은 SPA 프레임워크들이 사용하던 CSR 방식에 문제점이 발견되기 시작했다.",
     created_by: "zl존",
     image_url:
       "https://mobirise.com/bootstrap-template//profile-template/assets/images/timothy-paul-smith-256424-1200x800.jpg",
@@ -59,7 +63,8 @@ export const mockQuestions: Array<Question> = [
   {
     id: 5,
     title: "질문5",
-    content: "콘텐츠5",
+    content:
+      "### 🖥️ TTV - Time To View - 사용자가 웹 사이트를 볼 수 있는 시간 ### 🖱️ TTI  - Time To Interact - 사용자가 웹 사이트와 상호작용(클릭 등)을 할 수 있는 시간",
     created_by: "zl존",
     image_url: null,
     level: 4,
@@ -72,7 +77,8 @@ export const mockQuestions: Array<Question> = [
   {
     id: 6,
     title: "질문6",
-    content: "콘텐츠6",
+    content:
+      "### <code>getServerSideProps( )</code> ```js function Page({ data }) { // 데이터를 렌더링하는 코드~ } // 모든 요청에서 호출된다. export async function getServerSideProps() { // 외부 API에서 전송되는 데이터를 fetch const res = await fetch(`https://.../data`); const data = await res.json(); // Props를 사용해 페이지로 데이터를 전달한다. return { props: { data } };} export default Page;```",
     created_by: "zl존",
     image_url: null,
     level: 4,
