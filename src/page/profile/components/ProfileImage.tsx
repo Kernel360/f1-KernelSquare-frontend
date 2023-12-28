@@ -3,7 +3,7 @@
 import Spacing from "@/components/shared/Spacing"
 import Button from "@/components/shared/button/Button"
 import { useRef, useState } from "react"
-import type { ChangeEvent, FormEvent } from "react"
+import type { ChangeEvent } from "react"
 import Skeleton from "react-loading-skeleton"
 import type { ImageProps } from "../MyPage.type"
 import Image from "next/image"

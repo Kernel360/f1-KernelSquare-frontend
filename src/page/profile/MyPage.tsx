@@ -43,6 +43,7 @@ function MyPage() {
                 width={50}
                 height={50}
               />
+              <div className="text-center">level {member?.data.data.level}</div>
             </div>
             <div className="font-bold text-[48px] ml-[20px]">
               {member?.data.data.nickname}
