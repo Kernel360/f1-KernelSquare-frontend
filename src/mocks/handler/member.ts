@@ -28,7 +28,7 @@ export const memberHandler = [
           { status: HttpStatusCode.InternalServerError },
         )
 
-      const { id, password, ...user } = existMockUser
+      const { password, ...user } = existMockUser
 
       return HttpResponse.json(
         {
@@ -48,13 +48,19 @@ export const memberHandler = [
     UpdateMemberInfoResponse
   >(
     `${process.env.NEXT_PUBLIC_SERVER}${RouteMap.member.updateMemberInfo()}`,
-    async ({ request }) => {
+    async ({ request, params }) => {
       // 정보 수정
+      const userId = params.id
       const { nickname, introduction, image_url } = await request.json()
+
+      const target = mockUsers.find((user) => user.id === Number(userId))!
+
+      if (introduction) target.introduction = introduction
+      if (image_url) target.image_url = image_url
 
       return HttpResponse.json(
         {
-          code: HttpStatusCode.Ok,
+          code: 1242,
           msg: "회원 정보 수정 완료",
         },
         { status: HttpStatusCode.Ok },
