@@ -31,7 +31,7 @@ export const mockQuestions: Array<Question> = [
         answer_image_url:
           "https://mobirise.com/bootstrap-template//profile-template/assets/images/timothy-paul-smith-256424-1200x800.jpg",
         created_date: "2023-10-07 10:02:46",
-        modified_date: "2023-10-07 10:02:46",
+        modified_date: "2023-10-07 10:02:47",
         vote_count: 53,
       },
       {

@@ -1,9 +1,12 @@
+import { Answer } from "@/interfaces/answer"
 import OneAnswer from "./OneAnswer"
 
-const AnswerList: React.FC = () => {
+const AnswerList: React.FC<{ list: Answer[] | undefined }> = ({ list }) => {
   return (
     <div className="max-w-full box-border border border-colorsGray rounded-lg px-5 my-5">
-      <OneAnswer />
+      {list?.map((answer) => (
+        <OneAnswer key={answer.answer_id} answer={answer} />
+      ))}
     </div>
   )
 }
