@@ -1,16 +1,16 @@
 "use client"
 
 import { useLottie } from "lottie-react"
+import contentLoading from "@/assets/lottie/content-loading.json"
 import { CSSProperties, useLayoutEffect } from "react"
-import listLoading from "@/assets/lottie/list-loading.json"
 
-interface ListLoadingProps {
+interface ContentLoadingProps {
   style?: CSSProperties
 }
 
-function ListLoading({ style }: ListLoadingProps) {
+function ContentLoading({ style }: ContentLoadingProps) {
   const { setSpeed, View } = useLottie({
-    animationData: listLoading,
+    animationData: contentLoading,
     style: { ...style },
   })
 
@@ -21,4 +21,4 @@ function ListLoading({ style }: ListLoadingProps) {
   return View
 }
 
-export default ListLoading
+export default ContentLoading

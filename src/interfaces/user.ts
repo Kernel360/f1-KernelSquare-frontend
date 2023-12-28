@@ -29,6 +29,7 @@ export enum ACCOUNT_STATUS {
  * **account_status** 계정 상태 (0, 1)
  */
 export interface User {
+  id: number
   email: string
   nickname: string
   experience: number

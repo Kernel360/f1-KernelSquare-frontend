@@ -5,6 +5,6 @@ export interface GetMemberRequest {
   id: number
 }
 
-type UserPayload = Omit<User, "id">
+type UserPayload = User
 
 export interface GetMemberResponse extends APIResponse<UserPayload> {}

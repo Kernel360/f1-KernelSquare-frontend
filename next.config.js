@@ -6,6 +6,11 @@ const nextConfig = {
         protocol: "https",
         hostname: "mobirise.com",
       },
+      // 배지 이미지 주소
+      {
+        protocol: "https",
+        hostname: "imagedelivery.net",
+      },
     ],
   },
 }
