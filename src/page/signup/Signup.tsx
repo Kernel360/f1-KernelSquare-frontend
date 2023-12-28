@@ -24,11 +24,17 @@ import NicknameInput from "./components/NicknameInput"
 import PasswordInput from "./components/PasswordInput"
 import { sleep } from "@/util/sleep"
 import { useProgressModal } from "@/hooks/useProgressModal"
+import { toast } from "react-toastify"
+
+interface SignupHookFormData extends SignupFormData {
+  passwordCheck: string
+}
 
 interface GuidelineOpen {
   email: boolean
   nickname: boolean
   password: boolean
+  passwordCheck: boolean
 }
 
 // [TODO] 이미지 업로드
@@ -42,10 +48,12 @@ function Signup() {
     register,
     handleSubmit,
     watch,
+    getValues,
     trigger,
     setFocus,
-    formState: { errors, isValid, isSubmitting, submitCount },
-  } = useForm<SignupFormData>({
+    reset,
+    formState: { errors, isValid, isSubmitting },
+  } = useForm<SignupHookFormData>({
     mode: "onChange",
   })
 
@@ -62,12 +70,14 @@ function Signup() {
     email: watch("email"),
     nickname: watch("nickname"),
     password: watch("password"),
+    passwordCheck: watch("passwordCheck"),
   }
 
   const [guidelineOpen, setGuidelineOpen] = useState<GuidelineOpen>({
     email: false,
     nickname: false,
     password: false,
+    passwordCheck: false,
   })
 
   const validator = new Validator()
@@ -85,8 +95,14 @@ function Signup() {
     email,
     nickname,
     password,
+    passwordCheck,
     image_url,
-  }: SignupFormData) => {
+  }: SignupHookFormData) => {
+    // submit시 이전 값을 보존하기 위해 설정
+    // 하지 않을 경우 포커스 같은 유저 액션이 있기 전까지는
+    // 해당 필드가 빈 값이기 때문에 가이드라인에서 valid가 false로 됨
+    reset({ email, nickname, password, passwordCheck, image_url })
+
     // api 요청 중(onSubmit 실행 중)인 경우 재 요청되지 않도록 함
     if (isSubmitting) {
       return
@@ -99,30 +115,50 @@ function Signup() {
     */
     // 중복확인을 하지 않은 필드가 있을 경우 api 요청되지 않도록 유효성 검증
     if (!signupDuplicate.email.checkedDuplicate) {
-      alert("이메일 중복체크를 해주세요")
-      setFocus("email")
+      toast.error("이메일 중복체크를 해주세요", {
+        position: "top-center",
+      })
+
+      setTimeout(() => {
+        setFocus("email")
+      }, 0)
 
       return
     }
 
     if (!signupDuplicate.nickname.checkedDuplicate) {
-      alert("닉네임 중복체크를 해주세요")
-      setFocus("nickname")
+      toast.error("닉네임 중복체크를 해주세요", {
+        position: "top-center",
+      })
+
+      setTimeout(() => {
+        setFocus("nickname")
+      }, 0)
 
       return
     }
 
     // 중복(사용 중)인 필드가 있을 경우 api 요청되지 않도록 유효성 검증
     if (signupDuplicate.email.isDuplicate) {
-      alert("사용중인 이메일로 가입할 수 없습니다")
-      setFocus("email")
+      toast.error("사용중인 이메일로 가입할 수 없습니다", {
+        position: "top-center",
+      })
+
+      setTimeout(() => {
+        setFocus("email")
+      }, 0)
 
       return
     }
 
     if (signupDuplicate.nickname.isDuplicate) {
-      alert("사용중인 닉네임으로 가입할 수 없습니다")
-      setFocus("nickname")
+      toast.error("사용중인 닉네임으로 가입할 수 없습니다", {
+        position: "top-center",
+      })
+
+      setTimeout(() => {
+        setFocus("nickname")
+      }, 0)
 
       return
     }
@@ -159,6 +195,7 @@ function Signup() {
       email: false,
       nickname: false,
       password: false,
+      passwordCheck: false,
       [targetField]: true,
     }))
   }
@@ -367,6 +404,10 @@ function Signup() {
 
               return true
             },
+            onChange() {
+              // 비밀번호 확인을 같이 validate하여 동기화
+              trigger("passwordCheck")
+            },
             onBlur: handleBlur,
             disabled: isSubmitting,
           })}
@@ -385,6 +426,44 @@ function Signup() {
           ]}
           className="mt-1"
         />
+        <Spacing size={12} />
+        {/* password check field */}
+        <label htmlFor="passwordCheck">비밀번호 확인</label>
+        <PasswordInput
+          data-field="passwordCheck"
+          id="passwordCheck"
+          fullWidth
+          placeholder="********"
+          error={!!errors.passwordCheck}
+          errorMessage={errors.passwordCheck?.message}
+          onAfterFocus={handleFocus}
+          classNames={{
+            wrapper: "aria-disabled:bg-colorsLightGray",
+            input: "disabled:bg-transparent",
+          }}
+          {...register("passwordCheck", {
+            required: true,
+            validate: (passwordCheck) => {
+              const password = getValues("password")
+
+              if (password !== passwordCheck) return false
+
+              return true
+            },
+            onBlur: handleBlur,
+            disabled: isSubmitting,
+          })}
+        />
+        <Guideline
+          open={guidelineOpen.passwordCheck}
+          guildeline={[
+            {
+              label: "- 입력한 비밀번호와 같음",
+              valid: field.password === field.passwordCheck,
+            },
+          ]}
+          className="mt-1"
+        />
         <Spacing size={24} />
         <div>
           <Button
@@ -398,6 +477,7 @@ function Signup() {
                 email: false,
                 nickname: false,
                 password: false,
+                passwordCheck: false,
               }))
             }}
           >
