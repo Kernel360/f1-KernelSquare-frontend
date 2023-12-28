@@ -20,6 +20,15 @@ dependencies:
   '@toast-ui/editor':
     specifier: ^3.2.2
     version: 3.2.2
+  '@toast-ui/editor-plugin-code-syntax-highlight':
+    specifier: ^3.1.0
+    version: 3.1.0
+  '@toast-ui/editor-plugin-color-syntax':
+    specifier: ^3.1.0
+    version: 3.1.0
+  '@toast-ui/react-editor':
+    specifier: ^3.2.3
+    version: 3.2.3(react@18.2.0)
   axios:
     specifier: ^1.6.2
     version: 1.6.2
@@ -819,6 +828,18 @@ packages:
       react: 18.2.0
     dev: false
 
+  /@toast-ui/editor-plugin-code-syntax-highlight@3.1.0:
+    resolution: {integrity: sha512-OgX5pZiTnHREoTTXDAFu1k6RzEspGOxeJNRlt/Lnoi1GvLbIpUTTbBcls9becpXT/Qdls++8G3r5C60cVdellA==}
+    dependencies:
+      prismjs: 1.29.0
+    dev: false
+
+  /@toast-ui/editor-plugin-color-syntax@3.1.0:
+    resolution: {integrity: sha512-UVKfMBPV+3snSaJn9RUKGbxJbgi92D2t68ow8wAjGezvMp1ht4UVETrvomdTGr+RYhXSeH3JvSwN9nmQqw0qzA==}
+    dependencies:
+      tui-color-picker: 2.2.8
+    dev: false
+
   /@toast-ui/editor@3.2.2:
     resolution: {integrity: sha512-ASX7LFjN2ZYQJrwmkUajPs7DRr9FsM1+RQ82CfTO0Y5ZXorBk1VZS4C2Dpxinx9kl55V4F8/A2h2QF4QMDtRbA==}
     dependencies:
@@ -830,6 +851,15 @@ packages:
       prosemirror-model: 1.19.4
       prosemirror-state: 1.4.3
       prosemirror-view: 1.32.7
+    dev: false
+
+  /@toast-ui/react-editor@3.2.3(react@18.2.0):
+    resolution: {integrity: sha512-86QdgiOkBeSwRBEUWRKsTpnm6yu5j9HNJ3EfQN8EGcd7kI8k8AhExXyUJ3NNgNTzN7FfSKMw+1VaCDDC+aZ3dw==}
+    peerDependencies:
+      react: ^17.0.1
+    dependencies:
+      '@toast-ui/editor': 3.2.2
+      react: 18.2.0
     dev: false
 
   /@types/cookie@0.4.1:
@@ -3233,6 +3263,11 @@ packages:
     resolution: {integrity: sha512-PaQAADyLY5v4kYFwkpSJHbSSYIkiriY/1xXw75TKoZ9UQQqeU+tvP05yTdZAWibiIYoo8ZKtRv8PM7w0IaywSw==}
     dev: false
 
+  /prismjs@1.29.0:
+    resolution: {integrity: sha512-Kx/1w86q/epKcmte75LNrEoT+lX8pBpavuAbvJWRXar7Hz8jrtF+e3vY751p0R8H9HdArwaCTNDDzHg/ScJK1Q==}
+    engines: {node: '>=6'}
+    dev: false
+
   /prop-types@15.8.1:
     resolution: {integrity: sha512-oj87CgZICdulUohogVAR7AjlC0327U4el4L6eAvOqCeudMDVU0NThNaV+b9Df4dXgSP1gXMTnPdhfe/2qDH5cg==}
     dependencies:
@@ -3995,6 +4030,10 @@ packages:
 
   /tslib@2.6.2:
     resolution: {integrity: sha512-AEYxH93jGFPn/a2iVAwW87VuUIkR1FVUKB77NwMF7nBTDkDrrT/Hpt/IrCJ0QXhW27jTBDcf5ZY7w6RiqTMw2Q==}
+
+  /tui-color-picker@2.2.8:
+    resolution: {integrity: sha512-q5sE9NQ5NR9lYpilYjcI7Sdv0KCogo+W8fZY+AYTj/HYg+9fscYy3UuJ6UQiV1bF+ARCLwFRWC8UcOt9kuUctQ==}
+    dev: false
 
   /type-check@0.4.0:
     resolution: {integrity: sha512-XleUoc9uwGXqjWwXaUTZAmzMcFZ5858QA2vvx1Ur5xIcixXIP+8LnFDgRplU30us6teqdlskFfu+ae4K79Ooew==}
