@@ -1,6 +1,8 @@
+"use client"
 import { questionQueries } from "@/react-query/question"
 import Image from "next/image"
 import MdViewer from "./Markdown/MdViewer"
+import { getDate, getDeadline } from "@/util/getDate"
 
 const Question: React.FC<{ id: number }> = ({ id }) => {
   const { data } = questionQueries.useQuestionData({
@@ -11,32 +13,41 @@ const Question: React.FC<{ id: number }> = ({ id }) => {
 
   if (question)
     return (
-      <div className="max-w-full box-border border border-colorsGray rounded-lg p-2 my-5">
-        <div>
-          <span>Q.</span>
-          {question.title}
+      <div className="max-w-full box-border border border-colorsGray rounded-lg p-5 my-5">
+        <div className="font-bold text-2xl mb-5">
+          <span className="mr-[10px]">Q.</span>
+          <span className="text-[#444444]">{question.title}</span>
         </div>
-        <div className="flex">
+        <div className="flex mb-5">
           {question.skills.map((skill) => (
-            <div key={Math.random() * 1000}>{skill}</div>
+            <div
+              key={Math.random() * 1000}
+              className="px-3 py-2 bg-slate-200 rounded mr-3"
+            >
+              {skill}
+            </div>
           ))}
         </div>
-        <div className="flex">
+        <div className="flex justify-end mb-5">
           <div>
-            <div>생성일: {question.created_date}</div>
-            <div>마감일: {question.created_date}</div>
+            <div className="mb-1">
+              생성일: {getDate({ date: question.created_date })}
+            </div>
+            <div>마감일: {getDeadline({ date: question.created_date })}</div>
           </div>
-          <div>
+          <div className="ml-[20px] w-[50px] h-[50px] relative">
             <Image
               src={question.member_image_url}
               alt="질문자 프로필 사진"
-              width={50}
-              height={50}
+              fill
+              className="object-cover rounded-full"
             />
           </div>
-          <div>
-            <div>{question.nickname}</div>
-            <div>Lv. {question.level}</div>
+          <div className="ml-[20px]">
+            <div className="px-2 bg-[#F3EDC8] rounded-md mb-1">
+              {question.nickname}
+            </div>
+            <div className="text-center">Lv. {question.level}</div>
           </div>
         </div>
         <MdViewer content={question.content} />

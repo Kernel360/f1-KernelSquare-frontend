@@ -11,13 +11,12 @@ const QnADetail: React.FC<{ id: string }> = ({ id }) => {
   const { data, isPending } = questionQueries.useQuestionData({
     id: Number(id),
   })
-  console.log("question", data?.data)
 
   if (isPending) return <Loading />
 
   if (data)
     return (
-      <div className="relative box-border flex-1 py-4">
+      <div className="relative box-border flex-1 p-10">
         <div className="w-[calc(100%-12px)] sm:w-[calc(100%-22px)] lg:w-[calc(100%-42px)] mx-auto">
           <Title title="Q&A" />
           <Question id={Number(id)} />

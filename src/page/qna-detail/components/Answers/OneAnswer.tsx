@@ -1,6 +1,7 @@
 import type { Answer } from "@/interfaces/answer"
 import MdViewer from "../Markdown/MdViewer"
 import Image from "next/image"
+import { getDate } from "@/util/getDate"
 
 const OneAnswer: React.FC<{ answer: Answer }> = ({ answer }) => {
   const isEdited = answer.created_date !== answer.modified_date
@@ -13,7 +14,8 @@ const OneAnswer: React.FC<{ answer: Answer }> = ({ answer }) => {
       </div>
       <div className="flex">
         <div>
-          답변일시: {answer.created_date} {isEdited && "(수정됨)"}
+          답변일시: {getDate({ date: answer.created_date })}{" "}
+          {isEdited && "(수정됨)"}
         </div>
         <div>
           <Image
