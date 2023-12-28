@@ -29,7 +29,7 @@ export async function updateMemberInfo({
     AxiosResponse<UpdateMemberInfoResponse>,
     Omit<UpdateMemberInfoRequest, "id">
   >(RouteMap.member.updateMemberInfo(id), {
-    nickname,
+    ...(nickname && { nickname }),
     introduction,
     image_url,
   })

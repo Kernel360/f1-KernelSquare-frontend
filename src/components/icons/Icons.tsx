@@ -7,8 +7,9 @@ import { AiOutlineNotification } from "react-icons/ai"
 import { HiOutlineChatBubbleLeftRight } from "react-icons/hi2"
 import { TbMessage2Question } from "react-icons/tb"
 import { GrDocumentUser } from "react-icons/gr"
+import { BsPencilSquare } from "react-icons/bs"
 
-type IconsKey = "Search" | "Notification" | "UserProfile"
+type IconsKey = "Search" | "Notification" | "UserProfile" | "EditIntro"
 type NavigationIconsKey = "QnA" | "Chat" | "Notice" | "FaQ" | "MyPage"
 export type Icon = (props: IconBaseProps) => JSX.Element
 
@@ -21,6 +22,9 @@ export const Icons: Record<IconsKey, Icon> = {
   },
   UserProfile(props) {
     return <FaUserCircle {...props} />
+  },
+  EditIntro(props) {
+    return <BsPencilSquare {...props} />
   },
 }
 
