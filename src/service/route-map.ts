@@ -122,8 +122,10 @@ export class RouteMap {
    */
   static question = {
     getQuestionList: `${RouteMap.routeGroupBaseURL.question}`,
-    getQuestion(questionId: number) {
-      return `${RouteMap.routeGroupBaseURL.question}/${questionId}`
+    getQuestion(questionId?: number) {
+      return `${RouteMap.routeGroupBaseURL.question}/${
+        questionId === undefined ? ":id" : questionId
+      }`
     },
     createQuestion: `${RouteMap.routeGroupBaseURL.question}`,
     updateQuestion(questionId: number) {
