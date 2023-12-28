@@ -3,17 +3,113 @@ import { Question } from "@/interfaces/question"
 export const mockQuestions: Array<Question> = [
   {
     id: 1,
-    title: "질문1",
+    title: "Array to Object with nesting childs in js",
     content:
-      "## 🥏 다시 돌아온 SSR!/ - 이전에 Next.js를 사용하게 된 이유에서도 정리했지만,/ - React, Angular, Vue와 같은 SPA 프레임워크들이 사용하던 CSR 방식에 문제점이 발견되기 시작했다.",
-    created_by: "zl존",
-    image_url: null,
-    level: 4,
-    skills: ["java", "jpa"],
+      "i have the Array in js, but how to convert to object with nesting childs ? \n This is my array: \n ```javascript const arr = [{ no: 1 }, { no: 2 }, { no: 3 }];```",
+    question_image_url: "",
     view_count: 98,
+    close_status: false,
+    nickname: "Gustiano",
+    member_image_url:
+      "https://mobirise.com/bootstrap-template//profile-template/assets/images/timothy-paul-smith-256424-1200x800.jpg",
+    level: 4,
+    level_image_url:
+      "https://mobirise.com/bootstrap-template//profile-template/assets/images/timothy-paul-smith-256424-1200x800.jpg",
+    skills: ["javascript", "arrays"],
     created_date: "2023-12-16T23:10:12",
     modified_date: "2023-12-16T23:10:12",
-    due_date: "2023-12-17T00:00:00",
+    list: [
+      {
+        answer_id: 1,
+        question_id: 1,
+        content:
+          "Integer pede justo, lacinia eget, tincidunt eget, tempus vel, pede. Morbi porttitor lorem id ligula. Suspendisse ornare consequat lectus.",
+        rank_image_url: "rankUrl",
+        member_image_url:
+          "https://mobirise.com/bootstrap-template//profile-template/assets/images/timothy-paul-smith-256424-1200x800.jpg",
+        created_by: "Aerified",
+        answer_image_url:
+          "https://mobirise.com/bootstrap-template//profile-template/assets/images/timothy-paul-smith-256424-1200x800.jpg",
+        created_date: "2023-10-07 10:02:46",
+        modified_date: "2023-10-07 10:02:46",
+        vote_count: 53,
+      },
+      {
+        answer_id: 2,
+        question_id: 1,
+        content:
+          "Integer pede justo, lacinia eget, tincidunt eget, tempus vel, pede. Morbi porttitor lorem id ligula. Suspendisse ornare consequat lectus.",
+        rank_image_url: "rankUrl",
+        member_image_url:
+          "https://mobirise.com/bootstrap-template//profile-template/assets/images/timothy-paul-smith-256424-1200x800.jpg",
+        created_by: "Aerified",
+        answer_image_url:
+          "https://mobirise.com/bootstrap-template//profile-template/assets/images/timothy-paul-smith-256424-1200x800.jpg",
+        created_date: "2023-10-07 10:02:46",
+        modified_date: "2023-10-07 10:02:46",
+        vote_count: 53,
+      },
+      {
+        answer_id: 3,
+        question_id: 1,
+        content:
+          "Integer pede justo, lacinia eget, tincidunt eget, tempus vel, pede. Morbi porttitor lorem id ligula. Suspendisse ornare consequat lectus.",
+        rank_image_url: "rankUrl",
+        member_image_url:
+          "https://mobirise.com/bootstrap-template//profile-template/assets/images/timothy-paul-smith-256424-1200x800.jpg",
+        created_by: "Aerified",
+        answer_image_url:
+          "https://mobirise.com/bootstrap-template//profile-template/assets/images/timothy-paul-smith-256424-1200x800.jpg",
+        created_date: "2023-10-07 10:02:46",
+        modified_date: "2023-10-07 10:02:46",
+        vote_count: 53,
+      },
+      {
+        answer_id: 4,
+        question_id: 1,
+        content:
+          "Integer pede justo, lacinia eget, tincidunt eget, tempus vel, pede. Morbi porttitor lorem id ligula. Suspendisse ornare consequat lectus.",
+        rank_image_url: "rankUrl",
+        member_image_url:
+          "https://mobirise.com/bootstrap-template//profile-template/assets/images/timothy-paul-smith-256424-1200x800.jpg",
+        created_by: "Aerified",
+        answer_image_url:
+          "https://mobirise.com/bootstrap-template//profile-template/assets/images/timothy-paul-smith-256424-1200x800.jpg",
+        created_date: "2023-10-07 10:02:46",
+        modified_date: "2023-10-07 10:02:46",
+        vote_count: 53,
+      },
+      {
+        answer_id: 5,
+        question_id: 1,
+        content:
+          "Integer pede justo, lacinia eget, tincidunt eget, tempus vel, pede. Morbi porttitor lorem id ligula. Suspendisse ornare consequat lectus.",
+        rank_image_url: "rankUrl",
+        member_image_url:
+          "https://mobirise.com/bootstrap-template//profile-template/assets/images/timothy-paul-smith-256424-1200x800.jpg",
+        created_by: "Aerified",
+        answer_image_url:
+          "https://mobirise.com/bootstrap-template//profile-template/assets/images/timothy-paul-smith-256424-1200x800.jpg",
+        created_date: "2023-10-07 10:02:46",
+        modified_date: "2023-10-07 10:02:46",
+        vote_count: 53,
+      },
+      {
+        answer_id: 6,
+        question_id: 1,
+        content:
+          "Integer pede justo, lacinia eget, tincidunt eget, tempus vel, pede. Morbi porttitor lorem id ligula. Suspendisse ornare consequat lectus.",
+        rank_image_url: "rankUrl",
+        member_image_url:
+          "https://mobirise.com/bootstrap-template//profile-template/assets/images/timothy-paul-smith-256424-1200x800.jpg",
+        created_by: "Aerified",
+        answer_image_url:
+          "https://mobirise.com/bootstrap-template//profile-template/assets/images/timothy-paul-smith-256424-1200x800.jpg",
+        created_date: "2023-10-07 10:02:46",
+        modified_date: "2023-10-07 10:02:46",
+        vote_count: 53,
+      },
+    ],
   },
   {
     id: 2,
@@ -21,14 +117,19 @@ export const mockQuestions: Array<Question> = [
       "question2질문2question2질문2question 2질문2 question2질문2 question2질문2question2질문2 question2질문2",
     content:
       "### 🖥️ TTV - Time To View - 사용자가 웹 사이트를 볼 수 있는 시간 ### 🖱️ TTI  - Time To Interact - 사용자가 웹 사이트와 상호작용(클릭 등)을 할 수 있는 시간",
-    created_by: "홍주광",
-    image_url: null,
-    level: 3,
-    skills: ["docker"],
+    question_image_url: "",
     view_count: 46,
+    close_status: false,
+    nickname: "홍주광",
+    member_image_url:
+      "https://mobirise.com/bootstrap-template//profile-template/assets/images/timothy-paul-smith-256424-1200x800.jpg",
+    level: 3,
+    level_image_url:
+      "https://mobirise.com/bootstrap-template//profile-template/assets/images/timothy-paul-smith-256424-1200x800.jpg",
+    skills: ["docker"],
     created_date: "2023-12-16T22:00:00",
     modified_date: "2023-12-16T22:00:00",
-    due_date: "2023-12-17T00:00:00",
+    list: [],
   },
   {
     id: 3,
@@ -36,160 +137,360 @@ export const mockQuestions: Array<Question> = [
       "질문3질문3질문3질문3질문3질문3질문3질문3질문3질문3질문3질문3질문3질문3질문3질문3질문3질문3질문3질문3질문3질문3",
     content:
       "### <code>getServerSideProps( )</code> ```js function Page({ data }) { // 데이터를 렌더링하는 코드~ } // 모든 요청에서 호출된다. export async function getServerSideProps() { // 외부 API에서 전송되는 데이터를 fetch const res = await fetch(`https://.../data`); const data = await res.json(); // Props를 사용해 페이지로 데이터를 전달한다. return { props: { data } };} export default Page;```",
-    created_by: "testUser1",
-    image_url: null,
-    level: 4,
-    skills: ["javascript", "react"],
+    question_image_url: "",
     view_count: 32,
+    close_status: false,
+    nickname: "testUser1",
+    member_image_url:
+      "https://mobirise.com/bootstrap-template//profile-template/assets/images/timothy-paul-smith-256424-1200x800.jpg",
+    level: 4,
+    level_image_url:
+      "https://mobirise.com/bootstrap-template//profile-template/assets/images/timothy-paul-smith-256424-1200x800.jpg",
+    skills: ["javascript", "react"],
     created_date: "2023-12-16T18:09:02",
     modified_date: "2023-12-16T18:09:02",
-    due_date: "2023-12-17T00:00:00",
+    list: [
+      {
+        answer_id: 1,
+        question_id: 1,
+        content:
+          "Integer pede justo, lacinia eget, tincidunt eget, tempus vel, pede. Morbi porttitor lorem id ligula. Suspendisse ornare consequat lectus.",
+        rank_image_url: "rankUrl",
+        member_image_url:
+          "https://mobirise.com/bootstrap-template//profile-template/assets/images/timothy-paul-smith-256424-1200x800.jpg",
+        created_by: "Aerified",
+        answer_image_url:
+          "https://mobirise.com/bootstrap-template//profile-template/assets/images/timothy-paul-smith-256424-1200x800.jpg",
+        created_date: "2023-10-07 10:02:46",
+        modified_date: "2023-10-07 10:02:46",
+        vote_count: 53,
+      },
+      {
+        answer_id: 2,
+        question_id: 1,
+        content:
+          "Integer pede justo, lacinia eget, tincidunt eget, tempus vel, pede. Morbi porttitor lorem id ligula. Suspendisse ornare consequat lectus.",
+        rank_image_url: "rankUrl",
+        member_image_url:
+          "https://mobirise.com/bootstrap-template//profile-template/assets/images/timothy-paul-smith-256424-1200x800.jpg",
+        created_by: "Aerified",
+        answer_image_url:
+          "https://mobirise.com/bootstrap-template//profile-template/assets/images/timothy-paul-smith-256424-1200x800.jpg",
+        created_date: "2023-10-07 10:02:46",
+        modified_date: "2023-10-07 10:02:46",
+        vote_count: 53,
+      },
+    ],
   },
   {
     id: 4,
     title: "질문4",
     content:
       "## 🥏 다시 돌아온 SSR!/ - 이전에 Next.js를 사용하게 된 이유에서도 정리했지만,/ - React, Angular, Vue와 같은 SPA 프레임워크들이 사용하던 CSR 방식에 문제점이 발견되기 시작했다.",
-    created_by: "zl존",
-    image_url:
+    question_image_url:
       "https://mobirise.com/bootstrap-template//profile-template/assets/images/timothy-paul-smith-256424-1200x800.jpg",
-    level: 4,
-    skills: ["java", "docker", "jpa"],
     view_count: 9,
+    nickname: "zl존",
+    member_image_url:
+      "https://mobirise.com/bootstrap-template//profile-template/assets/images/timothy-paul-smith-256424-1200x800.jpg",
+    close_status: false,
+    level: 4,
+    level_image_url:
+      "https://mobirise.com/bootstrap-template//profile-template/assets/images/timothy-paul-smith-256424-1200x800.jpg",
+    skills: ["java", "docker", "jpa"],
     created_date: "2023-12-16T17:00:22",
     modified_date: "2023-12-16T17:00:22",
-    due_date: "2023-12-17T00:00:00",
+    list: [
+      {
+        answer_id: 1,
+        question_id: 1,
+        content:
+          "Integer pede justo, lacinia eget, tincidunt eget, tempus vel, pede. Morbi porttitor lorem id ligula. Suspendisse ornare consequat lectus.",
+        rank_image_url: "rankUrl",
+        member_image_url:
+          "https://mobirise.com/bootstrap-template//profile-template/assets/images/timothy-paul-smith-256424-1200x800.jpg",
+        created_by: "Aerified",
+        answer_image_url:
+          "https://mobirise.com/bootstrap-template//profile-template/assets/images/timothy-paul-smith-256424-1200x800.jpg",
+        created_date: "2023-10-07 10:02:46",
+        modified_date: "2023-10-07 10:02:46",
+        vote_count: 53,
+      },
+    ],
   },
   {
     id: 5,
     title: "질문5",
     content:
       "### 🖥️ TTV - Time To View - 사용자가 웹 사이트를 볼 수 있는 시간 ### 🖱️ TTI  - Time To Interact - 사용자가 웹 사이트와 상호작용(클릭 등)을 할 수 있는 시간",
-    created_by: "zl존",
-    image_url: null,
-    level: 4,
-    skills: ["java"],
+    question_image_url: "",
     view_count: 9,
+    close_status: false,
+    nickname: "zl존",
+    member_image_url:
+      "https://mobirise.com/bootstrap-template//profile-template/assets/images/timothy-paul-smith-256424-1200x800.jpg",
+    level: 4,
+    level_image_url:
+      "https://mobirise.com/bootstrap-template//profile-template/assets/images/timothy-paul-smith-256424-1200x800.jpg",
+    skills: ["java"],
     created_date: "2023-12-16T12:01:01",
     modified_date: "2023-12-16T12:01:01",
-    due_date: "2023-12-17T00:00:00",
+    list: [
+      {
+        answer_id: 1,
+        question_id: 1,
+        content:
+          "Integer pede justo, lacinia eget, tincidunt eget, tempus vel, pede. Morbi porttitor lorem id ligula. Suspendisse ornare consequat lectus.",
+        rank_image_url: "rankUrl",
+        member_image_url:
+          "https://mobirise.com/bootstrap-template//profile-template/assets/images/timothy-paul-smith-256424-1200x800.jpg",
+        created_by: "Aerified",
+        answer_image_url:
+          "https://mobirise.com/bootstrap-template//profile-template/assets/images/timothy-paul-smith-256424-1200x800.jpg",
+        created_date: "2023-10-07 10:02:46",
+        modified_date: "2023-10-07 10:02:46",
+        vote_count: 53,
+      },
+      {
+        answer_id: 2,
+        question_id: 1,
+        content:
+          "Integer pede justo, lacinia eget, tincidunt eget, tempus vel, pede. Morbi porttitor lorem id ligula. Suspendisse ornare consequat lectus.",
+        rank_image_url: "rankUrl",
+        member_image_url:
+          "https://mobirise.com/bootstrap-template//profile-template/assets/images/timothy-paul-smith-256424-1200x800.jpg",
+        created_by: "Aerified",
+        answer_image_url:
+          "https://mobirise.com/bootstrap-template//profile-template/assets/images/timothy-paul-smith-256424-1200x800.jpg",
+        created_date: "2023-10-07 10:02:46",
+        modified_date: "2023-10-07 10:02:46",
+        vote_count: 53,
+      },
+    ],
   },
   {
     id: 6,
     title: "질문6",
     content:
       "### <code>getServerSideProps( )</code> ```js function Page({ data }) { // 데이터를 렌더링하는 코드~ } // 모든 요청에서 호출된다. export async function getServerSideProps() { // 외부 API에서 전송되는 데이터를 fetch const res = await fetch(`https://.../data`); const data = await res.json(); // Props를 사용해 페이지로 데이터를 전달한다. return { props: { data } };} export default Page;```",
-    created_by: "zl존",
-    image_url: null,
-    level: 4,
-    skills: ["python"],
+    question_image_url: "",
     view_count: 9,
+    close_status: false,
+    nickname: "zl존",
+    member_image_url:
+      "https://mobirise.com/bootstrap-template//profile-template/assets/images/timothy-paul-smith-256424-1200x800.jpg",
+    level: 4,
+    level_image_url:
+      "https://mobirise.com/bootstrap-template//profile-template/assets/images/timothy-paul-smith-256424-1200x800.jpg",
+    skills: ["python"],
     created_date: "2023-12-16T07:20:55",
     modified_date: "2023-12-16T07:20:55",
-    due_date: "2023-12-17T00:00:00",
+    list: [
+      {
+        answer_id: 1,
+        question_id: 1,
+        content:
+          "Integer pede justo, lacinia eget, tincidunt eget, tempus vel, pede. Morbi porttitor lorem id ligula. Suspendisse ornare consequat lectus.",
+        rank_image_url: "rankUrl",
+        member_image_url:
+          "https://mobirise.com/bootstrap-template//profile-template/assets/images/timothy-paul-smith-256424-1200x800.jpg",
+        created_by: "Aerified",
+        answer_image_url:
+          "https://mobirise.com/bootstrap-template//profile-template/assets/images/timothy-paul-smith-256424-1200x800.jpg",
+        created_date: "2023-10-07 10:02:46",
+        modified_date: "2023-10-07 10:02:46",
+        vote_count: 53,
+      },
+      {
+        answer_id: 2,
+        question_id: 1,
+        content:
+          "Integer pede justo, lacinia eget, tincidunt eget, tempus vel, pede. Morbi porttitor lorem id ligula. Suspendisse ornare consequat lectus.",
+        rank_image_url: "rankUrl",
+        member_image_url:
+          "https://mobirise.com/bootstrap-template//profile-template/assets/images/timothy-paul-smith-256424-1200x800.jpg",
+        created_by: "Aerified",
+        answer_image_url:
+          "https://mobirise.com/bootstrap-template//profile-template/assets/images/timothy-paul-smith-256424-1200x800.jpg",
+        created_date: "2023-10-07 10:02:46",
+        modified_date: "2023-10-07 10:02:46",
+        vote_count: 53,
+      },
+    ],
   },
   {
     id: 7,
     title: "질문7",
     content: "콘텐츠7",
-    created_by: "zl존",
-    image_url: null,
-    level: 4,
-    skills: ["next.js", "react"],
+    question_image_url: "",
     view_count: 9,
+    close_status: false,
+    nickname: "zl존",
+    member_image_url:
+      "https://mobirise.com/bootstrap-template//profile-template/assets/images/timothy-paul-smith-256424-1200x800.jpg",
+    level: 4,
+    level_image_url:
+      "https://mobirise.com/bootstrap-template//profile-template/assets/images/timothy-paul-smith-256424-1200x800.jpg",
+    skills: ["next.js", "react"],
     created_date: "2023-12-15T22:10:12",
     modified_date: "2023-12-15T22:10:12",
-    due_date: "2023-12-17T00:00:00",
+    list: [
+      {
+        answer_id: 1,
+        question_id: 1,
+        content:
+          "Integer pede justo, lacinia eget, tincidunt eget, tempus vel, pede. Morbi porttitor lorem id ligula. Suspendisse ornare consequat lectus.",
+        rank_image_url: "rankUrl",
+        member_image_url:
+          "https://mobirise.com/bootstrap-template//profile-template/assets/images/timothy-paul-smith-256424-1200x800.jpg",
+        created_by: "Aerified",
+        answer_image_url:
+          "https://mobirise.com/bootstrap-template//profile-template/assets/images/timothy-paul-smith-256424-1200x800.jpg",
+        created_date: "2023-10-07 10:02:46",
+        modified_date: "2023-10-07 10:02:46",
+        vote_count: 53,
+      },
+      {
+        answer_id: 2,
+        question_id: 1,
+        content:
+          "Integer pede justo, lacinia eget, tincidunt eget, tempus vel, pede. Morbi porttitor lorem id ligula. Suspendisse ornare consequat lectus.",
+        rank_image_url: "rankUrl",
+        member_image_url:
+          "https://mobirise.com/bootstrap-template//profile-template/assets/images/timothy-paul-smith-256424-1200x800.jpg",
+        created_by: "Aerified",
+        answer_image_url:
+          "https://mobirise.com/bootstrap-template//profile-template/assets/images/timothy-paul-smith-256424-1200x800.jpg",
+        created_date: "2023-10-07 10:02:46",
+        modified_date: "2023-10-07 10:02:46",
+        vote_count: 53,
+      },
+    ],
   },
   {
     id: 8,
     title: "질문8",
     content: "콘텐츠8",
-    created_by: "zl존",
-    image_url: null,
-    level: 4,
-    skills: ["java"],
+    question_image_url: "",
     view_count: 9,
+    close_status: false,
+    nickname: "zl존",
+    member_image_url:
+      "https://mobirise.com/bootstrap-template//profile-template/assets/images/timothy-paul-smith-256424-1200x800.jpg",
+    level: 4,
+    level_image_url:
+      "https://mobirise.com/bootstrap-template//profile-template/assets/images/timothy-paul-smith-256424-1200x800.jpg",
+    skills: ["java"],
     created_date: "2023-12-14T02:30:35",
     modified_date: "2023-12-14T02:30:35",
-    due_date: "2023-12-17T00:00:00",
+    list: [],
   },
   {
     id: 9,
     title: "질문9",
     content: "콘텐츠9",
-    created_by: "zl존",
-    image_url: null,
-    level: 4,
-    skills: ["typescript", "react"],
+    question_image_url: "",
     view_count: 9,
+    close_status: false,
+    nickname: "zl존",
+    member_image_url:
+      "https://mobirise.com/bootstrap-template//profile-template/assets/images/timothy-paul-smith-256424-1200x800.jpg",
+    level: 4,
+    level_image_url:
+      "https://mobirise.com/bootstrap-template//profile-template/assets/images/timothy-paul-smith-256424-1200x800.jpg",
+    skills: ["typescript", "react"],
     created_date: "2023-12-14T02:09:00",
     modified_date: "2023-12-14T02:09:00",
-    due_date: "2023-12-17T00:00:00",
+    list: [],
   },
   {
     id: 10,
     title: "질문10",
     content: "콘텐츠10",
-    created_by: "zl존",
-    image_url: null,
-    level: 4,
-    skills: ["node.js"],
+    question_image_url: "",
     view_count: 9,
+    close_status: false,
+    nickname: "zl존",
+    member_image_url:
+      "https://mobirise.com/bootstrap-template//profile-template/assets/images/timothy-paul-smith-256424-1200x800.jpg",
+    level: 4,
+    level_image_url:
+      "https://mobirise.com/bootstrap-template//profile-template/assets/images/timothy-paul-smith-256424-1200x800.jpg",
+    skills: ["node.js"],
     created_date: "2023-12-13T22:41:12",
     modified_date: "2023-12-13T22:41:12",
-    due_date: "2023-12-17T00:00:00",
+    list: [],
   },
   {
     id: 11,
     title: "질문11",
     content: "콘텐츠11",
-    created_by: "zl존",
-    image_url: null,
-    level: 4,
-    skills: ["java", "java"],
+    question_image_url: "",
     view_count: 9,
+    close_status: false,
+    nickname: "zl존",
+    member_image_url:
+      "https://mobirise.com/bootstrap-template//profile-template/assets/images/timothy-paul-smith-256424-1200x800.jpg",
+    level: 4,
+    level_image_url:
+      "https://mobirise.com/bootstrap-template//profile-template/assets/images/timothy-paul-smith-256424-1200x800.jpg",
+    skills: ["java", "java"],
     created_date: "2023-12-13T08:37:21",
     modified_date: "2023-12-13T08:37:21",
-    due_date: "2023-12-17T00:00:00",
+    list: [],
   },
   {
     id: 12,
     title: "질문12",
     content: "콘텐츠12",
-    created_by: "zl존",
-    image_url: null,
-    level: 4,
-    skills: ["java"],
+    question_image_url: "",
     view_count: 9,
+    close_status: false,
+    nickname: "zl존",
+    member_image_url:
+      "https://mobirise.com/bootstrap-template//profile-template/assets/images/timothy-paul-smith-256424-1200x800.jpg",
+    level: 4,
+    level_image_url:
+      "https://mobirise.com/bootstrap-template//profile-template/assets/images/timothy-paul-smith-256424-1200x800.jpg",
+    skills: ["java"],
     created_date: "2023-12-13T06:10:12",
     modified_date: "2023-12-13T06:10:12",
-    due_date: "2023-12-17T00:00:00",
+    list: [],
   },
   {
     id: 13,
     title: "질문13",
     content: "콘텐츠13",
-    created_by: "zl존",
-    image_url: null,
-    level: 4,
-    skills: ["java"],
+    question_image_url: "",
     view_count: 9,
+    close_status: false,
+    nickname: "zl존",
+    member_image_url:
+      "https://mobirise.com/bootstrap-template//profile-template/assets/images/timothy-paul-smith-256424-1200x800.jpg",
+    level: 4,
+    level_image_url:
+      "https://mobirise.com/bootstrap-template//profile-template/assets/images/timothy-paul-smith-256424-1200x800.jpg",
+    skills: ["java"],
     created_date: "2023-12-12T05:51:50",
     modified_date: "2023-12-15T05:51:50",
-    due_date: "2023-12-17T00:00:00",
+    list: [],
   },
   {
     id: 14,
     title: "질문14",
     content: "콘텐츠14",
-    created_by: "zl존",
-    image_url: null,
-    level: 4,
-    skills: ["java"],
+    question_image_url: "",
     view_count: 9,
+    close_status: false,
+    nickname: "zl존",
+    member_image_url:
+      "https://mobirise.com/bootstrap-template//profile-template/assets/images/timothy-paul-smith-256424-1200x800.jpg",
+    level: 4,
+    level_image_url:
+      "https://mobirise.com/bootstrap-template//profile-template/assets/images/timothy-paul-smith-256424-1200x800.jpg",
+    skills: ["java"],
     created_date: "2023-12-11T12:10:12",
     modified_date: "2023-12-11T12:10:12",
-    due_date: "2023-12-17T00:00:00",
+    list: [],
   },
 ]
