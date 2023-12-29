@@ -18,7 +18,7 @@ const QnADetail: React.FC<{ id: string }> = ({ id }) => {
     return (
       <div className="relative box-border flex-1 p-10">
         <div className="w-[calc(100%-12px)] sm:w-[calc(100%-22px)] lg:w-[calc(100%-42px)] mx-auto">
-          <Title title="Q&A" />
+          <div className="font-bold text-[36px]">Q&A</div>
           <Question id={Number(id)} />
           <Title title="My Answer" />
           <MyAnswer id={Number(id)} />
