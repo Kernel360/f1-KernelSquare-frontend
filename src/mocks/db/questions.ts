@@ -116,7 +116,7 @@ export const mockQuestions: Array<Question> = [
     title:
       "question2질문2question2질문2question 2질문2 question2질문2 question2질문2question2질문2 question2질문2",
     content:
-      "### 🖥️ TTV - Time To View - 사용자가 웹 사이트를 볼 수 있는 시간 ### 🖱️ TTI  - Time To Interact - 사용자가 웹 사이트와 상호작용(클릭 등)을 할 수 있는 시간",
+      "### 🖥️ TTV - Time To View - 사용자가 웹 사이트를 볼 수 있는 시간 \n ### 🖱️ TTI  - Time To Interact - 사용자가 웹 사이트와 상호작용(클릭 등)을 할 수 있는 시간",
     question_image_url: "",
     view_count: 46,
     close_status: false,

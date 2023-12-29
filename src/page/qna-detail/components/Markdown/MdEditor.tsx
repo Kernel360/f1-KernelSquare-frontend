@@ -3,7 +3,6 @@
 import "prismjs/themes/prism.css"
 import Prism from "prismjs"
 
-import "@toast-ui/editor/dist/toastui-editor.css"
 import "tui-color-picker/dist/tui-color-picker.css"
 import { Editor } from "@toast-ui/react-editor"
 // 텍스트 색상 변경 지원

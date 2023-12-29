@@ -1,8 +1,12 @@
 "use client"
 import { questionQueries } from "@/react-query/question"
 import Image from "next/image"
-import MdViewer from "./Markdown/MdViewer"
 import { getDate, getDeadline } from "@/util/getDate"
+import dynamic from "next/dynamic"
+
+const MdViewer = dynamic(() => import("./Markdown/MdViewer"), {
+  ssr: false,
+})
 
 const Question: React.FC<{ id: number }> = ({ id }) => {
   const { data } = questionQueries.useQuestionData({
