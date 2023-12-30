@@ -1,22 +1,51 @@
+"use client"
+
 import type { Answer } from "@/interfaces/answer"
-import MdViewer from "../Markdown/MdViewer"
 import Image from "next/image"
 import { getDate } from "@/util/getDate"
 import { VoteIcons } from "@/components/icons/Icons"
+import dynamic from "next/dynamic"
+import { useRecoilState } from "recoil"
+import voteAtoms from "@/recoil/atoms/vote"
+import { useEffect } from "react"
 
-const OneAnswer: React.FC<{ answer: Answer }> = ({ answer }) => {
+const MdViewer = dynamic(() => import("../Markdown/MdViewer"), {
+  ssr: false,
+})
+
+interface OneAnswerProps {
+  answer: Answer
+  user: string | undefined
+}
+
+const OneAnswer: React.FC<OneAnswerProps> = ({ answer, user }) => {
   const isEdited = answer.created_date !== answer.modified_date
+
+  const [vote, setVote] = useRecoilState(voteAtoms(answer?.created_by))
+
+  const handleRaise = () => setVote({ ...vote, value: vote.value + 1 })
+  const handleReduce = () => setVote({ ...vote, value: vote.value - 1 })
+
+  useEffect(() => {
+    setVote({ ...vote, value: answer.vote_count })
+  }, [])
 
   return (
     <div className="border-b-[1px] border-b-gray my-5">
       <div className="flex justify-between">
         <div>
           <div className="flex justify-center">
-            <VoteIcons.Up className="text-[30px] hover:text-primary" />
+            <VoteIcons.Up
+              className="text-[30px] hover:text-primary"
+              onClick={handleRaise}
+            />
           </div>
-          <div className="text-[30px]">{answer.vote_count}</div>
+          <div className="text-[30px]">{vote.value}</div>
           <div className="flex justify-center">
-            <VoteIcons.Down className="text-[30px] hover:text-primary" />
+            <VoteIcons.Down
+              className="text-[30px] hover:text-primary"
+              onClick={handleReduce}
+            />
           </div>
         </div>
         <MdViewer content={answer.content} />

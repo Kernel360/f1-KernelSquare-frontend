@@ -27,7 +27,7 @@ export const mockQuestions: Array<Question> = [
         rank_image_url: "rankUrl",
         member_image_url:
           "https://mobirise.com/bootstrap-template//profile-template/assets/images/timothy-paul-smith-256424-1200x800.jpg",
-        created_by: "Aerified",
+        created_by: "zi존",
         answer_image_url:
           "https://mobirise.com/bootstrap-template//profile-template/assets/images/timothy-paul-smith-256424-1200x800.jpg",
         created_date: "2023-10-07 10:02:46",
@@ -42,7 +42,7 @@ export const mockQuestions: Array<Question> = [
         rank_image_url: "rankUrl",
         member_image_url:
           "https://mobirise.com/bootstrap-template//profile-template/assets/images/timothy-paul-smith-256424-1200x800.jpg",
-        created_by: "Aerified",
+        created_by: "홍주광",
         answer_image_url:
           "https://mobirise.com/bootstrap-template//profile-template/assets/images/timothy-paul-smith-256424-1200x800.jpg",
         created_date: "2023-10-07 10:02:46",
@@ -72,7 +72,7 @@ export const mockQuestions: Array<Question> = [
         rank_image_url: "rankUrl",
         member_image_url:
           "https://mobirise.com/bootstrap-template//profile-template/assets/images/timothy-paul-smith-256424-1200x800.jpg",
-        created_by: "Aerified",
+        created_by: "Aerified1",
         answer_image_url:
           "https://mobirise.com/bootstrap-template//profile-template/assets/images/timothy-paul-smith-256424-1200x800.jpg",
         created_date: "2023-10-07 10:02:46",
@@ -87,7 +87,7 @@ export const mockQuestions: Array<Question> = [
         rank_image_url: "rankUrl",
         member_image_url:
           "https://mobirise.com/bootstrap-template//profile-template/assets/images/timothy-paul-smith-256424-1200x800.jpg",
-        created_by: "Aerified",
+        created_by: "Aerified2",
         answer_image_url:
           "https://mobirise.com/bootstrap-template//profile-template/assets/images/timothy-paul-smith-256424-1200x800.jpg",
         created_date: "2023-10-07 10:02:46",
@@ -102,7 +102,97 @@ export const mockQuestions: Array<Question> = [
         rank_image_url: "rankUrl",
         member_image_url:
           "https://mobirise.com/bootstrap-template//profile-template/assets/images/timothy-paul-smith-256424-1200x800.jpg",
-        created_by: "Aerified",
+        created_by: "Aerified3",
+        answer_image_url:
+          "https://mobirise.com/bootstrap-template//profile-template/assets/images/timothy-paul-smith-256424-1200x800.jpg",
+        created_date: "2023-10-07 10:02:46",
+        modified_date: "2023-10-07 10:02:46",
+        vote_count: 53,
+      },
+      {
+        answer_id: 7,
+        question_id: 1,
+        content:
+          "Integer pede justo, lacinia eget, tincidunt eget, tempus vel, pede. Morbi porttitor lorem id ligula. Suspendisse ornare consequat lectus.",
+        rank_image_url: "rankUrl",
+        member_image_url:
+          "https://mobirise.com/bootstrap-template//profile-template/assets/images/timothy-paul-smith-256424-1200x800.jpg",
+        created_by: "Aerified4",
+        answer_image_url:
+          "https://mobirise.com/bootstrap-template//profile-template/assets/images/timothy-paul-smith-256424-1200x800.jpg",
+        created_date: "2023-10-07 10:02:46",
+        modified_date: "2023-10-07 10:02:47",
+        vote_count: 53,
+      },
+      {
+        answer_id: 8,
+        question_id: 1,
+        content:
+          "Integer pede justo, lacinia eget, tincidunt eget, tempus vel, pede. Morbi porttitor lorem id ligula. Suspendisse ornare consequat lectus.",
+        rank_image_url: "rankUrl",
+        member_image_url:
+          "https://mobirise.com/bootstrap-template//profile-template/assets/images/timothy-paul-smith-256424-1200x800.jpg",
+        created_by: "Aerified5",
+        answer_image_url:
+          "https://mobirise.com/bootstrap-template//profile-template/assets/images/timothy-paul-smith-256424-1200x800.jpg",
+        created_date: "2023-10-07 10:02:46",
+        modified_date: "2023-10-07 10:02:46",
+        vote_count: 53,
+      },
+      {
+        answer_id: 9,
+        question_id: 1,
+        content:
+          "Integer pede justo, lacinia eget, tincidunt eget, tempus vel, pede. Morbi porttitor lorem id ligula. Suspendisse ornare consequat lectus.",
+        rank_image_url: "rankUrl",
+        member_image_url:
+          "https://mobirise.com/bootstrap-template//profile-template/assets/images/timothy-paul-smith-256424-1200x800.jpg",
+        created_by: "Aerified6",
+        answer_image_url:
+          "https://mobirise.com/bootstrap-template//profile-template/assets/images/timothy-paul-smith-256424-1200x800.jpg",
+        created_date: "2023-10-07 10:02:46",
+        modified_date: "2023-10-07 10:02:46",
+        vote_count: 53,
+      },
+      {
+        answer_id: 10,
+        question_id: 1,
+        content:
+          "Integer pede justo, lacinia eget, tincidunt eget, tempus vel, pede. Morbi porttitor lorem id ligula. Suspendisse ornare consequat lectus.",
+        rank_image_url: "rankUrl",
+        member_image_url:
+          "https://mobirise.com/bootstrap-template//profile-template/assets/images/timothy-paul-smith-256424-1200x800.jpg",
+        created_by: "Aerified7",
+        answer_image_url:
+          "https://mobirise.com/bootstrap-template//profile-template/assets/images/timothy-paul-smith-256424-1200x800.jpg",
+        created_date: "2023-10-07 10:02:46",
+        modified_date: "2023-10-07 10:02:46",
+        vote_count: 53,
+      },
+      {
+        answer_id: 11,
+        question_id: 1,
+        content:
+          "Integer pede justo, lacinia eget, tincidunt eget, tempus vel, pede. Morbi porttitor lorem id ligula. Suspendisse ornare consequat lectus.",
+        rank_image_url: "rankUrl",
+        member_image_url:
+          "https://mobirise.com/bootstrap-template//profile-template/assets/images/timothy-paul-smith-256424-1200x800.jpg",
+        created_by: "Aerified8",
+        answer_image_url:
+          "https://mobirise.com/bootstrap-template//profile-template/assets/images/timothy-paul-smith-256424-1200x800.jpg",
+        created_date: "2023-10-07 10:02:46",
+        modified_date: "2023-10-07 10:02:46",
+        vote_count: 53,
+      },
+      {
+        answer_id: 12,
+        question_id: 1,
+        content:
+          "Integer pede justo, lacinia eget, tincidunt eget, tempus vel, pede. Morbi porttitor lorem id ligula. Suspendisse ornare consequat lectus.",
+        rank_image_url: "rankUrl",
+        member_image_url:
+          "https://mobirise.com/bootstrap-template//profile-template/assets/images/timothy-paul-smith-256424-1200x800.jpg",
+        created_by: "Aerified9",
         answer_image_url:
           "https://mobirise.com/bootstrap-template//profile-template/assets/images/timothy-paul-smith-256424-1200x800.jpg",
         created_date: "2023-10-07 10:02:46",
@@ -136,7 +226,7 @@ export const mockQuestions: Array<Question> = [
     title:
       "질문3질문3질문3질문3질문3질문3질문3질문3질문3질문3질문3질문3질문3질문3질문3질문3질문3질문3질문3질문3질문3질문3",
     content:
-      "### <code>getServerSideProps( )</code> ```js function Page({ data }) { // 데이터를 렌더링하는 코드~ } // 모든 요청에서 호출된다. export async function getServerSideProps() { // 외부 API에서 전송되는 데이터를 fetch const res = await fetch(`https://.../data`); const data = await res.json(); // Props를 사용해 페이지로 데이터를 전달한다. return { props: { data } };} export default Page;```",
+      "### <code>getServerSideProps( )</code> \n ```js function Page({ data }) \n { // 데이터를 렌더링하는 코드~ } \n // 모든 요청에서 호출된다.```",
     question_image_url: "",
     view_count: 32,
     close_status: false,
@@ -173,7 +263,7 @@ export const mockQuestions: Array<Question> = [
         rank_image_url: "rankUrl",
         member_image_url:
           "https://mobirise.com/bootstrap-template//profile-template/assets/images/timothy-paul-smith-256424-1200x800.jpg",
-        created_by: "Aerified",
+        created_by: "Aerified1",
         answer_image_url:
           "https://mobirise.com/bootstrap-template//profile-template/assets/images/timothy-paul-smith-256424-1200x800.jpg",
         created_date: "2023-10-07 10:02:46",
@@ -186,7 +276,7 @@ export const mockQuestions: Array<Question> = [
     id: 4,
     title: "질문4",
     content:
-      "## 🥏 다시 돌아온 SSR!/ - 이전에 Next.js를 사용하게 된 이유에서도 정리했지만,/ - React, Angular, Vue와 같은 SPA 프레임워크들이 사용하던 CSR 방식에 문제점이 발견되기 시작했다.",
+      "## 🥏 다시 돌아온 SSR! \n - 이전에 Next.js를 사용하게 된 이유에서도 정리했지만,\n - React, Angular, Vue와 같은 SPA 프레임워크들이 사용하던 CSR 방식에 문제점이 발견되기 시작했다.",
     question_image_url:
       "https://mobirise.com/bootstrap-template//profile-template/assets/images/timothy-paul-smith-256424-1200x800.jpg",
     view_count: 9,
@@ -259,7 +349,7 @@ export const mockQuestions: Array<Question> = [
         rank_image_url: "rankUrl",
         member_image_url:
           "https://mobirise.com/bootstrap-template//profile-template/assets/images/timothy-paul-smith-256424-1200x800.jpg",
-        created_by: "Aerified",
+        created_by: "Aerified1",
         answer_image_url:
           "https://mobirise.com/bootstrap-template//profile-template/assets/images/timothy-paul-smith-256424-1200x800.jpg",
         created_date: "2023-10-07 10:02:46",
@@ -309,7 +399,7 @@ export const mockQuestions: Array<Question> = [
         rank_image_url: "rankUrl",
         member_image_url:
           "https://mobirise.com/bootstrap-template//profile-template/assets/images/timothy-paul-smith-256424-1200x800.jpg",
-        created_by: "Aerified",
+        created_by: "Aerified1",
         answer_image_url:
           "https://mobirise.com/bootstrap-template//profile-template/assets/images/timothy-paul-smith-256424-1200x800.jpg",
         created_date: "2023-10-07 10:02:46",
@@ -358,7 +448,7 @@ export const mockQuestions: Array<Question> = [
         rank_image_url: "rankUrl",
         member_image_url:
           "https://mobirise.com/bootstrap-template//profile-template/assets/images/timothy-paul-smith-256424-1200x800.jpg",
-        created_by: "Aerified",
+        created_by: "Aerified1",
         answer_image_url:
           "https://mobirise.com/bootstrap-template//profile-template/assets/images/timothy-paul-smith-256424-1200x800.jpg",
         created_date: "2023-10-07 10:02:46",

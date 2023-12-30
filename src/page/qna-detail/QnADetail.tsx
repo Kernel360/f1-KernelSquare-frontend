@@ -12,6 +12,8 @@ const QnADetail: React.FC<{ id: string }> = ({ id }) => {
     id: Number(id),
   })
 
+  console.log(data?.data?.nickname)
+
   if (isPending) return <Loading />
 
   if (data)
@@ -23,7 +25,7 @@ const QnADetail: React.FC<{ id: string }> = ({ id }) => {
           <Title title="My Answer" />
           <MyAnswer id={Number(id)} />
           <Title title="Answers" />
-          <AnswerList list={data?.data?.list} />
+          <AnswerList list={data?.data?.list} user={data?.data?.nickname} />
         </div>
       </div>
     )
