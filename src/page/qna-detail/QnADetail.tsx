@@ -9,6 +9,7 @@ import ContentLoading from "@/components/shared/animation/ContentLoading"
 import { useNickname } from "@/hooks/useUser"
 import { useRecoilState } from "recoil"
 import { AnswerEditMode } from "@/recoil/atoms/mode"
+import type { Answer } from "@/interfaces/answer"
 
 const QnADetail: React.FC<{ id: string }> = ({ id }) => {
   const { data, isPending } = questionQueries.useQuestionData({
@@ -16,13 +17,20 @@ const QnADetail: React.FC<{ id: string }> = ({ id }) => {
   })
 
   const { data: member, refetch } = useNickname()
-  console.log("useuser", member)
+
+  const [isAnswerEditMode, setIsAnswerEditMode] = useRecoilState(AnswerEditMode)
+
+  const handleCheckMyAnswer = (list?: Answer[], nickname?: string) =>
+    list?.some((answer) => answer.created_by === nickname)
 
   useEffect(() => {
     refetch()
+    if (handleCheckMyAnswer(data?.data?.list, member)) {
+      setIsAnswerEditMode(false)
+    } else {
+      setIsAnswerEditMode(true)
+    }
   }, [])
-
-  const [isAnswerEditMode, setIsAnswerEditMode] = useRecoilState(AnswerEditMode)
 
   // 질문 작성자가 본인인지
   console.log("my post?", data?.data?.nickname === member)

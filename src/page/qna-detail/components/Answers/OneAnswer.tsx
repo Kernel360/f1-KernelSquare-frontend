@@ -23,7 +23,6 @@ interface OneAnswerProps {
 const OneAnswer: React.FC<OneAnswerProps> = ({ answer, user }) => {
   const isEdited = answer.created_date !== answer.modified_date
   const isMyAnswer = user === answer.created_by
-  console.log("an", user, answer.created_by)
 
   const [vote, setVote] = useRecoilState(voteAtoms(answer?.created_by))
 

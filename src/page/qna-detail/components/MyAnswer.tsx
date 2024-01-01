@@ -1,7 +1,7 @@
 "use client"
 
 import dynamic from "next/dynamic"
-import { useRef } from "react"
+import { ButtonHTMLAttributes, useRef } from "react"
 import { useForm } from "react-hook-form"
 import { Editor } from "@toast-ui/react-editor"
 import Button from "@/components/shared/button/Button"
@@ -18,6 +18,12 @@ const MyAnswer: React.FC<{ id: number }> = ({ id }) => {
 
   const [isAnswerEditMode, setIsAnswerEditMode] = useRecoilState(AnswerEditMode)
 
+  const handleSubmitValue = () => {
+    const submitValue = editorRef.current?.getInstance().getMarkdown()
+    console.log("md", submitValue)
+    setIsAnswerEditMode(false)
+  }
+
   return (
     <div className="max-w-full box-border border border-colorsGray rounded-lg p-2 my-5">
       <form onSubmit={handleSubmit(async (data) => console.log("답변", data))}>
@@ -27,7 +33,7 @@ const MyAnswer: React.FC<{ id: number }> = ({ id }) => {
             buttonTheme="primary"
             className="w-[100px]"
             type="submit"
-            onClick={() => setIsAnswerEditMode(false)}
+            onClick={handleSubmitValue}
           >
             저장
           </Button>
