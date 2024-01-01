@@ -28,3 +28,21 @@ export function useUser() {
     gcTime: 0,
   })
 }
+
+export function useNickname() {
+  return useQuery({
+    queryKey: ["user"],
+    queryFn: async () => {
+      const token = getCookie(ACCESS_TOKEN_KEY)
+
+      if (!token) return null
+
+      const { id } = await jwtDecode(token)
+
+      return await getMemeber({ id })
+    },
+    staleTime: 1000 * 5,
+    gcTime: 0,
+    select: (user) => user?.data.data?.nickname,
+  })
+}

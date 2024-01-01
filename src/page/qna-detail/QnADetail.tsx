@@ -1,18 +1,31 @@
 "use client"
 
-import React from "react"
+import React, { useEffect } from "react"
 import Question from "./components/Question"
 import MyAnswer from "./components/MyAnswer"
 import AnswerList from "./components/Answers/AnswerList"
 import { questionQueries } from "@/react-query/question"
 import ContentLoading from "@/components/shared/animation/ContentLoading"
+import { useNickname } from "@/hooks/useUser"
+import { useRecoilState } from "recoil"
+import { AnswerEditMode } from "@/recoil/atoms/mode"
 
 const QnADetail: React.FC<{ id: string }> = ({ id }) => {
   const { data, isPending } = questionQueries.useQuestionData({
     id: Number(id),
   })
 
-  console.log(data?.data?.nickname)
+  const { data: member, refetch } = useNickname()
+  console.log("useuser", member)
+
+  useEffect(() => {
+    refetch()
+  }, [])
+
+  const [isAnswerEditMode, setIsAnswerEditMode] = useRecoilState(AnswerEditMode)
+
+  // 질문 작성자가 본인인지
+  console.log("my post?", data?.data?.nickname === member)
 
   if (isPending) return <Loading />
 
@@ -22,10 +35,14 @@ const QnADetail: React.FC<{ id: string }> = ({ id }) => {
         <div className="w-[calc(100%-12px)] sm:w-[calc(100%-22px)] lg:w-[calc(100%-42px)] mx-auto">
           <div className="font-bold text-[36px]">Q&A</div>
           <Question id={Number(id)} />
-          <Title title="My Answer" />
-          <MyAnswer id={Number(id)} />
+          {isAnswerEditMode && (
+            <>
+              <Title title="My Answer" />
+              <MyAnswer id={Number(id)} />
+            </>
+          )}
           <Title title="Answers" />
-          <AnswerList list={data?.data?.list} user={data?.data?.nickname} />
+          <AnswerList list={data?.data?.list} user={member} />
         </div>
       </div>
     )

@@ -8,6 +8,8 @@ import dynamic from "next/dynamic"
 import { useRecoilState } from "recoil"
 import voteAtoms from "@/recoil/atoms/vote"
 import { useEffect } from "react"
+import Button from "@/components/shared/button/Button"
+import { AnswerEditMode } from "@/recoil/atoms/mode"
 
 const MdViewer = dynamic(() => import("../Markdown/MdViewer"), {
   ssr: false,
@@ -20,6 +22,8 @@ interface OneAnswerProps {
 
 const OneAnswer: React.FC<OneAnswerProps> = ({ answer, user }) => {
   const isEdited = answer.created_date !== answer.modified_date
+  const isMyAnswer = user === answer.created_by
+  console.log("an", user, answer.created_by)
 
   const [vote, setVote] = useRecoilState(voteAtoms(answer?.created_by))
 
@@ -29,6 +33,8 @@ const OneAnswer: React.FC<OneAnswerProps> = ({ answer, user }) => {
   useEffect(() => {
     setVote({ ...vote, value: answer.vote_count })
   }, [])
+
+  const [isAnswerEditMode, setIsAnswerEditMode] = useRecoilState(AnswerEditMode)
 
   return (
     <div className="border-b-[1px] border-b-gray my-5">
@@ -53,9 +59,21 @@ const OneAnswer: React.FC<OneAnswerProps> = ({ answer, user }) => {
       <div className="flex justify-end mb-5">
         <div className="max-h-[52px] flex flex-col justify-center">
           <div>답변일시: {getDate({ date: answer.created_date })}</div>
-          {isEdited && (
-            <div className="text-right text-slate-400">(수정됨)</div>
-          )}
+          <div className="flex justify-between">
+            {isEdited && (
+              <div className="text-right text-slate-400">(수정됨)</div>
+            )}
+            {isMyAnswer && (
+              <div>
+                <Button
+                  buttonTheme="primary"
+                  onClick={() => setIsAnswerEditMode(true)}
+                >
+                  수정하기
+                </Button>
+              </div>
+            )}
+          </div>
         </div>
         <div className="ml-[20px] w-[50px] h-[50px] relative">
           <Image
