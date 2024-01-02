@@ -63,7 +63,7 @@ export const questionHandler = [
 
       const existMockQuestion = mockQuestions.find(
         (question) => question.id === Number(questionId),
-      )
+      )!
 
       if (!existMockQuestion)
         return HttpResponse.json(

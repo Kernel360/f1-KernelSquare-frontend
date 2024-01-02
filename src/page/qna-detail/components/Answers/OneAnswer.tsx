@@ -62,16 +62,6 @@ const OneAnswer: React.FC<OneAnswerProps> = ({ answer, user }) => {
             {isEdited && (
               <div className="text-right text-slate-400">(수정됨)</div>
             )}
-            {isMyAnswer && (
-              <div>
-                <Button
-                  buttonTheme="primary"
-                  onClick={() => setIsAnswerEditMode(true)}
-                >
-                  수정하기
-                </Button>
-              </div>
-            )}
           </div>
         </div>
         <div className="ml-[20px] w-[50px] h-[50px] relative">
@@ -88,6 +78,14 @@ const OneAnswer: React.FC<OneAnswerProps> = ({ answer, user }) => {
           </div>
           <div className="text-center">Lv. </div>
         </div>
+      </div>
+      <div className="flex justify-between text-[#3887BE] cursor-pointer my-4">
+        <div>댓글 쓰기</div>
+        {isMyAnswer && (
+          <div onClick={() => setIsAnswerEditMode((prev: boolean) => !prev)}>
+            수정하기
+          </div>
+        )}
       </div>
     </div>
   )

@@ -155,16 +155,16 @@ export class RouteMap {
     getAnswer(questionId: number) {
       return `${RouteMap.routeGroupBaseURL.question}/${questionId}/${RouteMap.prefix.answer}`
     },
-    createAnswer(questionId: number) {
+    createAnswer(questionId?: number) {
       return `${RouteMap.routeGroupBaseURL.question}/${questionId}/${RouteMap.prefix.answer}`
     },
-    updateAnswer(answerId: number) {
+    updateAnswer(answerId?: number) {
       return `${RouteMap.routeGroupBaseURL.question}/${RouteMap.prefix.answer}/${answerId}`
     },
     deleteAnswer(answerId: number) {
       return `${RouteMap.routeGroupBaseURL.question}/${RouteMap.prefix.answer}/${answerId}`
     },
-    voteAnswer(answerId: number) {
+    voteAnswer(answerId?: number) {
       return `${RouteMap.routeGroupBaseURL.question}/${RouteMap.prefix.answer}/${answerId}/vote`
     },
   }

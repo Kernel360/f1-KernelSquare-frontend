@@ -241,8 +241,8 @@ export const mockQuestions: Array<Question> = [
     modified_date: "2023-12-16T18:09:02",
     list: [
       {
-        answer_id: 1,
-        question_id: 1,
+        answer_id: 13,
+        question_id: 3,
         content:
           "Integer pede justo, lacinia eget, tincidunt eget, tempus vel, pede. Morbi porttitor lorem id ligula. Suspendisse ornare consequat lectus.",
         rank_image_url: "rankUrl",
@@ -256,8 +256,8 @@ export const mockQuestions: Array<Question> = [
         vote_count: 53,
       },
       {
-        answer_id: 2,
-        question_id: 1,
+        answer_id: 14,
+        question_id: 3,
         content:
           "Integer pede justo, lacinia eget, tincidunt eget, tempus vel, pede. Morbi porttitor lorem id ligula. Suspendisse ornare consequat lectus.",
         rank_image_url: "rankUrl",
@@ -292,8 +292,8 @@ export const mockQuestions: Array<Question> = [
     modified_date: "2023-12-16T17:00:22",
     list: [
       {
-        answer_id: 1,
-        question_id: 1,
+        answer_id: 15,
+        question_id: 4,
         content:
           "Integer pede justo, lacinia eget, tincidunt eget, tempus vel, pede. Morbi porttitor lorem id ligula. Suspendisse ornare consequat lectus.",
         rank_image_url: "rankUrl",
@@ -327,8 +327,8 @@ export const mockQuestions: Array<Question> = [
     modified_date: "2023-12-16T12:01:01",
     list: [
       {
-        answer_id: 1,
-        question_id: 1,
+        answer_id: 16,
+        question_id: 5,
         content:
           "Integer pede justo, lacinia eget, tincidunt eget, tempus vel, pede. Morbi porttitor lorem id ligula. Suspendisse ornare consequat lectus.",
         rank_image_url: "rankUrl",
@@ -342,8 +342,8 @@ export const mockQuestions: Array<Question> = [
         vote_count: 53,
       },
       {
-        answer_id: 2,
-        question_id: 1,
+        answer_id: 17,
+        question_id: 5,
         content:
           "Integer pede justo, lacinia eget, tincidunt eget, tempus vel, pede. Morbi porttitor lorem id ligula. Suspendisse ornare consequat lectus.",
         rank_image_url: "rankUrl",
@@ -377,8 +377,8 @@ export const mockQuestions: Array<Question> = [
     modified_date: "2023-12-16T07:20:55",
     list: [
       {
-        answer_id: 1,
-        question_id: 1,
+        answer_id: 18,
+        question_id: 6,
         content:
           "Integer pede justo, lacinia eget, tincidunt eget, tempus vel, pede. Morbi porttitor lorem id ligula. Suspendisse ornare consequat lectus.",
         rank_image_url: "rankUrl",
@@ -392,8 +392,8 @@ export const mockQuestions: Array<Question> = [
         vote_count: 53,
       },
       {
-        answer_id: 2,
-        question_id: 1,
+        answer_id: 19,
+        question_id: 6,
         content:
           "Integer pede justo, lacinia eget, tincidunt eget, tempus vel, pede. Morbi porttitor lorem id ligula. Suspendisse ornare consequat lectus.",
         rank_image_url: "rankUrl",
@@ -426,8 +426,8 @@ export const mockQuestions: Array<Question> = [
     modified_date: "2023-12-15T22:10:12",
     list: [
       {
-        answer_id: 1,
-        question_id: 1,
+        answer_id: 20,
+        question_id: 7,
         content:
           "Integer pede justo, lacinia eget, tincidunt eget, tempus vel, pede. Morbi porttitor lorem id ligula. Suspendisse ornare consequat lectus.",
         rank_image_url: "rankUrl",
@@ -441,8 +441,8 @@ export const mockQuestions: Array<Question> = [
         vote_count: 53,
       },
       {
-        answer_id: 2,
-        question_id: 1,
+        answer_id: 21,
+        question_id: 7,
         content:
           "Integer pede justo, lacinia eget, tincidunt eget, tempus vel, pede. Morbi porttitor lorem id ligula. Suspendisse ornare consequat lectus.",
         rank_image_url: "rankUrl",
