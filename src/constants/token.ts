@@ -20,3 +20,9 @@ export const JWT_ACCESS_TOKEN_SECRET = "testMockAccessTokenSecret"
  * 상수로 관리
  */
 export const JWT_REFRESH_TOKEN_SECRET = "testMockRefreshTokenSecret"
+
+export const CustomAuthorizedHeaderName = "x-kenal-authorized"
+export const CustomAuthorizedHeaderValue = {
+  Authorized: "true",
+  UnAuthorized: "false",
+}

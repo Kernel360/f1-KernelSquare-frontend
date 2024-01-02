@@ -1,32 +1,37 @@
 "use client"
 
-import Spacing from "@/components/shared/Spacing"
-import Button from "@/components/shared/button/Button"
-import useModal from "@/hooks/useModal"
 import { useRouter } from "next/navigation"
+import Spacing from "../Spacing"
+import Button from "../button/Button"
+import useModal from "@/hooks/useModal"
 import { useEffect } from "react"
 
-interface RedirectHomeModalProps {
-  onClose: () => void
-}
-
-function SignupGuard() {
+function SignupGuardModal() {
   const { openModal, closeModal } = useModal()
 
   useEffect(() => {
     openModal({
       containsHeader: false,
-      content: <RedirectHomeModal onClose={closeModal} />,
+      closeableDim: false,
+      content: <SignupGuardModal.ModalContent />,
     })
+
+    return () => {
+      closeModal()
+    }
   }, []) /* eslint-disable-line */
 
   return null
 }
 
-export default SignupGuard
-
-function RedirectHomeModal({ onClose }: RedirectHomeModalProps) {
+SignupGuardModal.ModalContent = function SignupGuardModalContent() {
   const { replace } = useRouter()
+
+  const onClose = () => {
+    replace("/")
+
+    return
+  }
 
   return (
     <div className="w-full sm:w-[320px]">
@@ -37,16 +42,12 @@ function RedirectHomeModal({ onClose }: RedirectHomeModalProps) {
       </p>
       <Spacing size={26} />
       <div className="flex w-full justify-center items-center">
-        <Button
-          buttonTheme="primary"
-          onClick={() => {
-            onClose()
-            replace("/")
-          }}
-        >
+        <Button buttonTheme="primary" onClick={onClose}>
           홈으로
         </Button>
       </div>
     </div>
   )
 }
+
+export default SignupGuardModal

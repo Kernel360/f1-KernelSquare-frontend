@@ -14,6 +14,10 @@ import SocialButton from "../SocialButton"
 import { Validator } from "@/util/validate"
 import { login } from "@/service/auth"
 import { useQueryClient } from "@tanstack/react-query"
+import { revalidatePage } from "@/util/actions/revalidatePage"
+import { useRecoilValue } from "recoil"
+import { authSession } from "@/recoil/atoms/user"
+import { AppServerSession } from "@/util/session/appServerSession"
 
 function LoginForm() {
   const {
@@ -23,6 +27,8 @@ function LoginForm() {
   } = useForm<LoginFormData>()
 
   const queryClient = useQueryClient()
+
+  const { loginSession, getUser } = useRecoilValue(authSession)
 
   const { closeModal } = useModal()
 
@@ -34,11 +40,11 @@ function LoginForm() {
 
   const onSubmit = async (data: LoginFormData) => {
     try {
-      await login({ email: data.email, password: data.password })
-
+      // await login({ email: data.email, password: data.password })
       // update
-      // react query 유저 쿼리 캐시 초기화
-      queryClient.invalidateQueries({ queryKey: ["user"] })
+      await loginSession({ email: data.email, password: data.password })
+
+      await revalidatePage("*")
 
       closeModal()
     } catch (error) {

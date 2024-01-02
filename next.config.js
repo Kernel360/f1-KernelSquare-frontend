@@ -11,7 +11,25 @@ const nextConfig = {
         protocol: "https",
         hostname: "imagedelivery.net",
       },
+      // 목업 이미지 주소
+      {
+        protocol: "https",
+        hostname: "picsum.photos",
+      },
+      // 클라우드 플레어 이미지 cdn 주소
+      {
+        protocol: "https",
+        hostname: "imagedelivery.net",
+      },
     ],
+  },
+  async rewrites() {
+    return [
+      {
+        source: "/image_api/upload_url",
+        destination: `${process.env.NEXT_PUBLIC_IMAGE_UPLOAD_SERVER}/accounts/${process.env.NEXT_PUBLIC_CLOUDFLARE_ACCOUNT_ID}/images/v2/direct_upload`,
+      },
+    ]
   },
 }
 

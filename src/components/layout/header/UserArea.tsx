@@ -6,11 +6,12 @@ import Button from "@/components/shared/button/Button"
 import useModal from "@/hooks/useModal"
 import Link from "next/link"
 import { Icons } from "@/components/icons/Icons"
-import { useUser } from "@/hooks/useUser"
 import Skeleton from "react-loading-skeleton"
 import Profile from "@/components/shared/Profile"
 import Dropdown from "rc-dropdown"
 import Menu, { Item as MenuItem, Divider } from "rc-menu"
+import { useRecoilValue, useRecoilValueLoadable } from "recoil"
+import { userAtom, userSelector } from "@/recoil/atoms/user"
 
 type ProfileDropdownMenu = {
   label?: string
@@ -32,7 +33,8 @@ const profileDropdownMenu: Array<ProfileDropdownMenu> = [
 ]
 
 function UserArea() {
-  const { data: payload, isPending } = useUser()
+  const user = useRecoilValue(userAtom)
+  const userLoadable = useRecoilValueLoadable(userSelector)
 
   const menu = useMemo(() => {
     return (
@@ -61,24 +63,24 @@ function UserArea() {
     )
   }, [])
 
-  if (isPending) {
+  if (userLoadable.state === "loading") {
     return <Skeleton width={128} height={28} />
   }
 
-  if (!payload) {
+  if (userLoadable.state === "hasValue" && !user) {
     return <NotLoginedUserArea />
   }
 
-  return (
+  return userLoadable.state === "hasValue" ? (
     <div className="flex gap-2 items-center">
       <Dropdown trigger={["click"]} overlay={menu}>
-        <Profile profileImage={payload.data.data?.image_url} />
+        <Profile profileImage={user?.image_url} />
       </Dropdown>
       <Button className="p-0">
         <Icons.Notification className="text-2xl text-colorsGray" />
       </Button>
     </div>
-  )
+  ) : null
 }
 
 function NotLoginedUserArea() {

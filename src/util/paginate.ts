@@ -41,7 +41,6 @@ export function generatePagination<T = unknown>(
 
   //   return null
   // }
-
   const totalItemsCount = targetList.length
   const maximumPage = Math.ceil(totalItemsCount / perPage)
 
