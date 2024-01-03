@@ -4,6 +4,7 @@ const mockAnswers = [
     question_id: 1,
     content:
       "Integer pede justo, lacinia eget, tincidunt eget, tempus vel, pede. Morbi porttitor lorem id ligula. Suspendisse ornare consequat lectus.",
+    level: 1,
     rank_image_url: "rankUrl",
     member_image_url:
       "https://mobirise.com/bootstrap-template//profile-template/assets/images/timothy-paul-smith-256424-1200x800.jpg",
@@ -19,6 +20,7 @@ const mockAnswers = [
     question_id: 1,
     content:
       "Integer pede justo, lacinia eget, tincidunt eget, tempus vel, pede. Morbi porttitor lorem id ligula. Suspendisse ornare consequat lectus.",
+    level: 2,
     rank_image_url: "rankUrl",
     member_image_url:
       "https://mobirise.com/bootstrap-template//profile-template/assets/images/timothy-paul-smith-256424-1200x800.jpg",
@@ -34,6 +36,7 @@ const mockAnswers = [
     question_id: 1,
     content:
       "Integer pede justo, lacinia eget, tincidunt eget, tempus vel, pede. Morbi porttitor lorem id ligula. Suspendisse ornare consequat lectus.",
+    level: 3,
     rank_image_url: "rankUrl",
     member_image_url:
       "https://mobirise.com/bootstrap-template//profile-template/assets/images/timothy-paul-smith-256424-1200x800.jpg",
@@ -49,6 +52,7 @@ const mockAnswers = [
     question_id: 1,
     content:
       "Integer pede justo, lacinia eget, tincidunt eget, tempus vel, pede. Morbi porttitor lorem id ligula. Suspendisse ornare consequat lectus.",
+    level: 4,
     rank_image_url: "rankUrl",
     member_image_url:
       "https://mobirise.com/bootstrap-template//profile-template/assets/images/timothy-paul-smith-256424-1200x800.jpg",
@@ -64,6 +68,7 @@ const mockAnswers = [
     question_id: 1,
     content:
       "Integer pede justo, lacinia eget, tincidunt eget, tempus vel, pede. Morbi porttitor lorem id ligula. Suspendisse ornare consequat lectus.",
+    level: 5,
     rank_image_url: "rankUrl",
     member_image_url:
       "https://mobirise.com/bootstrap-template//profile-template/assets/images/timothy-paul-smith-256424-1200x800.jpg",
@@ -79,6 +84,7 @@ const mockAnswers = [
     question_id: 1,
     content:
       "Integer pede justo, lacinia eget, tincidunt eget, tempus vel, pede. Morbi porttitor lorem id ligula. Suspendisse ornare consequat lectus.",
+    level: 6,
     rank_image_url: "rankUrl",
     member_image_url:
       "https://mobirise.com/bootstrap-template//profile-template/assets/images/timothy-paul-smith-256424-1200x800.jpg",
@@ -94,6 +100,7 @@ const mockAnswers = [
     question_id: 1,
     content:
       "Integer pede justo, lacinia eget, tincidunt eget, tempus vel, pede. Morbi porttitor lorem id ligula. Suspendisse ornare consequat lectus.",
+    level: 7,
     rank_image_url: "rankUrl",
     member_image_url:
       "https://mobirise.com/bootstrap-template//profile-template/assets/images/timothy-paul-smith-256424-1200x800.jpg",
@@ -109,6 +116,7 @@ const mockAnswers = [
     question_id: 1,
     content:
       "Integer pede justo, lacinia eget, tincidunt eget, tempus vel, pede. Morbi porttitor lorem id ligula. Suspendisse ornare consequat lectus.",
+    level: 8,
     rank_image_url: "rankUrl",
     member_image_url:
       "https://mobirise.com/bootstrap-template//profile-template/assets/images/timothy-paul-smith-256424-1200x800.jpg",
@@ -124,6 +132,7 @@ const mockAnswers = [
     question_id: 1,
     content:
       "Integer pede justo, lacinia eget, tincidunt eget, tempus vel, pede. Morbi porttitor lorem id ligula. Suspendisse ornare consequat lectus.",
+    level: 9,
     rank_image_url: "rankUrl",
     member_image_url:
       "https://mobirise.com/bootstrap-template//profile-template/assets/images/timothy-paul-smith-256424-1200x800.jpg",
@@ -139,6 +148,7 @@ const mockAnswers = [
     question_id: 1,
     content:
       "Integer pede justo, lacinia eget, tincidunt eget, tempus vel, pede. Morbi porttitor lorem id ligula. Suspendisse ornare consequat lectus.",
+    level: 10,
     rank_image_url: "rankUrl",
     member_image_url:
       "https://mobirise.com/bootstrap-template//profile-template/assets/images/timothy-paul-smith-256424-1200x800.jpg",
@@ -154,6 +164,7 @@ const mockAnswers = [
     question_id: 1,
     content:
       "Integer pede justo, lacinia eget, tincidunt eget, tempus vel, pede. Morbi porttitor lorem id ligula. Suspendisse ornare consequat lectus.",
+    level: 1,
     rank_image_url: "rankUrl",
     member_image_url:
       "https://mobirise.com/bootstrap-template//profile-template/assets/images/timothy-paul-smith-256424-1200x800.jpg",
@@ -169,6 +180,7 @@ const mockAnswers = [
     question_id: 1,
     content:
       "Integer pede justo, lacinia eget, tincidunt eget, tempus vel, pede. Morbi porttitor lorem id ligula. Suspendisse ornare consequat lectus.",
+    level: 2,
     rank_image_url: "rankUrl",
     member_image_url:
       "https://mobirise.com/bootstrap-template//profile-template/assets/images/timothy-paul-smith-256424-1200x800.jpg",
@@ -184,6 +196,7 @@ const mockAnswers = [
     question_id: 3,
     content:
       "Integer pede justo, lacinia eget, tincidunt eget, tempus vel, pede. Morbi porttitor lorem id ligula. Suspendisse ornare consequat lectus.",
+    level: 3,
     rank_image_url: "rankUrl",
     member_image_url:
       "https://mobirise.com/bootstrap-template//profile-template/assets/images/timothy-paul-smith-256424-1200x800.jpg",
@@ -199,6 +212,7 @@ const mockAnswers = [
     question_id: 3,
     content:
       "Integer pede justo, lacinia eget, tincidunt eget, tempus vel, pede. Morbi porttitor lorem id ligula. Suspendisse ornare consequat lectus.",
+    level: 4,
     rank_image_url: "rankUrl",
     member_image_url:
       "https://mobirise.com/bootstrap-template//profile-template/assets/images/timothy-paul-smith-256424-1200x800.jpg",
@@ -214,6 +228,7 @@ const mockAnswers = [
     question_id: 4,
     content:
       "Integer pede justo, lacinia eget, tincidunt eget, tempus vel, pede. Morbi porttitor lorem id ligula. Suspendisse ornare consequat lectus.",
+    level: 5,
     rank_image_url: "rankUrl",
     member_image_url:
       "https://mobirise.com/bootstrap-template//profile-template/assets/images/timothy-paul-smith-256424-1200x800.jpg",
@@ -229,6 +244,7 @@ const mockAnswers = [
     question_id: 5,
     content:
       "Integer pede justo, lacinia eget, tincidunt eget, tempus vel, pede. Morbi porttitor lorem id ligula. Suspendisse ornare consequat lectus.",
+    level: 6,
     rank_image_url: "rankUrl",
     member_image_url:
       "https://mobirise.com/bootstrap-template//profile-template/assets/images/timothy-paul-smith-256424-1200x800.jpg",
@@ -244,6 +260,7 @@ const mockAnswers = [
     question_id: 5,
     content:
       "Integer pede justo, lacinia eget, tincidunt eget, tempus vel, pede. Morbi porttitor lorem id ligula. Suspendisse ornare consequat lectus.",
+    level: 7,
     rank_image_url: "rankUrl",
     member_image_url:
       "https://mobirise.com/bootstrap-template//profile-template/assets/images/timothy-paul-smith-256424-1200x800.jpg",
@@ -259,6 +276,7 @@ const mockAnswers = [
     question_id: 6,
     content:
       "Integer pede justo, lacinia eget, tincidunt eget, tempus vel, pede. Morbi porttitor lorem id ligula. Suspendisse ornare consequat lectus.",
+    level: 8,
     rank_image_url: "rankUrl",
     member_image_url:
       "https://mobirise.com/bootstrap-template//profile-template/assets/images/timothy-paul-smith-256424-1200x800.jpg",
@@ -274,6 +292,7 @@ const mockAnswers = [
     question_id: 6,
     content:
       "Integer pede justo, lacinia eget, tincidunt eget, tempus vel, pede. Morbi porttitor lorem id ligula. Suspendisse ornare consequat lectus.",
+    level: 9,
     rank_image_url: "rankUrl",
     member_image_url:
       "https://mobirise.com/bootstrap-template//profile-template/assets/images/timothy-paul-smith-256424-1200x800.jpg",
@@ -289,6 +308,7 @@ const mockAnswers = [
     question_id: 7,
     content:
       "Integer pede justo, lacinia eget, tincidunt eget, tempus vel, pede. Morbi porttitor lorem id ligula. Suspendisse ornare consequat lectus.",
+    level: 10,
     rank_image_url: "rankUrl",
     member_image_url:
       "https://mobirise.com/bootstrap-template//profile-template/assets/images/timothy-paul-smith-256424-1200x800.jpg",
@@ -304,6 +324,7 @@ const mockAnswers = [
     question_id: 7,
     content:
       "Integer pede justo, lacinia eget, tincidunt eget, tempus vel, pede. Morbi porttitor lorem id ligula. Suspendisse ornare consequat lectus.",
+    level: 1,
     rank_image_url: "rankUrl",
     member_image_url:
       "https://mobirise.com/bootstrap-template//profile-template/assets/images/timothy-paul-smith-256424-1200x800.jpg",

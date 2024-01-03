@@ -15,6 +15,7 @@ import { mockUsers } from "@/mocks/db/user"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import queryKey from "@/constants/queryKey"
 import { answerQueries } from "@/react-query/answers"
+import badge_url from "@/assets/images/badges"
 
 const MdViewer = dynamic(() => import("../Markdown/MdViewer"), {
   ssr: false,
@@ -123,7 +124,17 @@ const OneAnswer: React.FC<OneAnswerProps> = ({ answer, user }) => {
           <div className="px-2 bg-[#F3EDC8] rounded-md mb-1">
             {answer.created_by}
           </div>
-          <div className="text-center">Lv. </div>
+          <div className="text-center flex justify-center">
+            <div>
+              <Image
+                src={badge_url[answer.level]}
+                alt="답변자 배지 이미지"
+                width={20}
+                height={20}
+              />
+            </div>
+            <div className="ml-1">Lv.{answer.level}</div>
+          </div>
         </div>
       </div>
       <div className="flex justify-end text-[#3887BE] cursor-pointer my-4">

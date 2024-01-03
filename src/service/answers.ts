@@ -5,15 +5,35 @@ import {
 import { apiInstance } from "./axios"
 import { AxiosError, AxiosResponse } from "axios"
 import { RouteMap } from "./route-map"
-import {
+import type {
   UpdateAnswerRequest,
   UpdateAnswerResponse,
 } from "@/interfaces/dto/answer/update-answer.dto"
-import {
+import type {
   CreateVoteRequest,
   CreateVoteResponse,
 } from "@/interfaces/dto/answer/create-vote.dto"
-import { APIResponse } from "@/interfaces/dto/api-response"
+import type { APIResponse } from "@/interfaces/dto/api-response"
+import type {
+  GetAnswerRequest,
+  GetAnswerResponse,
+} from "@/interfaces/dto/answer/get-answerlist.dto"
+
+export async function getAnswer({ questionId }: GetAnswerRequest) {
+  const res = await apiInstance
+    .get<GetAnswerResponse>(`${RouteMap.answer.getAnswer(questionId)}`)
+    .catch((err) => {
+      if (err instanceof AxiosError) {
+        const { response } = err as AxiosError<APIResponse>
+
+        console.log("answers res", { response: response?.data })
+      }
+      console.log("err", err)
+      throw err
+    })
+
+  return res
+}
 
 export async function createAnswer({
   questionId,

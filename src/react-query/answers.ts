@@ -1,9 +1,26 @@
 import queryKey from "@/constants/queryKey"
 import { CreateAnswerRequest } from "@/interfaces/dto/answer/create-answer.dto"
 import { CreateVoteRequest } from "@/interfaces/dto/answer/create-vote.dto"
+import { GetAnswerRequest } from "@/interfaces/dto/answer/get-answerlist.dto"
 import { UpdateAnswerRequest } from "@/interfaces/dto/answer/update-answer.dto"
-import { createAnswer, updateAnswer, voteAnswer } from "@/service/answers"
-import { useMutation } from "@tanstack/react-query"
+import {
+  createAnswer,
+  getAnswer,
+  updateAnswer,
+  voteAnswer,
+} from "@/service/answers"
+import { keepPreviousData, useMutation, useQuery } from "@tanstack/react-query"
+
+const useGetAnswers = ({ questionId }: GetAnswerRequest) =>
+  useQuery({
+    queryKey: ["answer", questionId],
+    queryFn: () => getAnswer({ questionId }),
+    placeholderData: keepPreviousData,
+    staleTime: 1000 * 5,
+    select(payload) {
+      return payload.data
+    },
+  })
 
 const useCreateAnswer = ({
   questionId,
@@ -34,4 +51,9 @@ const useVoteAnswer = ({ answerId, member_id, status }: CreateVoteRequest) =>
     onSuccess: () => console.log("투표 성공"),
     onError: (error) => console.log("error", error.message),
   })
-export const answerQueries = { useCreateAnswer, useUpdateAnswer, useVoteAnswer }
+export const answerQueries = {
+  useGetAnswers,
+  useCreateAnswer,
+  useUpdateAnswer,
+  useVoteAnswer,
+}

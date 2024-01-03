@@ -152,20 +152,28 @@ export class RouteMap {
    * **voteAnswer**: 답변 투표(POST)
    */
   static answer = {
-    getAnswer(questionId: number) {
-      return `${RouteMap.routeGroupBaseURL.question}/${questionId}/${RouteMap.prefix.answer}`
+    getAnswer(questionId?: number) {
+      return `${RouteMap.routeGroupBaseURL.question}/${questionId ?? ":id"}/${
+        RouteMap.prefix.answer
+      }`
     },
     createAnswer(questionId?: number) {
-      return `${RouteMap.routeGroupBaseURL.question}/${questionId}/${RouteMap.prefix.answer}`
+      return `${RouteMap.routeGroupBaseURL.question}/${questionId ?? ":id"}/${
+        RouteMap.prefix.answer
+      }`
     },
     updateAnswer(answerId?: number) {
-      return `${RouteMap.routeGroupBaseURL.question}/${RouteMap.prefix.answer}/${answerId}`
+      return `${RouteMap.routeGroupBaseURL.question}/${
+        RouteMap.prefix.answer
+      }/${answerId ?? ":id"}`
     },
     deleteAnswer(answerId: number) {
       return `${RouteMap.routeGroupBaseURL.question}/${RouteMap.prefix.answer}/${answerId}`
     },
     voteAnswer(answerId?: number) {
-      return `${RouteMap.routeGroupBaseURL.question}/${RouteMap.prefix.answer}/${answerId}/vote`
+      return `${RouteMap.routeGroupBaseURL.question}/${
+        RouteMap.prefix.answer
+      }/${answerId ?? ":id"}/vote`
     },
   }
 

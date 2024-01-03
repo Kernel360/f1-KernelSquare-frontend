@@ -10,6 +10,7 @@ import { useNickname } from "@/hooks/useUser"
 import { useRecoilState } from "recoil"
 import { AnswerEditMode } from "@/recoil/atoms/mode"
 import type { Answer } from "@/interfaces/answer"
+import { answerQueries } from "@/react-query/answers"
 
 const QnADetail: React.FC<{ id: string }> = ({ id }) => {
   const { data, isPending } = questionQueries.useQuestionData({
@@ -52,8 +53,11 @@ const QnADetail: React.FC<{ id: string }> = ({ id }) => {
               <MyAnswer id={Number(id)} isEditMode={isAnswerEditMode} />
             </>
           )}
-          <Title title="Answers" />
-          <AnswerList list={data?.data?.list} user={member} />
+          <div className="flex text-[24px]">
+            <Title title="Answers" />
+            <div className="text-slate-400 ml-3">{data?.data?.list.length}</div>
+          </div>
+          <AnswerList user={member} id={Number(id)} />
         </div>
       </div>
     )
