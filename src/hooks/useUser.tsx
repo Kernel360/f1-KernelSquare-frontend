@@ -46,3 +46,21 @@ export function useNickname() {
     select: (user) => user?.data.data?.nickname,
   })
 }
+
+export function useUserId() {
+  return useQuery({
+    queryKey: ["user"],
+    queryFn: async () => {
+      const token = getCookie(ACCESS_TOKEN_KEY)
+
+      if (!token) return null
+
+      const { id } = await jwtDecode(token)
+
+      return await getMemeber({ id })
+    },
+    staleTime: 1000 * 5,
+    gcTime: 0,
+    select: (user) => user?.data.data?.id,
+  })
+}

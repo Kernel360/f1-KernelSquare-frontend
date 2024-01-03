@@ -12,14 +12,31 @@ import "@toast-ui/editor-plugin-color-syntax/dist/toastui-editor-plugin-color-sy
 // 전체 언어 지원
 import codeSyntaxHighlight from "@toast-ui/editor-plugin-code-syntax-highlight/dist/toastui-editor-plugin-code-syntax-highlight-all.js"
 import "@toast-ui/editor-plugin-code-syntax-highlight/dist/toastui-editor-plugin-code-syntax-highlight.css"
-import type { RefObject } from "react"
+import { type RefObject } from "react"
 
 interface EditorProps {
   previous?: string
   editorRef: RefObject<Editor>
 }
 
+type ImageCallback = (imageUrl: string, altText: string) => void
+
 const MdEditor: React.FC<EditorProps> = ({ previous, editorRef }) => {
+  const handleImageUpload = async (blob: Blob, callback: ImageCallback) => {
+    try {
+      const formData = new FormData()
+      formData.append("file", blob)
+
+      const randomImageId = Math.floor(Math.random() * 1000)
+      const imageUrl = `https://picsum.photos/id/${randomImageId}/200/300`
+
+      console.log("Random Image URL:", imageUrl)
+
+      callback(imageUrl, "Alternative text")
+    } catch (error) {
+      console.error("Error uploading image:", error)
+    }
+  }
   return (
     <div>
       {editorRef && (
@@ -34,6 +51,7 @@ const MdEditor: React.FC<EditorProps> = ({ previous, editorRef }) => {
           // toolbarItems={toolbarItems}
           useCommandShortcut={true}
           plugins={[colorSyntax, [codeSyntaxHighlight, { highlighter: Prism }]]}
+          hooks={{ addImageBlobHook: handleImageUpload }}
         />
       )}
     </div>

@@ -15,7 +15,7 @@ export const mockQuestions: Array<Question> = [
     level: 4,
     level_image_url:
       "https://mobirise.com/bootstrap-template//profile-template/assets/images/timothy-paul-smith-256424-1200x800.jpg",
-    skills: ["javascript", "arrays"],
+    skills: ["javascript", "arrays", "typescript"],
     created_date: "2023-12-16T23:10:12",
     modified_date: "2023-12-16T23:10:12",
     list: [
@@ -230,7 +230,7 @@ export const mockQuestions: Array<Question> = [
     question_image_url: "",
     view_count: 32,
     close_status: false,
-    nickname: "testUser1",
+    nickname: "zi존",
     member_image_url:
       "https://mobirise.com/bootstrap-template//profile-template/assets/images/timothy-paul-smith-256424-1200x800.jpg",
     level: 4,

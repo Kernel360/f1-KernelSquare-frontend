@@ -21,7 +21,11 @@ import {
 
 export const answerHandler = [
   // 답변 생성
-  http.post<{ id: string }, CreateAnswerRequest, CreateAnswerResponse>(
+  http.post<
+    { id: string },
+    Omit<CreateAnswerRequest, "questionId">,
+    CreateAnswerResponse
+  >(
     `${process.env.NEXT_PUBLIC_SERVER}${RouteMap.answer.createAnswer()}`,
     async ({ request, params }) => {
       const questionId = Number(params.id)

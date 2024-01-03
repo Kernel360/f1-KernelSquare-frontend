@@ -1,6 +1,7 @@
 import { APIResponse } from "../api-response"
 
 export interface UpdateAnswerRequest {
+  answerId: number
   content: string
   image_url?: string
 }

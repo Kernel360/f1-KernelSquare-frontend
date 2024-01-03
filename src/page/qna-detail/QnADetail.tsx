@@ -10,8 +10,21 @@ import { useNickname } from "@/hooks/useUser"
 import { useRecoilState } from "recoil"
 import { AnswerEditMode } from "@/recoil/atoms/mode"
 import type { Answer } from "@/interfaces/answer"
+import useModal from "@/hooks/useModal"
+import { getCookie } from "cookies-next"
+import { ACCESS_TOKEN_KEY } from "@/constants/token"
+import LoginForm from "@/components/form/LoginForm"
 
 const QnADetail: React.FC<{ id: string }> = ({ id }) => {
+  const { openModal } = useModal()
+  const token = getCookie(ACCESS_TOKEN_KEY)
+
+  useEffect(() => {
+    if (!token) {
+      openModal({ content: <LoginForm /> })
+    }
+  }, [token, openModal])
+
   const { data, isPending } = questionQueries.useQuestionData({
     id: Number(id),
   })
@@ -24,18 +37,28 @@ const QnADetail: React.FC<{ id: string }> = ({ id }) => {
     list?.some((answer) => answer.created_by === nickname)
 
   useEffect(() => {
-    refetch()
-    if (handleCheckMyAnswer(data?.data?.list, member)) {
-      setIsAnswerEditMode(false)
-    } else {
-      setIsAnswerEditMode(true)
+    const fetchData = async () => {
+      await refetch()
+      if (handleCheckMyAnswer(data?.data?.list, member)) {
+        console.log("내 답변 있음")
+        setIsAnswerEditMode(false)
+      } else {
+        setIsAnswerEditMode(true)
+      }
     }
-  }, [])
+
+    fetchData()
+  }, [data, member, refetch, setIsAnswerEditMode])
 
   // 질문 작성자가 본인인지
   console.log("my post?", data?.data?.nickname === member)
+  if (data?.data?.nickname === member) setIsAnswerEditMode(false)
 
-  if (isPending) return <Loading />
+  if (typeof window === "undefined" || !token) {
+    return null
+  }
+
+  if (isPending || !data) return <Loading />
 
   if (data)
     return (
@@ -46,7 +69,7 @@ const QnADetail: React.FC<{ id: string }> = ({ id }) => {
           {isAnswerEditMode && (
             <>
               <Title title="My Answer" />
-              <MyAnswer id={Number(id)} />
+              <MyAnswer id={Number(id)} isEditMode={isAnswerEditMode} />
             </>
           )}
           <Title title="Answers" />

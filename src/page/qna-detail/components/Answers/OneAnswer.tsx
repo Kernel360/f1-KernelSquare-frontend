@@ -10,6 +10,10 @@ import voteAtoms from "@/recoil/atoms/vote"
 import { useEffect } from "react"
 import Button from "@/components/shared/button/Button"
 import { AnswerEditMode } from "@/recoil/atoms/mode"
+import { voteAnswer } from "@/service/answers"
+import { mockUsers } from "@/mocks/db/user"
+import { useQueryClient } from "@tanstack/react-query"
+import queryKey from "@/constants/queryKey"
 
 const MdViewer = dynamic(() => import("../Markdown/MdViewer"), {
   ssr: false,
@@ -26,8 +30,39 @@ const OneAnswer: React.FC<OneAnswerProps> = ({ answer, user }) => {
 
   const [vote, setVote] = useRecoilState(voteAtoms(answer?.created_by))
 
-  const handleRaise = () => setVote({ ...vote, value: vote.value + 1 })
-  const handleReduce = () => setVote({ ...vote, value: vote.value - 1 })
+  const queryClient = useQueryClient()
+
+  const handleRaise = () => {
+    setVote({ ...vote, value: vote.value + 1 })
+    try {
+      voteAnswer({
+        answerId: answer.answer_id,
+        member_id: 1,
+        status: 1,
+      }).then((res) => {
+        console.log("res", res.data.msg, res.config.data)
+        queryClient.invalidateQueries({ queryKey: [queryKey.answer] })
+      })
+    } catch (err) {
+      console.error("error", err)
+    }
+  }
+
+  const handleReduce = () => {
+    setVote({ ...vote, value: vote.value - 1 })
+    try {
+      voteAnswer({
+        answerId: answer.answer_id,
+        member_id: 1,
+        status: -1,
+      }).then((res) => {
+        console.log("res", res.data.msg, res.config.data)
+        queryClient.invalidateQueries({ queryKey: [queryKey.answer] })
+      })
+    } catch (err) {
+      console.error("error", err)
+    }
+  }
 
   useEffect(() => {
     setVote({ ...vote, value: answer.vote_count })
@@ -38,7 +73,7 @@ const OneAnswer: React.FC<OneAnswerProps> = ({ answer, user }) => {
   return (
     <div className="border-b-[1px] border-b-gray my-5">
       <div className="flex justify-between">
-        <div>
+        <form>
           <div className="flex justify-center">
             <VoteIcons.Up
               className="text-[30px] hover:text-primary"
@@ -52,7 +87,7 @@ const OneAnswer: React.FC<OneAnswerProps> = ({ answer, user }) => {
               onClick={handleReduce}
             />
           </div>
-        </div>
+        </form>
         <MdViewer content={answer.content} />
       </div>
       <div className="flex justify-end mb-5">
