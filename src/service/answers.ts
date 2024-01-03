@@ -51,23 +51,6 @@ export async function updateAnswer({
   return res
 }
 
-export async function updateVote({
-  answerId,
-  content,
-  image_url,
-}: UpdateAnswerRequest) {
-  const res = await apiInstance.post<
-    any,
-    AxiosResponse<UpdateAnswerResponse>,
-    Omit<UpdateAnswerRequest, "answerId">
-  >(RouteMap.answer.updateAnswer(answerId), {
-    content,
-    image_url,
-  })
-
-  return res
-}
-
 export async function voteAnswer({
   answerId,
   member_id,

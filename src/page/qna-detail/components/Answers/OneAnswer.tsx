@@ -34,6 +34,7 @@ const OneAnswer: React.FC<OneAnswerProps> = ({ answer, user }) => {
   const queryClient = useQueryClient()
 
   const { data, mutate } = useMutation({
+    mutationKey: ["ans"],
     mutationFn: ({
       answer_id,
       member_id,
@@ -84,7 +85,7 @@ const OneAnswer: React.FC<OneAnswerProps> = ({ answer, user }) => {
   return (
     <div className="border-b-[1px] border-b-gray my-5">
       <div className="flex justify-between">
-        <form>
+        <form className="mr-5">
           <div className="flex justify-center">
             <VoteIcons.Up
               className="text-[30px] hover:text-primary"
@@ -125,8 +126,8 @@ const OneAnswer: React.FC<OneAnswerProps> = ({ answer, user }) => {
           <div className="text-center">Lv. </div>
         </div>
       </div>
-      <div className="flex justify-between text-[#3887BE] cursor-pointer my-4">
-        <div>댓글 쓰기</div>
+      <div className="flex justify-end text-[#3887BE] cursor-pointer my-4">
+        {/* <div>댓글 쓰기</div> */}
         {isMyAnswer && (
           <div onClick={() => setIsAnswerEditMode((prev: boolean) => !prev)}>
             수정하기

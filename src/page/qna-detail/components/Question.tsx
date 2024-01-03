@@ -3,6 +3,8 @@ import { questionQueries } from "@/react-query/question"
 import Image from "next/image"
 import { getDate, getDeadline } from "@/util/getDate"
 import dynamic from "next/dynamic"
+import badge_url from "../../../assets/images/badges"
+import Tag from "@/components/shared/tag/Tag"
 
 const MdViewer = dynamic(() => import("./Markdown/MdViewer"), {
   ssr: false,
@@ -23,14 +25,16 @@ const Question: React.FC<{ id: number }> = ({ id }) => {
           <span className="text-[#444444]">{question.title}</span>
         </div>
         <div className="flex mb-5">
-          {question.skills.map((skill) => (
-            <div
-              key={Math.random() * 1000}
-              className="px-3 py-2 bg-slate-200 rounded mr-3"
-            >
-              {skill}
-            </div>
-          ))}
+          {question.skills.map((skill, index) => {
+            return (
+              <Tag
+                key={`${id}-${index}-${skill}`}
+                className="px-3 py-2 bg-slate-200 rounded mr-3"
+              >
+                {skill}
+              </Tag>
+            )
+          })}
         </div>
         <div className="flex justify-end mb-5">
           <div>
@@ -51,7 +55,17 @@ const Question: React.FC<{ id: number }> = ({ id }) => {
             <div className="px-2 bg-[#F3EDC8] rounded-md mb-1">
               {question.nickname}
             </div>
-            <div className="text-center">Lv. {question.level}</div>
+            <div className="text-center flex mt-2 justify-around">
+              <div>
+                <Image
+                  src={badge_url[question.level]}
+                  alt="질문자 등급 배지"
+                  width={20}
+                  height={20}
+                />
+              </div>
+              <div>Lv. {question.level}</div>
+            </div>
           </div>
         </div>
         <MdViewer content={question.content} />

@@ -10,21 +10,8 @@ import { useNickname } from "@/hooks/useUser"
 import { useRecoilState } from "recoil"
 import { AnswerEditMode } from "@/recoil/atoms/mode"
 import type { Answer } from "@/interfaces/answer"
-import useModal from "@/hooks/useModal"
-import { getCookie } from "cookies-next"
-import { ACCESS_TOKEN_KEY } from "@/constants/token"
-import LoginForm from "@/components/form/LoginForm"
 
 const QnADetail: React.FC<{ id: string }> = ({ id }) => {
-  const { openModal } = useModal()
-  const token = getCookie(ACCESS_TOKEN_KEY)
-
-  useEffect(() => {
-    if (!token) {
-      openModal({ content: <LoginForm /> })
-    }
-  }, [token, openModal])
-
   const { data, isPending } = questionQueries.useQuestionData({
     id: Number(id),
   })
@@ -52,10 +39,6 @@ const QnADetail: React.FC<{ id: string }> = ({ id }) => {
   // 질문 작성자가 본인인지
   if (data?.data?.nickname === member) setIsAnswerEditMode(false)
 
-  if (typeof window === "undefined" || !token) {
-    return null
-  }
-
   if (isPending || !data) return <Loading />
 
   if (data)
@@ -66,7 +49,6 @@ const QnADetail: React.FC<{ id: string }> = ({ id }) => {
           <Question id={Number(id)} />
           {isAnswerEditMode && (
             <>
-              <Title title="My Answer" />
               <MyAnswer id={Number(id)} isEditMode={isAnswerEditMode} />
             </>
           )}
