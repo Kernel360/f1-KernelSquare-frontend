@@ -10,15 +10,16 @@ import colorSyntax from "@toast-ui/editor-plugin-color-syntax"
 // 코드 하이라이트 지원
 import "@toast-ui/editor-plugin-color-syntax/dist/toastui-editor-plugin-color-syntax.css"
 // 전체 언어 지원
-import codeSyntaxHighlight from "@toast-ui/editor-plugin-code-syntax-highlight/dist/toastui-editor-plugin-code-syntax-highlight-all.js"
 import "@toast-ui/editor-plugin-code-syntax-highlight/dist/toastui-editor-plugin-code-syntax-highlight.css"
+import codeSyntaxHighlight from "@toast-ui/editor-plugin-code-syntax-highlight/dist/toastui-editor-plugin-code-syntax-highlight-all.js"
+
 import { type RefObject } from "react"
 
 interface EditorProps {
   previous?: string
   editorRef: RefObject<Editor>
 }
-
+Prism.languages.insertBefore
 type ImageCallback = (imageUrl: string, altText: string) => void
 
 const MdEditor: React.FC<EditorProps> = ({ previous, editorRef }) => {

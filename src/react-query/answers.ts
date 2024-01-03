@@ -31,5 +31,7 @@ const useVoteAnswer = ({ answerId, member_id, status }: CreateVoteRequest) =>
   useMutation({
     mutationKey: [queryKey.answer],
     mutationFn: () => voteAnswer({ answerId, member_id, status }),
+    onSuccess: () => console.log("투표 성공"),
+    onError: (error) => console.log("error", error.message),
   })
-export const memberQueries = { useCreateAnswer, useUpdateAnswer, useVoteAnswer }
+export const answerQueries = { useCreateAnswer, useUpdateAnswer, useVoteAnswer }

@@ -12,8 +12,9 @@ import Button from "@/components/shared/button/Button"
 import { AnswerEditMode } from "@/recoil/atoms/mode"
 import { voteAnswer } from "@/service/answers"
 import { mockUsers } from "@/mocks/db/user"
-import { useQueryClient } from "@tanstack/react-query"
+import { useMutation, useQueryClient } from "@tanstack/react-query"
 import queryKey from "@/constants/queryKey"
+import { answerQueries } from "@/react-query/answers"
 
 const MdViewer = dynamic(() => import("../Markdown/MdViewer"), {
   ssr: false,
@@ -32,17 +33,27 @@ const OneAnswer: React.FC<OneAnswerProps> = ({ answer, user }) => {
 
   const queryClient = useQueryClient()
 
+  const { data, mutate } = useMutation({
+    mutationFn: ({
+      answer_id,
+      member_id,
+      status,
+    }: {
+      answer_id: number
+      member_id: number
+      status: 1 | -1
+    }) => voteAnswer({ answerId: answer_id, member_id, status }),
+    onSuccess: () => console.log("투표 성공"),
+    onError: (error) => console.log("error", error.message),
+  })
+
   const handleRaise = () => {
     setVote({ ...vote, value: vote.value + 1 })
     try {
-      voteAnswer({
-        answerId: answer.answer_id,
-        member_id: 1,
-        status: 1,
-      }).then((res) => {
-        console.log("res", res.data.msg, res.config.data)
-        queryClient.invalidateQueries({ queryKey: [queryKey.answer] })
-      })
+      mutate({ answer_id: answer.answer_id, member_id: 1, status: 1 })
+      console.log("[set vote]", { data })
+
+      queryClient.invalidateQueries({ queryKey: [queryKey.answer] })
     } catch (err) {
       console.error("error", err)
     }

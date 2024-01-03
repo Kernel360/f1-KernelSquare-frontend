@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "testBuild": "cross-env CI=false next build "
   },
   "dependencies": {
     "@emotion/react": "^11.11.1",
@@ -49,6 +50,7 @@
     "@types/react-paginate": "^7.1.4",
     "@types/validator": "^13.11.7",
     "autoprefixer": "^10.0.1",
+    "cross-env": "^7.0.3",
     "eslint": "^8",
     "eslint-config-next": "14.0.4",
     "msw": "^2.0.10",

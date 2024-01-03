@@ -3,7 +3,7 @@ import {
   CreateAnswerResponse,
 } from "@/interfaces/dto/answer/create-answer.dto"
 import { apiInstance } from "./axios"
-import { AxiosResponse } from "axios"
+import { AxiosError, AxiosResponse } from "axios"
 import { RouteMap } from "./route-map"
 import {
   UpdateAnswerRequest,
@@ -13,6 +13,7 @@ import {
   CreateVoteRequest,
   CreateVoteResponse,
 } from "@/interfaces/dto/answer/create-vote.dto"
+import { APIResponse } from "@/interfaces/dto/api-response"
 
 export async function createAnswer({
   questionId,
@@ -72,14 +73,24 @@ export async function voteAnswer({
   member_id,
   status,
 }: CreateVoteRequest) {
-  const res = await apiInstance.post<
-    any,
-    AxiosResponse<CreateVoteResponse>,
-    Omit<CreateVoteRequest, "answerId">
-  >(RouteMap.answer.voteAnswer(answerId), {
-    member_id,
-    status,
-  })
+  const res = await apiInstance
+    .post<
+      any,
+      AxiosResponse<CreateVoteResponse>,
+      Omit<CreateVoteRequest, "answerId">
+    >(RouteMap.answer.voteAnswer(answerId), {
+      member_id,
+      status,
+    })
+    .catch((err) => {
+      if (err instanceof AxiosError) {
+        const { response } = err as AxiosError<APIResponse>
+
+        console.log({ response: response?.data })
+      }
+      console.log("err", err)
+      throw err
+    })
 
   return res
 }

@@ -40,7 +40,6 @@ const QnADetail: React.FC<{ id: string }> = ({ id }) => {
     const fetchData = async () => {
       await refetch()
       if (handleCheckMyAnswer(data?.data?.list, member)) {
-        console.log("내 답변 있음")
         setIsAnswerEditMode(false)
       } else {
         setIsAnswerEditMode(true)
@@ -51,7 +50,6 @@ const QnADetail: React.FC<{ id: string }> = ({ id }) => {
   }, [data, member, refetch, setIsAnswerEditMode])
 
   // 질문 작성자가 본인인지
-  console.log("my post?", data?.data?.nickname === member)
   if (data?.data?.nickname === member) setIsAnswerEditMode(false)
 
   if (typeof window === "undefined" || !token) {

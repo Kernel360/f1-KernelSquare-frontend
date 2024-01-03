@@ -134,36 +134,73 @@ export const answerHandler = [
     `${process.env.NEXT_PUBLIC_SERVER}${RouteMap.answer.voteAnswer()}`,
     async ({ request, params }) => {
       const answerId = Number(params.id)
+      console.log("mock", mockAnswers, mockQuestions)
+      try {
+        const { member_id, status } = await request.json()
+        console.log(answerId, member_id, status)
 
-      const { member_id, status } = await request.json()
+        // 답변 목록에서
+        const targetAnswer = mockAnswers.find(
+          (answer) => answer.answer_id === answerId,
+        )
+        // 질문 목록에서
+        const targetQuestion = mockQuestions.find((question) =>
+          question.list.some((answer) => answer.answer_id === answerId),
+        )
 
-      // 답변 목록에서
-      const targetAnswer = mockAnswers.find(
-        (answer) => answer.answer_id === answerId,
-      )!
-      // 질문 목록에서
-      const targetQuestion = mockQuestions.find((question) =>
-        question.list.some((answer) => answer.answer_id === answerId),
-      )!
+        // const targetMember = mockUsers.find((member) => member.id === member_id)
 
-      const targetMember = mockUsers.find((member) => member.id === member_id)
+        if (!targetQuestion)
+          return HttpResponse.json(
+            {
+              code: 500,
+              msg: "해당 질문이 존재하지 않습니다.",
+            },
+            {
+              status: HttpStatusCode.InternalServerError,
+            },
+          )
 
-      targetAnswer.vote_count += status
+        if (!targetAnswer)
+          return HttpResponse.json(
+            {
+              code: 500,
+              msg: "해당 답변이 존재하지 않습니다.",
+            },
+            {
+              status: HttpStatusCode.InternalServerError,
+            },
+          )
 
-      const targetInQuestoinList = targetQuestion.list.find(
-        (answer) => answer.answer_id === answerId,
-      )!
-      targetInQuestoinList.vote_count += status
+        targetAnswer.vote_count += status
 
-      return HttpResponse.json(
-        {
-          code: 2244,
-          msg: "투표 생성 성공",
-        },
-        {
-          status: HttpStatusCode.Ok,
-        },
-      )
+        const targetInQuestoinList = targetQuestion.list.find(
+          (answer) => answer.answer_id === answerId,
+        )!
+        targetInQuestoinList.vote_count += status
+
+        return HttpResponse.json(
+          {
+            code: 2244,
+            msg: "투표 생성 성공",
+          },
+          {
+            status: HttpStatusCode.Ok,
+          },
+        )
+      } catch (err) {
+        console.log(`%cError`, `background:red; color:#fff`)
+        console.log({ err })
+        return HttpResponse.json(
+          {
+            code: 500,
+            msg: "투표 생성 실패",
+          },
+          {
+            status: HttpStatusCode.InternalServerError,
+          },
+        )
+      }
     },
   ),
 ]
