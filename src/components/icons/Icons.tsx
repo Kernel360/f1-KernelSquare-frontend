@@ -8,8 +8,14 @@ import { HiOutlineChatBubbleLeftRight } from "react-icons/hi2"
 import { TbMessage2Question } from "react-icons/tb"
 import { GrDocumentUser } from "react-icons/gr"
 import { BsPencilSquare } from "react-icons/bs"
+import { TbPencilPlus } from "react-icons/tb"
 
-type IconsKey = "Search" | "Notification" | "UserProfile" | "EditIntro"
+type IconsKey =
+  | "Search"
+  | "Notification"
+  | "UserProfile"
+  | "EditIntro"
+  | "PostQuestion"
 type NavigationIconsKey = "QnA" | "Chat" | "Notice" | "FaQ" | "MyPage"
 export type Icon = (props: IconBaseProps) => JSX.Element
 
@@ -25,6 +31,9 @@ export const Icons: Record<IconsKey, Icon> = {
   },
   EditIntro(props) {
     return <BsPencilSquare {...props} />
+  },
+  PostQuestion(props) {
+    return <TbPencilPlus {...props} />
   },
 }
 
