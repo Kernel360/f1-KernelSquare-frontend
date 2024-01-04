@@ -19,28 +19,38 @@ const QnADetail: React.FC<{ id: string }> = ({ id }) => {
 
   const { data: member, refetch } = useNickname()
 
+  const { data: answers, isPending: isAnswerPending } =
+    answerQueries.useGetAnswers({
+      questionId: Number(id),
+    })
+
   const [isAnswerEditMode, setIsAnswerEditMode] = useRecoilState(AnswerEditMode)
 
-  const handleCheckMyAnswer = (list?: Answer[], nickname?: string) =>
-    list?.some((answer) => answer.created_by === nickname)
+  const handleCheckMyAnswer = (list: Answer[], nickname?: string) =>
+    list?.some((answer) => {
+      console.log("answer", answer.created_by, nickname)
+      return answer.created_by === nickname
+    })
 
   useEffect(() => {
     const fetchData = async () => {
       await refetch()
-      if (handleCheckMyAnswer(data?.data?.list, member)) {
-        setIsAnswerEditMode(false)
-      } else {
+      if (
+        answers?.data &&
+        member &&
+        !handleCheckMyAnswer(answers.data, member)
+      ) {
         setIsAnswerEditMode(true)
       }
     }
 
     fetchData()
-  }, [data, member, refetch, setIsAnswerEditMode])
+  }, [answers, data, member, refetch, setIsAnswerEditMode])
 
   // 질문 작성자가 본인인지
   if (data?.data?.nickname === member) setIsAnswerEditMode(false)
 
-  if (isPending || !data) return <Loading />
+  if (isPending || isAnswerPending || !data) return <Loading />
 
   if (data)
     return (
@@ -53,10 +63,7 @@ const QnADetail: React.FC<{ id: string }> = ({ id }) => {
               <MyAnswer id={Number(id)} isEditMode={isAnswerEditMode} />
             </>
           )}
-          <div className="flex text-[24px]">
-            <Title title="Answers" />
-            <div className="text-slate-400 ml-3">{data?.data?.list.length}</div>
-          </div>
+          <Title title="Answers" />
           <AnswerList user={member} id={Number(id)} />
         </div>
       </div>

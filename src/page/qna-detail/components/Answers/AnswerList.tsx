@@ -1,6 +1,5 @@
 "use client"
 
-import { Answer } from "@/interfaces/answer"
 import OneAnswer from "./OneAnswer"
 import { answerQueries } from "@/react-query/answers"
 import ContentLoading from "@/components/shared/animation/ContentLoading"
@@ -16,8 +15,6 @@ const AnswerList: React.FC<AnswerProps> = ({ user, id }) => {
   })
 
   if (isPending) return <Loading />
-
-  console.log("답변 길이", data?.data, data?.data?.length)
 
   if (data)
     return (

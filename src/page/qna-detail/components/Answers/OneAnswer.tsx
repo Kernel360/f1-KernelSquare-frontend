@@ -7,17 +7,19 @@ import { VoteIcons } from "@/components/icons/Icons"
 import dynamic from "next/dynamic"
 import { useRecoilState } from "recoil"
 import voteAtoms from "@/recoil/atoms/vote"
-import { useEffect } from "react"
+import { useEffect, useRef, useState } from "react"
 import Button from "@/components/shared/button/Button"
-import { AnswerEditMode } from "@/recoil/atoms/mode"
 import { voteAnswer } from "@/service/answers"
-import { mockUsers } from "@/mocks/db/user"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import queryKey from "@/constants/queryKey"
-import { answerQueries } from "@/react-query/answers"
 import badge_url from "@/assets/images/badges"
+import type { Editor } from "@toast-ui/react-editor"
 
 const MdViewer = dynamic(() => import("../Markdown/MdViewer"), {
+  ssr: false,
+})
+
+const MdEditor = dynamic(() => import("../Markdown/MdEditor"), {
   ssr: false,
 })
 
@@ -30,6 +32,9 @@ const OneAnswer: React.FC<OneAnswerProps> = ({ answer, user }) => {
   const isEdited = answer.created_date !== answer.modified_date
   const isMyAnswer = user === answer.created_by
 
+  const editorRef = useRef<Editor>(null)
+
+  // 답변 투표
   const [vote, setVote] = useRecoilState(voteAtoms(answer?.created_by))
 
   const queryClient = useQueryClient()
@@ -81,7 +86,8 @@ const OneAnswer: React.FC<OneAnswerProps> = ({ answer, user }) => {
     setVote({ ...vote, value: answer.vote_count })
   }, [])
 
-  const [isAnswerEditMode, setIsAnswerEditMode] = useRecoilState(AnswerEditMode)
+  // 답변 수정
+  const [isAnswerEditMode, setIsAnswerEditMode] = useState(false)
 
   return (
     <div className="border-b-[1px] border-b-gray my-5">
@@ -101,7 +107,18 @@ const OneAnswer: React.FC<OneAnswerProps> = ({ answer, user }) => {
             />
           </div>
         </form>
-        <MdViewer content={answer.content} />
+        {isAnswerEditMode ? (
+          <form>
+            <MdEditor previous={answer.content} editorRef={editorRef} />
+            <div className="flex justify-center my-5">
+              <Button buttonTheme="primary" className="p-2 w-[50px]">
+                Save
+              </Button>
+            </div>
+          </form>
+        ) : (
+          <MdViewer content={answer.content} />
+        )}
       </div>
       <div className="flex justify-end mb-5">
         <div className="max-h-[52px] flex flex-col justify-center">

@@ -17,6 +17,8 @@ import { User } from "./user"
  *
  * **create_by** 답변한 유저 닉네임(string)
  *
+ * **author_level** 답변한 유저 레벨(number)
+ *
  * **answer_image_url** 답변에 포함된 이미지(string)
  *
  * **created_date** 답변 생성일(Date)
@@ -24,6 +26,8 @@ import { User } from "./user"
  * **modified_date** 답변 수정일(Date)
  *
  * **vote_count** 답변 추천수(number)
+ *
+ * **vote_yn** 답변 투표 여부(boolean)
  */
 export interface Answer extends Pick<User, "image_url"> {
   answer_id: number
@@ -33,8 +37,10 @@ export interface Answer extends Pick<User, "image_url"> {
   rank_image_url: string
   member_image_url: string
   created_by: string
+  author_level: number
   answer_image_url: string
   created_date: string
   modified_date: string
   vote_count: number
+  vote_yn: boolean
 }
