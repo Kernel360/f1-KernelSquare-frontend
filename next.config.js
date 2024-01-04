@@ -23,14 +23,6 @@ const nextConfig = {
       },
     ],
   },
-  async rewrites() {
-    return [
-      {
-        source: "/image_api/upload_url",
-        destination: `${process.env.NEXT_PUBLIC_IMAGE_UPLOAD_SERVER}/accounts/${process.env.NEXT_PUBLIC_CLOUDFLARE_ACCOUNT_ID}/images/v2/direct_upload`,
-      },
-    ]
-  },
 }
 
 /*
