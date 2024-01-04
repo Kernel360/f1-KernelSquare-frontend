@@ -33,6 +33,7 @@ body {
 /* scroll-bar */
 ::-webkit-scrollbar {
   width: 8px;
+  height: 8px;
 }
 
 ::-webkit-scrollbar-track {
@@ -42,4 +43,23 @@ body {
 ::-webkit-scrollbar-thumb {
   background: var(--colors-gray);
   border-radius: 16px;
+}
+
+/* react toastify */
+.Toastify__toast-container--top-center {
+  margin-top: 2rem !important;
+}
+
+.Toastify__toast-container--bottom-center {
+  margin-top: 2rem !important;
+}
+
+@media only screen and (max-width: 480px) {
+  .Toastify__toast-container--top-center {
+    margin-top: 2rem !important;
+  }
+
+  .Toastify__toast-container--bottom-center {
+    margin-bottom: 2rem !important;
+  }
 }

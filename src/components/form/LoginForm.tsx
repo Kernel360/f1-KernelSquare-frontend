@@ -12,8 +12,8 @@ import LabelDivider from "../shared/divider/LabelDivider"
 import useModal from "@/hooks/useModal"
 import SocialButton from "../SocialButton"
 import { Validator } from "@/util/validate"
-import { login } from "@/service/auth"
-import { useQueryClient } from "@tanstack/react-query"
+import { revalidatePage } from "@/util/actions/revalidatePage"
+import { useClientSession } from "@/hooks/useClientSession"
 
 function LoginForm() {
   const {
@@ -22,7 +22,7 @@ function LoginForm() {
     formState: { errors, isValid },
   } = useForm<LoginFormData>()
 
-  const queryClient = useQueryClient()
+  const { clientSessionLogin } = useClientSession()
 
   const { closeModal } = useModal()
 
@@ -34,11 +34,18 @@ function LoginForm() {
 
   const onSubmit = async (data: LoginFormData) => {
     try {
-      await login({ email: data.email, password: data.password })
+      /*
+        recoil selector의 login 함수
+        => 로그인 api 성공시 설정되는 jwt 쿠키를 활용하여
+           user atom 에 payload 저장 /
+           만료시간동안 별도의 fetch를 하지 않기 위해
+           프론트에서 사용 할 암호화 된 쿠키를 같이 설정
+           (새로고침 시 암호화 된 쿠키가 있을 경우 해당 쿠키를 decrypt 하여 사용)
+        => userAtom 을 구독하고 있는 UserArea 에서 갱신 발생
+      */
+      await clientSessionLogin({ email: data.email, password: data.password })
 
-      // update
-      // react query 유저 쿼리 캐시 초기화
-      queryClient.invalidateQueries({ queryKey: ["user"] })
+      await revalidatePage("*")
 
       closeModal()
     } catch (error) {

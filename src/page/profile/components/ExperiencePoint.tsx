@@ -1,3 +1,5 @@
+"use client"
+
 import levelStandard from "@/constants/levelStandard"
 import { twJoin } from "tailwind-merge"
 
@@ -11,7 +13,7 @@ function ExperiencePoint({ level, exp }: ExperienceProps) {
   const length = (exp / limit) * 100
   console.log("len", length)
   const dynamic_width = twJoin([
-    `absolute top-0 z-5 bg-primary rounded-md h-[25px] text-white text-center w-[${length}%]`,
+    `absolute top-0 z-5 bg-primary rounded-md h-[25px] text-white text-center`,
     length === 0 && "hidden",
   ])
   return (
@@ -22,7 +24,9 @@ function ExperiencePoint({ level, exp }: ExperienceProps) {
         <div className="m-auto w-full text-center flex justify-center">
           <div className="relative w-[90%] mx-[10px]">
             <div className="z-0 bg-gray-300 rounded-md h-[25px] "></div>
-            <div className={dynamic_width}>{exp}</div>
+            <div className={dynamic_width} style={{ width: `${length}%` }}>
+              {exp}
+            </div>
           </div>
         </div>
         <div className="w-4/24 text-center ml-4">{limit}</div>
