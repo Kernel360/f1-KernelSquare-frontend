@@ -53,3 +53,5 @@ export const techTagList: Array<TechTag> = [
   "Nextjs",
   "CI/CD",
 ]
+
+export const MAXIMUM_SELECT_TAG_LENGTH = 5

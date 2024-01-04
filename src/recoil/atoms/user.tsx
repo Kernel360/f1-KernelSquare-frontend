@@ -1,4 +1,3 @@
-import { AppServerSession } from "@/util/session/appServerSession"
 import { atom, selector } from "recoil"
 import jwt, { JwtPayload } from "jsonwebtoken"
 import { getCookie } from "cookies-next"
@@ -6,92 +5,68 @@ import { ACCESS_TOKEN_KEY } from "@/constants/token"
 import { getMemeber } from "@/service/member"
 import { login } from "@/service/auth"
 import { User } from "@/interfaces/user"
+import { AxiosError } from "axios"
+import { decrypt, encrypt } from "@/util/crypto"
+import { deleteCookie, setAuthCookie } from "@/util/actions/cookie"
+
+const cookiePayloadKey = "kernal-auth"
 
 export const userAtom = atom<User | null>({
   key: "user-atom",
-  default: null,
+  default: getCookie(cookiePayloadKey)
+    ? JSON.parse(decrypt(getCookie(cookiePayloadKey)!))
+    : null,
 })
 
-export const authSession = selector({
+export const userClientSession = selector({
   key: "user-client-session",
-  get: ({ get, getCallback }) => {
-    const update = getCallback(({ reset, snapshot }) => async () => {
-      const userSnapshot = await snapshot.getPromise(userAtom)
-
-      const sessionUser = AppServerSession.getUser()
-
-      if (userSnapshot && !sessionUser) {
-        reset(userAtom)
-      }
-    })
-
-    const getUser = getCallback(({ snapshot }) => async () => {
-      await update()
-
-      const userSnapshot = await snapshot.getPromise(userAtom)
-
-      if (userSnapshot) return userSnapshot
-
-      return await syncCookie()
-    })
-
-    const syncCookie = getCallback(({ set, snapshot }) => async () => {
-      const token = getCookie(ACCESS_TOKEN_KEY)
-
-      if (!token) {
-        AppServerSession.clear()
-
-        set(userAtom, null)
-
-        return null
-      }
-
-      const { id } = jwt.decode(token) as JwtPayload & { id: number }
-
-      try {
-        const res = await getMemeber({ id })
-
-        const user = res.data.data
-
-        AppServerSession.set({
-          token,
-          maxAge: 60 * 60,
-          payload: { ...user! },
-        })
-
-        set(userAtom, { ...user! })
-
-        return user
-      } catch (error) {
-        return null
-      }
-    })
-
-    const loginSession = getCallback(
-      () =>
+  get: ({ getCallback }) => {
+    const clientSessionLogin = getCallback(
+      ({ set }) =>
         async ({ email, password }: { email: string; password: string }) => {
           try {
             await login({ email, password })
 
-            await syncCookie()
+            const token = getCookie(ACCESS_TOKEN_KEY)
+
+            if (token) {
+              const { id, exp } = jwt.decode(token) as JwtPayload & {
+                id: number
+              }
+
+              const res = await getMemeber({ id })
+              const payload = res.data.data ?? null
+
+              if (payload) {
+                const stringify = JSON.stringify(payload)
+                const encryptedPayload = encrypt(stringify)
+
+                await setAuthCookie(encryptedPayload, exp!)
+
+                set(userAtom, payload)
+              }
+            }
           } catch (error) {
+            if (!(error instanceof AxiosError)) {
+              console.log({ sessionError: error })
+            }
+
             throw error
           }
         },
     )
 
-    return {
-      getUser,
-      syncCookie,
-      update,
-      loginSession,
-    }
-  },
-})
+    const clientSessionLogout = getCallback(({ set }) => async () => {
+      if (getCookie(cookiePayloadKey)) {
+        await deleteCookie(cookiePayloadKey)
+      }
 
-export const userSelector = selector({
-  key: "user-selector",
-  get: async ({ get }) => {
-    return await get(authSession).getUser()
+      set(userAtom, null)
+    })
+
+    return {
+      clientSessionLogin,
+      clientSessionLogout,
+    }
   },
 })

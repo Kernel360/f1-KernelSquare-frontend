@@ -11,6 +11,7 @@ import {
 import { AxiosResponse } from "axios"
 
 export async function getMemeber({ id }: GetMemberRequest) {
+  console.log("[getMember] isServer: ", typeof window === "undefined")
   const res = await apiInstance.get<GetMemberResponse>(
     RouteMap.member.getMember(id),
   )

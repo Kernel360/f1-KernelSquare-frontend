@@ -14,6 +14,7 @@ import {
 import Tag from "./Tag"
 import { MdClose } from "react-icons/md"
 import { questionEditorState } from "@/recoil/atoms/questionEditor"
+import { toast } from "react-toastify"
 
 interface TagState {
   renderTagList: Array<TechTag>
@@ -24,12 +25,14 @@ interface SelectableTagListProps {
   tagList?: Array<TechTag>
   initialSelectedTagList?: TagState["selectedTagList"]
   searchable?: boolean
+  maximumLength?: number
 }
 
 function SelectableTagList({
   tagList,
   initialSelectedTagList,
   searchable = false,
+  maximumLength,
 }: SelectableTagListProps) {
   const renderedTagList = useRecoilValue(renderedTagListSelector)
   const selectedTagList = useRecoilValue(selectedTagListAtom)
@@ -71,6 +74,30 @@ function SelectableTagList({
             <li key={`${tag}-${index}`}>
               <SelectableTag
                 tag={tag}
+                {...(maximumLength && {
+                  onBeforeSelect({
+                    maybeSelectedTagList,
+                    maybeSelected,
+                    next,
+                    disallow,
+                  }) {
+                    if (
+                      maybeSelectedTagList?.length > maximumLength &&
+                      maybeSelected
+                    ) {
+                      disallow()
+
+                      toast.error(
+                        `태그는 최대 ${maximumLength}개 선택 가능합니다`,
+                        { position: "bottom-center" },
+                      )
+
+                      return
+                    }
+
+                    next()
+                  },
+                })}
                 onSelect={({ selected, tag }) => {
                   selected ? selectTag(tag) : unSelectTag(tag)
                 }}

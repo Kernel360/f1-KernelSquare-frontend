@@ -10,12 +10,12 @@ import { Editor } from "@toast-ui/react-editor"
 import { toast } from "react-toastify"
 import ListLoading from "@/components/shared/animation/ListLoading"
 import { TechTag } from "@/interfaces/tech-tag"
-import { techTagList } from "@/constants/editor"
+import { MAXIMUM_SELECT_TAG_LENGTH, techTagList } from "@/constants/editor"
 import SelectableTagList from "@/components/shared/tag/SelectableTagList"
 import { useRouter } from "next/navigation"
 import { useQueryClient } from "@tanstack/react-query"
 import { createMockQuestion } from "@/mocks/handler/question"
-import { useRecoilValue, useRecoilValueLoadable } from "recoil"
+import { useRecoilValue } from "recoil"
 import { tagListState } from "@/recoil/atoms/tag"
 import {
   questionEditorLoadedAtom,
@@ -25,7 +25,7 @@ import {
   DeleteImageLinkFormMarkdownPayload,
   deleteImageLinkFromMarkdownEventName,
 } from "./AskQuestionPageControl"
-import { userAtom, userSelector } from "@/recoil/atoms/user"
+import { useClientSession } from "@/hooks/useClientSession"
 
 export interface AskQuestionFormData {
   title: string
@@ -42,6 +42,8 @@ export type SubmitAskQuestionData = AskQuestionFormData &
   AskQuestionDataExceptFormdata
 
 function AskQuestionForm() {
+  const { user } = useClientSession()
+
   const { register, setValue, setFocus, handleSubmit } =
     useForm<AskQuestionFormData>()
   const editorRef = useRef<Editor>(null)
@@ -55,9 +57,6 @@ function AskQuestionForm() {
   } = useRecoilValue(questionEditorState)
 
   const { clearTagList } = useRecoilValue(tagListState)
-
-  const user = useRecoilValue(userAtom)
-  const userLoadable = useRecoilValueLoadable(userSelector)
 
   const queryClient = useQueryClient()
   const { replace } = useRouter()
@@ -204,7 +203,11 @@ function AskQuestionForm() {
             </AskQuestionSection.Label>
             <SelectableTagList.SummarizedSelectedTagList />
           </div>
-          <SelectableTagList searchable tagList={techTagList} />
+          <SelectableTagList
+            searchable
+            tagList={techTagList}
+            maximumLength={MAXIMUM_SELECT_TAG_LENGTH}
+          />
         </AskQuestionSection>
         {/* content section */}
         <Spacing size={20} />

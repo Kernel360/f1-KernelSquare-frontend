@@ -4,8 +4,16 @@ import Inner from "@/components/shared/Inner"
 import { matchSegmentToLayoutMetaKey } from "@/util/layoutMeta"
 import Link from "next/link"
 import { useSelectedLayoutSegment } from "next/navigation"
-import UserArea from "./UserArea"
 import SearchArea from "./search/SearchArea"
+import Skeleton from "react-loading-skeleton"
+import dynamic from "next/dynamic"
+
+const UserArea = dynamic(() => import("./UserArea"), {
+  ssr: false,
+  loading(loadingProps) {
+    return <Skeleton width={128} height={28} />
+  },
+})
 
 function Header() {
   const currentSegment = useSelectedLayoutSegment()

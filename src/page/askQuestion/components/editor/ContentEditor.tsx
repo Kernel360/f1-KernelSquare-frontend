@@ -20,13 +20,13 @@ import { uploadImage } from "@/service/upload"
 import { toast } from "react-toastify"
 import { AxiosError, HttpStatusCode } from "axios"
 import { UploadImageResponse } from "@/interfaces/dto/upload/upload-image.dto"
-import { useQueryClient } from "@tanstack/react-query"
 import { revalidatePage } from "@/util/actions/revalidatePage"
 import { useRecoilValue } from "recoil"
 import {
   fileUploadImageLinksSelector,
   questionEditorState,
 } from "@/recoil/atoms/questionEditor"
+import { useClientSession } from "@/hooks/useClientSession"
 
 type MdTabMode = "write" | "preview"
 
@@ -36,7 +36,7 @@ const ContentEditor = (
 ) => {
   const editorRef = ref as EditorRefObj
 
-  const queryClient = useQueryClient()
+  const { clientSessionLogout } = useClientSession()
 
   const { getFileUploadImageLinks, addFileUploadImageLinks } = useRecoilValue(
     fileUploadImageLinksSelector,
@@ -127,7 +127,7 @@ const ContentEditor = (
             position: "top-center",
           })
 
-          queryClient.invalidateQueries({ queryKey: ["user"] })
+          await clientSessionLogout()
 
           editorRef.current?.getInstance().eventEmitter.emit("pageOut")
           await revalidatePage("/question")

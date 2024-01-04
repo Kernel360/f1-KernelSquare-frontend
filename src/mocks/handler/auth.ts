@@ -23,6 +23,7 @@ import { jwtSign } from "@/util/actions/jwt"
 import { LogoutResponse } from "@/interfaces/dto/auth/logout.dto"
 import { ACCOUNT_STATUS } from "@/interfaces/user"
 import { setCookie } from "cookies-next"
+import { deleteCookie } from "@/util/actions/cookie"
 
 const validator = new Validator()
 
@@ -242,11 +243,9 @@ export const authHandler = [
   ),
   http.post<PathParams, DefaultBodyType, LogoutResponse>(
     `${process.env.NEXT_PUBLIC_SERVER}${RouteMap.auth.logout}`,
-    ({ request, cookies }) => {
-      // if (typeof window !== "undefined") {
-      //   deleteCookie(ACCESS_TOKEN_KEY)
-      //   deleteCookie(REFRESH_TOKEN_KEY)
-      // }
+    ({ request }) => {
+      deleteCookie(ACCESS_TOKEN_KEY)
+      deleteCookie(REFRESH_TOKEN_KEY)
 
       return HttpResponse.json(
         { code: HttpStatusCode.Ok, msg: "로그아웃 성공" },
