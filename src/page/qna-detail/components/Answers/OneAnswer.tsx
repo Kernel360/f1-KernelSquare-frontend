@@ -108,8 +108,6 @@ const OneAnswer: React.FC<OneAnswerProps> = ({ answer, user }) => {
       queryClient.invalidateQueries({
         queryKey: ["answer", answer.question_id],
       })
-
-      // 답변 목록에서
     } catch (err) {
       console.error("error", err)
     }
