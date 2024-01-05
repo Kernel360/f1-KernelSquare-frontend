@@ -22,6 +22,8 @@ import useModal from "@/hooks/useModal"
 import { getCookie } from "cookies-next"
 import { ACCESS_TOKEN_KEY } from "@/constants/token"
 import LoginForm from "@/components/form/LoginForm"
+import { useProgressModal } from "@/hooks/useProgressModal"
+import { sleep } from "@/util/sleep"
 
 const MdEditor = dynamic(() => import("./Markdown/MdEditor"), {
   ssr: false,
@@ -48,15 +50,16 @@ const MyAnswer: React.FC<{
 
   // const [isAnswerMode, setIsAnswerMode] = useRecoilState(AnswerMode)
 
-  const handleSubmitValue = () => {
-    const submitValue: string = editorRef.current?.getInstance().getMarkdown()
+  const handleSubmitValue = async () => {
+    const submitValue = editorRef.current?.getInstance().getMarkdown()
     console.log("md", submitValue)
+
     try {
       if (member_id)
         createAnswer({
           questionId: id,
           member_id,
-          content: submitValue,
+          content: submitValue || "",
         }).then((res) => {
           console.log("res", res.data.msg, res.config.data)
           queryClient.invalidateQueries({ queryKey: ["answer", id] })

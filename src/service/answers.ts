@@ -59,14 +59,24 @@ export async function updateAnswer({
   content,
   image_url,
 }: UpdateAnswerRequest) {
-  const res = await apiInstance.post<
-    any,
-    AxiosResponse<UpdateAnswerResponse>,
-    Omit<UpdateAnswerRequest, "answerId">
-  >(RouteMap.answer.createAnswer(answerId), {
-    content,
-    image_url,
-  })
+  const res = await apiInstance
+    .put<
+      any,
+      AxiosResponse<UpdateAnswerResponse>,
+      Omit<UpdateAnswerRequest, "answerId">
+    >(RouteMap.answer.updateAnswer(answerId), {
+      content,
+      image_url,
+    })
+    .catch((err) => {
+      if (err instanceof AxiosError) {
+        const { response } = err as AxiosError<APIResponse>
+
+        console.log({ response: response?.data })
+      }
+      console.log("err", err)
+      throw err
+    })
 
   return res
 }

@@ -9,11 +9,13 @@ import { useRecoilState } from "recoil"
 import voteAtoms from "@/recoil/atoms/vote"
 import { useEffect, useRef, useState } from "react"
 import Button from "@/components/shared/button/Button"
-import { voteAnswer } from "@/service/answers"
+import { updateAnswer, voteAnswer } from "@/service/answers"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import queryKey from "@/constants/queryKey"
 import badge_url from "@/assets/images/badges"
 import type { Editor } from "@toast-ui/react-editor"
+import { useForm } from "react-hook-form"
+import mockAnswers from "@/mocks/db/answers"
 
 const MdViewer = dynamic(() => import("../Markdown/MdViewer"), {
   ssr: false,
@@ -87,25 +89,32 @@ const OneAnswer: React.FC<OneAnswerProps> = ({ answer, user }) => {
   }, [])
 
   // 답변 수정
+  const { handleSubmit } = useForm()
   const [isAnswerEditMode, setIsAnswerEditMode] = useState(false)
 
-  // const handleEditValue = () => {
-  //   const submitValue: string = editorRef.current?.getInstance().getMarkdown()
-  //   console.log("md", submitValue)
-  //   try {
-  //     if (answerId)
-  //       updateAnswer({
-  //         answerId,
-  //         content: submitValue,
-  //       }).then((res) => {
-  //         console.log("res", res.data.msg, res.config.data)
-  //         queryClient.invalidateQueries({ queryKey: [queryKey.answer] })
-  //       })
-  //   } catch (err) {
-  //     console.error("error", err)
-  //   }
-  //   setIsAnswerMode(false)
-  // }
+  const handleEditValue = async () => {
+    const submitValue = editorRef.current?.getInstance().getMarkdown()
+    console.log("md", submitValue)
+    try {
+      const res = await updateAnswer({
+        answerId: answer.answer_id,
+        content: submitValue as string,
+      })
+
+      console.log("res", res.data.msg, JSON.parse(res.config.data).content)
+
+      answer.content = JSON.parse(res.config.data).content
+      answer.image_url = JSON.parse(res.config.data).image_url
+      queryClient.invalidateQueries({
+        queryKey: ["answer", answer.question_id],
+      })
+
+      // 답변 목록에서
+    } catch (err) {
+      console.error("error", err)
+    }
+    setIsAnswerEditMode(false)
+  }
 
   return (
     <div className="border-b-[1px] border-b-gray my-5">
@@ -117,7 +126,9 @@ const OneAnswer: React.FC<OneAnswerProps> = ({ answer, user }) => {
               onClick={handleRaise}
             />
           </div>
-          <div className="text-[30px]">{vote.value}</div>
+          <div className="text-[30px]">
+            {vote.value < 10 ? "0" + vote.value : vote.value}
+          </div>
           <div className="flex justify-center">
             <VoteIcons.Down
               className="text-[30px] hover:text-primary"
@@ -125,20 +136,26 @@ const OneAnswer: React.FC<OneAnswerProps> = ({ answer, user }) => {
             />
           </div>
         </form>
-        {isAnswerEditMode ? (
-          <form>
-            <MdEditor previous={answer.content} editorRef={editorRef} />
-            <div className="flex justify-center my-5">
-              <Button buttonTheme="primary" className="p-2 w-[50px]">
-                Save
-              </Button>
-            </div>
-          </form>
-        ) : (
-          <MdViewer content={answer.content} />
-        )}
+        <div className="w-[90%]">
+          {isAnswerEditMode ? (
+            <form onSubmit={handleSubmit(handleEditValue)}>
+              <MdEditor previous={answer.content} editorRef={editorRef} />
+              <div className="flex justify-center my-5">
+                <Button
+                  buttonTheme="primary"
+                  className="p-2 w-[50px]"
+                  type="submit"
+                >
+                  Save
+                </Button>
+              </div>
+            </form>
+          ) : (
+            <MdViewer content={answer.content} />
+          )}
+        </div>
       </div>
-      <div className="flex justify-end mb-5">
+      <div className="flex justify-end my-5">
         <div className="max-h-[52px] flex flex-col justify-center">
           <div>답변일시: {getDate({ date: answer.created_date })}</div>
           <div className="flex justify-between">
@@ -155,12 +172,12 @@ const OneAnswer: React.FC<OneAnswerProps> = ({ answer, user }) => {
             className="object-cover rounded-full"
           />
         </div>
-        <div className="ml-[20px]">
+        <div className="ml-[20px] text-center">
           <div className="px-2 bg-[#F3EDC8] rounded-md mb-1">
             {answer.created_by}
           </div>
           <div className="text-center flex justify-center">
-            <div>
+            <div className="flex flex-col justify-center">
               <Image
                 src={badge_url[answer.author_level]}
                 alt="답변자 배지 이미지"

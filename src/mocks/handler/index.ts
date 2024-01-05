@@ -6,11 +6,8 @@ import { uploadHandler } from "./upload"
 
 export const mswHandler = [
   ...authHandler,
-
   ...memberHandler,
-
   ...questionHandler,
   ...answerHandler,
-  ,
   ...uploadHandler,
 ]

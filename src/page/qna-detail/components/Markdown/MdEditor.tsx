@@ -39,7 +39,7 @@ const MdEditor: React.FC<EditorProps> = ({ previous, editorRef }) => {
     }
   }
   return (
-    <div className="text-[20px]">
+    <div className="text-[20px] text-left">
       {editorRef && (
         <Editor
           ref={editorRef}

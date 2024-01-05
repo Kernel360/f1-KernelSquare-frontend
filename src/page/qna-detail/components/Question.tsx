@@ -51,7 +51,7 @@ const Question: React.FC<{ id: number }> = ({ id }) => {
               className="object-cover rounded-full"
             />
           </div>
-          <div className="ml-[20px]">
+          <div className="ml-[20px] text-center">
             <div className="px-2 bg-[#F3EDC8] rounded-md mb-1">
               {question.nickname}
             </div>
