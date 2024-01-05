@@ -8,6 +8,8 @@ import { HiOutlineChatBubbleLeftRight } from "react-icons/hi2"
 import { TbMessage2Question } from "react-icons/tb"
 import { GrDocumentUser } from "react-icons/gr"
 import { BsPencilSquare } from "react-icons/bs"
+import { BiSolidUpArrow } from "react-icons/bi"
+import { BiSolidDownArrow } from "react-icons/bi"
 import { TbPencilPlus } from "react-icons/tb"
 
 type IconsKey =
@@ -17,6 +19,7 @@ type IconsKey =
   | "EditIntro"
   | "PostQuestion"
 type NavigationIconsKey = "QnA" | "Chat" | "Notice" | "FaQ" | "MyPage"
+type VoteIconsKey = "Up" | "Down"
 export type Icon = (props: IconBaseProps) => JSX.Element
 
 export const Icons: Record<IconsKey, Icon> = {
@@ -52,5 +55,14 @@ export const NavigationIcons: Record<NavigationIconsKey, Icon> = {
   },
   MyPage(props) {
     return <GrDocumentUser {...props} />
+  },
+}
+
+export const VoteIcons: Record<VoteIconsKey, Icon> = {
+  Up(props) {
+    return <BiSolidUpArrow {...props} />
+  },
+  Down(props) {
+    return <BiSolidDownArrow {...props} />
   },
 }

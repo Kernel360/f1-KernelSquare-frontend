@@ -21,6 +21,8 @@ import { User } from "./user"
  *
  * **nickname** 작성자 닉네임(string)
  *
+ * **close_status** 마감 상태(boolean)
+ *
  * **member_image_url** 작성자 이미지(string)
  *
  * **level** 작성자 등급(number)
@@ -44,7 +46,9 @@ export interface Question
   question_image_url: string
   view_count: number
   close_status: boolean
+  nickname: string
   member_image_url: string
+  level: number
   level_image_url: string
   skills: Array<TechTag>
   created_date: string

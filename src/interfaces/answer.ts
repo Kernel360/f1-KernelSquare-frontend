@@ -5,28 +5,41 @@ import { User } from "./user"
  *
  * ---
  *
- * **id** id(number)
+ * **answer_id** id(number)
  *
  * **question_id** 질문id(number)
  *
  * **content** 답변 본문(string)
  *
- * **rank** 레벨(number) : User
+ * **rank_image_url** 답변한 유저 레벨 이미지(string)
  *
- * **image_url** 답변한 유저 프로필이미지(string) : User
+ * **member_image_url** 답변한 유저 프로필 이미지(string)
+ *
+ * **create_by** 답변한 유저 닉네임(string)
+ *
+ * **author_level** 답변한 유저 레벨(number)
+ *
+ * **answer_image_url** 답변에 포함된 이미지(string)
  *
  * **created_date** 답변 생성일(Date)
  *
  * **modified_date** 답변 수정일(Date)
  *
  * **vote_count** 답변 추천수(number)
+ *
+ * **vote_yn** 답변 투표 여부(boolean)
  */
 export interface Answer extends Pick<User, "image_url"> {
-  id: number
+  answer_id: number
   question_id: number
   content: string
-  rank: number
+  rank_image_url: string
+  member_image_url: string
+  created_by: string
+  author_level: number
+  answer_image_url: string
   created_date: string
   modified_date: string
   vote_count: number
+  vote_yn: boolean
 }

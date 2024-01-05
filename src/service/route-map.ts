@@ -122,8 +122,10 @@ export class RouteMap {
    */
   static question = {
     getQuestionList: `${RouteMap.routeGroupBaseURL.question}`,
-    getQuestion(questionId: number) {
-      return `${RouteMap.routeGroupBaseURL.question}/${questionId}`
+    getQuestion(questionId?: number) {
+      return `${RouteMap.routeGroupBaseURL.question}/${
+        questionId === undefined ? ":id" : questionId
+      }`
     },
     createQuestion: `${RouteMap.routeGroupBaseURL.question}`,
     updateQuestion(questionId: number) {
@@ -150,20 +152,28 @@ export class RouteMap {
    * **voteAnswer**: 답변 투표(POST)
    */
   static answer = {
-    getAnswer(questionId: number) {
-      return `${RouteMap.routeGroupBaseURL.question}/${questionId}/${RouteMap.prefix.answer}`
+    getAnswer(questionId?: number) {
+      return `${RouteMap.routeGroupBaseURL.question}/${questionId ?? ":id"}/${
+        RouteMap.prefix.answer
+      }`
     },
-    createAnswer(questionId: number) {
-      return `${RouteMap.routeGroupBaseURL.question}/${questionId}/${RouteMap.prefix.answer}`
+    createAnswer(questionId?: number) {
+      return `${RouteMap.routeGroupBaseURL.question}/${questionId ?? ":id"}/${
+        RouteMap.prefix.answer
+      }`
     },
-    updateAnswer(answerId: number) {
-      return `${RouteMap.routeGroupBaseURL.question}/${RouteMap.prefix.answer}/${answerId}`
+    updateAnswer(answerId?: number) {
+      return `${RouteMap.routeGroupBaseURL.question}/${
+        RouteMap.prefix.answer
+      }/${answerId ?? ":id"}`
     },
     deleteAnswer(answerId: number) {
       return `${RouteMap.routeGroupBaseURL.question}/${RouteMap.prefix.answer}/${answerId}`
     },
-    voteAnswer(answerId: number) {
-      return `${RouteMap.routeGroupBaseURL.question}/${RouteMap.prefix.answer}/${answerId}/vote`
+    voteAnswer(answerId?: number) {
+      return `${RouteMap.routeGroupBaseURL.question}/${
+        RouteMap.prefix.answer
+      }/${answerId ?? ":id"}/vote`
     },
   }
 
