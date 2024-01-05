@@ -11,6 +11,11 @@ const nextConfig = {
         protocol: "https",
         hostname: "imagedelivery.net",
       },
+      // 목업 이미지 주소
+      {
+        protocol: "https",
+        hostname: "picsum.photos",
+      },
     ],
   },
 }

@@ -89,6 +89,24 @@ const OneAnswer: React.FC<OneAnswerProps> = ({ answer, user }) => {
   // 답변 수정
   const [isAnswerEditMode, setIsAnswerEditMode] = useState(false)
 
+  // const handleEditValue = () => {
+  //   const submitValue: string = editorRef.current?.getInstance().getMarkdown()
+  //   console.log("md", submitValue)
+  //   try {
+  //     if (answerId)
+  //       updateAnswer({
+  //         answerId,
+  //         content: submitValue,
+  //       }).then((res) => {
+  //         console.log("res", res.data.msg, res.config.data)
+  //         queryClient.invalidateQueries({ queryKey: [queryKey.answer] })
+  //       })
+  //   } catch (err) {
+  //     console.error("error", err)
+  //   }
+  //   setIsAnswerMode(false)
+  // }
+
   return (
     <div className="border-b-[1px] border-b-gray my-5">
       <div className="flex justify-between">
@@ -144,13 +162,13 @@ const OneAnswer: React.FC<OneAnswerProps> = ({ answer, user }) => {
           <div className="text-center flex justify-center">
             <div>
               <Image
-                src={badge_url[answer.level]}
+                src={badge_url[answer.author_level]}
                 alt="답변자 배지 이미지"
                 width={20}
                 height={20}
               />
             </div>
-            <div className="ml-1">Lv.{answer.level}</div>
+            <div className="ml-1">Lv.{answer.author_level}</div>
           </div>
         </div>
       </div>

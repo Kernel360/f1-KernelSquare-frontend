@@ -33,7 +33,6 @@ export interface Answer extends Pick<User, "image_url"> {
   answer_id: number
   question_id: number
   content: string
-  level: number
   rank_image_url: string
   member_image_url: string
   created_by: string

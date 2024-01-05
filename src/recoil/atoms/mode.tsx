@@ -7,7 +7,7 @@ export const EditMode = atom<boolean>({
 })
 
 // Q&A 댓글 작성 가능 상태
-export const AnswerEditMode = atom<boolean>({
-  key: "AnswerEditMode-atom",
+export const AnswerMode = atom<boolean>({
+  key: "AnswerMode-atom",
   default: false,
 })

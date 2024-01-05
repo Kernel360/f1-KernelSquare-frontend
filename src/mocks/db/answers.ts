@@ -1,10 +1,12 @@
-const mockAnswers = [
+import type { Answer } from "@/interfaces/answer"
+
+const mockAnswers: Answer[] = [
   {
     answer_id: 1,
     question_id: 1,
     content:
       "Integer pede justo, lacinia eget, tincidunt eget, tempus vel, pede. Morbi porttitor lorem id ligula. Suspendisse ornare consequat lectus.",
-    level: 1,
+    author_level: 1,
     rank_image_url: "rankUrl",
     member_image_url:
       "https://mobirise.com/bootstrap-template//profile-template/assets/images/timothy-paul-smith-256424-1200x800.jpg",
@@ -14,13 +16,14 @@ const mockAnswers = [
     created_date: "2023-10-07 10:02:46",
     modified_date: "2023-10-07 10:02:47",
     vote_count: 53,
+    vote_yn: false,
   },
   {
     answer_id: 2,
     question_id: 1,
     content:
       "Integer pede justo, lacinia eget, tincidunt eget, tempus vel, pede. Morbi porttitor lorem id ligula. Suspendisse ornare consequat lectus.",
-    level: 2,
+    author_level: 2,
     rank_image_url: "rankUrl",
     member_image_url:
       "https://mobirise.com/bootstrap-template//profile-template/assets/images/timothy-paul-smith-256424-1200x800.jpg",
@@ -30,13 +33,14 @@ const mockAnswers = [
     created_date: "2023-10-07 10:02:46",
     modified_date: "2023-10-07 10:02:46",
     vote_count: 53,
+    vote_yn: false,
   },
   {
     answer_id: 3,
     question_id: 1,
     content:
       "Integer pede justo, lacinia eget, tincidunt eget, tempus vel, pede. Morbi porttitor lorem id ligula. Suspendisse ornare consequat lectus.",
-    level: 3,
+    author_level: 3,
     rank_image_url: "rankUrl",
     member_image_url:
       "https://mobirise.com/bootstrap-template//profile-template/assets/images/timothy-paul-smith-256424-1200x800.jpg",
@@ -46,13 +50,14 @@ const mockAnswers = [
     created_date: "2023-10-07 10:02:46",
     modified_date: "2023-10-07 10:02:46",
     vote_count: 53,
+    vote_yn: false,
   },
   {
     answer_id: 4,
     question_id: 1,
     content:
       "Integer pede justo, lacinia eget, tincidunt eget, tempus vel, pede. Morbi porttitor lorem id ligula. Suspendisse ornare consequat lectus.",
-    level: 4,
+    author_level: 4,
     rank_image_url: "rankUrl",
     member_image_url:
       "https://mobirise.com/bootstrap-template//profile-template/assets/images/timothy-paul-smith-256424-1200x800.jpg",
@@ -62,13 +67,14 @@ const mockAnswers = [
     created_date: "2023-10-07 10:02:46",
     modified_date: "2023-10-07 10:02:46",
     vote_count: 53,
+    vote_yn: false,
   },
   {
     answer_id: 5,
     question_id: 1,
     content:
       "Integer pede justo, lacinia eget, tincidunt eget, tempus vel, pede. Morbi porttitor lorem id ligula. Suspendisse ornare consequat lectus.",
-    level: 5,
+    author_level: 5,
     rank_image_url: "rankUrl",
     member_image_url:
       "https://mobirise.com/bootstrap-template//profile-template/assets/images/timothy-paul-smith-256424-1200x800.jpg",
@@ -78,13 +84,14 @@ const mockAnswers = [
     created_date: "2023-10-07 10:02:46",
     modified_date: "2023-10-07 10:02:46",
     vote_count: 53,
+    vote_yn: false,
   },
   {
     answer_id: 6,
     question_id: 1,
     content:
       "Integer pede justo, lacinia eget, tincidunt eget, tempus vel, pede. Morbi porttitor lorem id ligula. Suspendisse ornare consequat lectus.",
-    level: 6,
+    author_level: 6,
     rank_image_url: "rankUrl",
     member_image_url:
       "https://mobirise.com/bootstrap-template//profile-template/assets/images/timothy-paul-smith-256424-1200x800.jpg",
@@ -94,13 +101,14 @@ const mockAnswers = [
     created_date: "2023-10-07 10:02:46",
     modified_date: "2023-10-07 10:02:46",
     vote_count: 53,
+    vote_yn: false,
   },
   {
     answer_id: 7,
     question_id: 1,
     content:
       "Integer pede justo, lacinia eget, tincidunt eget, tempus vel, pede. Morbi porttitor lorem id ligula. Suspendisse ornare consequat lectus.",
-    level: 7,
+    author_level: 7,
     rank_image_url: "rankUrl",
     member_image_url:
       "https://mobirise.com/bootstrap-template//profile-template/assets/images/timothy-paul-smith-256424-1200x800.jpg",
@@ -110,13 +118,14 @@ const mockAnswers = [
     created_date: "2023-10-07 10:02:46",
     modified_date: "2023-10-07 10:02:47",
     vote_count: 53,
+    vote_yn: false,
   },
   {
     answer_id: 8,
     question_id: 1,
     content:
       "Integer pede justo, lacinia eget, tincidunt eget, tempus vel, pede. Morbi porttitor lorem id ligula. Suspendisse ornare consequat lectus.",
-    level: 8,
+    author_level: 8,
     rank_image_url: "rankUrl",
     member_image_url:
       "https://mobirise.com/bootstrap-template//profile-template/assets/images/timothy-paul-smith-256424-1200x800.jpg",
@@ -126,13 +135,14 @@ const mockAnswers = [
     created_date: "2023-10-07 10:02:46",
     modified_date: "2023-10-07 10:02:46",
     vote_count: 53,
+    vote_yn: false,
   },
   {
     answer_id: 9,
     question_id: 1,
     content:
       "Integer pede justo, lacinia eget, tincidunt eget, tempus vel, pede. Morbi porttitor lorem id ligula. Suspendisse ornare consequat lectus.",
-    level: 9,
+    author_level: 9,
     rank_image_url: "rankUrl",
     member_image_url:
       "https://mobirise.com/bootstrap-template//profile-template/assets/images/timothy-paul-smith-256424-1200x800.jpg",
@@ -142,13 +152,14 @@ const mockAnswers = [
     created_date: "2023-10-07 10:02:46",
     modified_date: "2023-10-07 10:02:46",
     vote_count: 53,
+    vote_yn: false,
   },
   {
     answer_id: 10,
     question_id: 1,
     content:
       "Integer pede justo, lacinia eget, tincidunt eget, tempus vel, pede. Morbi porttitor lorem id ligula. Suspendisse ornare consequat lectus.",
-    level: 10,
+    author_level: 10,
     rank_image_url: "rankUrl",
     member_image_url:
       "https://mobirise.com/bootstrap-template//profile-template/assets/images/timothy-paul-smith-256424-1200x800.jpg",
@@ -158,13 +169,14 @@ const mockAnswers = [
     created_date: "2023-10-07 10:02:46",
     modified_date: "2023-10-07 10:02:46",
     vote_count: 53,
+    vote_yn: false,
   },
   {
     answer_id: 11,
     question_id: 1,
     content:
       "Integer pede justo, lacinia eget, tincidunt eget, tempus vel, pede. Morbi porttitor lorem id ligula. Suspendisse ornare consequat lectus.",
-    level: 1,
+    author_level: 1,
     rank_image_url: "rankUrl",
     member_image_url:
       "https://mobirise.com/bootstrap-template//profile-template/assets/images/timothy-paul-smith-256424-1200x800.jpg",
@@ -174,13 +186,14 @@ const mockAnswers = [
     created_date: "2023-10-07 10:02:46",
     modified_date: "2023-10-07 10:02:46",
     vote_count: 53,
+    vote_yn: false,
   },
   {
     answer_id: 12,
     question_id: 1,
     content:
       "Integer pede justo, lacinia eget, tincidunt eget, tempus vel, pede. Morbi porttitor lorem id ligula. Suspendisse ornare consequat lectus.",
-    level: 2,
+    author_level: 2,
     rank_image_url: "rankUrl",
     member_image_url:
       "https://mobirise.com/bootstrap-template//profile-template/assets/images/timothy-paul-smith-256424-1200x800.jpg",
@@ -190,13 +203,14 @@ const mockAnswers = [
     created_date: "2023-10-07 10:02:46",
     modified_date: "2023-10-07 10:02:46",
     vote_count: 53,
+    vote_yn: false,
   },
   {
     answer_id: 13,
     question_id: 3,
     content:
       "Integer pede justo, lacinia eget, tincidunt eget, tempus vel, pede. Morbi porttitor lorem id ligula. Suspendisse ornare consequat lectus.",
-    level: 3,
+    author_level: 3,
     rank_image_url: "rankUrl",
     member_image_url:
       "https://mobirise.com/bootstrap-template//profile-template/assets/images/timothy-paul-smith-256424-1200x800.jpg",
@@ -206,13 +220,14 @@ const mockAnswers = [
     created_date: "2023-10-07 10:02:46",
     modified_date: "2023-10-07 10:02:46",
     vote_count: 53,
+    vote_yn: false,
   },
   {
     answer_id: 14,
     question_id: 3,
     content:
       "Integer pede justo, lacinia eget, tincidunt eget, tempus vel, pede. Morbi porttitor lorem id ligula. Suspendisse ornare consequat lectus.",
-    level: 4,
+    author_level: 4,
     rank_image_url: "rankUrl",
     member_image_url:
       "https://mobirise.com/bootstrap-template//profile-template/assets/images/timothy-paul-smith-256424-1200x800.jpg",
@@ -222,13 +237,14 @@ const mockAnswers = [
     created_date: "2023-10-07 10:02:46",
     modified_date: "2023-10-07 10:02:46",
     vote_count: 53,
+    vote_yn: false,
   },
   {
     answer_id: 15,
     question_id: 4,
     content:
       "Integer pede justo, lacinia eget, tincidunt eget, tempus vel, pede. Morbi porttitor lorem id ligula. Suspendisse ornare consequat lectus.",
-    level: 5,
+    author_level: 5,
     rank_image_url: "rankUrl",
     member_image_url:
       "https://mobirise.com/bootstrap-template//profile-template/assets/images/timothy-paul-smith-256424-1200x800.jpg",
@@ -238,13 +254,14 @@ const mockAnswers = [
     created_date: "2023-10-07 10:02:46",
     modified_date: "2023-10-07 10:02:46",
     vote_count: 53,
+    vote_yn: false,
   },
   {
     answer_id: 16,
     question_id: 5,
     content:
       "Integer pede justo, lacinia eget, tincidunt eget, tempus vel, pede. Morbi porttitor lorem id ligula. Suspendisse ornare consequat lectus.",
-    level: 6,
+    author_level: 6,
     rank_image_url: "rankUrl",
     member_image_url:
       "https://mobirise.com/bootstrap-template//profile-template/assets/images/timothy-paul-smith-256424-1200x800.jpg",
@@ -254,13 +271,14 @@ const mockAnswers = [
     created_date: "2023-10-07 10:02:46",
     modified_date: "2023-10-07 10:02:46",
     vote_count: 53,
+    vote_yn: false,
   },
   {
     answer_id: 17,
     question_id: 5,
     content:
       "Integer pede justo, lacinia eget, tincidunt eget, tempus vel, pede. Morbi porttitor lorem id ligula. Suspendisse ornare consequat lectus.",
-    level: 7,
+    author_level: 7,
     rank_image_url: "rankUrl",
     member_image_url:
       "https://mobirise.com/bootstrap-template//profile-template/assets/images/timothy-paul-smith-256424-1200x800.jpg",
@@ -270,13 +288,14 @@ const mockAnswers = [
     created_date: "2023-10-07 10:02:46",
     modified_date: "2023-10-07 10:02:46",
     vote_count: 53,
+    vote_yn: false,
   },
   {
     answer_id: 18,
     question_id: 6,
     content:
       "Integer pede justo, lacinia eget, tincidunt eget, tempus vel, pede. Morbi porttitor lorem id ligula. Suspendisse ornare consequat lectus.",
-    level: 8,
+    author_level: 8,
     rank_image_url: "rankUrl",
     member_image_url:
       "https://mobirise.com/bootstrap-template//profile-template/assets/images/timothy-paul-smith-256424-1200x800.jpg",
@@ -286,13 +305,14 @@ const mockAnswers = [
     created_date: "2023-10-07 10:02:46",
     modified_date: "2023-10-07 10:02:46",
     vote_count: 53,
+    vote_yn: false,
   },
   {
     answer_id: 19,
     question_id: 6,
     content:
       "Integer pede justo, lacinia eget, tincidunt eget, tempus vel, pede. Morbi porttitor lorem id ligula. Suspendisse ornare consequat lectus.",
-    level: 9,
+    author_level: 9,
     rank_image_url: "rankUrl",
     member_image_url:
       "https://mobirise.com/bootstrap-template//profile-template/assets/images/timothy-paul-smith-256424-1200x800.jpg",
@@ -302,13 +322,14 @@ const mockAnswers = [
     created_date: "2023-10-07 10:02:46",
     modified_date: "2023-10-07 10:02:46",
     vote_count: 53,
+    vote_yn: false,
   },
   {
     answer_id: 20,
     question_id: 7,
     content:
       "Integer pede justo, lacinia eget, tincidunt eget, tempus vel, pede. Morbi porttitor lorem id ligula. Suspendisse ornare consequat lectus.",
-    level: 10,
+    author_level: 10,
     rank_image_url: "rankUrl",
     member_image_url:
       "https://mobirise.com/bootstrap-template//profile-template/assets/images/timothy-paul-smith-256424-1200x800.jpg",
@@ -318,13 +339,14 @@ const mockAnswers = [
     created_date: "2023-10-07 10:02:46",
     modified_date: "2023-10-07 10:02:46",
     vote_count: 53,
+    vote_yn: false,
   },
   {
     answer_id: 21,
     question_id: 7,
     content:
       "Integer pede justo, lacinia eget, tincidunt eget, tempus vel, pede. Morbi porttitor lorem id ligula. Suspendisse ornare consequat lectus.",
-    level: 1,
+    author_level: 1,
     rank_image_url: "rankUrl",
     member_image_url:
       "https://mobirise.com/bootstrap-template//profile-template/assets/images/timothy-paul-smith-256424-1200x800.jpg",
@@ -334,6 +356,7 @@ const mockAnswers = [
     created_date: "2023-10-07 10:02:46",
     modified_date: "2023-10-07 10:02:46",
     vote_count: 53,
+    vote_yn: false,
   },
 ]
 
