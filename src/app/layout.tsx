@@ -8,6 +8,7 @@ import Layout from "@/components/layout/Layout"
 import Modal from "@/components/shared/Modal"
 import ReactQueryProvider from "@/react-query/ReactQueryProvider"
 import MSW from "@/msw/MSW"
+import "@toast-ui/editor/dist/toastui-editor.css"
 import ToastContainer from "@/components/shared/toast/ToastContainer"
 
 export const dynamic = "force-dynamic"

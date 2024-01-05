@@ -1,10 +1,11 @@
-import { GetQuestionListResponse } from "@/interfaces/dto/question/get-questionlist.dto"
+import type { GetQuestionListResponse } from "@/interfaces/dto/question/get-questionlist.dto"
 import { RouteMap } from "@/service/route-map"
 import { HttpStatusCode } from "axios"
 import { DefaultBodyType, HttpResponse, PathParams, http } from "msw"
 import { mockQuestions } from "../db/questions"
 import { Question } from "@/interfaces/question"
 import { generatePagination } from "@/util/paginate"
+import type { GetQuestionResponse } from "@/interfaces/dto/question/get-question.dto"
 import {
   CreateQuestionRequest,
   CreateQuestionResponse,
@@ -59,6 +60,37 @@ export const questionHandler = [
         {
           status: HttpStatusCode.Ok,
         },
+      )
+    },
+  ),
+  http.get<{ id: string }, DefaultBodyType, GetQuestionResponse>(
+    `${process.env.NEXT_PUBLIC_SERVER}${RouteMap.question.getQuestion()}`,
+    ({ params }) => {
+      // 특정 질문 조회
+      const questionId = params.id
+
+      const existMockQuestion = mockQuestions.find(
+        (question) => question.id === Number(questionId),
+      )!
+
+      if (!existMockQuestion)
+        return HttpResponse.json(
+          {
+            code: HttpStatusCode.InternalServerError,
+            msg: "존재하지 않는 질문",
+          },
+          { status: HttpStatusCode.InternalServerError },
+        )
+
+      return HttpResponse.json(
+        {
+          code: 2141,
+          msg: "질문 조회 성공",
+          data: {
+            ...existMockQuestion,
+          },
+        },
+        { status: HttpStatusCode.Ok },
       )
     },
   ),

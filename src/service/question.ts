@@ -1,9 +1,13 @@
-import {
+import type {
   GetQuestionListRequest,
   GetQuestionListResponse,
 } from "@/interfaces/dto/question/get-questionlist.dto"
 import { apiInstance } from "./axios"
 import { RouteMap } from "./route-map"
+import type {
+  GetQuestionRequest,
+  GetQuestionResponse,
+} from "@/interfaces/dto/question/get-question.dto"
 import {
   CreateQuestionRequest,
   CreateQuestionResponse,
@@ -19,6 +23,14 @@ export async function getQuestionList(
 
   const res = await apiInstance.get<GetQuestionListResponse>(
     `${RouteMap.question.getQuestionList}?${searchParams.toString()}`,
+  )
+
+  return res
+}
+
+export async function getQuestion({ id }: GetQuestionRequest) {
+  const res = await apiInstance.get<GetQuestionResponse>(
+    `${RouteMap.question.getQuestion(id)}`,
   )
 
   return res

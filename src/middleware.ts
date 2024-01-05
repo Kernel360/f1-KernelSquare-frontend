@@ -40,11 +40,23 @@ export async function middleware(request: NextRequest, event: NextFetchEvent) {
     return response
   }
 
+  if (url.pathname === "/profile") {
+    if (!cookies().get(ACCESS_TOKEN_KEY)) {
+      setCustomAuthorizedHeader(response.headers, "unauthorized")
+
+      return response
+    }
+
+    setCustomAuthorizedHeader(response.headers, "authorized")
+
+    return response
+  }
+
   return response
 }
 
 export const config = {
-  matcher: ["/signup", "/question"],
+  matcher: ["/signup", "/question", "/profile"],
 }
 
 function setCustomAuthorizedHeader(
