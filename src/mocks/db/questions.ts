@@ -1,8 +1,18 @@
+import badge_url from "@/assets/images/badges"
 import { Question } from "@/interfaces/question"
 
 export const mockQuestions: Array<Question> = [
   {
     id: 1,
+    title: "질문1",
+    content: "콘텐츠1",
+    question_image_url: "",
+    nickname: "zl존",
+    image_url: "",
+    member_image_url: "",
+    level: 4,
+    level_image_url: badge_url[4],
+    skills: ["java", "jpa"],
     title: "Array to Object with nesting childs in js",
     content:
       "i have the Array in js, but how to convert to object with nesting childs ? \n This is my array: \n ```javascript const arr = [{ no: 1 }, { no: 2 }, { no: 3 }];```",
@@ -18,6 +28,8 @@ export const mockQuestions: Array<Question> = [
     skills: ["javascript", "arrays", "typescript"],
     created_date: "2023-12-16T23:10:12",
     modified_date: "2023-12-16T23:10:12",
+    close_status: false,
+    list: [],
     list: [],
   },
   {
@@ -33,11 +45,13 @@ export const mockQuestions: Array<Question> = [
     member_image_url:
       "https://mobirise.com/bootstrap-template//profile-template/assets/images/timothy-paul-smith-256424-1200x800.jpg",
     level: 3,
+    level_image_url: badge_url[3],
     level_image_url:
       "https://mobirise.com/bootstrap-template//profile-template/assets/images/timothy-paul-smith-256424-1200x800.jpg",
     skills: ["docker"],
     created_date: "2023-12-16T22:00:00",
     modified_date: "2023-12-16T22:00:00",
+    close_status: false,
     list: [],
   },
   {

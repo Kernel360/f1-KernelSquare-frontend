@@ -8,6 +8,11 @@ import type {
   GetQuestionRequest,
   GetQuestionResponse,
 } from "@/interfaces/dto/question/get-question.dto"
+import {
+  CreateQuestionRequest,
+  CreateQuestionResponse,
+} from "@/interfaces/dto/question/create-question.dto"
+import { AxiosResponse } from "axios"
 
 export async function getQuestionList(
   { page = 0, size = 5 }: GetQuestionListRequest = { page: 0, size: 5 },
@@ -27,6 +32,28 @@ export async function getQuestion({ id }: GetQuestionRequest) {
   const res = await apiInstance.get<GetQuestionResponse>(
     `${RouteMap.question.getQuestion(id)}`,
   )
+
+  return res
+}
+
+export async function createQuestion({
+  member_id,
+  title,
+  content,
+  image_url,
+  skills,
+}: CreateQuestionRequest) {
+  const res = await apiInstance.post<
+    any,
+    AxiosResponse<CreateQuestionResponse>,
+    CreateQuestionRequest
+  >(RouteMap.question.createQuestion, {
+    member_id,
+    title,
+    content,
+    image_url,
+    skills,
+  })
 
   return res
 }

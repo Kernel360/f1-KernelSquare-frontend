@@ -10,8 +10,14 @@ import { GrDocumentUser } from "react-icons/gr"
 import { BsPencilSquare } from "react-icons/bs"
 import { BiSolidUpArrow } from "react-icons/bi"
 import { BiSolidDownArrow } from "react-icons/bi"
+import { TbPencilPlus } from "react-icons/tb"
 
-type IconsKey = "Search" | "Notification" | "UserProfile" | "EditIntro"
+type IconsKey =
+  | "Search"
+  | "Notification"
+  | "UserProfile"
+  | "EditIntro"
+  | "PostQuestion"
 type NavigationIconsKey = "QnA" | "Chat" | "Notice" | "FaQ" | "MyPage"
 type VoteIconsKey = "Up" | "Down"
 export type Icon = (props: IconBaseProps) => JSX.Element
@@ -28,6 +34,9 @@ export const Icons: Record<IconsKey, Icon> = {
   },
   EditIntro(props) {
     return <BsPencilSquare {...props} />
+  },
+  PostQuestion(props) {
+    return <TbPencilPlus {...props} />
   },
 }
 

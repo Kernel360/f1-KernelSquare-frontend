@@ -19,7 +19,9 @@
       }
     ],
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": ["./src/*"],
+      "@toast-ui/editor": ["./node_modules/@toast-ui/editor/types/index.d.ts"],
+      "@toast-ui/editor/types": ["./node_modules/@toast-ui/editor/types"]
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],

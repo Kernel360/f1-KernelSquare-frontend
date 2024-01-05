@@ -8,26 +8,22 @@ import NoContent from "@/components/shared/animation/NoContent"
 import Button from "@/components/shared/button/Button"
 import Pagination from "@/components/shared/pagination/Pagination"
 import Tag from "@/components/shared/tag/Tag"
-import { getQuestionList } from "@/service/question"
-import { useQuery, keepPreviousData } from "@tanstack/react-query"
 import Link from "next/link"
 import { useRouter, useSearchParams } from "next/navigation"
+import { GetQuestionListResponse } from "@/interfaces/dto/question/get-questionlist.dto"
+import Image from "next/image"
+import badge_url from "@/assets/images/badges"
 
-function QnAList() {
+interface Props {
+  questions?: GetQuestionListResponse["data"]
+  isPending: boolean
+}
+
+function QnAList({ questions, isPending }: Props) {
   const searchParams = useSearchParams()
-  const { push } = useRouter()
-
   const page = searchParams.get("page") ?? 0
 
-  const { data: questions, isPending } = useQuery({
-    queryKey: ["question", "list", page],
-    queryFn: () => getQuestionList({ page: Number(page) }),
-    placeholderData: keepPreviousData,
-    staleTime: 1000 * 5,
-    select(payload) {
-      return payload.data.data
-    },
-  })
+  const { push } = useRouter()
 
   if (isPending) return <Loading />
 
@@ -40,15 +36,16 @@ function QnAList() {
   }
 
   return (
-    <div className="relative box-border flex-1 py-4">
-      <ul className="w-[calc(100%-12px)] sm:w-[calc(100%-22px)] lg:w-[calc(100%-42px)] mx-auto">
+    <div className="py-4 w-[calc(100%-12px)] sm:w-[calc(100%-22px)] lg:w-[calc(100%-42px)] mx-auto">
+      <ul>
         {questions.list.map(
           ({
             id,
             title,
             skills,
-            created_by,
-            image_url,
+            nickname,
+            member_image_url,
+            level_image_url,
             created_date,
             level,
           }) => {
@@ -79,10 +76,20 @@ function QnAList() {
                     </time>
                   </div>
                   <div className="flex items-center gap-1 ml-4">
-                    <Profile profileImage={image_url} />
+                    <Profile profileImage={member_image_url} />
                     <div>
-                      <div className="text-sm">{created_by}</div>
-                      <div className="text-xs">LV.{level}</div>
+                      <div className="text-sm">{nickname}</div>
+                      <div className="flex justify-start items-center">
+                        <div className="relative w-6 h-4 -ml-1">
+                          <Image
+                            src={level_image_url}
+                            alt="level badge"
+                            fill
+                            style={{ objectFit: "contain" }}
+                          />
+                        </div>
+                        <div className="text-xs">LV.{level}</div>
+                      </div>
                     </div>
                   </div>
                 </div>

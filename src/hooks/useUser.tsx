@@ -3,7 +3,7 @@
 import { ACCESS_TOKEN_KEY } from "@/constants/token"
 import { getMemeber } from "@/service/member"
 import { getCookie } from "cookies-next"
-import { jwtDecode } from "@/util/jwt"
+import { jwtDecode } from "@/util/actions/jwt"
 import { useQuery } from "@tanstack/react-query"
 
 /*

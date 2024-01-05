@@ -11,6 +11,8 @@ const config: Config = {
     extend: {
       screens: {
         toastify: { max: "480px" },
+        editor: { min: "480px" },
+        lgDevice: { min: "992px" },
       },
       colors: {
         colorsGray: "#ced4da",

@@ -16,6 +16,11 @@ const nextConfig = {
         protocol: "https",
         hostname: "picsum.photos",
       },
+      // 클라우드 플레어 이미지 cdn 주소
+      {
+        protocol: "https",
+        hostname: "imagedelivery.net",
+      },
     ],
   },
 }
