@@ -5,7 +5,8 @@ import "prismjs/themes/prism.css"
 // import codeSyntaxHighlight from "@toast-ui/editor-plugin-code-syntax-highlight"
 import "@toast-ui/editor-plugin-code-syntax-highlight/dist/toastui-editor-plugin-code-syntax-highlight.css"
 import { useLayoutEffect, useRef } from "react"
-import codeSyntaxHighlight from "@toast-ui/editor-plugin-code-syntax-highlight/dist/toastui-editor-plugin-code-syntax-highlight-all.js"
+import codeSyntaxHighlight from "@toast-ui/editor-plugin-code-syntax-highlight"
+import "@toast-ui/editor-plugin-code-syntax-highlight/dist/toastui-editor-plugin-code-syntax-highlight-all.js"
 
 interface ViewerProps {
   content: string
