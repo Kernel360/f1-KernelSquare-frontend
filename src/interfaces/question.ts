@@ -1,5 +1,4 @@
 import { Answer } from "./answer"
-import { Answer } from "./answer"
 import { TechTag } from "./tech-tag"
 import { User } from "./user"
 
@@ -16,20 +15,14 @@ import { User } from "./user"
  *
  * **question_image_url** 질문 이미지(string)
  *
- * **question_image_url** 질문 이미지(string)
- *
  * **view_count** 조회수(number)
  *
  * **close_status** 마감 상태(boolean)
  *
  * **nickname** 작성자 닉네임(string)
+ *
  * **close_status** 마감 상태(boolean)
  *
- * **nickname** 작성자 닉네임(string)
- *
- * **member_image_url** 작성자 이미지(string)
- *
- * **level** 작성자 등급(number)
  * **member_image_url** 작성자 이미지(string)
  *
  * **level** 작성자 등급(number)
@@ -37,17 +30,10 @@ import { User } from "./user"
  * **level_image_url** 작성자 등급 이미지(string)
  *
  * **skills** 질문 기술 스택(string[]) : TechTag[]
- * **level_image_url** 작성자 등급 이미지(string)
  *
- * **skills** 질문 기술 스택(string[]) : TechTag[]
- *
- * **created_date** 질문 생성 날짜(string)
  * **created_date** 질문 생성 날짜(string)
  *
  * **modified_date** 질문 수정 날짜(string)
- * **modified_date** 질문 수정 날짜(string)
- *
- * **list** 해당 질문에 대한 답변들: Answer[]
  *
  * **list** 해당 질문에 대한 답변들: Answer[]
  *
@@ -58,7 +44,6 @@ export interface Question
   title: string
   content: string
   question_image_url: string
-  question_image_url: string
   view_count: number
   close_status: boolean
   nickname: string
@@ -68,6 +53,5 @@ export interface Question
   skills: Array<TechTag>
   created_date: string
   modified_date: string
-  list: Array<Answer>
   list: Array<Answer>
 }
