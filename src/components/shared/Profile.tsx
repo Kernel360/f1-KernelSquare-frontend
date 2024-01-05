@@ -3,15 +3,14 @@ import { Icons } from "../icons/Icons"
 import Image from "next/image"
 import Button from "./button/Button"
 import Skeleton from "react-loading-skeleton"
-import { useState } from "react"
+import { ButtonHTMLAttributes, useState } from "react"
 
-interface ProfileProps {
+interface ProfileProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   profileImage?: string | null
   className?: string
-  onClick?: (e: React.MouseEvent<HTMLButtonElement>) => void
 }
 
-function Profile({ profileImage, className, onClick }: ProfileProps) {
+function Profile({ profileImage, className, ...props }: ProfileProps) {
   const [imageLoaded, setImageLoaded] = useState(false)
 
   const classNames = {
@@ -24,13 +23,13 @@ function Profile({ profileImage, className, onClick }: ProfileProps) {
 
   if (!profileImage)
     return (
-      <Button className={classNames.noProfile}>
+      <Button className={classNames.noProfile} {...props}>
         <Icons.UserProfile className="text-[30px] leading-8 fill-colorsGray shrink-0" />
       </Button>
     )
 
   return (
-    <Button className={classNames.withProfile} onClick={onClick}>
+    <Button className={classNames.withProfile} {...props}>
       <Image
         className="z-[1]"
         src={profileImage}
