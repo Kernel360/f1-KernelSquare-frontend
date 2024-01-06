@@ -58,7 +58,7 @@ const Dim = ({ onClose }: ModalDimProps) => {
 
 const Header = ({ onClose }: ModalHeaderProps) => {
   return (
-    <div className="flex w-full justify-end">
+    <div className="flex w-full justify-end sticky top-0">
       <Button className="p-0" onClick={onClose}>
         <MdClose className="text-lg" />
       </Button>
@@ -67,7 +67,10 @@ const Header = ({ onClose }: ModalHeaderProps) => {
 }
 
 const Wrapper = ({ className, children }: ModalWrapperProps) => {
-  const classNames = twMerge(["bg-white rounded-lg p-4 z-modal", className])
+  const classNames = twMerge([
+    "bg-white rounded-lg p-4 z-modal max-h-full overflow-y-auto overflow-x-hidden",
+    className,
+  ])
 
   return <div className={classNames}>{children}</div>
 }

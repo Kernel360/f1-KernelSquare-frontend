@@ -7,7 +7,6 @@ import { useSelectedLayoutSegment } from "next/navigation"
 import SearchArea from "./search/SearchArea"
 import Skeleton from "react-loading-skeleton"
 import dynamic from "next/dynamic"
-// import UserArea from "./UserArea"
 
 const UserArea = dynamic(() => import("./UserArea"), {
   ssr: false,

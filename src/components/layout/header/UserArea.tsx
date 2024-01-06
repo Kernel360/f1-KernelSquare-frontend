@@ -9,11 +9,11 @@ import { Icons } from "@/components/icons/Icons"
 import Profile from "@/components/shared/Profile"
 import Dropdown from "rc-dropdown"
 import Menu, { Item as MenuItem, Divider } from "rc-menu"
-import { User } from "@/interfaces/user"
 import { logout } from "@/service/auth"
-import { AxiosError } from "axios"
 import { toast } from "react-toastify"
 import { useClientSession } from "@/hooks/useClientSession"
+import { LoginUserPayload } from "@/interfaces/dto/auth/login.dto"
+import { getAuthCookie } from "@/util/actions/cookie"
 
 type ProfileDropdownMenu = {
   label?: string
@@ -57,7 +57,7 @@ function NotLoginedUserArea() {
   )
 }
 
-function LoginedUserArea({ user }: { user: User }) {
+function LoginedUserArea({ user }: { user: LoginUserPayload }) {
   const { clientSessionLogout } = useClientSession()
 
   const menu = useMemo(() => {
@@ -68,20 +68,25 @@ function LoginedUserArea({ user }: { user: User }) {
         label: "로그아웃",
         role: "menu",
         async onClick() {
-          console.log("logout")
-
           try {
-            await logout()
+            const { accessToken, refreshToken } = await getAuthCookie()
+
+            if (!accessToken || !refreshToken) {
+              await clientSessionLogout()
+
+              return
+            }
+
+            await logout({
+              access_token: accessToken,
+              refresh_token: refreshToken,
+            })
             await clientSessionLogout()
 
             toast.success("로그아웃에 성공했습니다", {
               position: "bottom-center",
             })
           } catch (error) {
-            if (error instanceof AxiosError) {
-              //
-            }
-
             toast.error("로그아웃에 실패했습니다", {
               position: "bottom-center",
             })
