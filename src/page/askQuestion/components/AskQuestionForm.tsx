@@ -62,7 +62,7 @@ function AskQuestionForm() {
   const { replace } = useRouter()
 
   const onSubmit = async (data: AskQuestionFormData) => {
-    const member_id = user!.id
+    const member_id = user!.member_id
 
     await updateQuestionEditorState({
       title: data.title,

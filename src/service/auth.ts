@@ -11,7 +11,7 @@ import {
   DuplicateCheckNickNameResponse,
 } from "@/interfaces/dto/auth/duplicate-check-nickname.dto"
 import { SignupRequest, SignupResponse } from "@/interfaces/dto/auth/signup.dto"
-import { LogoutResponse } from "@/interfaces/dto/auth/logout.dto"
+import { LogoutRequest, LogoutResponse } from "@/interfaces/dto/auth/logout.dto"
 
 export async function login({ email, password }: LoginRequest) {
   const res = await apiInstance.post<
@@ -26,11 +26,12 @@ export async function login({ email, password }: LoginRequest) {
   return res
 }
 
-export async function logout() {
-  const res = apiInstance.post<any, AxiosResponse<LogoutResponse>>(
-    RouteMap.auth.logout,
-    {},
-  )
+export async function logout({ access_token, refresh_token }: LogoutRequest) {
+  const res = apiInstance.post<
+    any,
+    AxiosResponse<LogoutResponse>,
+    LogoutRequest
+  >(RouteMap.auth.logout, { access_token, refresh_token })
 
   return res
 }

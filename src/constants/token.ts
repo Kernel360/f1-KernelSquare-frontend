@@ -21,7 +21,9 @@ export const JWT_ACCESS_TOKEN_SECRET = "testMockAccessTokenSecret"
  */
 export const JWT_REFRESH_TOKEN_SECRET = "testMockRefreshTokenSecret"
 
-export const CustomAuthorizedHeaderName = "x-kenal-authorized"
+export const ENCRYPTED_PAYLOAD_KEY = "_ks_ep"
+
+export const CustomAuthorizedHeaderName = "x-kernal-authorized"
 export const CustomAuthorizedHeaderValue = {
   Authorized: "true",
   UnAuthorized: "false",
