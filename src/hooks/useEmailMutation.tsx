@@ -1,10 +1,12 @@
 "use client"
 
+import LoginForm from "@/components/form/LoginForm"
 import { duplicateState } from "@/recoil/atoms/duplicate"
 import { duplicateCheckEmail } from "@/service/auth"
 import { useMutation } from "@tanstack/react-query"
 import { AxiosError, HttpStatusCode } from "axios"
 import { FieldValues, UseFormTrigger } from "react-hook-form"
+import { ToastContentProps, toast } from "react-toastify"
 import { useSetRecoilState } from "recoil"
 
 interface UseEmailMutationOptions<T extends FieldValues> {
@@ -46,7 +48,9 @@ export function useEmailMutation<T extends FieldValues>({
         }
       }
 
-      alert("서버 에러가 발생했습니다. 잠시후 다시 이용해주세요.")
+      toast.error(LoginForm.InternalServerErrorToast, {
+        position: "top-center",
+      })
 
       return
     },

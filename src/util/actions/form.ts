@@ -1,7 +1,9 @@
 "use server"
 
+import { APIResponse } from "@/interfaces/dto/api-response"
 import { SubmitAskQuestionData } from "@/page/askQuestion/components/AskQuestionForm"
 import { createQuestion } from "@/service/question"
+import { AxiosError } from "axios"
 
 export async function onSubmitQuestion({
   title,
@@ -33,7 +35,13 @@ export async function onSubmitQuestion({
       createdQuestionId: res.data.data!,
     }
   } catch (error) {
-    console.log(error)
+    if (error instanceof AxiosError) {
+      const { response } = error as AxiosError<APIResponse>
+
+      console.log("[질문 작성 submit api 에러]", response?.data)
+    } else {
+      console.log("[질문 작성 submit 에러]", error)
+    }
 
     return {
       success: false,
