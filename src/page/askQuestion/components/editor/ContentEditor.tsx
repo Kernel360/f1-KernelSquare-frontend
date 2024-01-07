@@ -30,6 +30,9 @@ import { useClientSession } from "@/hooks/useClientSession"
 
 type MdTabMode = "write" | "preview"
 
+const boldToolbarEl = document.createElement("i")
+boldToolbarEl.className = "fa fa-camera"
+
 const ContentEditor = (
   { minHeight = "300px", ...props }: Partial<EditorProps>,
   ref: ForwardedRef<ToastEditor>,
@@ -183,7 +186,22 @@ const ContentEditor = (
       <ToastUiEditor
         ref={ref}
         mdTabVisible={mdTabVisible}
-        toolbarItems={contentEditorToolbarItems}
+        toolbarItems={[
+          [
+            {
+              el: boldToolbarEl,
+              name: "blod",
+              state: "strong",
+              onUpdated: ({ active, disabled }) => {
+                if (active) {
+                  boldToolbarEl.style.background = "red"
+                  return
+                }
+                boldToolbarEl.style.background = "white"
+              },
+            },
+          ],
+        ]}
         placeholder="질문을 작성해주세요"
         initialEditType="markdown"
         previewStyle="tab"
