@@ -156,19 +156,10 @@ const ContentEditor = (
     }
   }, [handleResize])
 
-  const ulToolbarEl = document.createElement("i")
-  ulToolbarEl.className = "fa fa-list-ul cursor-pointer"
-
-  const olToolbarEl = document.createElement("i")
-  olToolbarEl.className = "fa fa-list-ol cursor-pointer"
-
-  const taskToolbarEl = document.createElement("i")
-  taskToolbarEl.className = "far fa-check-square cursor-pointer"
-
   return (
     <div
       className={
-        "relative z-[1] [&_.toastui-editor-popup]:toastify:!ml-0 [&_.toastui-editor-defaultUI-toolbar]:!flex-wrap [&_.toastui-editor-dropdown-toolbar]:!max-w-full [&_.toastui-editor-dropdown-toolbar]:!h-max [&_.toastui-editor-dropdown-toolbar]:flex-wrap [&_.toastui-editor-main-container]:break-all button [type='button'] [type='reset'] [type='submit'] bg-initial"
+        "relative z-[1] [&_.toastui-editor-popup]:toastify:!ml-0 [&_.toastui-editor-defaultUI-toolbar]:!flex-wrap [&_.toastui-editor-dropdown-toolbar]:!max-w-full [&_.toastui-editor-dropdown-toolbar]:!h-max [&_.toastui-editor-dropdown-toolbar]:flex-wrap [&_.toastui-editor-main-container]:break-all"
       }
     >
       <div className="flex w-full -mt-2 box-border pl-4 relative top-2 z-[1] editor:hidden">
