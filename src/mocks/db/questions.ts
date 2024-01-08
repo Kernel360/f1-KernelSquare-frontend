@@ -53,7 +53,8 @@ export const mockQuestions: Array<Question> = [
     member_image_url:
       "https://mobirise.com/bootstrap-template//profile-template/assets/images/timothy-paul-smith-256424-1200x800.jpg",
     level: 4,
-    level_image_url: badge_url[4],
+    level_image_url:
+      "https://mobirise.com/bootstrap-template//profile-template/assets/images/timothy-paul-smith-256424-1200x800.jpg",
     skills: ["javascript", "react"],
     created_date: "2023-12-16T18:09:02",
     modified_date: "2023-12-16T18:09:02",
@@ -72,7 +73,8 @@ export const mockQuestions: Array<Question> = [
       "https://mobirise.com/bootstrap-template//profile-template/assets/images/timothy-paul-smith-256424-1200x800.jpg",
     close_status: false,
     level: 4,
-    level_image_url: badge_url[4],
+    level_image_url:
+      "https://mobirise.com/bootstrap-template//profile-template/assets/images/timothy-paul-smith-256424-1200x800.jpg",
     skills: ["java", "docker", "jpa"],
     created_date: "2023-12-16T17:00:22",
     modified_date: "2023-12-16T17:00:22",
@@ -90,7 +92,8 @@ export const mockQuestions: Array<Question> = [
     member_image_url:
       "https://mobirise.com/bootstrap-template//profile-template/assets/images/timothy-paul-smith-256424-1200x800.jpg",
     level: 4,
-    level_image_url: badge_url[4],
+    level_image_url:
+      "https://mobirise.com/bootstrap-template//profile-template/assets/images/timothy-paul-smith-256424-1200x800.jpg",
     skills: ["java"],
     created_date: "2023-12-16T12:01:01",
     modified_date: "2023-12-16T12:01:01",
@@ -108,7 +111,8 @@ export const mockQuestions: Array<Question> = [
     member_image_url:
       "https://mobirise.com/bootstrap-template//profile-template/assets/images/timothy-paul-smith-256424-1200x800.jpg",
     level: 4,
-    level_image_url: badge_url[4],
+    level_image_url:
+      "https://mobirise.com/bootstrap-template//profile-template/assets/images/timothy-paul-smith-256424-1200x800.jpg",
     skills: ["python"],
     created_date: "2023-12-16T07:20:55",
     modified_date: "2023-12-16T07:20:55",
@@ -125,7 +129,8 @@ export const mockQuestions: Array<Question> = [
     member_image_url:
       "https://mobirise.com/bootstrap-template//profile-template/assets/images/timothy-paul-smith-256424-1200x800.jpg",
     level: 4,
-    level_image_url: badge_url[4],
+    level_image_url:
+      "https://mobirise.com/bootstrap-template//profile-template/assets/images/timothy-paul-smith-256424-1200x800.jpg",
     skills: ["next.js", "react"],
     created_date: "2023-12-15T22:10:12",
     modified_date: "2023-12-15T22:10:12",
@@ -142,7 +147,8 @@ export const mockQuestions: Array<Question> = [
     member_image_url:
       "https://mobirise.com/bootstrap-template//profile-template/assets/images/timothy-paul-smith-256424-1200x800.jpg",
     level: 4,
-    level_image_url: badge_url[4],
+    level_image_url:
+      "https://mobirise.com/bootstrap-template//profile-template/assets/images/timothy-paul-smith-256424-1200x800.jpg",
     skills: ["java"],
     created_date: "2023-12-14T02:30:35",
     modified_date: "2023-12-14T02:30:35",
@@ -159,7 +165,8 @@ export const mockQuestions: Array<Question> = [
     member_image_url:
       "https://mobirise.com/bootstrap-template//profile-template/assets/images/timothy-paul-smith-256424-1200x800.jpg",
     level: 4,
-    level_image_url: badge_url[4],
+    level_image_url:
+      "https://mobirise.com/bootstrap-template//profile-template/assets/images/timothy-paul-smith-256424-1200x800.jpg",
     skills: ["typescript", "react"],
     created_date: "2023-12-14T02:09:00",
     modified_date: "2023-12-14T02:09:00",
@@ -176,7 +183,8 @@ export const mockQuestions: Array<Question> = [
     member_image_url:
       "https://mobirise.com/bootstrap-template//profile-template/assets/images/timothy-paul-smith-256424-1200x800.jpg",
     level: 4,
-    level_image_url: badge_url[4],
+    level_image_url:
+      "https://mobirise.com/bootstrap-template//profile-template/assets/images/timothy-paul-smith-256424-1200x800.jpg",
     skills: ["node.js"],
     created_date: "2023-12-13T22:41:12",
     modified_date: "2023-12-13T22:41:12",
@@ -193,7 +201,8 @@ export const mockQuestions: Array<Question> = [
     member_image_url:
       "https://mobirise.com/bootstrap-template//profile-template/assets/images/timothy-paul-smith-256424-1200x800.jpg",
     level: 4,
-    level_image_url: badge_url[4],
+    level_image_url:
+      "https://mobirise.com/bootstrap-template//profile-template/assets/images/timothy-paul-smith-256424-1200x800.jpg",
     skills: ["java", "java"],
     created_date: "2023-12-13T08:37:21",
     modified_date: "2023-12-13T08:37:21",
@@ -210,7 +219,8 @@ export const mockQuestions: Array<Question> = [
     member_image_url:
       "https://mobirise.com/bootstrap-template//profile-template/assets/images/timothy-paul-smith-256424-1200x800.jpg",
     level: 4,
-    level_image_url: badge_url[4],
+    level_image_url:
+      "https://mobirise.com/bootstrap-template//profile-template/assets/images/timothy-paul-smith-256424-1200x800.jpg",
     skills: ["java"],
     created_date: "2023-12-13T06:10:12",
     modified_date: "2023-12-13T06:10:12",
@@ -227,7 +237,8 @@ export const mockQuestions: Array<Question> = [
     member_image_url:
       "https://mobirise.com/bootstrap-template//profile-template/assets/images/timothy-paul-smith-256424-1200x800.jpg",
     level: 4,
-    level_image_url: badge_url[4],
+    level_image_url:
+      "https://mobirise.com/bootstrap-template//profile-template/assets/images/timothy-paul-smith-256424-1200x800.jpg",
     skills: ["java"],
     created_date: "2023-12-12T05:51:50",
     modified_date: "2023-12-15T05:51:50",
@@ -244,7 +255,8 @@ export const mockQuestions: Array<Question> = [
     member_image_url:
       "https://mobirise.com/bootstrap-template//profile-template/assets/images/timothy-paul-smith-256424-1200x800.jpg",
     level: 4,
-    level_image_url: badge_url[4],
+    level_image_url:
+      "https://mobirise.com/bootstrap-template//profile-template/assets/images/timothy-paul-smith-256424-1200x800.jpg",
     skills: ["java"],
     created_date: "2023-12-11T12:10:12",
     modified_date: "2023-12-11T12:10:12",

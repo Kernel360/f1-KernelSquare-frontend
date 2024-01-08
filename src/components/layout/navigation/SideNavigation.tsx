@@ -1,9 +1,7 @@
 "use client"
 
 import { Icon } from "@/components/icons/Icons"
-import { navigationRoutes, profileRoute } from "@/constants/navigationRoute"
-import { useClientSession } from "@/hooks/useClientSession"
-import { isLogined } from "@/util/auth"
+import { navigationRoutes } from "@/constants/navigationRoute"
 import Link from "next/link"
 import { useSelectedLayoutSegment } from "next/navigation"
 import { twMerge } from "tailwind-merge"
@@ -27,8 +25,6 @@ function SideNavigation({ hasHeader }: SideNavigationProps) {
     "hidden sm:sticky sm:inline-flex sm:w-[200px] sm:align-top sm:top-[--height-header] sm:bg-colorsLightGray sm:h-[calc(100vh-var(--height-header))] sm:z-navigation",
     !hasHeader && "sm:top-0 sm:h-screen",
   ])
-
-  const { user } = useClientSession()
 
   return (
     <aside className={wrapperClassNames}>
@@ -54,27 +50,6 @@ function SideNavigation({ hasHeader }: SideNavigationProps) {
               </li>
             )
           })}
-          {!!user &&
-            profileRoute.map(({ label, icon, to, activeClassName }) => {
-              const active =
-                currentSegment === null
-                  ? to === "/"
-                  : currentSegment === "question"
-                  ? to === "/"
-                  : to.startsWith(`/${currentSegment}`)
-
-              return (
-                <li key={label}>
-                  <SideNavigationItem
-                    label={label}
-                    icon={icon}
-                    active={active}
-                    activeClassName={activeClassName}
-                    to={to}
-                  />
-                </li>
-              )
-            })}
         </ul>
       </nav>
     </aside>

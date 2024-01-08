@@ -1,16 +1,29 @@
 "use client"
 
 import dynamic from "next/dynamic"
-import { PropsWithChildren, useRef } from "react"
+import {
+  PropsWithChildren,
+  SetStateAction,
+  useEffect,
+  useRef,
+  useState,
+} from "react"
 import { useForm } from "react-hook-form"
 import { Editor } from "@toast-ui/react-editor"
 import Button from "@/components/shared/button/Button"
+import { useRecoilState } from "recoil"
+import { AnswerMode } from "@/recoil/atoms/mode"
 import { createAnswer } from "@/service/answers"
+import { useUserId } from "@/hooks/useUser"
 import { useQueryClient } from "@tanstack/react-query"
+import queryKey from "@/constants/queryKey"
 import CreateAnswerAnime from "@/components/shared/animation/CreateAnswerAnime"
 import useModal from "@/hooks/useModal"
+import { getCookie } from "cookies-next"
+import { ACCESS_TOKEN_KEY } from "@/constants/token"
 import LoginForm from "@/components/form/LoginForm"
-import { useClientSession } from "@/hooks/useClientSession"
+import { useProgressModal } from "@/hooks/useProgressModal"
+import { sleep } from "@/util/sleep"
 
 const MdEditor = dynamic(() => import("./Markdown/MdEditor"), {
   ssr: false,
@@ -22,22 +35,30 @@ const MyAnswer: React.FC<{
   setIsAnswerMode: React.Dispatch<React.SetStateAction<boolean>>
 }> = ({ id, isAnswerMode, setIsAnswerMode }) => {
   const { openModal } = useModal()
+  const token = getCookie(ACCESS_TOKEN_KEY)
+  const [isToken, setIsToken] = useState(false)
+
+  useEffect(() => {
+    if (token) setIsToken(true)
+  }, [token])
 
   const { handleSubmit } = useForm()
   const editorRef = useRef<Editor>(null)
 
-  const { user } = useClientSession()
+  const { data: member_id } = useUserId()
   const queryClient = useQueryClient()
+
+  // const [isAnswerMode, setIsAnswerMode] = useRecoilState(AnswerMode)
 
   const handleSubmitValue = async () => {
     const submitValue = editorRef.current?.getInstance().getMarkdown()
     console.log("md", submitValue)
 
     try {
-      if (user)
+      if (member_id)
         createAnswer({
           questionId: id,
-          member_id: user.member_id,
+          member_id,
           content: submitValue || "",
         }).then((res) => {
           console.log("res", res.data.msg, res.config.data)
@@ -81,17 +102,19 @@ const MyAnswer: React.FC<{
     </div>
   )
 
-  // if (!!!user)
-  //   return (
-  //     <Container>
-  //       <WithoutToken />
-  //     </Container>
-  //   )
+  if (!isToken)
+    return (
+      <Container>
+        <WithoutToken />
+      </Container>
+    )
 
   return (
-    <Container>
-      <WithToken />
-    </Container>
+    isAnswerMode && (
+      <Container>
+        <WithToken />
+      </Container>
+    )
   )
 }
 
