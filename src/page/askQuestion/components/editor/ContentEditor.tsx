@@ -11,6 +11,7 @@ import {
 } from "react"
 import Button from "@/components/shared/button/Button"
 import { twMerge } from "tailwind-merge"
+import { contentEditorToolbarItems } from "@/constants/editor"
 import {
   EditorRefObj,
   HookCallback,
@@ -26,7 +27,6 @@ import {
   questionEditorState,
 } from "@/recoil/atoms/questionEditor"
 import { useClientSession } from "@/hooks/useClientSession"
-import { ToolbarItemList } from "@/constants/toastUIEditor"
 
 type MdTabMode = "write" | "preview"
 
@@ -183,7 +183,7 @@ const ContentEditor = (
       <ToastUiEditor
         ref={ref}
         mdTabVisible={mdTabVisible}
-        toolbarItems={ToolbarItemList}
+        toolbarItems={contentEditorToolbarItems}
         placeholder="질문을 작성해주세요"
         initialEditType="markdown"
         previewStyle="tab"
@@ -191,7 +191,6 @@ const ContentEditor = (
         usageStatistics={false}
         height="auto"
         minHeight={minHeight}
-        useCommandShortcut={true}
         onLoad={handleLoad}
         hooks={{
           addImageBlobHook: uploadImageHook,

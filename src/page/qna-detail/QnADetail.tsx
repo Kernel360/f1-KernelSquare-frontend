@@ -6,16 +6,18 @@ import MyAnswer from "./components/MyAnswer"
 import AnswerList from "./components/Answers/AnswerList"
 import { questionQueries } from "@/react-query/question"
 import ContentLoading from "@/components/shared/animation/ContentLoading"
+import { useNickname } from "@/hooks/useUser"
+import { useRecoilState } from "recoil"
+import { AnswerMode } from "@/recoil/atoms/mode"
 import type { Answer } from "@/interfaces/answer"
 import { answerQueries } from "@/react-query/answers"
-import { useClientSession } from "@/hooks/useClientSession"
 
 const QnADetail: React.FC<{ id: string }> = ({ id }) => {
   const { data, isPending } = questionQueries.useQuestionData({
     id: Number(id),
   })
 
-  const { user } = useClientSession()
+  const { data: member, refetch } = useNickname()
 
   const { data: answers, isPending: isAnswerPending } =
     answerQueries.useGetAnswers({
@@ -31,15 +33,15 @@ const QnADetail: React.FC<{ id: string }> = ({ id }) => {
     const fetchData = async () => {
       if (
         answers?.data &&
-        user?.nickname &&
-        !handleCheckMyAnswer(answers.data, user.nickname)
+        member &&
+        !handleCheckMyAnswer(answers.data, member)
       ) {
         setIsAnswerMode(true)
       }
     }
 
     fetchData()
-  }, [answers, user?.nickname])
+  }, [answers, member])
 
   if (isPending || isAnswerPending || !data) return <Loading />
 
@@ -55,7 +57,7 @@ const QnADetail: React.FC<{ id: string }> = ({ id }) => {
             setIsAnswerMode={setIsAnswerMode}
           />
           <Title title="Answers" />
-          <AnswerList user={user?.nickname} id={Number(id)} />
+          <AnswerList user={member} id={Number(id)} />
         </div>
       </div>
     )
