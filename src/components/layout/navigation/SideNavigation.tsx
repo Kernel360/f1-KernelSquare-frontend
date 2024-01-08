@@ -27,7 +27,7 @@ function SideNavigation({ hasHeader }: SideNavigationProps) {
     !hasHeader && "sm:top-0 sm:h-screen",
   ])
 
-const { user } = useClientSession()
+  const { user } = useClientSession()
 
   // 로그인 된 사용자만 profile 탭 보이도록
   return (

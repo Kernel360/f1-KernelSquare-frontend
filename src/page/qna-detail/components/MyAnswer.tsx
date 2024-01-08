@@ -1,30 +1,16 @@
 "use client"
 
 import dynamic from "next/dynamic"
-import {
-  PropsWithChildren,
-  SetStateAction,
-  useEffect,
-  useRef,
-  useState,
-} from "react"
+import { PropsWithChildren, useRef } from "react"
 import { useForm } from "react-hook-form"
 import { Editor } from "@toast-ui/react-editor"
 import Button from "@/components/shared/button/Button"
-import { useRecoilState } from "recoil"
-import { AnswerMode } from "@/recoil/atoms/mode"
 import { createAnswer } from "@/service/answers"
 import { useQueryClient } from "@tanstack/react-query"
-import queryKey from "@/constants/queryKey"
 import CreateAnswerAnime from "@/components/shared/animation/CreateAnswerAnime"
 import useModal from "@/hooks/useModal"
-import { getCookie } from "cookies-next"
-import { ACCESS_TOKEN_KEY } from "@/constants/token"
 import LoginForm from "@/components/form/LoginForm"
-import { useProgressModal } from "@/hooks/useProgressModal"
-import { sleep } from "@/util/sleep"
 import { useClientSession } from "@/hooks/useClientSession"
-
 
 const MdEditor = dynamic(() => import("./Markdown/MdEditor"), {
   ssr: false,
@@ -35,7 +21,7 @@ const MyAnswer: React.FC<{
   isAnswerMode: boolean
   setIsAnswerMode: React.Dispatch<React.SetStateAction<boolean>>
 }> = ({ id, isAnswerMode, setIsAnswerMode }) => {
-   const { openModal } = useModal()
+  const { openModal } = useModal()
 
   const { handleSubmit } = useForm()
   const editorRef = useRef<Editor>(null)
@@ -46,12 +32,12 @@ const MyAnswer: React.FC<{
   const handleSubmitValue = async () => {
     const submitValue = editorRef.current?.getInstance().getMarkdown()
     console.log("md", submitValue)
-    
+
     try {
-      if (member_id)
+      if (user?.member_id)
         createAnswer({
           questionId: id,
-          member_id,
+          member_id: user.member_id,
           content: submitValue || "",
         }).then((res) => {
           console.log("res", res.data.msg, res.config.data)
@@ -95,7 +81,7 @@ const MyAnswer: React.FC<{
     </div>
   )
 
-if (!user)
+  if (!user)
     return (
       <Container>
         <WithoutToken />
