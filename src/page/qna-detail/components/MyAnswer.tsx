@@ -14,7 +14,6 @@ import Button from "@/components/shared/button/Button"
 import { useRecoilState } from "recoil"
 import { AnswerMode } from "@/recoil/atoms/mode"
 import { createAnswer } from "@/service/answers"
-import { useUserId } from "@/hooks/useUser"
 import { useQueryClient } from "@tanstack/react-query"
 import queryKey from "@/constants/queryKey"
 import CreateAnswerAnime from "@/components/shared/animation/CreateAnswerAnime"
@@ -24,6 +23,8 @@ import { ACCESS_TOKEN_KEY } from "@/constants/token"
 import LoginForm from "@/components/form/LoginForm"
 import { useProgressModal } from "@/hooks/useProgressModal"
 import { sleep } from "@/util/sleep"
+import { useClientSession } from "@/hooks/useClientSession"
+
 
 const MdEditor = dynamic(() => import("./Markdown/MdEditor"), {
   ssr: false,
@@ -34,26 +35,18 @@ const MyAnswer: React.FC<{
   isAnswerMode: boolean
   setIsAnswerMode: React.Dispatch<React.SetStateAction<boolean>>
 }> = ({ id, isAnswerMode, setIsAnswerMode }) => {
-  const { openModal } = useModal()
-  const token = getCookie(ACCESS_TOKEN_KEY)
-  const [isToken, setIsToken] = useState(false)
-
-  useEffect(() => {
-    if (token) setIsToken(true)
-  }, [token])
+   const { openModal } = useModal()
 
   const { handleSubmit } = useForm()
   const editorRef = useRef<Editor>(null)
 
-  const { data: member_id } = useUserId()
+  const { user } = useClientSession()
   const queryClient = useQueryClient()
-
-  // const [isAnswerMode, setIsAnswerMode] = useRecoilState(AnswerMode)
 
   const handleSubmitValue = async () => {
     const submitValue = editorRef.current?.getInstance().getMarkdown()
     console.log("md", submitValue)
-
+    
     try {
       if (member_id)
         createAnswer({
@@ -102,7 +95,7 @@ const MyAnswer: React.FC<{
     </div>
   )
 
-  if (!isToken)
+if (!user)
     return (
       <Container>
         <WithoutToken />
