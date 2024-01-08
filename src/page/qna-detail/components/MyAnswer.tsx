@@ -1,7 +1,7 @@
 "use client"
 
 import dynamic from "next/dynamic"
-import { PropsWithChildren, useEffect, useRef, useState } from "react"
+import { PropsWithChildren, useRef } from "react"
 import { useForm } from "react-hook-form"
 import { Editor } from "@toast-ui/react-editor"
 import Button from "@/components/shared/button/Button"
@@ -9,8 +9,6 @@ import { createAnswer } from "@/service/answers"
 import { useQueryClient } from "@tanstack/react-query"
 import CreateAnswerAnime from "@/components/shared/animation/CreateAnswerAnime"
 import useModal from "@/hooks/useModal"
-import { getCookie } from "cookies-next"
-import { ACCESS_TOKEN_KEY } from "@/constants/token"
 import LoginForm from "@/components/form/LoginForm"
 import { useClientSession } from "@/hooks/useClientSession"
 
@@ -24,12 +22,6 @@ const MyAnswer: React.FC<{
   setIsAnswerMode: React.Dispatch<React.SetStateAction<boolean>>
 }> = ({ id, isAnswerMode, setIsAnswerMode }) => {
   const { openModal } = useModal()
-  const token = getCookie(ACCESS_TOKEN_KEY)
-  const [isToken, setIsToken] = useState(false)
-
-  useEffect(() => {
-    if (token) setIsToken(true)
-  }, [token])
 
   const { handleSubmit } = useForm()
   const editorRef = useRef<Editor>(null)
@@ -89,19 +81,17 @@ const MyAnswer: React.FC<{
     </div>
   )
 
-  if (!isToken)
-    return (
-      <Container>
-        <WithoutToken />
-      </Container>
-    )
+  // if (!!!user)
+  //   return (
+  //     <Container>
+  //       <WithoutToken />
+  //     </Container>
+  //   )
 
   return (
-    isAnswerMode && (
-      <Container>
-        <WithToken />
-      </Container>
-    )
+    <Container>
+      <WithToken />
+    </Container>
   )
 }
 

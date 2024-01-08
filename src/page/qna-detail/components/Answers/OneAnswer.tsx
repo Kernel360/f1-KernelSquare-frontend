@@ -15,7 +15,6 @@ import queryKey from "@/constants/queryKey"
 import badge_url from "@/assets/images/badges"
 import type { Editor } from "@toast-ui/react-editor"
 import { useForm } from "react-hook-form"
-import mockAnswers from "@/mocks/db/answers"
 
 const MdViewer = dynamic(() => import("../Markdown/MdViewer"), {
   ssr: false,
