@@ -25,9 +25,6 @@ export const navigationRoutes = [
     to: "/faq",
     activeClassName: "text-blue-400",
   },
-]
-
-export const profileRoute = [
   {
     label: "마이 페이지",
     icon: NavigationIcons.MyPage,
