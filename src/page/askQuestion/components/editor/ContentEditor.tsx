@@ -11,7 +11,6 @@ import {
 } from "react"
 import Button from "@/components/shared/button/Button"
 import { twMerge } from "tailwind-merge"
-import { contentEditorToolbarItems } from "@/constants/editor"
 import {
   EditorRefObj,
   HookCallback,
@@ -27,6 +26,7 @@ import {
   questionEditorState,
 } from "@/recoil/atoms/questionEditor"
 import { useClientSession } from "@/hooks/useClientSession"
+import { ToolbarItemList } from "@/constants/toastUIEditor"
 
 type MdTabMode = "write" | "preview"
 
@@ -156,10 +156,19 @@ const ContentEditor = (
     }
   }, [handleResize])
 
+  const ulToolbarEl = document.createElement("i")
+  ulToolbarEl.className = "fa fa-list-ul cursor-pointer"
+
+  const olToolbarEl = document.createElement("i")
+  olToolbarEl.className = "fa fa-list-ol cursor-pointer"
+
+  const taskToolbarEl = document.createElement("i")
+  taskToolbarEl.className = "far fa-check-square cursor-pointer"
+
   return (
     <div
       className={
-        "relative z-[1] [&_.toastui-editor-popup]:toastify:!ml-0 [&_.toastui-editor-defaultUI-toolbar]:!flex-wrap [&_.toastui-editor-dropdown-toolbar]:!max-w-full [&_.toastui-editor-dropdown-toolbar]:!h-max [&_.toastui-editor-dropdown-toolbar]:flex-wrap [&_.toastui-editor-main-container]:break-all"
+        "relative z-[1] [&_.toastui-editor-popup]:toastify:!ml-0 [&_.toastui-editor-defaultUI-toolbar]:!flex-wrap [&_.toastui-editor-dropdown-toolbar]:!max-w-full [&_.toastui-editor-dropdown-toolbar]:!h-max [&_.toastui-editor-dropdown-toolbar]:flex-wrap [&_.toastui-editor-main-container]:break-all button [type='button'] [type='reset'] [type='submit'] bg-initial"
       }
     >
       <div className="flex w-full -mt-2 box-border pl-4 relative top-2 z-[1] editor:hidden">
@@ -183,7 +192,7 @@ const ContentEditor = (
       <ToastUiEditor
         ref={ref}
         mdTabVisible={mdTabVisible}
-        toolbarItems={contentEditorToolbarItems}
+        toolbarItems={ToolbarItemList}
         placeholder="질문을 작성해주세요"
         initialEditType="markdown"
         previewStyle="tab"
@@ -191,6 +200,7 @@ const ContentEditor = (
         usageStatistics={false}
         height="auto"
         minHeight={minHeight}
+        useCommandShortcut={true}
         onLoad={handleLoad}
         hooks={{
           addImageBlobHook: uploadImageHook,
