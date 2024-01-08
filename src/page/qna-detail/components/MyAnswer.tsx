@@ -81,17 +81,19 @@ const MyAnswer: React.FC<{
     </div>
   )
 
-  // if (!!!user)
-  //   return (
-  //     <Container>
-  //       <WithoutToken />
-  //     </Container>
-  //   )
+  if (!user)
+    return (
+      <Container>
+        <WithoutToken />
+      </Container>
+    )
 
   return (
-    <Container>
-      <WithToken />
-    </Container>
+    isAnswerMode && (
+      <Container>
+        <WithToken />
+      </Container>
+    )
   )
 }
 
