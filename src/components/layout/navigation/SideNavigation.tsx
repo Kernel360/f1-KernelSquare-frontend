@@ -30,6 +30,7 @@ function SideNavigation({ hasHeader }: SideNavigationProps) {
 
   const { user } = useClientSession()
 
+  // 로그인 된 사용자만 profile 탭 보이도록
   return (
     <aside className={wrapperClassNames}>
       <nav className={"w-full box-border px-2 py-6"}>
