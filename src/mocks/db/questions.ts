@@ -45,7 +45,7 @@ export const mockQuestions: Array<Question> = [
     title:
       "질문3질문3질문3질문3질문3질문3질문3질문3질문3질문3질문3질문3질문3질문3질문3질문3질문3질문3질문3질문3질문3질문3",
     content:
-      "### <code>getServerSideProps( )</code> \n ```js function Page({ data }) \n { // 데이터를 렌더링하는 코드~ } \n // 모든 요청에서 호출된다.```",
+      "### <code>getServerSideProps( )</code>\n```js function Page({ data }){}```\n```python print('hello')```",
     question_image_url: "",
     view_count: 32,
     close_status: false,
