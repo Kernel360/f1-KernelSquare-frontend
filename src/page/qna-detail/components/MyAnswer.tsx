@@ -1,29 +1,19 @@
 "use client"
 
 import dynamic from "next/dynamic"
-import {
-  PropsWithChildren,
-  SetStateAction,
-  useEffect,
-  useRef,
-  useState,
-} from "react"
+import { PropsWithChildren, useRef } from "react"
 import { useForm } from "react-hook-form"
 import { Editor } from "@toast-ui/react-editor"
 import Button from "@/components/shared/button/Button"
-import { useRecoilState } from "recoil"
-import { AnswerMode } from "@/recoil/atoms/mode"
 import { createAnswer } from "@/service/answers"
-import { useUserId } from "@/hooks/useUser"
 import { useQueryClient } from "@tanstack/react-query"
-import queryKey from "@/constants/queryKey"
 import CreateAnswerAnime from "@/components/shared/animation/CreateAnswerAnime"
 import useModal from "@/hooks/useModal"
-import { getCookie } from "cookies-next"
-import { ACCESS_TOKEN_KEY } from "@/constants/token"
 import LoginForm from "@/components/form/LoginForm"
-import { useProgressModal } from "@/hooks/useProgressModal"
-import { sleep } from "@/util/sleep"
+import { useClientSession } from "@/hooks/useClientSession"
+import { toast } from "react-toastify"
+import message from "@/constants/message"
+import useQnADetail from "../hooks/useQnADetail"
 
 const MdEditor = dynamic(() => import("./Markdown/MdEditor"), {
   ssr: false,
@@ -35,35 +25,37 @@ const MyAnswer: React.FC<{
   setIsAnswerMode: React.Dispatch<React.SetStateAction<boolean>>
 }> = ({ id, isAnswerMode, setIsAnswerMode }) => {
   const { openModal } = useModal()
-  const token = getCookie(ACCESS_TOKEN_KEY)
-  const [isToken, setIsToken] = useState(false)
-
-  useEffect(() => {
-    if (token) setIsToken(true)
-  }, [token])
+  const { checkNullValue } = useQnADetail()
 
   const { handleSubmit } = useForm()
   const editorRef = useRef<Editor>(null)
 
-  const { data: member_id } = useUserId()
+  const { user } = useClientSession()
   const queryClient = useQueryClient()
-
-  // const [isAnswerMode, setIsAnswerMode] = useRecoilState(AnswerMode)
 
   const handleSubmitValue = async () => {
     const submitValue = editorRef.current?.getInstance().getMarkdown()
     console.log("md", submitValue)
 
+    if (checkNullValue(submitValue)) {
+      toast.error(message.noContent, {
+        position: "top-center",
+        autoClose: 1000,
+      })
+      return
+    }
+
     try {
-      if (member_id)
+      if (user?.member_id) {
         createAnswer({
           questionId: id,
-          member_id,
+          member_id: user.member_id,
           content: submitValue || "",
         }).then((res) => {
           console.log("res", res.data.msg, res.config.data)
           queryClient.invalidateQueries({ queryKey: ["answer", id] })
         })
+      }
     } catch (err) {
       console.error("error", err)
     }
@@ -102,7 +94,7 @@ const MyAnswer: React.FC<{
     </div>
   )
 
-  if (!isToken)
+  if (!user)
     return (
       <Container>
         <WithoutToken />

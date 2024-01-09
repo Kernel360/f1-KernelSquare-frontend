@@ -3,7 +3,6 @@ import { questionQueries } from "@/react-query/question"
 import Image from "next/image"
 import { getDate, getDeadline } from "@/util/getDate"
 import dynamic from "next/dynamic"
-import badge_url from "../../../assets/images/badges"
 import Tag from "@/components/shared/tag/Tag"
 
 const MdViewer = dynamic(() => import("./Markdown/MdViewer"), {
@@ -58,7 +57,7 @@ const Question: React.FC<{ id: number }> = ({ id }) => {
             <div className="text-center flex mt-2 justify-around">
               <div>
                 <Image
-                  src={badge_url[question.level]}
+                  src={question.level_image_url}
                   alt="질문자 등급 배지"
                   width={20}
                   height={20}
