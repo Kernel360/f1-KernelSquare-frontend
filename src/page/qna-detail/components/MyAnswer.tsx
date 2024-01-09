@@ -11,6 +11,9 @@ import CreateAnswerAnime from "@/components/shared/animation/CreateAnswerAnime"
 import useModal from "@/hooks/useModal"
 import LoginForm from "@/components/form/LoginForm"
 import { useClientSession } from "@/hooks/useClientSession"
+import { toast } from "react-toastify"
+import message from "@/constants/message"
+import useQnADetail from "../hooks/useQnADetail"
 
 const MdEditor = dynamic(() => import("./Markdown/MdEditor"), {
   ssr: false,
@@ -22,6 +25,7 @@ const MyAnswer: React.FC<{
   setIsAnswerMode: React.Dispatch<React.SetStateAction<boolean>>
 }> = ({ id, isAnswerMode, setIsAnswerMode }) => {
   const { openModal } = useModal()
+  const { checkNullValue } = useQnADetail()
 
   const { handleSubmit } = useForm()
   const editorRef = useRef<Editor>(null)
@@ -33,8 +37,16 @@ const MyAnswer: React.FC<{
     const submitValue = editorRef.current?.getInstance().getMarkdown()
     console.log("md", submitValue)
 
+    if (checkNullValue(submitValue)) {
+      toast.error(message.noContent, {
+        position: "top-center",
+        autoClose: 1000,
+      })
+      return
+    }
+
     try {
-      if (user?.member_id)
+      if (user?.member_id) {
         createAnswer({
           questionId: id,
           member_id: user.member_id,
@@ -43,6 +55,7 @@ const MyAnswer: React.FC<{
           console.log("res", res.data.msg, res.config.data)
           queryClient.invalidateQueries({ queryKey: ["answer", id] })
         })
+      }
     } catch (err) {
       console.error("error", err)
     }

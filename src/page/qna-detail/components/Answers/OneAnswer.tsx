@@ -14,6 +14,9 @@ import { useMutation, useQueryClient } from "@tanstack/react-query"
 import queryKey from "@/constants/queryKey"
 import type { Editor } from "@toast-ui/react-editor"
 import { useForm } from "react-hook-form"
+import useQnADetail from "../../hooks/useQnADetail"
+import { toast } from "react-toastify"
+import message from "@/constants/message"
 
 const MdViewer = dynamic(() => import("../Markdown/MdViewer"), {
   ssr: false,
@@ -29,6 +32,8 @@ interface OneAnswerProps {
 }
 
 const OneAnswer: React.FC<OneAnswerProps> = ({ answer, user }) => {
+  const { checkNullValue } = useQnADetail()
+
   const isEdited = answer.created_date !== answer.modified_date
   const isMyAnswer = user === answer.created_by
 
@@ -93,6 +98,15 @@ const OneAnswer: React.FC<OneAnswerProps> = ({ answer, user }) => {
   const handleEditValue = async () => {
     const submitValue = editorRef.current?.getInstance().getMarkdown()
     console.log("md", submitValue)
+
+    if (checkNullValue(submitValue)) {
+      toast.error(message.noContent, {
+        position: "top-center",
+        autoClose: 1000,
+      })
+      return
+    }
+
     try {
       const res = await updateAnswer({
         answerId: answer.answer_id,
