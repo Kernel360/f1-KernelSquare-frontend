@@ -12,7 +12,6 @@ import Button from "@/components/shared/button/Button"
 import { updateAnswer, voteAnswer } from "@/service/answers"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import queryKey from "@/constants/queryKey"
-import badge_url from "@/assets/images/badges"
 import type { Editor } from "@toast-ui/react-editor"
 import { useForm } from "react-hook-form"
 
@@ -176,7 +175,7 @@ const OneAnswer: React.FC<OneAnswerProps> = ({ answer, user }) => {
           <div className="text-center flex justify-center">
             <div className="flex flex-col justify-center">
               <Image
-                src={badge_url[answer.author_level]}
+                src={answer.rank_image_url}
                 alt="답변자 배지 이미지"
                 width={20}
                 height={20}
