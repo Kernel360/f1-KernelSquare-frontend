@@ -11,7 +11,7 @@ export const metadata: Metadata = {
 
 export default function ProfilePage() {
   if (!isLogined()) {
-    return <AuthGuardModal page="question" />
+    return <AuthGuardModal page="profile" />
   }
   return <MyPage />
 }
