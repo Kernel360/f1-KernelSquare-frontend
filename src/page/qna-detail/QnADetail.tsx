@@ -32,18 +32,19 @@ const QnADetail: React.FC<{ id: string }> = ({ id }) => {
       if (
         answers?.data &&
         user?.nickname &&
-        !handleCheckMyAnswer(answers.data, user.nickname)
+        !handleCheckMyAnswer(answers.data, user.nickname) &&
+        data?.data?.nickname !== user.nickname
       ) {
         setIsAnswerMode(true)
       }
     }
 
     fetchData()
-  }, [answers, user?.nickname])
+  }, [answers, data?.data?.nickname, user?.nickname])
 
   if (isPending || isAnswerPending || !data) return <Loading />
 
-  if (data)
+  if (data && user)
     return (
       <div className="relative box-border flex-1 p-10">
         <div className="w-[calc(100%-12px)] sm:w-[calc(100%-22px)] lg:w-[calc(100%-42px)] mx-auto">
@@ -55,7 +56,11 @@ const QnADetail: React.FC<{ id: string }> = ({ id }) => {
             setIsAnswerMode={setIsAnswerMode}
           />
           <Title title="Answers" />
-          <AnswerList user={user?.nickname} id={Number(id)} />
+          <AnswerList
+            user={user?.nickname}
+            id={Number(id)}
+            isMyAnswer={data?.data?.nickname === user?.nickname}
+          />
         </div>
       </div>
     )

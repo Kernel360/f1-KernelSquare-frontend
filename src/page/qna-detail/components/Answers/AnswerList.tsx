@@ -4,13 +4,15 @@ import OneAnswer from "./OneAnswer"
 import { answerQueries } from "@/react-query/answers"
 import ContentLoading from "@/components/shared/animation/ContentLoading"
 import LightBulb from "@/components/shared/animation/LightBulb"
+import message from "@/constants/message"
 
 interface AnswerProps {
   user: string | undefined
   id: number
+  isMyAnswer: boolean
 }
 
-const AnswerList: React.FC<AnswerProps> = ({ user, id }) => {
+const AnswerList: React.FC<AnswerProps> = ({ user, id, isMyAnswer }) => {
   const { data, isPending } = answerQueries.useGetAnswers({
     questionId: id,
   })
@@ -25,7 +27,7 @@ const AnswerList: React.FC<AnswerProps> = ({ user, id }) => {
             <OneAnswer key={answer.answer_id} answer={answer} user={user} />
           ))
         ) : (
-          <NoAnswer />
+          <NoAnswer isMyAnswer={isMyAnswer} />
         )}
       </div>
     )
@@ -33,7 +35,7 @@ const AnswerList: React.FC<AnswerProps> = ({ user, id }) => {
 
 export default AnswerList
 
-function Loading() {
+const Loading = () => {
   return (
     <div className="h-full">
       <ContentLoading
@@ -47,15 +49,14 @@ function Loading() {
   )
 }
 
-function NoAnswer() {
+const NoAnswer: React.FC<{ isMyAnswer: boolean }> = ({ isMyAnswer }) => {
   return (
     <div className="text-center">
       <div className="flex justify-center">
         <LightBulb style={{ color: "#02A35F", width: "250px" }} />
       </div>
       <div className="text-xl">
-        아직 작성된 답변이 존재하지 않습니다. 첫 번째 답변의 주인공이
-        되어보세요!
+        {isMyAnswer ? message.myQuestion : message.noAnswer}
       </div>
     </div>
   )
