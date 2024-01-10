@@ -35,7 +35,6 @@ const MyAnswer: React.FC<{
 
   const handleSubmitValue = async () => {
     const submitValue = editorRef.current?.getInstance().getMarkdown()
-    console.log("md", submitValue)
 
     if (checkNullValue(submitValue)) {
       toast.error(message.noContent, {
