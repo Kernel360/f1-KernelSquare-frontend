@@ -12,10 +12,11 @@ import Button from "@/components/shared/button/Button"
 import { updateAnswer, voteAnswer } from "@/service/answers"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import queryKey from "@/constants/queryKey"
-import badge_url from "@/assets/images/badges"
 import type { Editor } from "@toast-ui/react-editor"
 import { useForm } from "react-hook-form"
-import mockAnswers from "@/mocks/db/answers"
+import useQnADetail from "../../hooks/useQnADetail"
+import { toast } from "react-toastify"
+import message from "@/constants/message"
 
 const MdViewer = dynamic(() => import("../Markdown/MdViewer"), {
   ssr: false,
@@ -31,6 +32,8 @@ interface OneAnswerProps {
 }
 
 const OneAnswer: React.FC<OneAnswerProps> = ({ answer, user }) => {
+  const { checkNullValue } = useQnADetail()
+
   const isEdited = answer.created_date !== answer.modified_date
   const isMyAnswer = user === answer.created_by
 
@@ -95,6 +98,15 @@ const OneAnswer: React.FC<OneAnswerProps> = ({ answer, user }) => {
   const handleEditValue = async () => {
     const submitValue = editorRef.current?.getInstance().getMarkdown()
     console.log("md", submitValue)
+
+    if (checkNullValue(submitValue)) {
+      toast.error(message.noContent, {
+        position: "top-center",
+        autoClose: 1000,
+      })
+      return
+    }
+
     try {
       const res = await updateAnswer({
         answerId: answer.answer_id,
@@ -177,7 +189,7 @@ const OneAnswer: React.FC<OneAnswerProps> = ({ answer, user }) => {
           <div className="text-center flex justify-center">
             <div className="flex flex-col justify-center">
               <Image
-                src={badge_url[answer.author_level]}
+                src={answer.rank_image_url}
                 alt="답변자 배지 이미지"
                 width={20}
                 height={20}
