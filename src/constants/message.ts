@@ -1,10 +1,15 @@
-export const toastifyMessage = {
+export const errorMessage = {
   noContent: "본문 내용을 작성해주세요",
   introductionLimit: "최대 300자까지 입력 가능합니다.",
   imageUploadLimit: "이미지 파일 업로드는 1장만 가능합니다",
   unauthorized: "로그인 후 다시 이용해주세요",
   failToUploadImage:
     "이미지 업로드 중 오류가 발생하였습니다. 다시 시도해주세요.",
+} as const
+
+export const successMessage = {
+  editProfileImage: "프로필 이미지 변경에 성공했습니다.",
+  editIntroduction: "자기소개 수정에 성공했습니다.",
 } as const
 
 export const notificationMessage = {

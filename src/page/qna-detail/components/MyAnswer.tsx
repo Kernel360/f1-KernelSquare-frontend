@@ -12,7 +12,7 @@ import useModal from "@/hooks/useModal"
 import LoginForm from "@/components/form/LoginForm"
 import { useClientSession } from "@/hooks/useClientSession"
 import { toast } from "react-toastify"
-import { toastifyMessage } from "@/constants/message"
+import { errorMessage } from "@/constants/message"
 import useQnADetail from "../hooks/useQnADetail"
 
 const MdEditor = dynamic(() => import("./Markdown/MdEditor"), {
@@ -37,7 +37,7 @@ const MyAnswer: React.FC<{
     const submitValue = editorRef.current?.getInstance().getMarkdown()
 
     if (checkNullValue(submitValue)) {
-      toast.error(toastifyMessage.noContent, {
+      toast.error(errorMessage.noContent, {
         position: "top-center",
         autoClose: 1000,
       })

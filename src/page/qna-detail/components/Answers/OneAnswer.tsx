@@ -16,7 +16,7 @@ import type { Editor } from "@toast-ui/react-editor"
 import { useForm } from "react-hook-form"
 import useQnADetail from "../../hooks/useQnADetail"
 import { toast } from "react-toastify"
-import { toastifyMessage } from "@/constants/message"
+import { errorMessage } from "@/constants/message"
 
 const MdViewer = dynamic(() => import("../Markdown/MdViewer"), {
   ssr: false,
@@ -100,7 +100,7 @@ const OneAnswer: React.FC<OneAnswerProps> = ({ answer, user }) => {
     console.log("md", submitValue)
 
     if (checkNullValue(submitValue)) {
-      toast.error(toastifyMessage.noContent, {
+      toast.error(errorMessage.noContent, {
         position: "top-center",
         autoClose: 1000,
       })

@@ -8,9 +8,10 @@ import useMyPage from "../hooks/useMyPage"
 import { type FormEvent, useState } from "react"
 import { updateMemberInfo } from "@/service/member"
 import { toast } from "react-toastify"
-import { toastifyMessage } from "@/constants/message"
+import { errorMessage, successMessage } from "@/constants/message"
 import { twJoin } from "tailwind-merge"
 import useDebounce from "@/hooks/useDebounce"
+import { useClientSession } from "@/hooks/useClientSession"
 
 interface IntroductionProps {
   id: number
@@ -22,6 +23,7 @@ const EditBox: React.FC<{ previous?: string; id: number }> = ({
   id,
 }) => {
   const { closeEditMode, introduction, setIntroduction } = useMyPage()
+  const { clientSessionUpdate } = useClientSession()
 
   const [textLen, setTextLen] = useState<number>(0)
 
@@ -37,7 +39,7 @@ const EditBox: React.FC<{ previous?: string; id: number }> = ({
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     if (introduction.length > 300) {
-      toast.error(toastifyMessage.introductionLimit, {
+      toast.error(errorMessage.introductionLimit, {
         position: "top-center",
         autoClose: 1000,
       })
@@ -48,13 +50,14 @@ const EditBox: React.FC<{ previous?: string; id: number }> = ({
       updateMemberInfo({
         id,
         introduction,
-      }).then((res) => {
-        console.log(
-          "res",
-          res.data.msg,
-          JSON.parse(res.config.data)["introduction"],
-        )
-        setIntroduction(JSON.parse(res.config.data)["introduction"])
+      }).then(() => {
+        toast.success(successMessage.editIntroduction, {
+          position: "top-center",
+          autoClose: 1000,
+        })
+        clientSessionUpdate({
+          introduction,
+        })
       })
     } catch (err) {
       console.error("error", err)

@@ -10,21 +10,23 @@ import { updateMemberInfo } from "@/service/member"
 import { useQueryClient } from "@tanstack/react-query"
 import { toast } from "react-toastify"
 import {
-  confirmMessage,
   notificationMessage,
-  toastifyMessage,
+  errorMessage,
+  successMessage,
 } from "@/constants/message"
 import { Icons } from "@/components/icons/Icons"
 import { uploadImages } from "@/service/images"
 import ConfirmModal from "@/components/shared/confirm-modal/ConfirmModal"
 import useModal from "@/hooks/useModal"
 import UploadProfileImageModal from "@/components/shared/confirm-modal/components/UploadProfileImageModal"
+import { useClientSession } from "@/hooks/useClientSession"
 
 function ProfileImage({ id, image_url }: ImageProps) {
   console.log("프로필 이미지", image_url.length)
   const [image, setImage] = useState<string | ArrayBuffer | null>(image_url)
   const [preview, setPreview] = useState<string>("")
   const imageUploadRef = useRef<HTMLInputElement>(null)
+  const { clientSessionUpdate } = useClientSession()
 
   const { openModal } = useModal()
 
@@ -46,12 +48,16 @@ function ProfileImage({ id, image_url }: ImageProps) {
         }).then((res) => {
           console.log("res", res)
           if (res.data.code === 1242) {
-            toast.success(res.data.msg, { position: "top-center" })
-            queryClient.invalidateQueries({ queryKey: ["user"] })
+            toast.success(successMessage.editProfileImage, {
+              position: "top-center",
+            })
+            clientSessionUpdate({
+              image_url: imageUploadResponse.data.data?.image_url,
+            })
           }
         })
       } catch (error) {
-        toast.error(toastifyMessage.failToUploadImage)
+        toast.error(errorMessage.failToUploadImage)
         console.error("Error", error)
       }
     }
