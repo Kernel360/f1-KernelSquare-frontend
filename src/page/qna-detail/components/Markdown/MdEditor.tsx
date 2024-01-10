@@ -12,9 +12,7 @@ interface EditorProps {
 const MdEditor: React.FC<EditorProps> = ({ previous, editorRef }) => {
   return (
     <div className="text-[20px] text-left">
-      {editorRef && (
-        <MarkdownEditor ref={editorRef} initialValue={previous || " "} />
-      )}
+      {editorRef && <MarkdownEditor ref={editorRef} initialValue={previous} />}
     </div>
   )
 }
