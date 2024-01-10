@@ -8,7 +8,7 @@ import useMyPage from "../hooks/useMyPage"
 import { type FormEvent, useState } from "react"
 import { updateMemberInfo } from "@/service/member"
 import { toast } from "react-toastify"
-import message from "@/constants/message"
+import { toastifyMessage } from "@/constants/message"
 import { twJoin } from "tailwind-merge"
 import useDebounce from "@/hooks/useDebounce"
 
@@ -37,7 +37,7 @@ const EditBox: React.FC<{ previous?: string; id: number }> = ({
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     if (introduction.length > 300) {
-      toast.error(message.introductionLimit, {
+      toast.error(toastifyMessage.introductionLimit, {
         position: "top-center",
         autoClose: 1000,
       })

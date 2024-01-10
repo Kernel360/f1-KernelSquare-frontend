@@ -3,7 +3,6 @@
 import Image from "next/image"
 import ProfileImage from "./components/ProfileImage"
 import ExperiencePoint from "./components/ExperiencePoint"
-import { basic_profile } from "@/assets/images/basic"
 import badge_url from "@/assets/images/badges"
 import Introduction from "./components/Introduction"
 import { twMerge } from "tailwind-merge"
@@ -17,14 +16,7 @@ function MyPage() {
     return (
       <div className="max-w-[60%] m-auto mt-[50px]">
         <div className="w-full flex justify-evenly mb-[50px]">
-          <ProfileImage
-            id={user.member_id}
-            image_url={
-              user.image_url && typeof user.image_url === "string"
-                ? user.image_url
-                : basic_profile
-            }
-          />
+          <ProfileImage id={user.member_id} image_url={user.image_url} />
           <div className="flex items-center">
             <div>
               <Image
