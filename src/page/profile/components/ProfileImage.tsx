@@ -16,6 +16,9 @@ import {
 } from "@/constants/message"
 import { Icons } from "@/components/icons/Icons"
 import { uploadImages } from "@/service/images"
+import ConfirmModal from "@/components/shared/confirm-modal/ConfirmModal"
+import useModal from "@/hooks/useModal"
+import UploadProfileImageModal from "@/components/shared/confirm-modal/components/UploadProfileImageModal"
 
 function ProfileImage({ id, image_url }: ImageProps) {
   console.log("프로필 이미지", image_url.length)
@@ -23,11 +26,12 @@ function ProfileImage({ id, image_url }: ImageProps) {
   const [preview, setPreview] = useState<string>("")
   const imageUploadRef = useRef<HTMLInputElement>(null)
 
+  const { openModal } = useModal()
+
   const queryClient = useQueryClient()
 
   const handleSaveImage = async (image: File) => {
-    const userResponse = window.confirm(confirmMessage.editProfileImage)
-    if (userResponse) {
+    const onSuccess = async () => {
       console.log("제출 전 사진", image)
       try {
         const imageUploadResponse = await uploadImages({
@@ -42,7 +46,7 @@ function ProfileImage({ id, image_url }: ImageProps) {
         }).then((res) => {
           console.log("res", res)
           if (res.data.code === 1242) {
-            alert(res.data.msg)
+            toast.success(res.data.msg, { position: "top-center" })
             queryClient.invalidateQueries({ queryKey: ["user"] })
           }
         })
@@ -50,9 +54,24 @@ function ProfileImage({ id, image_url }: ImageProps) {
         toast.error(toastifyMessage.failToUploadImage)
         console.error("Error", error)
       }
-    } else {
-      alert(notificationMessage.cancleUploadImage)
     }
+
+    const onCancel = async () => {
+      toast.error(notificationMessage.cancleUploadImage, {
+        position: "top-center",
+      })
+    }
+
+    openModal({
+      containsHeader: false,
+      content: (
+        <UploadProfileImageModal.ModalContent
+          onSuccess={onSuccess}
+          onCancel={onCancel}
+        />
+      ),
+    })
+    // const userResponse = window.confirm(confirmMessage.editProfileImage)
   }
 
   const handleImageChange = (event: ChangeEvent<HTMLInputElement>) => {
