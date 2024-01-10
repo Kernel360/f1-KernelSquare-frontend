@@ -21,6 +21,10 @@ const nextConfig = {
         protocol: "https",
         hostname: "imagedelivery.net",
       },
+      {
+        protocol: "https",
+        hostname: "kernel-square-bucket.s3.ap-northeast-2.amazonaws.com",
+      },
     ],
   },
 }
