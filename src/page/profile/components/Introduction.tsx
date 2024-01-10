@@ -5,9 +5,12 @@ import Button from "@/components/shared/button/Button"
 import Textarea from "@/components/shared/textarea/Textarea"
 import instructions from "@/constants/instructions"
 import useMyPage from "../hooks/useMyPage"
-import { FormEvent } from "react"
+import { type FormEvent, useState } from "react"
 import { updateMemberInfo } from "@/service/member"
-import { useQueryClient } from "@tanstack/react-query"
+import { toast } from "react-toastify"
+import message from "@/constants/message"
+import { twJoin } from "tailwind-merge"
+import useDebounce from "@/hooks/useDebounce"
 
 interface IntroductionProps {
   id: number
@@ -18,19 +21,40 @@ const EditBox: React.FC<{ previous?: string; id: number }> = ({
   previous,
   id,
 }) => {
-  const queryClient = useQueryClient()
   const { closeEditMode, introduction, setIntroduction } = useMyPage()
+
+  const [textLen, setTextLen] = useState<number>(0)
+
+  const styleWithWarning = twJoin([textLen > 300 && "text-[#EF4040]"])
+
+  const value = useDebounce(introduction, 200)
+
+  const handleChange = (textValue: string) => {
+    setIntroduction(textValue)
+    setTextLen(textValue.length)
+  }
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
+    if (introduction.length > 300) {
+      toast.error(message.introductionLimit, {
+        position: "top-center",
+        autoClose: 1000,
+      })
+      return
+    }
+
     try {
       updateMemberInfo({
         id,
         introduction,
       }).then((res) => {
-        console.log("res", res.data.msg, res.config.data)
-        setIntroduction(res.config.data["introduction"])
-        queryClient.invalidateQueries({ queryKey: ["user"] })
+        console.log(
+          "res",
+          res.data.msg,
+          JSON.parse(res.config.data)["introduction"],
+        )
+        setIntroduction(JSON.parse(res.config.data)["introduction"])
       })
     } catch (err) {
       console.error("error", err)
@@ -45,8 +69,11 @@ const EditBox: React.FC<{ previous?: string; id: number }> = ({
           fullWidth={true}
           rows={5}
           defaultValue={previous}
-          onChange={(e) => setIntroduction(e.target.value)}
+          onChange={(e) => handleChange(e.target.value)}
         />
+        <div className="text-right">
+          <span className={styleWithWarning}>{textLen}</span>/300
+        </div>
         <div className="flex justify-center mt-[20px]">
           <Button
             buttonTheme="third"
