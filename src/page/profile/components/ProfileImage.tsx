@@ -18,12 +18,13 @@ import { uploadImages } from "@/service/images"
 import useModal from "@/hooks/useModal"
 import ConfirmModal from "@/components/shared/confirm-modal/ConfirmModal"
 import { useClientSession } from "@/hooks/useClientSession"
+import AuthGuardModal from "@/components/shared/auth-modal/AuthGuardModal"
 
 function ProfileImage({ id, image_url }: ImageProps) {
   const [image, setImage] = useState<string | ArrayBuffer | null>(image_url)
   const [preview, setPreview] = useState<string>("")
   const imageUploadRef = useRef<HTMLInputElement>(null)
-  const { clientSessionUpdate } = useClientSession()
+  const { user, clientSessionUpdate } = useClientSession()
 
   const { openModal } = useModal()
 
@@ -110,10 +111,12 @@ function ProfileImage({ id, image_url }: ImageProps) {
     }
   }, []) /* eslint-disable-line */
 
+  if (!user) return <AuthGuardModal page="profile" />
+
   return (
     <div>
       <div className="w-[150px] h-[150px] relative">
-        {typeof image === "string" && <ImageArea image={image_url} />}
+        {typeof image === "string" && <ImageArea image={user?.image_url} />}
       </div>
       <Spacing size={10} />
       <input
