@@ -21,8 +21,6 @@ import type {
   GetAnswerRequest,
   GetAnswerResponse,
 } from "@/interfaces/dto/answer/get-answerlist.dto"
-import { useClientSession } from "@/hooks/useClientSession"
-import { ACCOUNT_STATUS } from "@/interfaces/user"
 
 let mock_answer = mockAnswers
 

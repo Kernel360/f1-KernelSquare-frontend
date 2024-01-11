@@ -19,6 +19,7 @@ const config: Config = {
         colorsLightGray: "#f6f6f6",
         colorsDarkGray: "#616568",
         success: "#198754",
+        info: "#ecf5ff",
         danger: "#dc3545",
         primary: "#00c471",
         secondary: "#343a40",

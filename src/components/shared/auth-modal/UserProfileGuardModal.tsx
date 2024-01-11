@@ -6,14 +6,14 @@ import useModal from "@/hooks/useModal"
 import { useEffect } from "react"
 import Spacing from "../Spacing"
 
-function AskQustionGuardModal() {
+function UserProfileGuardModal() {
   const { openModal, closeModal } = useModal()
 
   useEffect(() => {
     openModal({
       containsHeader: false,
       closeableDim: false,
-      content: <AskQustionGuardModal.ModalContent />,
+      content: <UserProfileGuardModal.ModalContent />,
     })
 
     return () => {
@@ -24,7 +24,7 @@ function AskQustionGuardModal() {
   return null
 }
 
-AskQustionGuardModal.ModalContent = function AskQuestionModalContent() {
+UserProfileGuardModal.ModalContent = function AskQuestionModalContent() {
   const { replace } = useRouter()
 
   const onClose = () => {
@@ -38,7 +38,7 @@ AskQustionGuardModal.ModalContent = function AskQuestionModalContent() {
       <p className="text-center">
         로그인 후
         <br />
-        질문작성이 가능합니다
+        해당 유저 프로필 조회가 가능합니다
       </p>
       <Spacing size={26} />
       <div className="flex w-full justify-center items-center">
@@ -50,4 +50,4 @@ AskQustionGuardModal.ModalContent = function AskQuestionModalContent() {
   )
 }
 
-export default AskQustionGuardModal
+export default UserProfileGuardModal
