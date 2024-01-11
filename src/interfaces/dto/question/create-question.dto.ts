@@ -5,7 +5,7 @@ export interface CreateQuestionRequest {
   member_id: number
   title: string
   content: string
-  image_url: string
+  image_url: string | null
   skills: Array<TechTag>
 }
 

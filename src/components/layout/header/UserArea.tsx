@@ -14,6 +14,7 @@ import { toast } from "react-toastify"
 import { useClientSession } from "@/hooks/useClientSession"
 import { LoginUserPayload } from "@/interfaces/dto/auth/login.dto"
 import { getAuthCookie } from "@/util/actions/cookie"
+import { revalidatePage } from "@/util/actions/revalidatePage"
 
 type ProfileDropdownMenu = {
   label?: string
@@ -83,9 +84,13 @@ function LoginedUserArea({ user }: { user: LoginUserPayload }) {
             })
             await clientSessionLogout()
 
-            toast.success("로그아웃에 성공했습니다", {
-              position: "bottom-center",
-            })
+            revalidatePage("*")
+
+            setTimeout(() => {
+              toast.success("로그아웃에 성공했습니다", {
+                position: "bottom-center",
+              })
+            }, 200)
           } catch (error) {
             toast.error("로그아웃에 실패했습니다", {
               position: "bottom-center",
