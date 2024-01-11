@@ -26,6 +26,7 @@ import {
   deleteImageLinkFromMarkdownEventName,
 } from "./AskQuestionPageControl"
 import { useClientSession } from "@/hooks/useClientSession"
+import { revalidatePage } from "@/util/actions/revalidatePage"
 
 export interface AskQuestionFormData {
   title: string
@@ -161,6 +162,8 @@ function AskQuestionForm() {
         deleteImageLinkFromMarkdownEventName as any,
         deleteImageLinkFormMarkdown,
       )
+
+      revalidatePage("/question")
       // window.removeEventListener("beforeunload", handleBeforeUnload)
     }
   }, []) /* eslint-disable-line */

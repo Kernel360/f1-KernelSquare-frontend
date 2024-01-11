@@ -19,14 +19,13 @@ export async function onSubmitQuestion({
   "use server"
 
   console.log("[question submit]")
-  console.log({ title, content, image_url, member_id, skills })
 
   try {
     const res = await createQuestion({
       member_id,
       title,
       content,
-      image_url,
+      image_url: image_url || null,
       skills,
     })
 

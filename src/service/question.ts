@@ -43,6 +43,13 @@ export async function createQuestion({
   image_url,
   skills,
 }: CreateQuestionRequest) {
+  console.log("[create question api request]", {
+    member_id,
+    title,
+    content,
+    image_url,
+    skills,
+  })
   const res = await apiInstance.post<
     any,
     AxiosResponse<CreateQuestionResponse>,

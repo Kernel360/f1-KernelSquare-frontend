@@ -4,7 +4,7 @@ import { Icon } from "@/components/icons/Icons"
 import { navigationRoutes, profileRoute } from "@/constants/navigationRoute"
 import { useClientSession } from "@/hooks/useClientSession"
 import Link from "next/link"
-import { useSelectedLayoutSegment } from "next/navigation"
+import { usePathname, useSelectedLayoutSegment } from "next/navigation"
 import { twMerge } from "tailwind-merge"
 
 interface SideNavigationProps {
@@ -21,6 +21,7 @@ interface SideNavigationItemProps {
 
 function SideNavigation({ hasHeader }: SideNavigationProps) {
   const currentSegment = useSelectedLayoutSegment()
+  const pathname = usePathname()
 
   const wrapperClassNames = twMerge([
     "hidden sm:sticky sm:inline-flex sm:w-[200px] sm:align-top sm:top-[--height-header] sm:bg-colorsLightGray sm:h-[calc(100vh-var(--height-header))] sm:z-navigation",
@@ -40,6 +41,8 @@ function SideNavigation({ hasHeader }: SideNavigationProps) {
                 ? to === "/"
                 : currentSegment === "question"
                 ? to === "/"
+                : pathname.startsWith("/profile/")
+                ? false
                 : to.startsWith(`/${currentSegment}`)
 
             return (

@@ -5,15 +5,11 @@ import Button from "../button/Button"
 import useModal from "@/hooks/useModal"
 import { useEffect } from "react"
 import Spacing from "../Spacing"
-import { useQueryClient } from "@tanstack/react-query"
 
 function AskQustionGuardModal() {
-  const queryClient = useQueryClient()
   const { openModal, closeModal } = useModal()
 
   useEffect(() => {
-    queryClient.invalidateQueries({ queryKey: ["user"] })
-
     openModal({
       containsHeader: false,
       closeableDim: false,

@@ -4,7 +4,7 @@ import OneAnswer from "./OneAnswer"
 import { answerQueries } from "@/react-query/answers"
 import ContentLoading from "@/components/shared/animation/ContentLoading"
 import LightBulb from "@/components/shared/animation/LightBulb"
-import message from "@/constants/message"
+import { notificationMessage } from "@/constants/message"
 
 interface AnswerProps {
   user: string | undefined
@@ -56,7 +56,9 @@ const NoAnswer: React.FC<{ isMyAnswer: boolean }> = ({ isMyAnswer }) => {
         <LightBulb style={{ color: "#02A35F", width: "250px" }} />
       </div>
       <div className="text-xl">
-        {isMyAnswer ? message.myQuestion : message.noAnswer}
+        {isMyAnswer
+          ? notificationMessage.myQuestion
+          : notificationMessage.noAnswer}
       </div>
     </div>
   )

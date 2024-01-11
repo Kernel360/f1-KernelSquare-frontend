@@ -36,8 +36,10 @@ function Profile({ profileImage, className, ...props }: ProfileProps) {
         alt={"profileImgge"}
         onLoad={() => setImageLoaded(true)}
         fill
-        objectFit="cover"
-        objectPosition="center"
+        style={{
+          objectFit: "cover",
+          objectPosition: "center",
+        }}
       />
       {imageLoaded ? null : (
         <Skeleton

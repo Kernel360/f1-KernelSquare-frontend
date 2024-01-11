@@ -23,23 +23,11 @@ export async function middleware(request: NextRequest, event: NextFetchEvent) {
     !!accessToken ? "authorized" : "unauthorized",
   )
 
-  if (url.pathname === "/signup") {
-    return response
-  }
-
-  if (url.pathname === "/question") {
-    return response
-  }
-
-  if (url.pathname === "/profile") {
-    return response
-  }
-
   return response
 }
 
 export const config = {
-  matcher: ["/signup", "/question", "/profile"],
+  matcher: ["/signup", "/question", "/profile", "/profile/:id*"],
 }
 
 function setCustomAuthorizedHeader(

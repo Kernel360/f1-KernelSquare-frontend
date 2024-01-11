@@ -3,7 +3,7 @@
 import Tab from "@/components/shared/tab/Tab"
 import { navigationRoutes } from "@/constants/navigationRoute"
 import Link from "next/link"
-import { useSelectedLayoutSegment } from "next/navigation"
+import { usePathname, useSelectedLayoutSegment } from "next/navigation"
 import { twMerge } from "tailwind-merge"
 
 interface NavigationTabProps {
@@ -15,6 +15,7 @@ interface NavigationTabItemProps
 
 function NavigationTab({ hasHeader }: NavigationTabProps) {
   const currentSegment = useSelectedLayoutSegment()
+  const pathname = usePathname()
 
   const wrapperClassNames = twMerge([
     "sticky w-full top-[--height-header] z-navigation py-1 bg-white sm:hidden",
@@ -30,6 +31,8 @@ function NavigationTab({ hasHeader }: NavigationTabProps) {
               ? route.to === "/"
               : currentSegment === "question"
               ? route.to === "/"
+              : pathname.startsWith("/profile/")
+              ? undefined
               : route.to.startsWith(`/${currentSegment}`),
           )?.label
         }
@@ -43,6 +46,8 @@ function NavigationTab({ hasHeader }: NavigationTabProps) {
                 ? to === "/"
                 : currentSegment === "question"
                 ? to === "/"
+                : pathname.startsWith("/profile/")
+                ? false
                 : to.startsWith(`/${currentSegment}`),
           }
         })}

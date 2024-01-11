@@ -1,45 +1,91 @@
-import { GetMemberResponse } from "@/interfaces/dto/member/get-member.dto"
+import {
+  GetMemberResponse,
+  UserPayload,
+} from "@/interfaces/dto/member/get-member.dto"
 import { RouteMap } from "@/service/route-map"
 import { DefaultBodyType, HttpResponse, http } from "msw"
 import { mockUsers } from "../db/user"
-import { HttpStatusCode } from "axios"
 import {
   UpdateMemberInfoRequest,
   UpdateMemberInfoResponse,
 } from "@/interfaces/dto/member/update-member-info.dto"
+import { ApiStatus } from "@/constants/response/api"
 
 export const memberHandler = [
   http.get<{ id: string }, DefaultBodyType, GetMemberResponse>(
     `${process.env.NEXT_PUBLIC_SERVER}${RouteMap.member.getMember()}`,
-    ({ params }) => {
+    ({ request, params }) => {
       // 특정 멤버 조회
-      const memberId = params.id
+      try {
+        const auth = request.headers.get("Authorization")
 
-      const existMockUser = mockUsers.find(
-        (user) => user.id === Number(memberId),
-      )
+        if (!auth) {
+          const { Code, HttpStatus } = ApiStatus.Member.getMember.Unauthorized
 
-      if (!existMockUser)
-        return HttpResponse.json(
-          {
-            code: HttpStatusCode.InternalServerError,
-            msg: "유저를 찾을 수 없습니다",
-          },
-          { status: HttpStatusCode.InternalServerError },
+          return HttpResponse.json(
+            {
+              code: Code,
+              msg: "인증되지 않은 회원입니다.",
+            },
+            {
+              status: HttpStatus,
+            },
+          )
+        }
+
+        const memberId = params.id
+
+        const existMockUser = mockUsers.find(
+          (user) => user.id === Number(memberId),
         )
 
-      const { password, ...user } = existMockUser
+        if (!existMockUser) {
+          const { Code, HttpStatus } = ApiStatus.Member.getMember.NotFound
 
-      return HttpResponse.json(
-        {
-          code: HttpStatusCode.Ok,
-          msg: "",
-          data: {
-            ...user,
+          return HttpResponse.json(
+            {
+              code: Code,
+              msg: "존재하지 않는 회원입니다.",
+            },
+            { status: HttpStatus },
+          )
+        }
+
+        const { Code, HttpStatus } = ApiStatus.Member.getMember.Ok
+
+        const userPayload: UserPayload = {
+          id: existMockUser.id,
+          nickname: existMockUser.nickname,
+          level: existMockUser.level,
+          experience: existMockUser.experience,
+          introduction: existMockUser.introduction ?? "",
+          image_url: existMockUser.image_url ?? "",
+        }
+
+        return HttpResponse.json(
+          {
+            code: Code,
+            msg: "회원 정보 조회 성공",
+            data: {
+              ...userPayload,
+            },
           },
-        },
-        { status: HttpStatusCode.Ok },
-      )
+          { status: HttpStatus },
+        )
+      } catch (error) {
+        const { Code, HttpStatus } =
+          ApiStatus.Member.getMember.InternalServerError
+
+        return HttpResponse.json(
+          {
+            code: Code,
+            msg: "서버 오류",
+          },
+          {
+            status: HttpStatus,
+          },
+        )
+      }
     },
   ),
   http.put<
@@ -58,12 +104,14 @@ export const memberHandler = [
       if (introduction) target.introduction = introduction
       if (image_url) target.image_url = image_url
 
+      const { Code, HttpStatus } = ApiStatus.Member.updateMember.Ok
+
       return HttpResponse.json(
         {
-          code: 1242,
+          code: Code,
           msg: "회원 정보 수정 완료",
         },
-        { status: HttpStatusCode.Ok },
+        { status: HttpStatus },
       )
     },
   ),
