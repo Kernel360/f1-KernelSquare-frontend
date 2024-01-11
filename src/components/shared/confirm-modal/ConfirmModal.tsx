@@ -33,7 +33,7 @@ function ConfirmModal({ ...props }: ConfirmModalProps) {
   return null
 }
 
-ConfirmModal.ModalContent = function DeleteContentModal({
+ConfirmModal.ModalContent = function ConfirmModal({
   onSuccess,
   onCancel,
   situation,

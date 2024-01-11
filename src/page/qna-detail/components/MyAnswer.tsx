@@ -12,8 +12,10 @@ import useModal from "@/hooks/useModal"
 import LoginForm from "@/components/form/LoginForm"
 import { useClientSession } from "@/hooks/useClientSession"
 import { toast } from "react-toastify"
-import { errorMessage } from "@/constants/message"
+import { errorMessage, successMessage } from "@/constants/message"
 import useQnADetail from "../hooks/useQnADetail"
+import ProgressModal from "@/page/signup/components/ProgressModal"
+import CheckSuccess from "@/components/shared/animation/CheckSuccess"
 
 const MdEditor = dynamic(() => import("./Markdown/MdEditor"), {
   ssr: false,
@@ -53,6 +55,10 @@ const MyAnswer: React.FC<{
         }).then((res) => {
           console.log("res", res.data.msg, res.config.data)
           queryClient.invalidateQueries({ queryKey: ["answer", id] })
+          toast.success(SuccessModalContent, {
+            position: "top-center",
+            autoClose: 1000,
+          })
         })
       }
     } catch (err) {
@@ -120,3 +126,14 @@ const Container = ({ children }: PropsWithChildren) => (
     {children}
   </div>
 )
+
+const SuccessModalContent = () => {
+  return (
+    <ProgressModal.Success>
+      <ProgressModal.StepContentWrapper>
+        <CheckSuccess style={{ width: "100px" }} />
+        <p className="text-white font-bold">{successMessage.createAnswer}</p>
+      </ProgressModal.StepContentWrapper>
+    </ProgressModal.Success>
+  )
+}

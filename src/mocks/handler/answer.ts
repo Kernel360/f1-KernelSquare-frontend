@@ -101,8 +101,8 @@ export const answerHandler = [
         vote_yn: false,
       }
 
-      targetQuestion?.list.push(newAnswer)
-      mockAnswers.push(newAnswer)
+      targetQuestion?.list.unshift(newAnswer)
+      mockAnswers.unshift(newAnswer)
 
       return HttpResponse.json(
         {

@@ -11,7 +11,7 @@ import { deleteAnswer, updateAnswer } from "@/service/answers"
 import type { Editor } from "@toast-ui/react-editor"
 import { useForm } from "react-hook-form"
 import useQnADetail from "../../hooks/useQnADetail"
-import { toast } from "react-toastify"
+import { ToastContainer, toast } from "react-toastify"
 import {
   errorMessage,
   notificationMessage,
@@ -23,6 +23,10 @@ import { useClientSession } from "@/hooks/useClientSession"
 import { useQueryClient } from "@tanstack/react-query"
 import useModal from "@/hooks/useModal"
 import ConfirmModal from "@/components/shared/confirm-modal/ConfirmModal"
+import { sleep } from "@/util/sleep"
+import ProgressModal from "@/page/signup/components/ProgressModal"
+import DeleteSuccess from "@/components/shared/animation/DeleteSuccess"
+import { useRouter } from "next/navigation"
 
 const MdViewer = dynamic(() => import("../Markdown/MdViewer"), {
   ssr: false,
@@ -38,7 +42,7 @@ interface OneAnswerProps {
 }
 
 const OneAnswer: React.FC<OneAnswerProps> = ({ answer, createdby }) => {
-  const { checkNullValue } = useQnADetail()
+  const { checkNullValue, ProgressModalView } = useQnADetail()
   const { user } = useClientSession()
   const queryClient = useQueryClient()
   const { openModal } = useModal()
@@ -95,15 +99,20 @@ const OneAnswer: React.FC<OneAnswerProps> = ({ answer, createdby }) => {
   const handleDeleteValue = async () => {
     const onSuccess = async () => {
       try {
-        const res = await deleteAnswer({
+        deleteAnswer({
           answerId: answer.answer_id,
-        })
-        toast.success(successMessage.deleteAnswer)
-        queryClient.invalidateQueries({
-          queryKey: ["answer", answer.question_id],
+        }).then((res) => {
+          console.log("success", res.data.msg)
+          queryClient.invalidateQueries({
+            queryKey: ["answer", answer.question_id],
+          })
+          toast.success(SuccessModalContent, {
+            position: "top-center",
+            autoClose: 1000,
+          })
         })
       } catch (err) {
-        console.error("error", err)
+        console.error(err)
       }
     }
     const onCancel = () => {
@@ -121,6 +130,33 @@ const OneAnswer: React.FC<OneAnswerProps> = ({ answer, createdby }) => {
         />
       ),
     })
+  }
+
+  const VoteBox = ({ userId }: { userId: number | undefined }) => {
+    const { vote, handleRaise, handleReduce } = useAnswerVote({
+      answer,
+      userId,
+    })
+
+    return (
+      <form className="mr-5">
+        <div className="flex justify-center">
+          <VoteIcons.Up
+            className="text-[30px] hover:text-primary"
+            onClick={handleRaise}
+          />
+        </div>
+        <div className="text-[30px]">
+          {vote.value < 10 ? "0" + vote.value : vote.value}
+        </div>
+        <div className="flex justify-center">
+          <VoteIcons.Down
+            className="text-[30px] hover:text-primary"
+            onClick={handleReduce}
+          />
+        </div>
+      </form>
+    )
   }
 
   const EditAnswerBox = () => {
@@ -206,7 +242,7 @@ const OneAnswer: React.FC<OneAnswerProps> = ({ answer, createdby }) => {
   return (
     <div className="border-b-[1px] border-b-gray my-5">
       <div className="flex justify-between">
-        <VoteBox answer={answer} userId={user?.member_id} />
+        <VoteBox userId={user?.member_id} />
         <div className="w-[90%]">
           {isAnswerEditMode ? (
             <EditAnswerBox />
@@ -224,40 +260,20 @@ const OneAnswer: React.FC<OneAnswerProps> = ({ answer, createdby }) => {
         {/* <div>댓글 쓰기</div> */}
         <HandleAnswerBox />
       </div>
+      <ProgressModalView />
     </div>
   )
 }
 
 export default OneAnswer
 
-interface VoteBoxProps {
-  answer: Answer
-  userId: number | undefined
-}
-
-const VoteBox = ({ answer, userId }: VoteBoxProps) => {
-  const { vote, handleRaise, handleReduce } = useAnswerVote({
-    answer,
-    userId,
-  })
-
+const SuccessModalContent = () => {
   return (
-    <form className="mr-5">
-      <div className="flex justify-center">
-        <VoteIcons.Up
-          className="text-[30px] hover:text-primary"
-          onClick={handleRaise}
-        />
-      </div>
-      <div className="text-[30px]">
-        {vote.value < 10 ? "0" + vote.value : vote.value}
-      </div>
-      <div className="flex justify-center">
-        <VoteIcons.Down
-          className="text-[30px] hover:text-primary"
-          onClick={handleReduce}
-        />
-      </div>
-    </form>
+    <ProgressModal.Success>
+      <ProgressModal.StepContentWrapper>
+        <DeleteSuccess style={{ width: "100px" }} />
+        <p className="text-white font-bold">{successMessage.deleteAnswer}</p>
+      </ProgressModal.StepContentWrapper>
+    </ProgressModal.Success>
   )
 }

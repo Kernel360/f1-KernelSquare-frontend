@@ -6,12 +6,16 @@ export const errorMessage = {
   failToUploadImage:
     "이미지 업로드 중 오류가 발생하였습니다. 다시 시도해주세요.",
   emptyCookie: "쿠키가 비어있습니다.",
+  deleteAnswer: "답변 삭제 중 오류가 발생하였습니다.",
+  tryAgain: "잠시 후 다시 시도해주세요.",
+  saySorry: "이용에 불편을 드려 죄송해요.",
 } as const
 
 export const successMessage = {
   editProfileImage: "프로필 이미지 변경에 성공했습니다.",
   editIntroduction: "자기소개 수정에 성공했습니다.",
   deleteAnswer: "답변이 삭제되었습니다.",
+  createAnswer: "답변이 생성되었습니다.",
 } as const
 
 export const notificationMessage = {
@@ -25,4 +29,8 @@ export const notificationMessage = {
 export const confirmMessage = {
   editProfileImage: "변경된 사진으로 저장하시겠습니까?",
   deleteContent: "정말 삭제하시겠습니까?",
+} as const
+
+export const loadingMessage = {
+  deleteAnswer: "답변 삭제가 진행 중이에요.",
 } as const
