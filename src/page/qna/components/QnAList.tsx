@@ -12,47 +12,46 @@ import Link from "next/link"
 import { useRouter, useSearchParams } from "next/navigation"
 import { GetQuestionListResponse } from "@/interfaces/dto/question/get-questionlist.dto"
 import Image from "next/image"
-import badge_url from "@/assets/images/badges"
+import { useClientSession } from "@/hooks/useClientSession"
+import { getKorRelativeTime } from "@/util/getDate"
 
-interface Props {
-  questions?: GetQuestionListResponse["data"]
-  isPending: boolean
+interface QnAListProps {
+  questions: NonNullable<GetQuestionListResponse["data"]>
 }
 
-function QnAList({ questions, isPending }: Props) {
+function QnAList({ questions }: QnAListProps) {
+  const { user } = useClientSession()
+
   const searchParams = useSearchParams()
   const page = searchParams.get("page") ?? 0
 
   const { push } = useRouter()
 
-  if (isPending) return <Loading />
-
-  if (!questions?.pagination.total_page || !questions.pagination.pageable) {
-    return (
-      <NotHasQnAContent
-        type={!questions?.pagination.total_page ? "noContent" : "noPage"}
-      />
-    )
-  }
+  const now = dayjs().format()
 
   return (
     <div className="py-4 w-[calc(100%-12px)] sm:w-[calc(100%-22px)] lg:w-[calc(100%-42px)] mx-auto">
-      <ul>
+      <ul className="flex flex-col gap-8">
         {questions.list.map(
           ({
             id,
             title,
             skills,
+            member_id,
             nickname,
             member_image_url,
             level_image_url,
             created_date,
             level,
           }) => {
+            // console.log({
+            //   created_date,
+            //   relative: getKorRelati3veTime({ now, targetDate: created_date }),
+            // })
             return (
               <li
                 key={title}
-                className="shadow-sm hover:shadow-md transition-shadow max-w-full box-border border border-colorsGray rounded-lg p-2 my-8 first:my-0 last:my-0"
+                className={`shadow-sm hover:shadow-md transition-shadow max-w-full box-border border border-colorsGray rounded-lg p-2`}
               >
                 <h3 className="w-fit">
                   <Link
@@ -67,25 +66,41 @@ function QnAList({ questions, isPending }: Props) {
                     return <Tag key={`${id}-${index}-${skill}`}>{skill}</Tag>
                   })}
                 </ul>
-                <div className="flex">
+                <div className="flex h-full">
                   <div className="flex flex-1 justify-end self-end">
                     <time className="text-sm">
-                      {dayjs(created_date).format(
-                        "YYYY년 MM월 DD일 hh시 mm분 ss초",
-                      )}
+                      {getKorRelativeTime({ now, targetDate: created_date })}
                     </time>
                   </div>
-                  <div className="flex items-center gap-1 ml-4">
-                    <Profile profileImage={member_image_url} />
-                    <div>
+                  <div
+                    className={`shrink-0 flex h-max max-h-14 items-center gap-1 ml-4 rounded-lg ${
+                      user
+                        ? "cursor-pointer relative outline outline-[2px] outline-transparent transition-colors hover:outline hover:outline-primary outline-offset-1"
+                        : "cursor-default"
+                    } `}
+                    {...(user && {
+                      onClick: (e) => push(`/profile/${member_id}`),
+                      title: "유저 프로필로 이동",
+                    })}
+                  >
+                    <div className="h-full box-border m-1 shrink-0 translate-x-0 translate-y-0">
+                      <Profile
+                        profileImage={member_image_url}
+                        className="align-top m-0.5 cursor-default"
+                      />
+                    </div>
+                    <div className="w-16 h-full flex flex-col justify-center items-start shrink-0">
                       <div className="text-sm">{nickname}</div>
-                      <div className="flex justify-start items-center">
-                        <div className="relative w-6 h-4 -ml-1">
+                      <div className="flex justify-start items-center gap-1">
+                        <div className="relative w-4 h-4 my-1">
                           <Image
                             src={level_image_url}
                             alt="level badge"
                             fill
-                            style={{ objectFit: "contain" }}
+                            style={{
+                              objectFit: "scale-down",
+                              objectPosition: "center",
+                            }}
                           />
                         </div>
                         <div className="text-xs">LV.{level}</div>
@@ -113,7 +128,7 @@ function QnAList({ questions, isPending }: Props) {
   )
 }
 
-function NotHasQnAContent({
+QnAList.NotHasQnAContent = function QnAListNotHasContent({
   type = "noContent",
 }: {
   type: "noPage" | "noContent"
@@ -134,7 +149,7 @@ function NotHasQnAContent({
   )
 }
 
-function Loading() {
+QnAList.Loading = function QnAListLoading() {
   return (
     <div className="fixed left-0 top-[calc(var(--height-header)+67px)] sm:top-[--height-header] w-full h-full bg-white/60 backdrop-blur-[1px] flex justify-center items-center box-border p-1">
       <h3 className="absolute w-full top-6 flex justify-center items-center">
