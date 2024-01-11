@@ -10,6 +10,7 @@ export class RouteMap {
     faq: "faqs",
     search: "search",
     notification: "notification",
+    images: "images",
   }
   private static routeGroupBaseURL = {
     member: `${RouteMap.baseURL}/${RouteMap.prefix.member}`,
@@ -20,6 +21,7 @@ export class RouteMap {
     faq: `${RouteMap.baseURL}/${RouteMap.prefix.faq}`,
     search: `${RouteMap.baseURL}/${RouteMap.prefix.search}`,
     notification: `${RouteMap.baseURL}/${RouteMap.prefix.notification}`,
+    images: `${RouteMap.baseURL}/${RouteMap.prefix.images}`,
   }
 
   /**
@@ -302,5 +304,18 @@ export class RouteMap {
    */
   static notification = {
     getNotification: `${RouteMap.routeGroupBaseURL.notification}`,
+  }
+
+  /**
+   * images api route 주소 얻기
+   *
+   * ---
+   *
+   * uploadImages: 이미지 업로드 (post)
+   * deleteImages: 이미지 삭제 (delete)
+   */
+  static images = {
+    uploadImages: `${RouteMap.routeGroupBaseURL.images}`,
+    deleteImages: `${RouteMap.routeGroupBaseURL.images}`,
   }
 }

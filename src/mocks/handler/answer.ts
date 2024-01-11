@@ -22,8 +22,6 @@ import type {
   GetAnswerResponse,
 } from "@/interfaces/dto/answer/get-answerlist.dto"
 
-let mock_answer = mockAnswers
-
 export const answerHandler = [
   // 특정 질문 답변 조회
   http.get<{ id: string }, GetAnswerRequest, GetAnswerResponse>(
@@ -31,11 +29,11 @@ export const answerHandler = [
     ({ params }) => {
       const questionId = Number(params.id)
 
-      mock_answer = mockAnswers.filter(
+      const targetAnswers = mockAnswers.filter(
         (answer) => answer.question_id === questionId,
       )
 
-      if (!mock_answer)
+      if (!targetAnswers)
         return HttpResponse.json(
           {
             code: HttpStatusCode.NotFound,
@@ -48,7 +46,7 @@ export const answerHandler = [
         {
           code: 2151,
           msg: "질문에 대한 모든 답변 조회 성공",
-          data: [...mock_answer],
+          data: [...targetAnswers],
         },
         { status: HttpStatusCode.Ok },
       )
@@ -102,7 +100,7 @@ export const answerHandler = [
       }
 
       targetQuestion?.list.push(newAnswer)
-      mock_answer.push(newAnswer)
+      mockAnswers.push(newAnswer)
 
       return HttpResponse.json(
         {
@@ -127,7 +125,7 @@ export const answerHandler = [
 
       const { content, image_url } = await request.json()
 
-      const targetAnswer = mock_answer.find(
+      const targetAnswer = mockAnswers.find(
         (mockAnswer) => mockAnswer.answer_id === answerId,
       )
 
@@ -155,7 +153,7 @@ export const answerHandler = [
         console.log(answerId, member_id, status)
 
         // 답변 목록에서
-        const targetAnswer = mock_answer.find(
+        const targetAnswer = mockAnswers.find(
           (answer) => answer.answer_id === answerId,
         )
         // 질문 목록에서

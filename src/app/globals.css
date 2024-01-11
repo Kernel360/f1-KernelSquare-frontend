@@ -64,3 +64,16 @@ body {
     margin-bottom: 2rem !important;
   }
 }
+
+/*toast ui button 속성 재정의*/
+.toastui-editor-defaultUI [type="button"],
+.toastui-editor-defaultUI [type="reset"],
+.toastui-editor-defaultUI [type="submit"],
+.toastui-editor-defaultUI button {
+  background-image: inherit;
+}
+/*toast ui button icon 이미지 주소*/
+.toastui-editor-toolbar-group {
+  background-image: url("../assets/images/toolbarBackgrond.png");
+  background-size: 0;
+}

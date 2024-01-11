@@ -3,62 +3,38 @@
 import Image from "next/image"
 import ProfileImage from "./components/ProfileImage"
 import ExperiencePoint from "./components/ExperiencePoint"
-import { basic_profile } from "@/assets/images/basic"
 import badge_url from "@/assets/images/badges"
-import ContentLoading from "@/components/shared/animation/ContentLoading"
 import Introduction from "./components/Introduction"
-import { useEffect } from "react"
-import { useUser } from "@/hooks/useUser"
 import { twMerge } from "tailwind-merge"
+import { useClientSession } from "@/hooks/useClientSession"
 
 // 아이디 값 관련 로직 수정 예정
 function MyPage() {
-  const { data: member, refetch, isPending } = useUser()
-  console.log("useuser", member?.data)
+  const { user } = useClientSession()
 
-  useEffect(() => {
-    refetch()
-  }, [])
-
-  if (isPending) return <Loading />
-
-  if (member?.data.data)
+  if (user)
     return (
       <div className="max-w-[60%] m-auto mt-[50px]">
         <div className="w-full flex justify-evenly mb-[50px]">
-          <ProfileImage
-            id={member?.data.data.id}
-            image_url={
-              member?.data.data.image_url &&
-              typeof member?.data.data.image_url === "string"
-                ? member?.data.data.image_url
-                : basic_profile
-            }
-          />
+          <ProfileImage id={user.member_id} image_url={user.image_url} />
           <div className="flex items-center">
             <div>
               <Image
-                src={badge_url[member?.data.data.level]}
+                src={badge_url[user.level]}
                 alt="배지 이미지"
                 width={50}
                 height={50}
               />
-              <div className="text-center">level {member?.data.data.level}</div>
+              <div className="text-center">level {user.level}</div>
             </div>
             <div className="font-bold text-[48px] ml-[20px]">
-              {member?.data.data.nickname}
+              {user.nickname}
             </div>
           </div>
         </div>
-        <ExperiencePoint
-          level={member?.data.data.level}
-          exp={member?.data.data.experience}
-        />
+        <ExperiencePoint level={user.level} exp={user.experience} />
         <Divider className="mb-[50px]" />
-        <Introduction
-          introduction={member?.data.data.introduction}
-          id={member?.data.data.id}
-        />
+        <Introduction introduction={user.introduction} id={user.member_id} />
         <Divider />
       </div>
     )
@@ -73,18 +49,4 @@ interface DividerProps {
 function Divider({ className }: DividerProps) {
   const classMerged = twMerge(["h-[3px] bg-slate-400 w-full", className])
   return <div className={classMerged}></div>
-}
-
-function Loading() {
-  return (
-    <div className="h-full">
-      <ContentLoading
-        style={{
-          width: "calc(100% - 80px)",
-          maxWidth: "400px",
-          margin: "0 auto",
-        }}
-      />
-    </div>
-  )
 }

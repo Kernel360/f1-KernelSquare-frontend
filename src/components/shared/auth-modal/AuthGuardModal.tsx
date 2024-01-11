@@ -7,9 +7,10 @@ import UserProfileGuardModal from "./UserProfileGuardModal"
 import { useClientSession } from "@/hooks/useClientSession"
 import { getAuthCookie } from "@/util/actions/cookie"
 import { logout } from "@/service/auth"
+import MyPageGuardModal from "./MyPageGuardModal"
 
 interface AuthGuardModalProps {
-  page: "question" | "signup" | "userProfile"
+  page: "question" | "signup" | "userProfile" | "profile"
 }
 
 function AuthGuardModal({ page }: AuthGuardModalProps) {
@@ -23,6 +24,8 @@ function AuthGuardModal({ page }: AuthGuardModalProps) {
         return <SignupGuardModal />
       case "userProfile":
         return <UserProfileGuardModal />
+      case "profile":
+        return <MyPageGuardModal />
       default:
         return null
     }
