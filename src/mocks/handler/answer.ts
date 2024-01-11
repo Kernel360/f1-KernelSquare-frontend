@@ -3,7 +3,7 @@ import type {
   CreateAnswerResponse,
 } from "@/interfaces/dto/answer/create-answer.dto"
 import { RouteMap } from "@/service/route-map"
-import { HttpResponse, http } from "msw"
+import { DefaultBodyType, HttpResponse, http } from "msw"
 import { mockQuestions } from "../db/questions"
 import { mockUsers } from "../db/user"
 import { getNow } from "@/util/getDate"
@@ -21,6 +21,8 @@ import type {
   GetAnswerRequest,
   GetAnswerResponse,
 } from "@/interfaces/dto/answer/get-answerlist.dto"
+import { DeleteAnswerResponse } from "@/interfaces/dto/answer/delete-answer.dto"
+import badge_url from "@/assets/images/badges"
 
 export const answerHandler = [
   // 특정 질문 답변 조회
@@ -88,7 +90,7 @@ export const answerHandler = [
         question_id: questionId,
         content,
         author_level: 1,
-        rank_image_url: "",
+        rank_image_url: badge_url[1],
         member_image_url:
           "https://mobirise.com/bootstrap-template//profile-template/assets/images/timothy-paul-smith-256424-1200x800.jpg",
         created_by: targetMember.nickname,
@@ -136,6 +138,29 @@ export const answerHandler = [
         {
           code: 2150,
           msg: "답변 수정 성공",
+        },
+        {
+          status: HttpStatusCode.Ok,
+        },
+      )
+    },
+  ),
+  // 답변 삭제
+  http.delete<{ id: string }, DefaultBodyType, DeleteAnswerResponse>(
+    `${process.env.NEXT_PUBLIC_SERVER}${RouteMap.answer.updateAnswer()}`,
+    async ({ params }) => {
+      const answerId = Number(params.id)
+
+      const targetAnswer = mockAnswers.findIndex(
+        (answer) => answer.answer_id === answerId,
+      )
+
+      mockAnswers.splice(targetAnswer, 1)
+
+      return HttpResponse.json(
+        {
+          code: 2150,
+          msg: "답변 삭제 성공",
         },
         {
           status: HttpStatusCode.Ok,

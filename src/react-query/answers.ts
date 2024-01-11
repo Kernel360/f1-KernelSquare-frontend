@@ -1,10 +1,12 @@
 import queryKey from "@/constants/queryKey"
-import { CreateAnswerRequest } from "@/interfaces/dto/answer/create-answer.dto"
-import { CreateVoteRequest } from "@/interfaces/dto/answer/create-vote.dto"
-import { GetAnswerRequest } from "@/interfaces/dto/answer/get-answerlist.dto"
-import { UpdateAnswerRequest } from "@/interfaces/dto/answer/update-answer.dto"
+import type { CreateAnswerRequest } from "@/interfaces/dto/answer/create-answer.dto"
+import type { CreateVoteRequest } from "@/interfaces/dto/answer/create-vote.dto"
+import type { DeleteAnswerRequest } from "@/interfaces/dto/answer/delete-answer.dto"
+import type { GetAnswerRequest } from "@/interfaces/dto/answer/get-answerlist.dto"
+import type { UpdateAnswerRequest } from "@/interfaces/dto/answer/update-answer.dto"
 import {
   createAnswer,
+  deleteAnswer,
   getAnswer,
   updateAnswer,
   voteAnswer,
@@ -44,6 +46,12 @@ const useUpdateAnswer = ({
     mutationFn: () => updateAnswer({ answerId, content, image_url }),
   })
 
+const useDeleteAnswer = ({ answerId }: DeleteAnswerRequest) =>
+  useMutation({
+    mutationKey: [queryKey.answer],
+    mutationFn: () => deleteAnswer({ answerId }),
+  })
+
 const useVoteAnswer = () =>
   useMutation({
     mutationKey: ["ans"],
@@ -57,5 +65,6 @@ export const answerQueries = {
   useGetAnswers,
   useCreateAnswer,
   useUpdateAnswer,
+  useDeleteAnswer,
   useVoteAnswer,
 }

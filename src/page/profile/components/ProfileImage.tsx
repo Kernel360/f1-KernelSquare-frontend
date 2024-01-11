@@ -57,7 +57,7 @@ function ProfileImage({ id, image_url }: ImageProps) {
       }
     }
 
-    const onCancel = async () => {
+    const onCancel = () => {
       toast.error(notificationMessage.cancleUploadImage, {
         position: "top-center",
       })

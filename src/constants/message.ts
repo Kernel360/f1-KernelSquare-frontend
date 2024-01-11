@@ -11,6 +11,7 @@ export const errorMessage = {
 export const successMessage = {
   editProfileImage: "프로필 이미지 변경에 성공했습니다.",
   editIntroduction: "자기소개 수정에 성공했습니다.",
+  deleteAnswer: "답변이 삭제되었습니다.",
 } as const
 
 export const notificationMessage = {
@@ -18,6 +19,7 @@ export const notificationMessage = {
     "아직 작성된 답변이 존재하지 않습니다. 첫 번째 답변의 주인공이 되어보세요!",
   myQuestion: "아직 작성된 답변이 존재하지 않습니다.",
   cancleUploadImage: "사진 저장이 취소되었습니다.",
+  cancleDeleteAnswer: "답변 삭제가 취소되었습니다.",
 } as const
 
 export const confirmMessage = {

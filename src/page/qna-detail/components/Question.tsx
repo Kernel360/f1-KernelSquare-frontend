@@ -35,35 +35,53 @@ const Question: React.FC<{ id: number }> = ({ id }) => {
             )
           })}
         </div>
-        <div className="flex justify-end mb-5">
+        <div className="flex justify-between mb-5">
           <div>
-            <div className="mb-1">
-              생성일: {getDate({ date: question.created_date })}
-            </div>
-            <div>마감일: {getDeadline({ date: question.created_date })}</div>
-          </div>
-          <div className="ml-[20px] w-[50px] h-[50px] relative">
-            <Image
-              src={question.member_image_url}
-              alt="질문자 프로필 사진"
-              fill
-              className="object-cover rounded-full"
-            />
-          </div>
-          <div className="ml-[20px] text-center">
-            <div className="px-2 bg-[#F3EDC8] rounded-md mb-1">
-              {question.nickname}
-            </div>
-            <div className="text-center flex mt-2 justify-around">
-              <div>
-                <Image
-                  src={question.level_image_url}
-                  alt="질문자 등급 배지"
-                  width={20}
-                  height={20}
-                />
+            <div className="flex pt-3">
+              <div
+                onClick={() => console.log("질문 수정")}
+                className="mr-3 cursor-pointer hover:text-primary font-bold"
+              >
+                수정하기
               </div>
-              <div>Lv. {question.level}</div>
+              <div
+                onClick={() => console.log("질문 삭제")}
+                className="cursor-pointer hover:text-primary font-bold"
+              >
+                삭제하기
+              </div>
+            </div>
+          </div>
+          <div className="flex">
+            <div>
+              <div className="mb-1">
+                생성일: {getDate({ date: question.created_date })}
+              </div>
+              <div>마감일: {getDeadline({ date: question.created_date })}</div>
+            </div>
+            <div className="ml-[20px] w-[50px] h-[50px] relative">
+              <Image
+                src={question.member_image_url}
+                alt="질문자 프로필 사진"
+                fill
+                className="object-cover rounded-full"
+              />
+            </div>
+            <div className="ml-[20px] text-center">
+              <div className="px-2 bg-[#F3EDC8] rounded-md mb-1">
+                {question.nickname}
+              </div>
+              <div className="text-center flex mt-2 justify-around">
+                <div>
+                  <Image
+                    src={question.level_image_url}
+                    alt="질문자 등급 배지"
+                    width={20}
+                    height={20}
+                  />
+                </div>
+                <div>Lv. {question.level}</div>
+              </div>
             </div>
           </div>
         </div>

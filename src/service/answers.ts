@@ -18,6 +18,11 @@ import type {
   GetAnswerRequest,
   GetAnswerResponse,
 } from "@/interfaces/dto/answer/get-answerlist.dto"
+import type {
+  DeleteAnswerRequest,
+  DeleteAnswerResponse,
+} from "@/interfaces/dto/answer/delete-answer.dto"
+import type { DefaultBodyType } from "msw"
 
 export async function getAnswer({ questionId }: GetAnswerRequest) {
   const res = await apiInstance
@@ -68,6 +73,24 @@ export async function updateAnswer({
       content,
       image_url,
     })
+    .catch((err) => {
+      if (err instanceof AxiosError) {
+        const { response } = err as AxiosError<APIResponse>
+
+        console.log({ response: response?.data })
+      }
+      console.log("err", err)
+      throw err
+    })
+
+  return res
+}
+
+export async function deleteAnswer({ answerId }: DeleteAnswerRequest) {
+  const res = await apiInstance
+    .delete<any, AxiosResponse<DeleteAnswerResponse>, DefaultBodyType>(
+      RouteMap.answer.deleteAnswer(answerId),
+    )
     .catch((err) => {
       if (err instanceof AxiosError) {
         const { response } = err as AxiosError<APIResponse>

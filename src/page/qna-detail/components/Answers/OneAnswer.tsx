@@ -7,16 +7,22 @@ import { VoteIcons } from "@/components/icons/Icons"
 import dynamic from "next/dynamic"
 import { useEffect, useRef } from "react"
 import Button from "@/components/shared/button/Button"
-import { updateAnswer } from "@/service/answers"
+import { deleteAnswer, updateAnswer } from "@/service/answers"
 import type { Editor } from "@toast-ui/react-editor"
 import { useForm } from "react-hook-form"
 import useQnADetail from "../../hooks/useQnADetail"
 import { toast } from "react-toastify"
-import { errorMessage } from "@/constants/message"
+import {
+  errorMessage,
+  notificationMessage,
+  successMessage,
+} from "@/constants/message"
 import useHandleMyAnswer from "../../hooks/useHandleMyAnswer"
 import useAnswerVote from "../../hooks/useAnswerVote"
 import { useClientSession } from "@/hooks/useClientSession"
 import { useQueryClient } from "@tanstack/react-query"
+import useModal from "@/hooks/useModal"
+import ConfirmModal from "@/components/shared/confirm-modal/ConfirmModal"
 
 const MdViewer = dynamic(() => import("../Markdown/MdViewer"), {
   ssr: false,
@@ -35,6 +41,7 @@ const OneAnswer: React.FC<OneAnswerProps> = ({ answer, createdby }) => {
   const { checkNullValue } = useQnADetail()
   const { user } = useClientSession()
   const queryClient = useQueryClient()
+  const { openModal } = useModal()
 
   const isEdited = answer.created_date !== answer.modified_date
   const isMyAnswer = createdby === answer.created_by
@@ -74,8 +81,6 @@ const OneAnswer: React.FC<OneAnswerProps> = ({ answer, createdby }) => {
         content: submitValue as string,
       })
 
-      // console.log("res", res.data.msg, JSON.parse(res.config.data).content)
-
       answer.content = JSON.parse(res.config.data).content
       answer.image_url = JSON.parse(res.config.data).image_url
       queryClient.invalidateQueries({
@@ -87,13 +92,44 @@ const OneAnswer: React.FC<OneAnswerProps> = ({ answer, createdby }) => {
     setIsAnswerEditMode(false)
   }
 
+  const handleDeleteValue = async () => {
+    const onSuccess = async () => {
+      try {
+        const res = await deleteAnswer({
+          answerId: answer.answer_id,
+        })
+        toast.success(successMessage.deleteAnswer)
+        queryClient.invalidateQueries({
+          queryKey: ["answer", answer.question_id],
+        })
+      } catch (err) {
+        console.error("error", err)
+      }
+    }
+    const onCancel = () => {
+      toast.error(notificationMessage.cancleDeleteAnswer, {
+        position: "top-center",
+      })
+    }
+    openModal({
+      containsHeader: false,
+      content: (
+        <ConfirmModal.ModalContent
+          onSuccess={onSuccess}
+          onCancel={onCancel}
+          situation="deleteContent"
+        />
+      ),
+    })
+  }
+
   const EditAnswerBox = () => {
     return (
       <form onSubmit={handleSubmit(handleEditValue)}>
         <MdEditor previous={answer.content} editorRef={editorRef} />
         <div className="flex justify-center my-5">
           <Button buttonTheme="primary" className="p-2 w-[50px]" type="submit">
-            Save
+            저장하기
           </Button>
         </div>
       </form>
@@ -151,10 +187,18 @@ const OneAnswer: React.FC<OneAnswerProps> = ({ answer, createdby }) => {
     if (isMyAnswer)
       return (
         <div className="flex">
-          <div onClick={handleEditMode} className="mr-3">
+          <div
+            onClick={handleEditMode}
+            className="mr-3 hover:text-[#3887BE] font-bold cursor-pointer "
+          >
             수정하기
           </div>
-          <div onClick={() => console.log("답변 삭제")}>삭제하기</div>
+          <div
+            onClick={handleDeleteValue}
+            className="hover:text-[#3887BE] font-bold cursor-pointer "
+          >
+            삭제하기
+          </div>
         </div>
       )
   }
@@ -176,7 +220,7 @@ const OneAnswer: React.FC<OneAnswerProps> = ({ answer, createdby }) => {
         <ProfileImageBox />
         <UserInfoBox />
       </div>
-      <div className="flex justify-end text-[#3887BE] cursor-pointer my-4">
+      <div className="flex justify-end my-4">
         {/* <div>댓글 쓰기</div> */}
         <HandleAnswerBox />
       </div>
