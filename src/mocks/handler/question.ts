@@ -249,7 +249,7 @@ export function createMockQuestion({
   title: string
   content: string
   skills: Array<TechTag>
-  image_url?: string
+  image_url?: string | null
 }) {
   const latestId = Math.max(...mockQuestions.map((question) => question.id))
 

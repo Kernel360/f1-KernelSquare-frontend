@@ -44,7 +44,7 @@ const QnADetail: React.FC<{ id: string }> = ({ id }) => {
 
   if (isPending || isAnswerPending || !data) return <Loading />
 
-  if (data && user)
+  if (data)
     return (
       <div className="relative box-border flex-1 p-10">
         <div className="w-[calc(100%-12px)] sm:w-[calc(100%-22px)] lg:w-[calc(100%-42px)] mx-auto">
