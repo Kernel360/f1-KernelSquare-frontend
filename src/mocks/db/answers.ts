@@ -8,9 +8,8 @@ const mockAnswers: Answer[] = [
     content:
       "Integer pede justo, lacinia eget, tincidunt eget, tempus vel, pede. Morbi porttitor lorem id ligula. Suspendisse ornare consequat lectus.",
     author_level: 1,
-    rank_image_url: badge_url[1],
-    member_image_url:
-      "https://mobirise.com/bootstrap-template//profile-template/assets/images/timothy-paul-smith-256424-1200x800.jpg",
+    rank_image_url: null,
+    member_image_url: null,
     created_by: "zi존",
     answer_image_url:
       "https://mobirise.com/bootstrap-template//profile-template/assets/images/timothy-paul-smith-256424-1200x800.jpg",
@@ -25,7 +24,7 @@ const mockAnswers: Answer[] = [
     content:
       "Integer pede justo, lacinia eget, tincidunt eget, tempus vel, pede. Morbi porttitor lorem id ligula. Suspendisse ornare consequat lectus.",
     author_level: 2,
-    rank_image_url: badge_url[2],
+    rank_image_url: null,
     member_image_url:
       "https://mobirise.com/bootstrap-template//profile-template/assets/images/timothy-paul-smith-256424-1200x800.jpg",
     created_by: "홍주광",

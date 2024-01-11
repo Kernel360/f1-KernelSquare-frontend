@@ -7,14 +7,18 @@ import LightBulb from "@/components/shared/animation/LightBulb"
 import { notificationMessage } from "@/constants/message"
 
 interface AnswerProps {
-  user: string | undefined
-  id: number
+  createdby: string
+  questionId: number
   isMyAnswer: boolean
 }
 
-const AnswerList: React.FC<AnswerProps> = ({ user, id, isMyAnswer }) => {
+const AnswerList: React.FC<AnswerProps> = ({
+  createdby,
+  questionId,
+  isMyAnswer,
+}) => {
   const { data, isPending } = answerQueries.useGetAnswers({
-    questionId: id,
+    questionId,
   })
 
   if (isPending) return <Loading />
@@ -27,7 +31,7 @@ const AnswerList: React.FC<AnswerProps> = ({ user, id, isMyAnswer }) => {
             <OneAnswer
               key={answer.answer_id}
               answer={answer}
-              createdby={user}
+              createdby={createdby}
             />
           ))
         ) : (

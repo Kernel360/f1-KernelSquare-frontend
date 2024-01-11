@@ -57,8 +57,8 @@ const QnADetail: React.FC<{ id: string }> = ({ id }) => {
           />
           <Title title="Answers" />
           <AnswerList
-            user={user?.nickname}
-            id={Number(id)}
+            createdby={user?.nickname!}
+            questionId={Number(id)}
             isMyAnswer={data?.data?.nickname === user?.nickname}
           />
         </div>

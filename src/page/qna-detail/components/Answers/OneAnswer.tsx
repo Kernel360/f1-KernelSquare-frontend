@@ -2,39 +2,14 @@
 
 import type { Answer } from "@/interfaces/answer"
 import Image from "next/image"
-import { getDate } from "@/util/getDate"
-import { VoteIcons } from "@/components/icons/Icons"
-import dynamic from "next/dynamic"
-import { useEffect, useRef } from "react"
-import Button from "@/components/shared/button/Button"
-import { deleteAnswer, updateAnswer } from "@/service/answers"
-import type { Editor } from "@toast-ui/react-editor"
-import { useForm } from "react-hook-form"
+import { useCallback } from "react"
 import useQnADetail from "../../hooks/useQnADetail"
-import { ToastContainer, toast } from "react-toastify"
-import {
-  errorMessage,
-  notificationMessage,
-  successMessage,
-} from "@/constants/message"
-import useHandleMyAnswer from "../../hooks/useHandleMyAnswer"
-import useAnswerVote from "../../hooks/useAnswerVote"
 import { useClientSession } from "@/hooks/useClientSession"
-import { useQueryClient } from "@tanstack/react-query"
-import useModal from "@/hooks/useModal"
-import ConfirmModal from "@/components/shared/confirm-modal/ConfirmModal"
-import { sleep } from "@/util/sleep"
-import ProgressModal from "@/page/signup/components/ProgressModal"
-import DeleteSuccess from "@/components/shared/animation/DeleteSuccess"
-import { useRouter } from "next/navigation"
-
-const MdViewer = dynamic(() => import("../Markdown/MdViewer"), {
-  ssr: false,
-})
-
-const MdEditor = dynamic(() => import("../Markdown/MdEditor"), {
-  ssr: false,
-})
+import VoteBox from "./VoteBox"
+import HandleAnswerBox from "./HandleAnswerBox"
+import DayBox from "./DayBox"
+import AnswerContentBox from "./AnswerContentBox"
+import { Icons } from "@/components/icons/Icons"
 
 interface OneAnswerProps {
   answer: Answer
@@ -42,229 +17,65 @@ interface OneAnswerProps {
 }
 
 const OneAnswer: React.FC<OneAnswerProps> = ({ answer, createdby }) => {
-  const { checkNullValue, ProgressModalView } = useQnADetail()
+  const { ProgressModalView } = useQnADetail()
   const { user } = useClientSession()
-  const queryClient = useQueryClient()
-  const { openModal } = useModal()
 
-  const isEdited = answer.created_date !== answer.modified_date
-  const isMyAnswer = createdby === answer.created_by
-
-  const editorRef = useRef<Editor>(null)
-
-  // 답변 투표
-  const { vote, setVote } = useAnswerVote({
-    answer,
-    userId: user?.member_id,
-  })
-
-  useEffect(() => {
-    setVote({ ...vote, value: answer.vote_count })
-  }, [])
-
-  // 답변 수정
-  const { handleSubmit } = useForm()
-  const { isAnswerEditMode, setIsAnswerEditMode, handleEditMode } =
-    useHandleMyAnswer()
-
-  const handleEditValue = async () => {
-    const submitValue = editorRef.current?.getInstance().getMarkdown()
-    console.log("md", submitValue)
-
-    if (checkNullValue(submitValue)) {
-      toast.error(errorMessage.noContent, {
-        position: "top-center",
-        autoClose: 1000,
-      })
-      return
-    }
-
-    try {
-      const res = await updateAnswer({
-        answerId: answer.answer_id,
-        content: submitValue as string,
-      })
-
-      answer.content = JSON.parse(res.config.data).content
-      answer.image_url = JSON.parse(res.config.data).image_url
-      queryClient.invalidateQueries({
-        queryKey: ["answer", answer.question_id],
-      })
-    } catch (err) {
-      console.error("error", err)
-    }
-    setIsAnswerEditMode(false)
-  }
-
-  const handleDeleteValue = async () => {
-    const onSuccess = async () => {
-      try {
-        deleteAnswer({
-          answerId: answer.answer_id,
-        }).then((res) => {
-          console.log("success", res.data.msg)
-          openModal({
-            content: <SuccessModalContent />,
-            onClose() {
-              queryClient.invalidateQueries({
-                queryKey: ["answer", answer.question_id],
-              })
-            },
-          })
-          sleep(5000).then(() => {
-            queryClient.invalidateQueries({
-              queryKey: ["answer", answer.question_id],
-            })
-          })
-        })
-      } catch (err) {
-        console.error(err)
-      }
-    }
-    const onCancel = () => {
-      toast.error(notificationMessage.cancleDeleteAnswer, {
-        position: "top-center",
-      })
-    }
-    openModal({
-      containsHeader: false,
-      content: (
-        <ConfirmModal.ModalContent
-          onSuccess={onSuccess}
-          onCancel={onCancel}
-          situation="deleteContent"
-        />
-      ),
-    })
-  }
-
-  const VoteBox = ({ userId }: { userId: number | undefined }) => {
-    const { vote, handleRaise, handleReduce } = useAnswerVote({
-      answer,
-      userId,
-    })
-
-    return (
-      <form className="mr-5">
-        <div className="flex justify-center">
-          <VoteIcons.Up
-            className="text-[30px] hover:text-primary"
-            onClick={handleRaise}
+  const ProfileImageBox = useCallback(() => {
+    if (answer.member_image_url)
+      return (
+        <div className="ml-[20px] w-[50px] h-[50px] relative">
+          <Image
+            src={answer.member_image_url}
+            alt="답변자 프로필 이미지"
+            fill
+            className="object-cover rounded-full"
           />
         </div>
-        <div className="text-[30px]">
-          {vote.value < 10 ? "0" + vote.value : vote.value}
-        </div>
-        <div className="flex justify-center">
-          <VoteIcons.Down
-            className="text-[30px] hover:text-primary"
-            onClick={handleReduce}
-          />
-        </div>
-      </form>
-    )
-  }
+      )
 
-  const EditAnswerBox = () => {
+    // 사용자 프로필 이미지 없을 경우
     return (
-      <form onSubmit={handleSubmit(handleEditValue)}>
-        <MdEditor previous={answer.content} editorRef={editorRef} />
-        <div className="flex justify-center my-5">
-          <Button buttonTheme="primary" className="p-2 w-[50px]" type="submit">
-            저장하기
-          </Button>
-        </div>
-      </form>
+      <Icons.UserProfile className="ml-[20px] w-[50px] h-[50px] fill-colorsGray shrink-0" />
     )
-  }
+  }, [answer.member_image_url])
 
-  const DateBox = () => {
-    return (
-      <div className="max-h-[52px] flex flex-col justify-center">
-        <div>답변일시: {getDate({ date: answer.created_date })}</div>
-        <div className="flex justify-between">
-          {isEdited && (
-            <div className="text-right text-slate-400">(수정됨)</div>
-          )}
-        </div>
-      </div>
-    )
-  }
-
-  const ProfileImageBox = () => {
-    return (
-      <div className="ml-[20px] w-[50px] h-[50px] relative">
-        <Image
-          src={answer.member_image_url}
-          alt="답변자 프로필 이미지"
-          fill
-          className="object-cover rounded-full"
-        />
-      </div>
-    )
-  }
-
-  const UserInfoBox = () => {
+  const UserInfoBox = useCallback(() => {
     return (
       <div className="ml-[20px] text-center">
         <div className="px-2 bg-[#F3EDC8] rounded-md mb-1">
           {answer.created_by}
         </div>
         <div className="text-center flex justify-center">
-          <div className="flex flex-col justify-center">
-            <Image
-              src={answer.rank_image_url}
-              alt="답변자 배지 이미지"
-              width={20}
-              height={20}
-            />
-          </div>
           <div className="ml-1">Lv.{answer.author_level}</div>
+          {answer.rank_image_url && (
+            <div className="flex flex-col justify-center">
+              <Image
+                src={answer.rank_image_url}
+                alt="답변자 배지 이미지"
+                width={20}
+                height={20}
+              />
+            </div>
+          )}
         </div>
       </div>
     )
-  }
-
-  const HandleAnswerBox = () => {
-    if (isMyAnswer)
-      return (
-        <div className="flex">
-          <div
-            onClick={handleEditMode}
-            className="mr-3 hover:text-[#3887BE] font-bold cursor-pointer "
-          >
-            수정하기
-          </div>
-          <div
-            onClick={handleDeleteValue}
-            className="hover:text-[#3887BE] font-bold cursor-pointer "
-          >
-            삭제하기
-          </div>
-        </div>
-      )
-  }
+  }, [answer.author_level, answer.created_by, answer.rank_image_url])
 
   return (
     <div className="border-b-[1px] border-b-gray my-5">
       <div className="flex justify-between">
-        <VoteBox userId={user?.member_id} />
-        <div className="w-[90%]">
-          {isAnswerEditMode ? (
-            <EditAnswerBox />
-          ) : (
-            <MdViewer content={answer.content} />
-          )}
-        </div>
+        <VoteBox userId={user?.member_id} answer={answer} />
+        <AnswerContentBox answer={answer} />
       </div>
       <div className="flex justify-end my-5">
-        <DateBox />
+        <DayBox answer={answer} />
         <ProfileImageBox />
         <UserInfoBox />
       </div>
       <div className="flex justify-end my-4">
         {/* <div>댓글 쓰기</div> */}
-        <HandleAnswerBox />
+        <HandleAnswerBox createdby={createdby} answer={answer} />
       </div>
       <ProgressModalView />
     </div>
@@ -272,14 +83,3 @@ const OneAnswer: React.FC<OneAnswerProps> = ({ answer, createdby }) => {
 }
 
 export default OneAnswer
-
-const SuccessModalContent = () => {
-  return (
-    <ProgressModal.Success>
-      <ProgressModal.StepContentWrapper>
-        <DeleteSuccess style={{ width: "100px" }} />
-        <p className="font-bold">{successMessage.deleteAnswer}</p>
-      </ProgressModal.StepContentWrapper>
-    </ProgressModal.Success>
-  )
-}
