@@ -1,4 +1,3 @@
-import AskQuestionButton from "./components/AskQuestionButton"
 import QuestionListContainer from "./components/QuestionListContainer"
 
 function QnA() {

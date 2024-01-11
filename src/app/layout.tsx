@@ -10,6 +10,7 @@ import ReactQueryProvider from "@/react-query/ReactQueryProvider"
 import MSW from "@/msw/MSW"
 import "@toast-ui/editor/dist/toastui-editor.css"
 import ToastContainer from "@/components/shared/toast/ToastContainer"
+import ScrollTop from "@/components/shared/ScrollTop"
 
 export const dynamic = "force-dynamic"
 
@@ -31,6 +32,7 @@ export default function RootLayout({
         <RecoilProvider>
           <ReactQueryProvider>
             <MSW />
+            <ScrollTop />
             <Layout>{children}</Layout>
             <Modal />
             <ToastContainer />

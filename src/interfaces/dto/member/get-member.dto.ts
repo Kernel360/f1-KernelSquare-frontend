@@ -5,6 +5,9 @@ export interface GetMemberRequest {
   id: number
 }
 
-type UserPayload = User
+export type UserPayload = Pick<
+  User,
+  "nickname" | "experience" | "introduction" | "image_url" | "level"
+> & { id: number }
 
 export interface GetMemberResponse extends APIResponse<UserPayload> {}
