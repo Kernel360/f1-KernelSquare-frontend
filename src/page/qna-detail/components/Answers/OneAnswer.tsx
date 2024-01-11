@@ -5,18 +5,18 @@ import Image from "next/image"
 import { getDate } from "@/util/getDate"
 import { VoteIcons } from "@/components/icons/Icons"
 import dynamic from "next/dynamic"
-import { useRecoilState } from "recoil"
-import voteAtoms from "@/recoil/atoms/vote"
-import { useEffect, useRef, useState } from "react"
+import { useEffect, useRef } from "react"
 import Button from "@/components/shared/button/Button"
-import { updateAnswer, voteAnswer } from "@/service/answers"
-import { useMutation, useQueryClient } from "@tanstack/react-query"
-import queryKey from "@/constants/queryKey"
+import { updateAnswer } from "@/service/answers"
 import type { Editor } from "@toast-ui/react-editor"
 import { useForm } from "react-hook-form"
 import useQnADetail from "../../hooks/useQnADetail"
 import { toast } from "react-toastify"
 import { errorMessage } from "@/constants/message"
+import useHandleMyAnswer from "../../hooks/useHandleMyAnswer"
+import useAnswerVote from "../../hooks/useAnswerVote"
+import { useClientSession } from "@/hooks/useClientSession"
+import { useQueryClient } from "@tanstack/react-query"
 
 const MdViewer = dynamic(() => import("../Markdown/MdViewer"), {
   ssr: false,
@@ -28,64 +28,24 @@ const MdEditor = dynamic(() => import("../Markdown/MdEditor"), {
 
 interface OneAnswerProps {
   answer: Answer
-  user: string | undefined
+  createdby: string | undefined
 }
 
-const OneAnswer: React.FC<OneAnswerProps> = ({ answer, user }) => {
+const OneAnswer: React.FC<OneAnswerProps> = ({ answer, createdby }) => {
   const { checkNullValue } = useQnADetail()
+  const { user } = useClientSession()
+  const queryClient = useQueryClient()
 
   const isEdited = answer.created_date !== answer.modified_date
-  const isMyAnswer = user === answer.created_by
+  const isMyAnswer = createdby === answer.created_by
 
   const editorRef = useRef<Editor>(null)
 
   // 답변 투표
-  const [vote, setVote] = useRecoilState(voteAtoms(answer?.created_by))
-
-  const queryClient = useQueryClient()
-
-  const { data, mutate } = useMutation({
-    mutationKey: ["ans"],
-    mutationFn: ({
-      answer_id,
-      member_id,
-      status,
-    }: {
-      answer_id: number
-      member_id: number
-      status: 1 | -1
-    }) => voteAnswer({ answerId: answer_id, member_id, status }),
-    onSuccess: () => console.log("투표 성공"),
-    onError: (error) => console.log("error", error.message),
+  const { vote, setVote } = useAnswerVote({
+    answer,
+    userId: user?.member_id,
   })
-
-  const handleRaise = () => {
-    setVote({ ...vote, value: vote.value + 1 })
-    try {
-      mutate({ answer_id: answer.answer_id, member_id: 1, status: 1 })
-      console.log("[set vote]", { data })
-
-      queryClient.invalidateQueries({ queryKey: [queryKey.answer] })
-    } catch (err) {
-      console.error("error", err)
-    }
-  }
-
-  const handleReduce = () => {
-    setVote({ ...vote, value: vote.value - 1 })
-    try {
-      voteAnswer({
-        answerId: answer.answer_id,
-        member_id: 1,
-        status: -1,
-      }).then((res) => {
-        console.log("res", res.data.msg, res.config.data)
-        queryClient.invalidateQueries({ queryKey: [queryKey.answer] })
-      })
-    } catch (err) {
-      console.error("error", err)
-    }
-  }
 
   useEffect(() => {
     setVote({ ...vote, value: answer.vote_count })
@@ -93,7 +53,8 @@ const OneAnswer: React.FC<OneAnswerProps> = ({ answer, user }) => {
 
   // 답변 수정
   const { handleSubmit } = useForm()
-  const [isAnswerEditMode, setIsAnswerEditMode] = useState(false)
+  const { isAnswerEditMode, setIsAnswerEditMode, handleEditMode } =
+    useHandleMyAnswer()
 
   const handleEditValue = async () => {
     const submitValue = editorRef.current?.getInstance().getMarkdown()
@@ -113,7 +74,7 @@ const OneAnswer: React.FC<OneAnswerProps> = ({ answer, user }) => {
         content: submitValue as string,
       })
 
-      console.log("res", res.data.msg, JSON.parse(res.config.data).content)
+      // console.log("res", res.data.msg, JSON.parse(res.config.data).content)
 
       answer.content = JSON.parse(res.config.data).content
       answer.image_url = JSON.parse(res.config.data).image_url
@@ -126,89 +87,133 @@ const OneAnswer: React.FC<OneAnswerProps> = ({ answer, user }) => {
     setIsAnswerEditMode(false)
   }
 
+  const EditAnswerBox = () => {
+    return (
+      <form onSubmit={handleSubmit(handleEditValue)}>
+        <MdEditor previous={answer.content} editorRef={editorRef} />
+        <div className="flex justify-center my-5">
+          <Button buttonTheme="primary" className="p-2 w-[50px]" type="submit">
+            Save
+          </Button>
+        </div>
+      </form>
+    )
+  }
+
+  const DateBox = () => {
+    return (
+      <div className="max-h-[52px] flex flex-col justify-center">
+        <div>답변일시: {getDate({ date: answer.created_date })}</div>
+        <div className="flex justify-between">
+          {isEdited && (
+            <div className="text-right text-slate-400">(수정됨)</div>
+          )}
+        </div>
+      </div>
+    )
+  }
+
+  const ProfileImageBox = () => {
+    return (
+      <div className="ml-[20px] w-[50px] h-[50px] relative">
+        <Image
+          src={answer.member_image_url}
+          alt="답변자 프로필 이미지"
+          fill
+          className="object-cover rounded-full"
+        />
+      </div>
+    )
+  }
+
+  const UserInfoBox = () => {
+    return (
+      <div className="ml-[20px] text-center">
+        <div className="px-2 bg-[#F3EDC8] rounded-md mb-1">
+          {answer.created_by}
+        </div>
+        <div className="text-center flex justify-center">
+          <div className="flex flex-col justify-center">
+            <Image
+              src={answer.rank_image_url}
+              alt="답변자 배지 이미지"
+              width={20}
+              height={20}
+            />
+          </div>
+          <div className="ml-1">Lv.{answer.author_level}</div>
+        </div>
+      </div>
+    )
+  }
+
+  const HandleAnswerBox = () => {
+    if (isMyAnswer)
+      return (
+        <div className="flex">
+          <div onClick={handleEditMode} className="mr-3">
+            수정하기
+          </div>
+          <div onClick={() => console.log("답변 삭제")}>삭제하기</div>
+        </div>
+      )
+  }
+
   return (
     <div className="border-b-[1px] border-b-gray my-5">
       <div className="flex justify-between">
-        <form className="mr-5">
-          <div className="flex justify-center">
-            <VoteIcons.Up
-              className="text-[30px] hover:text-primary"
-              onClick={handleRaise}
-            />
-          </div>
-          <div className="text-[30px]">
-            {vote.value < 10 ? "0" + vote.value : vote.value}
-          </div>
-          <div className="flex justify-center">
-            <VoteIcons.Down
-              className="text-[30px] hover:text-primary"
-              onClick={handleReduce}
-            />
-          </div>
-        </form>
+        <VoteBox answer={answer} userId={user?.member_id} />
         <div className="w-[90%]">
           {isAnswerEditMode ? (
-            <form onSubmit={handleSubmit(handleEditValue)}>
-              <MdEditor previous={answer.content} editorRef={editorRef} />
-              <div className="flex justify-center my-5">
-                <Button
-                  buttonTheme="primary"
-                  className="p-2 w-[50px]"
-                  type="submit"
-                >
-                  Save
-                </Button>
-              </div>
-            </form>
+            <EditAnswerBox />
           ) : (
             <MdViewer content={answer.content} />
           )}
         </div>
       </div>
       <div className="flex justify-end my-5">
-        <div className="max-h-[52px] flex flex-col justify-center">
-          <div>답변일시: {getDate({ date: answer.created_date })}</div>
-          <div className="flex justify-between">
-            {isEdited && (
-              <div className="text-right text-slate-400">(수정됨)</div>
-            )}
-          </div>
-        </div>
-        <div className="ml-[20px] w-[50px] h-[50px] relative">
-          <Image
-            src={answer.member_image_url}
-            alt="답변자 프로필 이미지"
-            fill
-            className="object-cover rounded-full"
-          />
-        </div>
-        <div className="ml-[20px] text-center">
-          <div className="px-2 bg-[#F3EDC8] rounded-md mb-1">
-            {answer.created_by}
-          </div>
-          <div className="text-center flex justify-center">
-            <div className="flex flex-col justify-center">
-              <Image
-                src={answer.rank_image_url}
-                alt="답변자 배지 이미지"
-                width={20}
-                height={20}
-              />
-            </div>
-            <div className="ml-1">Lv.{answer.author_level}</div>
-          </div>
-        </div>
+        <DateBox />
+        <ProfileImageBox />
+        <UserInfoBox />
       </div>
       <div className="flex justify-end text-[#3887BE] cursor-pointer my-4">
         {/* <div>댓글 쓰기</div> */}
-        {isMyAnswer && (
-          <div onClick={() => setIsAnswerEditMode((prev: boolean) => !prev)}>
-            수정하기
-          </div>
-        )}
+        <HandleAnswerBox />
       </div>
     </div>
   )
 }
 
 export default OneAnswer
+
+interface VoteBoxProps {
+  answer: Answer
+  userId: number | undefined
+}
+
+const VoteBox = ({ answer, userId }: VoteBoxProps) => {
+  const { vote, handleRaise, handleReduce } = useAnswerVote({
+    answer,
+    userId,
+  })
+
+  return (
+    <form className="mr-5">
+      <div className="flex justify-center">
+        <VoteIcons.Up
+          className="text-[30px] hover:text-primary"
+          onClick={handleRaise}
+        />
+      </div>
+      <div className="text-[30px]">
+        {vote.value < 10 ? "0" + vote.value : vote.value}
+      </div>
+      <div className="flex justify-center">
+        <VoteIcons.Down
+          className="text-[30px] hover:text-primary"
+          onClick={handleReduce}
+        />
+      </div>
+    </form>
+  )
+}

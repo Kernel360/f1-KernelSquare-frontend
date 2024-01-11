@@ -44,13 +44,15 @@ const useUpdateAnswer = ({
     mutationFn: () => updateAnswer({ answerId, content, image_url }),
   })
 
-const useVoteAnswer = ({ answerId, member_id, status }: CreateVoteRequest) =>
+const useVoteAnswer = () =>
   useMutation({
-    mutationKey: [queryKey.answer],
-    mutationFn: () => voteAnswer({ answerId, member_id, status }),
+    mutationKey: ["ans"],
+    mutationFn: ({ answerId, member_id, status }: CreateVoteRequest) =>
+      voteAnswer({ answerId, member_id, status }),
     onSuccess: () => console.log("투표 성공"),
     onError: (error) => console.log("error", error.message),
   })
+
 export const answerQueries = {
   useGetAnswers,
   useCreateAnswer,

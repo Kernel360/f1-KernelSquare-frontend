@@ -24,7 +24,11 @@ const AnswerList: React.FC<AnswerProps> = ({ user, id, isMyAnswer }) => {
       <div className="max-w-full box-border border border-colorsGray rounded-lg p-10 my-5">
         {data?.data?.length ? (
           data?.data?.map((answer) => (
-            <OneAnswer key={answer.answer_id} answer={answer} user={user} />
+            <OneAnswer
+              key={answer.answer_id}
+              answer={answer}
+              createdby={user}
+            />
           ))
         ) : (
           <NoAnswer isMyAnswer={isMyAnswer} />
