@@ -12,14 +12,14 @@ interface ConfirmModalProps {
   situation: MessageKey
 }
 
-function DeleteContentModal({ ...props }: ConfirmModalProps) {
+function ConfirmModal({ ...props }: ConfirmModalProps) {
   const { openModal, closeModal } = useModal()
 
   useEffect(() => {
     openModal({
       containsHeader: false,
       closeableDim: false,
-      content: <DeleteContentModal.ModalContent {...props} />,
+      content: <ConfirmModal.ModalContent {...props} />,
     })
 
     return () => {
@@ -30,7 +30,7 @@ function DeleteContentModal({ ...props }: ConfirmModalProps) {
   return null
 }
 
-DeleteContentModal.ModalContent = function DeleteContentModal({
+ConfirmModal.ModalContent = function DeleteContentModal({
   onSuccess,
   onCancel,
   situation,
@@ -70,4 +70,4 @@ DeleteContentModal.ModalContent = function DeleteContentModal({
   )
 }
 
-export default DeleteContentModal
+export default ConfirmModal
