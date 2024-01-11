@@ -16,6 +16,7 @@ import { errorMessage, successMessage } from "@/constants/message"
 import useQnADetail from "../hooks/useQnADetail"
 import ProgressModal from "@/page/signup/components/ProgressModal"
 import CheckSuccess from "@/components/shared/animation/CheckSuccess"
+import { sleep } from "@/util/sleep"
 
 const MdEditor = dynamic(() => import("./Markdown/MdEditor"), {
   ssr: false,
@@ -54,10 +55,14 @@ const MyAnswer: React.FC<{
           content: submitValue || "",
         }).then((res) => {
           console.log("res", res.data.msg, res.config.data)
-          queryClient.invalidateQueries({ queryKey: ["answer", id] })
-          toast.success(SuccessModalContent, {
-            position: "top-center",
-            autoClose: 1000,
+          openModal({
+            content: <SuccessModalContent />,
+            onClose() {
+              queryClient.invalidateQueries({ queryKey: ["answer", id] })
+            },
+          })
+          sleep(5000).then(() => {
+            queryClient.invalidateQueries({ queryKey: ["answer", id] })
           })
         })
       }
@@ -132,7 +137,7 @@ const SuccessModalContent = () => {
     <ProgressModal.Success>
       <ProgressModal.StepContentWrapper>
         <CheckSuccess style={{ width: "100px" }} />
-        <p className="text-white font-bold">{successMessage.createAnswer}</p>
+        <p className="font-bold">{successMessage.createAnswer}</p>
       </ProgressModal.StepContentWrapper>
     </ProgressModal.Success>
   )

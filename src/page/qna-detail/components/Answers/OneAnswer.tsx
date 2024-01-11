@@ -103,12 +103,18 @@ const OneAnswer: React.FC<OneAnswerProps> = ({ answer, createdby }) => {
           answerId: answer.answer_id,
         }).then((res) => {
           console.log("success", res.data.msg)
-          queryClient.invalidateQueries({
-            queryKey: ["answer", answer.question_id],
+          openModal({
+            content: <SuccessModalContent />,
+            onClose() {
+              queryClient.invalidateQueries({
+                queryKey: ["answer", answer.question_id],
+              })
+            },
           })
-          toast.success(SuccessModalContent, {
-            position: "top-center",
-            autoClose: 1000,
+          sleep(5000).then(() => {
+            queryClient.invalidateQueries({
+              queryKey: ["answer", answer.question_id],
+            })
           })
         })
       } catch (err) {
@@ -272,7 +278,7 @@ const SuccessModalContent = () => {
     <ProgressModal.Success>
       <ProgressModal.StepContentWrapper>
         <DeleteSuccess style={{ width: "100px" }} />
-        <p className="text-white font-bold">{successMessage.deleteAnswer}</p>
+        <p className="font-bold">{successMessage.deleteAnswer}</p>
       </ProgressModal.StepContentWrapper>
     </ProgressModal.Success>
   )
