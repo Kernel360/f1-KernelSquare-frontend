@@ -7,7 +7,6 @@ import type { ChangeEvent } from "react"
 import type { ImageProps } from "../MyPage.type"
 import Image from "next/image"
 import { updateMemberInfo } from "@/service/member"
-import { useQueryClient } from "@tanstack/react-query"
 import { toast } from "react-toastify"
 import {
   notificationMessage,
@@ -16,13 +15,11 @@ import {
 } from "@/constants/message"
 import { Icons } from "@/components/icons/Icons"
 import { uploadImages } from "@/service/images"
-import ConfirmModal from "@/components/shared/confirm-modal/ConfirmModal"
 import useModal from "@/hooks/useModal"
-import UploadProfileImageModal from "@/components/shared/confirm-modal/components/UploadProfileImageModal"
+import ConfirmModal from "@/components/shared/confirm-modal/ConfirmModal"
 import { useClientSession } from "@/hooks/useClientSession"
 
 function ProfileImage({ id, image_url }: ImageProps) {
-  console.log("프로필 이미지", image_url.length)
   const [image, setImage] = useState<string | ArrayBuffer | null>(image_url)
   const [preview, setPreview] = useState<string>("")
   const imageUploadRef = useRef<HTMLInputElement>(null)
@@ -30,11 +27,8 @@ function ProfileImage({ id, image_url }: ImageProps) {
 
   const { openModal } = useModal()
 
-  const queryClient = useQueryClient()
-
   const handleSaveImage = async (image: File) => {
     const onSuccess = async () => {
-      console.log("제출 전 사진", image)
       try {
         const imageUploadResponse = await uploadImages({
           category: "member",
@@ -71,13 +65,13 @@ function ProfileImage({ id, image_url }: ImageProps) {
     openModal({
       containsHeader: false,
       content: (
-        <UploadProfileImageModal.ModalContent
+        <ConfirmModal.ModalContent
           onSuccess={onSuccess}
           onCancel={onCancel}
+          situation="uploadProfileImage"
         />
       ),
     })
-    // const userResponse = window.confirm(confirmMessage.editProfileImage)
   }
 
   const handleImageChange = (event: ChangeEvent<HTMLInputElement>) => {

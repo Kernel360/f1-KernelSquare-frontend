@@ -5,6 +5,7 @@ export const errorMessage = {
   unauthorized: "로그인 후 다시 이용해주세요",
   failToUploadImage:
     "이미지 업로드 중 오류가 발생하였습니다. 다시 시도해주세요.",
+  emptyCookie: "쿠키가 비어있습니다.",
 } as const
 
 export const successMessage = {
@@ -21,4 +22,5 @@ export const notificationMessage = {
 
 export const confirmMessage = {
   editProfileImage: "변경된 사진으로 저장하시겠습니까?",
+  deleteContent: "정말 삭제하시겠습니까?",
 } as const

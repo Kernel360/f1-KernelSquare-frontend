@@ -11,6 +11,7 @@ import {
 import { LoginUserPayload } from "@/interfaces/dto/auth/login.dto"
 import { ENCRYPTED_PAYLOAD_KEY } from "@/constants/token"
 import type { UpdateMemberInfoRequest } from "@/interfaces/dto/member/update-member-info.dto"
+import { errorMessage } from "@/constants/message"
 
 const userSelector = selector<LoginUserPayload | null>({
   key: "user-selector",
@@ -99,12 +100,11 @@ export const userClientSession = selector({
             const payloadResponse = await getPayloadCookie()
 
             if (payloadResponse === null) {
-              console.error("쿠키가 비어 있습니다.")
+              console.error(errorMessage.emptyCookie)
               return
             }
 
             const editedPayload = JSON.parse(decrypt(payloadResponse))
-            console.log("cookie", editedPayload)
             if (image_url) editedPayload.image_url = image_url
             if (introduction) editedPayload.introduction = introduction
 
