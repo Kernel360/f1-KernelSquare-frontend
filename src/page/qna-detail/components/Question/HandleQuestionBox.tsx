@@ -3,14 +3,15 @@
 import type { Question } from "@/interfaces/question"
 import useHandleQuestion from "../../hooks/useHandleQuestion"
 import SuccessModalContent from "../SuccessModalContent"
+import { useClientSession } from "@/hooks/useClientSession"
 
 interface HandleQuestionProps {
   question: Question
 }
 
 const HandleQuestionBox = ({ question }: HandleQuestionProps) => {
-  const { handleEditQuestion, handleDeleteQuestion, user } = useHandleQuestion()
-  console.log("n", user?.nickname, question.nickname)
+  const { handleEditQuestion, handleDeleteQuestion } = useHandleQuestion()
+  const { user } = useClientSession()
 
   if (user?.nickname === question.nickname)
     return (

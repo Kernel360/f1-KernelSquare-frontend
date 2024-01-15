@@ -55,7 +55,6 @@ const QnADetail: React.FC<{ id: string }> = ({ id }) => {
             isAnswerMode={isAnswerMode}
             setIsAnswerMode={setIsAnswerMode}
           />
-          <Title title="Answers" />
           <AnswerList
             createdby={user?.nickname!}
             questionId={Number(id)}
@@ -67,10 +66,6 @@ const QnADetail: React.FC<{ id: string }> = ({ id }) => {
 }
 
 export default QnADetail
-
-const Title: React.FC<{ title: string }> = ({ title }) => {
-  return <div className="font-bold text-[24px]">{title}</div>
-}
 
 function Loading() {
   return (

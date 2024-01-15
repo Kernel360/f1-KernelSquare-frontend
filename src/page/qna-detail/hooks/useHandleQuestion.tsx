@@ -24,7 +24,6 @@ interface DeleteQuestionProps {
 
 const useHandleQuestion = () => {
   const router = useRouter()
-  const { user } = useClientSession()
   const { openModal } = useModal()
   const queryClient = useQueryClient()
 
@@ -77,7 +76,7 @@ const useHandleQuestion = () => {
     })
   }
 
-  return { handleEditQuestion, handleDeleteQuestion, user }
+  return { handleEditQuestion, handleDeleteQuestion }
 }
 
 export default useHandleQuestion
