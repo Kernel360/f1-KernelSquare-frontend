@@ -1,7 +1,7 @@
 "use client"
 
 import React, { useEffect, useState } from "react"
-import Question from "./components/Question"
+import Question from "./components/Question/Question"
 import MyAnswer from "./components/MyAnswer"
 import AnswerList from "./components/Answers/AnswerList"
 import { questionQueries } from "@/react-query/question"

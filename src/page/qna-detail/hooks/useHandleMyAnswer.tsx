@@ -38,13 +38,11 @@ const useHandleMyAnswer = () => {
     }
 
     try {
-      const res = await updateAnswer({
+      await updateAnswer({
         answerId: answer.answer_id,
         content: submitValue as string,
       })
 
-      answer.content = JSON.parse(res.config.data).content
-      answer.image_url = JSON.parse(res.config.data).image_url
       queryClient.invalidateQueries({
         queryKey: ["answer", answer.question_id],
       })

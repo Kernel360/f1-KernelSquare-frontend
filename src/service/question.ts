@@ -12,7 +12,13 @@ import {
   CreateQuestionRequest,
   CreateQuestionResponse,
 } from "@/interfaces/dto/question/create-question.dto"
-import { AxiosResponse } from "axios"
+import { AxiosError, AxiosResponse } from "axios"
+import type {
+  DeleteQuestionRequest,
+  DeleteQuestionResponse,
+} from "@/interfaces/dto/question/delete-question.dto"
+import type { DefaultBodyType } from "msw"
+import type { APIResponse } from "@/interfaces/dto/api-response"
 
 export async function getQuestionList(
   { page = 0, size = 5 }: GetQuestionListRequest = { page: 0, size: 5 },
@@ -61,6 +67,24 @@ export async function createQuestion({
     image_url,
     skills,
   })
+
+  return res
+}
+
+export async function deleteQuestion({ questionId }: DeleteQuestionRequest) {
+  const res = await apiInstance
+    .delete<any, AxiosResponse<DeleteQuestionResponse>, DefaultBodyType>(
+      RouteMap.question.deleteQuestion(questionId),
+    )
+    .catch((err) => {
+      if (err instanceof AxiosError) {
+        const { response } = err as AxiosError<APIResponse>
+
+        console.log({ response: response?.data })
+      }
+      console.log("err", err)
+      throw err
+    })
 
   return res
 }
