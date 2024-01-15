@@ -1,4 +1,4 @@
-import { atom } from "recoil"
+import { atom, atomFamily } from "recoil"
 
 // 마이페이지 소개글 수정 상태
 export const EditMode = atom<boolean>({
@@ -7,7 +7,7 @@ export const EditMode = atom<boolean>({
 })
 
 // Q&A 댓글 작성 가능 상태
-export const AnswerMode = atom<boolean>({
+export const AnswerMode = atomFamily<boolean, number>({
   key: "AnswerMode-atom",
-  default: false,
+  default: (id: number) => false,
 })

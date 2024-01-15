@@ -1,6 +1,8 @@
+"use client"
+
 import { useForm } from "react-hook-form"
 import useHandleMyAnswer from "../../hooks/useHandleMyAnswer"
-import { useCallback, useRef } from "react"
+import { useRef } from "react"
 import type { Editor } from "@toast-ui/react-editor"
 import type { Answer } from "@/interfaces/answer"
 import Button from "@/components/shared/button/Button"
@@ -21,28 +23,35 @@ type EditAnswerProps = {
 const AnswerContentBox = ({ answer }: EditAnswerProps) => {
   const editorRef = useRef<Editor>(null)
   const { handleSubmit } = useForm()
-  const { handleEditValue, isAnswerEditMode } = useHandleMyAnswer()
+  const { handleEditValue, isAnswerEditMode } = useHandleMyAnswer({
+    answerId: Number(answer.answer_id),
+  })
 
-  const handleSubmitEditedValue = useCallback(() => {
+  const handleSubmitEditedValue = () => {
     const submitValue = editorRef.current?.getInstance().getMarkdown()
     handleEditValue({
       submitValue,
       answer,
     })
-  }, [answer, handleEditValue])
-
-  if (!isAnswerEditMode) return <MdViewer content={answer.content} />
-
+  }
   return (
     <div className="w-[90%]">
-      <form onSubmit={handleSubmit(handleSubmitEditedValue)}>
-        <MdEditor previous={answer.content} editorRef={editorRef} />
-        <div className="flex justify-center my-5">
-          <Button buttonTheme="primary" className="p-2 w-[50px]" type="submit">
-            저장하기
-          </Button>
-        </div>
-      </form>
+      {isAnswerEditMode ? (
+        <form onSubmit={handleSubmit(handleSubmitEditedValue)}>
+          <MdEditor previous={answer.content} editorRef={editorRef} />
+          <div className="flex justify-center my-5">
+            <Button
+              buttonTheme="primary"
+              className="p-2 w-[100px]"
+              type="submit"
+            >
+              저장하기
+            </Button>
+          </div>
+        </form>
+      ) : (
+        <MdViewer content={answer.content} />
+      )}
     </div>
   )
 }

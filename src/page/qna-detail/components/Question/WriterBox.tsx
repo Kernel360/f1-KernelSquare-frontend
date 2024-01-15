@@ -1,3 +1,5 @@
+"use client"
+
 import type { Question } from "@/interfaces/question"
 import Image from "next/image"
 

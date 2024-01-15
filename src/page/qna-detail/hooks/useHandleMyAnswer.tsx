@@ -1,3 +1,5 @@
+"use client"
+
 import ConfirmModal from "@/components/shared/confirm-modal/ConfirmModal"
 import { errorMessage, notificationMessage } from "@/constants/message"
 import useModal from "@/hooks/useModal"
@@ -6,9 +8,10 @@ import type { ModalState } from "@/interfaces/modal"
 import { deleteAnswer, updateAnswer } from "@/service/answers"
 import { sleep } from "@/util/sleep"
 import { useQueryClient } from "@tanstack/react-query"
-import { useState } from "react"
 import { toast } from "react-toastify"
 import useQnADetail from "./useQnADetail"
+import { useRecoilState } from "recoil"
+import { AnswerMode } from "@/recoil/atoms/mode"
 
 interface EditValueProps {
   submitValue: string | undefined
@@ -20,8 +23,14 @@ interface DeleteValueProps {
   successModal: NonNullable<ModalState["content"]>
 }
 
-const useHandleMyAnswer = () => {
-  const [isAnswerEditMode, setIsAnswerEditMode] = useState(false)
+interface AnswerProps {
+  answerId: number
+}
+
+const useHandleMyAnswer = ({ answerId }: AnswerProps) => {
+  const [isAnswerEditMode, setIsAnswerEditMode] = useRecoilState(
+    AnswerMode(answerId),
+  )
   const queryClient = useQueryClient()
   const { openModal } = useModal()
   const { checkNullValue } = useQnADetail()
@@ -100,7 +109,10 @@ const useHandleMyAnswer = () => {
   return {
     isAnswerEditMode,
     setIsAnswerEditMode,
-    handleEditMode: () => setIsAnswerEditMode((prev: boolean) => !prev),
+    handleEditMode: () => {
+      setIsAnswerEditMode((prev: boolean) => !prev)
+      console.log("clicked", isAnswerEditMode)
+    },
     handleEditValue,
     handleDeleteValue,
   }

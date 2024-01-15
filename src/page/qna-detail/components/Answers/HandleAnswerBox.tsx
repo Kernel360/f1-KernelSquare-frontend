@@ -1,3 +1,5 @@
+"use client"
+
 import type { Answer } from "@/interfaces/answer"
 import useHandleMyAnswer from "../../hooks/useHandleMyAnswer"
 import SuccessModalContent from "../SuccessModalContent"
@@ -9,7 +11,9 @@ type HandleAnswerProps = {
 
 const HandleAnswerBox = ({ answer, createdby }: HandleAnswerProps) => {
   const isMyAnswer = createdby === answer.created_by
-  const { handleEditMode, handleDeleteValue } = useHandleMyAnswer()
+  const { handleEditMode, handleDeleteValue } = useHandleMyAnswer({
+    answerId: Number(answer.answer_id),
+  })
 
   if (isMyAnswer)
     return (

@@ -1,3 +1,5 @@
+"use client"
+
 import { VoteIcons } from "@/components/icons/Icons"
 import useAnswerVote from "../../hooks/useAnswerVote"
 import type { Answer } from "@/interfaces/answer"

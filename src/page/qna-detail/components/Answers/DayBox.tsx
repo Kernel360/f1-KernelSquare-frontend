@@ -1,3 +1,5 @@
+"use client"
+
 import type { Answer } from "@/interfaces/answer"
 import { getKorRelativeTime } from "@/util/getDate"
 import dayjs from "dayjs"
