@@ -72,7 +72,7 @@ export const ImageApiStatus = {
       HttpStatus: HttpStatusCode.Forbidden,
     },
     /**
-     * 잘못된 URL 요청
+     * (이미지 삭제)잘못된 URL 요청
      * - 커스텀 코드가 없어서 현재는 code를 -1로 설정함
      */
     NotFound: {

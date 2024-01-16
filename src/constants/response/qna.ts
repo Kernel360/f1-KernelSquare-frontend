@@ -85,11 +85,17 @@ export const QnaApiStatus = {
     },
     /**
      * (질문 생성) 잘못된 요청
-     * - 커스텀 코드가 없어서 현재는 code를 -1로 설정함
      */
     BadRequest: {
-      Code: -1,
+      Code: 9001,
       HttpStatus: HttpStatusCode.BadRequest,
+    },
+    /**
+     * (질문 생성) 존재하지 않는 회원
+     */
+    NotFound: {
+      Code: 1201,
+      HttpStatus: HttpStatusCode.NotFound,
     },
     /**
      * (질문 생성) 서버 에러
@@ -113,11 +119,25 @@ export const QnaApiStatus = {
     },
     /**
      * (질문 수정) 잘못된 요청
-     * - 커스텀 코드가 없어서 현재는 code를 -1로 설정함
      */
     BadRequest: {
-      Code: -1,
+      Code: 9001,
       HttpStatus: HttpStatusCode.BadRequest,
+    },
+    /**
+     * (질문 수정) 인증 실패
+     * - 커스텀 코드가 없어서 현재는 code를 -1로 설정함
+     */
+    Unauthorized: {
+      Code: -1,
+      HttpStatus: HttpStatusCode.Unauthorized,
+    },
+    /**
+     * (질문 수정) 존재하지 않는 질문
+     */
+    NotFound: {
+      Code: 2100,
+      HttpStatus: HttpStatusCode.NotFound,
     },
     /**
      * (질문 수정) 서버 에러
