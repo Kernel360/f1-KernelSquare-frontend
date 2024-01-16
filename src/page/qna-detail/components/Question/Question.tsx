@@ -5,6 +5,8 @@ import dynamic from "next/dynamic"
 import Tag from "@/components/shared/tag/Tag"
 import WriterBox from "./WriterBox"
 import HandleQuestionBox from "./HandleQuestionBox"
+import { twJoin } from "tailwind-merge"
+import useQnADetail from "../../hooks/useQnADetail"
 
 const MdViewer = dynamic(() => import("../Markdown/MdViewer"), {
   ssr: false,
@@ -14,6 +16,8 @@ const Question: React.FC<{ id: number }> = ({ id }) => {
   const { data } = questionQueries.useQuestionData({
     id: Number(id),
   })
+
+  const { user } = useQnADetail()
 
   const question = data?.data
 
@@ -28,6 +32,11 @@ const Question: React.FC<{ id: number }> = ({ id }) => {
     )
   })
 
+  const DetailClassName = twJoin([
+    "flex mb-5",
+    user?.nickname === question?.nickname ? "justify-between" : "justify-end",
+  ])
+
   if (question)
     return (
       <div className="max-w-full box-border border border-colorsGray rounded-lg p-10 my-5">
@@ -36,7 +45,7 @@ const Question: React.FC<{ id: number }> = ({ id }) => {
           <span className="text-[#444444]">{question.title}</span>
         </div>
         <div className="flex mb-5">{TagList}</div>
-        <div className="flex justify-between mb-5">
+        <div className={DetailClassName}>
           <HandleQuestionBox question={question!} />
           <div className="flex justify-end">
             <div>

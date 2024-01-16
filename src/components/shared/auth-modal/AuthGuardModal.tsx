@@ -31,20 +31,6 @@ function AuthGuardModal({ page }: AuthGuardModalProps) {
     }
   }, []) /* eslint-disable-line */
 
-  const sessionLogout = useCallback(async () => {
-    const { accessToken, refreshToken } = await getAuthCookie()
-
-    if (accessToken && refreshToken) {
-      logout({ access_token: accessToken, refresh_token: refreshToken })
-    }
-
-    clientSessionLogout()
-  }, [clientSessionLogout])
-
-  useLayoutEffect(() => {
-    sessionLogout()
-  }, []) /* eslint-disable-line */
-
   return <RenderAuthModal />
 }
 

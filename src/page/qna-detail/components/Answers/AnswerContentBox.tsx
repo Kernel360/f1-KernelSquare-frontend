@@ -7,6 +7,8 @@ import type { Editor } from "@toast-ui/react-editor"
 import type { Answer } from "@/interfaces/answer"
 import Button from "@/components/shared/button/Button"
 import dynamic from "next/dynamic"
+import { useQueryClient } from "@tanstack/react-query"
+import queryKey from "@/constants/queryKey"
 
 const MdViewer = dynamic(() => import("../Markdown/MdViewer"), {
   ssr: false,
@@ -26,6 +28,7 @@ const AnswerContentBox = ({ answer }: EditAnswerProps) => {
   const { handleEditValue, isAnswerEditMode } = useHandleMyAnswer({
     answerId: Number(answer.answer_id),
   })
+  const queryClient = useQueryClient()
 
   const handleSubmitEditedValue = () => {
     const submitValue = editorRef.current?.getInstance().getMarkdown()

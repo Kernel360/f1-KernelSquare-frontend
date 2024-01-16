@@ -1,7 +1,11 @@
 "use client"
 
 import ConfirmModal from "@/components/shared/confirm-modal/ConfirmModal"
-import { errorMessage, notificationMessage } from "@/constants/message"
+import {
+  errorMessage,
+  notificationMessage,
+  successMessage,
+} from "@/constants/message"
 import useModal from "@/hooks/useModal"
 import { Answer } from "@/interfaces/answer"
 import type { ModalState } from "@/interfaces/modal"
@@ -12,6 +16,7 @@ import { toast } from "react-toastify"
 import useQnADetail from "./useQnADetail"
 import { useRecoilState } from "recoil"
 import { AnswerMode } from "@/recoil/atoms/mode"
+import queryKey from "@/constants/queryKey"
 
 interface EditValueProps {
   submitValue: string | undefined
@@ -36,8 +41,6 @@ const useHandleMyAnswer = ({ answerId }: AnswerProps) => {
   const { checkNullValue } = useQnADetail()
 
   const handleEditValue = async ({ submitValue, answer }: EditValueProps) => {
-    console.log("md", submitValue)
-
     if (checkNullValue(submitValue)) {
       toast.error(errorMessage.noContent, {
         position: "top-center",
@@ -47,18 +50,19 @@ const useHandleMyAnswer = ({ answerId }: AnswerProps) => {
     }
 
     try {
-      await updateAnswer({
+      const res = await updateAnswer({
         answerId: answer.answer_id,
         content: submitValue as string,
       })
-
+      answer.content = JSON.parse(res.config.data).content
+      answer.answer_image_url = JSON.parse(res.config.data).answer_image_url
       queryClient.invalidateQueries({
-        queryKey: ["answer", answer.question_id],
+        queryKey: [queryKey.answer, answer.answer_id],
       })
+      setIsAnswerEditMode(false)
     } catch (err) {
-      console.error("error", err)
+      toast.error(errorMessage.updateAnswer, { position: "top-center" })
     }
-    setIsAnswerEditMode(false)
   }
 
   const handleDeleteValue = async ({
@@ -67,22 +71,22 @@ const useHandleMyAnswer = ({ answerId }: AnswerProps) => {
   }: DeleteValueProps) => {
     const onSuccess = async () => {
       try {
-        deleteAnswer({
+        const res = await deleteAnswer({
           answerId: answer.answer_id,
-        }).then((res) => {
-          console.log("success", res.data.msg)
-          openModal({
-            content: successModal,
-            onClose() {
-              queryClient.invalidateQueries({
-                queryKey: ["answer", answer.question_id],
-              })
-            },
-          })
-          sleep(5000).then(() => {
+        })
+
+        console.log("success", res.data.msg)
+        openModal({
+          content: successModal,
+          onClose() {
             queryClient.invalidateQueries({
               queryKey: ["answer", answer.question_id],
             })
+          },
+        })
+        sleep(5000).then(() => {
+          queryClient.invalidateQueries({
+            queryKey: ["answer", answer.question_id],
           })
         })
       } catch (err) {
@@ -109,10 +113,7 @@ const useHandleMyAnswer = ({ answerId }: AnswerProps) => {
   return {
     isAnswerEditMode,
     setIsAnswerEditMode,
-    handleEditMode: () => {
-      setIsAnswerEditMode((prev: boolean) => !prev)
-      console.log("clicked", isAnswerEditMode)
-    },
+    handleEditMode: () => setIsAnswerEditMode((prev: boolean) => !prev),
     handleEditValue,
     handleDeleteValue,
   }
