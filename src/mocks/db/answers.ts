@@ -16,7 +16,7 @@ const mockAnswers: Answer[] = [
     created_date: "2023-10-07 10:02:46",
     modified_date: "2023-10-07 10:02:47",
     vote_count: 53,
-    vote_yn: false,
+    vote_status: 0,
   },
   {
     answer_id: 2,
@@ -33,7 +33,7 @@ const mockAnswers: Answer[] = [
     created_date: "2023-10-07 10:02:46",
     modified_date: "2023-10-07 10:02:46",
     vote_count: 53,
-    vote_yn: false,
+    vote_status: 0,
   },
   {
     answer_id: 3,
@@ -50,7 +50,7 @@ const mockAnswers: Answer[] = [
     created_date: "2023-10-07 10:02:46",
     modified_date: "2023-10-07 10:02:46",
     vote_count: 53,
-    vote_yn: false,
+    vote_status: 0,
   },
   {
     answer_id: 4,
@@ -67,7 +67,7 @@ const mockAnswers: Answer[] = [
     created_date: "2023-10-07 10:02:46",
     modified_date: "2023-10-07 10:02:46",
     vote_count: 53,
-    vote_yn: false,
+    vote_status: 0,
   },
   {
     answer_id: 5,
@@ -84,7 +84,7 @@ const mockAnswers: Answer[] = [
     created_date: "2023-10-07 10:02:46",
     modified_date: "2023-10-07 10:02:46",
     vote_count: 53,
-    vote_yn: false,
+    vote_status: 0,
   },
   {
     answer_id: 6,
@@ -101,7 +101,7 @@ const mockAnswers: Answer[] = [
     created_date: "2023-10-07 10:02:46",
     modified_date: "2023-10-07 10:02:46",
     vote_count: 53,
-    vote_yn: false,
+    vote_status: 0,
   },
   {
     answer_id: 7,
@@ -118,7 +118,7 @@ const mockAnswers: Answer[] = [
     created_date: "2023-10-07 10:02:46",
     modified_date: "2023-10-07 10:02:47",
     vote_count: 53,
-    vote_yn: false,
+    vote_status: 0,
   },
   {
     answer_id: 8,
@@ -135,7 +135,7 @@ const mockAnswers: Answer[] = [
     created_date: "2023-10-07 10:02:46",
     modified_date: "2023-10-07 10:02:46",
     vote_count: 53,
-    vote_yn: false,
+    vote_status: 0,
   },
   {
     answer_id: 9,
@@ -152,7 +152,7 @@ const mockAnswers: Answer[] = [
     created_date: "2023-10-07 10:02:46",
     modified_date: "2023-10-07 10:02:46",
     vote_count: 53,
-    vote_yn: false,
+    vote_status: 0,
   },
   {
     answer_id: 10,
@@ -169,7 +169,7 @@ const mockAnswers: Answer[] = [
     created_date: "2023-10-07 10:02:46",
     modified_date: "2023-10-07 10:02:46",
     vote_count: 53,
-    vote_yn: false,
+    vote_status: 0,
   },
   {
     answer_id: 11,
@@ -186,7 +186,7 @@ const mockAnswers: Answer[] = [
     created_date: "2023-10-07 10:02:46",
     modified_date: "2023-10-07 10:02:46",
     vote_count: 53,
-    vote_yn: false,
+    vote_status: 0,
   },
   {
     answer_id: 12,
@@ -203,7 +203,7 @@ const mockAnswers: Answer[] = [
     created_date: "2023-10-07 10:02:46",
     modified_date: "2023-10-07 10:02:46",
     vote_count: 53,
-    vote_yn: false,
+    vote_status: 0,
   },
   {
     answer_id: 13,
@@ -220,7 +220,7 @@ const mockAnswers: Answer[] = [
     created_date: "2023-10-07 10:02:46",
     modified_date: "2023-10-07 10:02:46",
     vote_count: 53,
-    vote_yn: false,
+    vote_status: 0,
   },
   {
     answer_id: 14,
@@ -237,7 +237,7 @@ const mockAnswers: Answer[] = [
     created_date: "2023-10-07 10:02:46",
     modified_date: "2023-10-07 10:02:46",
     vote_count: 53,
-    vote_yn: false,
+    vote_status: 0,
   },
   {
     answer_id: 15,
@@ -254,7 +254,7 @@ const mockAnswers: Answer[] = [
     created_date: "2023-10-07 10:02:46",
     modified_date: "2023-10-07 10:02:46",
     vote_count: 53,
-    vote_yn: false,
+    vote_status: 0,
   },
   {
     answer_id: 16,
@@ -271,7 +271,7 @@ const mockAnswers: Answer[] = [
     created_date: "2023-10-07 10:02:46",
     modified_date: "2023-10-07 10:02:46",
     vote_count: 53,
-    vote_yn: false,
+    vote_status: 0,
   },
   {
     answer_id: 17,
@@ -288,7 +288,7 @@ const mockAnswers: Answer[] = [
     created_date: "2023-10-07 10:02:46",
     modified_date: "2023-10-07 10:02:46",
     vote_count: 53,
-    vote_yn: false,
+    vote_status: 0,
   },
   {
     answer_id: 18,
@@ -305,7 +305,7 @@ const mockAnswers: Answer[] = [
     created_date: "2023-10-07 10:02:46",
     modified_date: "2023-10-07 10:02:46",
     vote_count: 53,
-    vote_yn: false,
+    vote_status: 0,
   },
   {
     answer_id: 19,
@@ -322,7 +322,7 @@ const mockAnswers: Answer[] = [
     created_date: "2023-10-07 10:02:46",
     modified_date: "2023-10-07 10:02:46",
     vote_count: 53,
-    vote_yn: false,
+    vote_status: 0,
   },
   {
     answer_id: 20,
@@ -339,7 +339,7 @@ const mockAnswers: Answer[] = [
     created_date: "2023-10-07 10:02:46",
     modified_date: "2023-10-07 10:02:46",
     vote_count: 53,
-    vote_yn: false,
+    vote_status: 0,
   },
   {
     answer_id: 21,
@@ -356,7 +356,7 @@ const mockAnswers: Answer[] = [
     created_date: "2023-10-07 10:02:46",
     modified_date: "2023-10-07 10:02:46",
     vote_count: 53,
-    vote_yn: false,
+    vote_status: 0,
   },
 ]
 

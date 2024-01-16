@@ -4,6 +4,7 @@ import type { Question } from "@/interfaces/question"
 import useHandleQuestion from "../../hooks/useHandleQuestion"
 import SuccessModalContent from "../SuccessModalContent"
 import useQnADetail from "../../hooks/useQnADetail"
+import { successMessage } from "@/constants/message"
 
 interface HandleQuestionProps {
   question: Question
@@ -27,7 +28,11 @@ const HandleQuestionBox = ({ question }: HandleQuestionProps) => {
             onClick={() =>
               handleDeleteQuestion({
                 question,
-                successModal: <SuccessModalContent />,
+                successModal: (
+                  <SuccessModalContent
+                    message={successMessage.deleteQuestion}
+                  />
+                ),
               })
             }
             className="cursor-pointer hover:text-primary font-bold"

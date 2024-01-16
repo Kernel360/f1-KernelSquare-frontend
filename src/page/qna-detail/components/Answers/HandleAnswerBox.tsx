@@ -3,6 +3,7 @@
 import type { Answer } from "@/interfaces/answer"
 import useHandleMyAnswer from "../../hooks/useHandleMyAnswer"
 import SuccessModalContent from "../SuccessModalContent"
+import { successMessage } from "@/constants/message"
 
 type HandleAnswerProps = {
   answer: Answer
@@ -28,7 +29,9 @@ const HandleAnswerBox = ({ answer, createdby }: HandleAnswerProps) => {
           onClick={() =>
             handleDeleteValue({
               answer,
-              successModal: <SuccessModalContent />,
+              successModal: (
+                <SuccessModalContent message={successMessage.deleteAnswer} />
+              ),
             })
           }
           className="hover:text-[#3887BE] font-bold cursor-pointer "

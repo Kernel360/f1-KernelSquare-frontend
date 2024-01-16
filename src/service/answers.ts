@@ -23,6 +23,10 @@ import type {
   DeleteAnswerResponse,
 } from "@/interfaces/dto/answer/delete-answer.dto"
 import type { DefaultBodyType } from "msw"
+import {
+  DeleteVoteRequest,
+  DeleteVoteResponse,
+} from "@/interfaces/dto/answer/delete-vote.dto"
 
 export async function getAnswer({ questionId }: GetAnswerRequest) {
   const res = await apiInstance
@@ -118,6 +122,24 @@ export async function voteAnswer({
       member_id,
       status,
     })
+    .catch((err) => {
+      if (err instanceof AxiosError) {
+        const { response } = err as AxiosError<APIResponse>
+
+        console.log({ response: response?.data })
+      }
+      console.log("err", err)
+      throw err
+    })
+
+  return res
+}
+
+export async function deleteVote({ answerId }: DeleteVoteRequest) {
+  const res = await apiInstance
+    .delete<any, AxiosResponse<DeleteVoteResponse>, DeleteVoteRequest>(
+      RouteMap.answer.voteAnswer(answerId),
+    )
     .catch((err) => {
       if (err instanceof AxiosError) {
         const { response } = err as AxiosError<APIResponse>

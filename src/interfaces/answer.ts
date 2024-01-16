@@ -27,7 +27,7 @@ import { User } from "./user"
  *
  * **vote_count** 답변 추천수(number)
  *
- * **vote_yn** 답변 투표 여부(boolean)
+ * **vote_status** 답변 투표 상태 (1: 추천, 0: 투표 x, -1: 비추천)
  */
 export interface Answer extends Pick<User, "image_url"> {
   answer_id: number
@@ -41,5 +41,5 @@ export interface Answer extends Pick<User, "image_url"> {
   created_date: string
   modified_date: string
   vote_count: number
-  vote_yn: boolean
+  vote_status: -1 | 0 | 1
 }
