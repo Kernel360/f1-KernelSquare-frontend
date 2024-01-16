@@ -5,6 +5,7 @@ import {
   ENCRYPTED_PAYLOAD_KEY,
   REFRESH_TOKEN_KEY,
 } from "@/constants/token"
+import dayjs from "dayjs"
 import { cookies } from "next/headers"
 
 // next/headers cookies 서버 액션 함수
@@ -53,28 +54,29 @@ export async function setAuthCookie(
   accessToken: string,
   refreshToken: string,
   encryptedPayload: string,
+  expires: Date,
 ) {
-  cookies().set(ACCESS_TOKEN_KEY, accessToken, {
-    path: "/",
-    maxAge: 60 * 60,
-    httpOnly: true,
-  })
-  cookies().set(ENCRYPTED_PAYLOAD_KEY, encryptedPayload, {
-    path: "/",
-    maxAge: 60 * 60,
-  })
-
-  cookies().set(REFRESH_TOKEN_KEY, refreshToken, {
-    maxAge: 60 * 60 * 24 * 14,
-    httpOnly: true,
-  })
+  await Promise.all([
+    cookies().set(ACCESS_TOKEN_KEY, accessToken, {
+      path: "/",
+      expires,
+      httpOnly: true,
+    }),
+    cookies().set(ENCRYPTED_PAYLOAD_KEY, encryptedPayload, {
+      path: "/",
+      expires,
+    }),
+    cookies().set(REFRESH_TOKEN_KEY, refreshToken, {
+      maxAge: 60 * 60 * 24 * 14,
+      httpOnly: true,
+    }),
+  ])
 }
 
 export async function deleteAuthCookie() {
   cookies().delete({
     name: ACCESS_TOKEN_KEY,
     path: "/",
-    maxAge: 60 * 60,
     httpOnly: true,
   })
 
@@ -86,4 +88,33 @@ export async function deleteAuthCookie() {
   })
 
   cookies().delete(ENCRYPTED_PAYLOAD_KEY)
+}
+
+export async function deleteUserPayloadCookie() {
+  cookies().delete({
+    name: ACCESS_TOKEN_KEY,
+    path: "/",
+    httpOnly: true,
+  })
+
+  cookies().delete(ENCRYPTED_PAYLOAD_KEY)
+}
+
+export async function updateUserPayloadCookie(
+  encryptedPayload: string,
+  expires: Date,
+) {
+  const { accessToken } = await getAuthCookie()
+
+  if (accessToken) {
+    cookies().set(ACCESS_TOKEN_KEY, accessToken, {
+      path: "/",
+      expires,
+    })
+
+    cookies().set(ENCRYPTED_PAYLOAD_KEY, encryptedPayload, {
+      path: "/",
+      expires,
+    })
+  }
 }

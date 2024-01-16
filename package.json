@@ -19,7 +19,6 @@
     "@toast-ui/react-editor": "^3.2.3",
     "axios": "^1.6.2",
     "cookie": "^0.6.0",
-    "cookies-next": "^4.1.0",
     "dayjs": "^1.11.10",
     "jsonwebtoken": "^9.0.2",
     "lottie-react": "^2.4.0",

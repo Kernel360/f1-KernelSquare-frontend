@@ -14,7 +14,10 @@ import { MAXIMUM_SELECT_TAG_LENGTH, techTagList } from "@/constants/editor"
 import SelectableTagList from "@/components/shared/tag/SelectableTagList"
 import { useRouter } from "next/navigation"
 import { useQueryClient } from "@tanstack/react-query"
-import { createMockQuestion } from "@/mocks/handler/question"
+import {
+  createMockQuestion,
+  updateMockQuestion,
+} from "@/mocks/handler/question"
 import { useRecoilValue } from "recoil"
 import { tagListState } from "@/recoil/atoms/tag"
 import {
@@ -22,11 +25,21 @@ import {
   questionEditorState,
 } from "@/recoil/atoms/questionEditor"
 import {
-  DeleteImageLinkFormMarkdownPayload,
+  DeleteImageLinkFromMarkdownPayload,
+  EditMode,
   deleteImageLinkFromMarkdownEventName,
 } from "./AskQuestionPageControl"
 import { useClientSession } from "@/hooks/useClientSession"
 import { revalidatePage } from "@/util/actions/revalidatePage"
+import { replaceAllMarkdownImageLink } from "@/util/editor"
+import { useDeleteImage } from "@/hooks/image/useDeleteImage"
+
+export interface QuestionEditorInitialValues {
+  title: string
+  content: string
+  skills?: Array<TechTag> | null
+  uploadImages?: Array<string> | null
+}
 
 export interface AskQuestionFormData {
   title: string
@@ -42,25 +55,48 @@ export interface AskQuestionDataExceptFormdata {
 export type SubmitAskQuestionData = AskQuestionFormData &
   AskQuestionDataExceptFormdata
 
-function AskQuestionForm() {
+export type SubmitUpdateQuestionData = Omit<
+  SubmitAskQuestionData,
+  "member_id"
+> & { question_id: number }
+
+interface AskQustionFormProps {
+  initialValues?: QuestionEditorInitialValues
+  question_id?: number
+}
+
+function AskQuestionForm({ initialValues, question_id }: AskQustionFormProps) {
+  const editMode: EditMode = initialValues ? "update" : "create"
+
   const { user } = useClientSession()
 
   const { register, setValue, setFocus, handleSubmit } =
-    useForm<AskQuestionFormData>()
+    useForm<AskQuestionFormData>({
+      defaultValues: {
+        ...(initialValues?.title && { title: initialValues.title }),
+        ...(initialValues?.content && { content: initialValues.content }),
+      },
+    })
   const editorRef = useRef<Editor>(null)
 
   const editorLoaded = useRecoilValue(questionEditorLoadedAtom)
+  // const cancelByUser = useRecoilValue(questionEditCancelByUserAtom)
   const {
+    getQuestionEditCancelByUser,
+    setQustionEditCancelByUser,
     getQuestionEditorState,
     updateQuestionEditorState,
     resetQuestionEditorState,
     questionSubmit,
+    updateQuestionSubmit,
   } = useRecoilValue(questionEditorState)
 
   const { clearTagList } = useRecoilValue(tagListState)
 
   const queryClient = useQueryClient()
   const { replace } = useRouter()
+
+  const { deleteImage } = useDeleteImage()
 
   const onSubmit = async (data: AskQuestionFormData) => {
     const member_id = user!.member_id
@@ -70,35 +106,88 @@ function AskQuestionForm() {
       content: data.content,
     })
 
-    const { success, createdQuestionId } = await questionSubmit(member_id)
+    // create
+    if (editMode === "create") {
+      const { success, createdQuestionId } = await questionSubmit(member_id)
+
+      if (success) {
+        const questionStateSnapshot = await getQuestionEditorState()
+
+        toast.success("질문 생성에 성공했습니다", { position: "bottom-center" })
+
+        process.env.NEXT_PUBLIC_API_MOCKING === "enabled" &&
+          createMockQuestion({
+            member_id,
+            title: questionStateSnapshot.title,
+            content: questionStateSnapshot.content,
+            image_url: questionStateSnapshot.fileUploadImageLinks[0] ?? "",
+            skills: questionStateSnapshot.skills,
+          })
+
+        queryClient.invalidateQueries({
+          queryKey: ["question", "list"],
+        })
+
+        setTimeout(() => {
+          replace(`/question/${createdQuestionId!}`)
+          clearTagList()
+        }, 0)
+
+        return
+      }
+
+      toast.error("질문 생성에 실패했습니다", { position: "bottom-center" })
+
+      return
+    }
+
+    // update
+    const { success } = await updateQuestionSubmit(question_id!)
 
     if (success) {
       const questionStateSnapshot = await getQuestionEditorState()
 
-      toast.success("질문 생성에 성공했습니다", { position: "bottom-center" })
+      const uploadFileResult = questionStateSnapshot.fileUploadImageLinks
 
-      process.env.NEXT_PUBLIC_API_MOCKING === "enabled" &&
-        createMockQuestion({
-          member_id,
+      toast.success("질문 수정에 성공했습니다", { position: "bottom-center" })
+
+      // 질문 수정 성공시 초기 업로드 이미지가 사용되지 않으면
+      // 이미지 삭제 api 요청
+      if (initialValues?.uploadImages?.length) {
+        const removeImages = initialValues.uploadImages.filter(
+          (uploadedImageUrl) => !uploadFileResult.includes(uploadedImageUrl),
+        )
+
+        if (removeImages?.length) {
+          await Promise.allSettled([
+            ...removeImages.map((imageUrl) => deleteImage(imageUrl)),
+          ])
+        }
+      }
+
+      if (process.env.NEXT_PUBLIC_API_MOCKING === "enabled") {
+        updateMockQuestion({
+          questionId: question_id!,
           title: questionStateSnapshot.title,
           content: questionStateSnapshot.content,
           image_url: questionStateSnapshot.fileUploadImageLinks[0] ?? "",
           skills: questionStateSnapshot.skills,
         })
+      }
 
       queryClient.invalidateQueries({
         queryKey: ["question", "list"],
       })
 
       setTimeout(() => {
-        replace(`/question/${createdQuestionId!}`)
+        replace(`/question/${question_id!}`)
         clearTagList()
       }, 0)
 
       return
     }
 
-    toast.error("질문 생성에 실패했습니다", { position: "bottom-center" })
+    toast.error("질문 수정에 실패했습니다", { position: "bottom-center" })
   }
 
   const onInvalid = async (errors: FieldErrors<AskQuestionFormData>) => {
@@ -129,42 +218,65 @@ function AskQuestionForm() {
   }
 
   useEffect(() => {
-    const deleteImageLinkFormMarkdown = async (e: CustomEvent) => {
+    const deleteImageLinkFromMarkdown = async (e: CustomEvent) => {
       const markdown = editorRef.current?.getInstance().getMarkdown() ?? ""
 
-      const { targetLink } = e.detail as DeleteImageLinkFormMarkdownPayload
+      const { targetLink } = e.detail as DeleteImageLinkFromMarkdownPayload
 
-      const replacedMarkdown = markdown.replaceAll(
-        new RegExp(`!\\[.*?\\]\\(${targetLink}\\)`, "gm"),
-        "",
-      )
+      const replacedMarkdown = replaceAllMarkdownImageLink(markdown, {
+        targetLink,
+        replaceValue: "",
+      })
 
-      editorRef.current?.getInstance().setMarkdown(replacedMarkdown)
+      if (replacedMarkdown !== null) {
+        editorRef.current?.getInstance().setMarkdown(replacedMarkdown)
+      }
     }
-
-    // const handleBeforeUnload = async (e: BeforeUnloadEvent) => {
-    //   e.preventDefault()
-
-    //   return false || (await clearQuestionEditorState())
-    // }
-
-    // window.addEventListener("beforeunload", handleBeforeUnload)
 
     window.addEventListener(
       deleteImageLinkFromMarkdownEventName as any,
-      deleteImageLinkFormMarkdown,
+      deleteImageLinkFromMarkdown,
     )
 
     return () => {
-      resetQuestionEditorState()
+      /*
+        - 중복되어 초기화 되지 않도록 하기 위해 cancelByUser atom으로 관리
 
-      window.removeEventListener(
-        deleteImageLinkFromMarkdownEventName as any,
-        deleteImageLinkFormMarkdown,
-      )
+        - 뒤로 가기, 새로고침 (cancelByUser === false)
+          - 질문 작성(create)
+            - 자동 저장등의 기능이 있는 것이 아니기 때문에,
+              이미지와 콘텐츠를 보존할 필요가 없음
+            - 업로드 파일에는 있으나 실제 마크다운 콘텐츠 구문에서
+              사용하지 않는 이미지 삭제 api 요청
+              => 이후, 업로드 파일에 있는 이미지 삭제 api 요청
+              => 클라이언트 상태(recoil) 초기화
+          - 질문 수정(update)
+            - 자동 저장등의 기능이 없더라도, 
+              취소하거나 언마운트(새로고침, 뒤로가기)때에는
+              이전의 이미지와 콘텐츠가 보존되어야 한다
+            - 수정 버튼을 통해 api가 성공한 경우의 
+              업로드 이미지 관리는 submit 함수에서 하고 있기 때문에
+              클라이언트 상태(recoil)만 초기화
+      */
+      getQuestionEditCancelByUser().then((cancelByUser) => {
+        if (!cancelByUser) {
+          resetQuestionEditorState(editMode).then(() => {
+            window.removeEventListener(
+              deleteImageLinkFromMarkdownEventName as any,
+              deleteImageLinkFromMarkdown,
+            )
 
-      revalidatePage("/question")
-      // window.removeEventListener("beforeunload", handleBeforeUnload)
+            revalidatePage("/question")
+            if (question_id) {
+              revalidatePage("/question/u/[id]", "page")
+            }
+          })
+
+          return
+        }
+
+        setQustionEditCancelByUser(false)
+      })
     }
   }, []) /* eslint-disable-line */
 
@@ -209,6 +321,9 @@ function AskQuestionForm() {
           <SelectableTagList
             searchable
             tagList={techTagList}
+            {...(initialValues?.skills && {
+              initialSelectedTagList: [...initialValues.skills],
+            })}
             maximumLength={MAXIMUM_SELECT_TAG_LENGTH}
           />
         </AskQuestionSection>
@@ -229,6 +344,11 @@ function AskQuestionForm() {
           </AskQuestionSection.Label>
           <ContentEditor
             ref={editorRef}
+            {...(initialValues?.content && {
+              initialValue: initialValues.content,
+            })}
+            action={question_id ? "update" : "create"}
+            initialUploadImages={initialValues?.uploadImages}
             autofocus={false}
             onChange={() => {
               const markdown =

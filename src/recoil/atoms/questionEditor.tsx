@@ -1,11 +1,13 @@
-import { DeleteImageResponse } from "@/interfaces/dto/upload/delete-image.dto"
 import { TechTag } from "@/interfaces/tech-tag"
-import { deleteImage } from "@/service/upload"
-import { onSubmitQuestion } from "@/util/actions/form"
-import { findImageLinkUrlFromMarkdown, getImageIdFromLink } from "@/util/editor"
+import { onSubmitQuestion, onSubmitUpdateQuestion } from "@/util/actions/form"
+import { findImageLinkUrlFromMarkdown } from "@/util/editor"
 import { AxiosResponse } from "axios"
-import { atom, selector } from "recoil"
+import { atom, atomFamily, selector } from "recoil"
 import { tagListState } from "./tag"
+import { deleteImages } from "@/service/images"
+import { DeleteImagesResponse } from "@/interfaces/dto/upload/delete-images.dto"
+import { EditMode } from "@/page/askQuestion/components/AskQuestionPageControl"
+import { Editor } from "@toast-ui/react-editor"
 
 interface QuestionEditorState {
   title: string
@@ -13,6 +15,11 @@ interface QuestionEditorState {
   fileUploadImageLinks: Array<string>
   skills: Array<TechTag>
 }
+
+export const editorRefAtomFamily = atomFamily<Editor | null, any>({
+  key: "editor-ref-atom-family",
+  default: null,
+})
 
 export const fileUploadImageLinksSelector = selector({
   key: "question-editor-file-upload-image-link-selector",
@@ -43,6 +50,24 @@ export const fileUploadImageLinksSelector = selector({
         },
     )
 
+    const removeFileUploadImageLinks = getCallback(
+      ({ set, snapshot }) =>
+        async (removeTargetLink: string) => {
+          const questionEditorSnapshot = await snapshot.getPromise(
+            questionEditorAtom,
+          )
+
+          set(questionEditorAtom, {
+            ...questionEditorSnapshot,
+            fileUploadImageLinks: [
+              ...questionEditorSnapshot.fileUploadImageLinks.filter(
+                (imageLink) => imageLink !== removeTargetLink,
+              ),
+            ],
+          })
+        },
+    )
+
     const clearFileUploadImageLinks = getCallback(
       ({ set, snapshot }) =>
         async () => {
@@ -51,13 +76,9 @@ export const fileUploadImageLinksSelector = selector({
           ).getFileUploadImageLinks()
 
           if (fileUploadImageSnapshot.length) {
-            const removeTargetIdList = fileUploadImageSnapshot.map(
-              (imageLink) => getImageIdFromLink(imageLink),
-            )
-
             await Promise.allSettled([
-              ...removeTargetIdList.map((removeTargetId) =>
-                deleteImage({ id: removeTargetId! }),
+              ...fileUploadImageSnapshot.map((targetUploadImageLink) =>
+                deleteImages({ imageUrl: targetUploadImageLink }),
               ),
             ])
           }
@@ -96,51 +117,44 @@ export const fileUploadImageLinksSelector = selector({
 
           const fileUploadImageLinksSnapshot = await getFileUploadImageLinks()
 
+          // 마크다운 구문에 포함된 모든 이미지 링크
           const allUploadImageLinks = findImageLinkUrlFromMarkdown(
             questionEditorStateSnapshot.content,
           )
 
-          const removeTargetIdList = fileUploadImageLinksSnapshot
-            .filter(
+          const removeTargetUploadImageLinkList =
+            fileUploadImageLinksSnapshot.filter(
               (fileUploadImageUrl) =>
                 !allUploadImageLinks?.includes(fileUploadImageUrl),
             )
-            .map((imageLink) => getImageIdFromLink(imageLink))
 
-          if (removeTargetIdList.length) {
+          if (removeTargetUploadImageLinkList.length) {
             const promiseResult = await Promise.allSettled([
-              ...removeTargetIdList.map((removeTargetId) =>
-                deleteImage({ id: removeTargetId! }),
+              ...removeTargetUploadImageLinkList.map((targetUploadImage) =>
+                deleteImages({ imageUrl: targetUploadImage }),
               ),
             ])
-
-            const idRegExp = /(?<=\/image\/)(.*)/g
 
             const successRemoveImageLinks = (
               promiseResult.filter(
                 (result) => result.status === "fulfilled",
               ) as Array<
-                PromiseFulfilledResult<AxiosResponse<DeleteImageResponse, any>>
+                PromiseFulfilledResult<AxiosResponse<DeleteImagesResponse, any>>
               >
             ).map((result) => {
-              const id = result.value.config.url!.match(idRegExp)![0]
-
-              return fileUploadImageLinksSnapshot.find(
-                (imageLink) => getImageIdFromLink(imageLink) === id,
+              const url = new URL(
+                result.value.config.url!,
+                process.env.NEXT_PUBLIC_SERVER,
               )
-            })
+              const imageLink = url.searchParams.get("imageUrl")!
 
-            console.log({ successRemoveImageLinks })
+              return imageLink
+            })
 
             const resultFileUploadImageLink =
               fileUploadImageLinksSnapshot.filter(
                 (imageLink) => !successRemoveImageLinks?.includes(imageLink),
               )
-
-            console.log({
-              fileUploadImageLinksSnapshot,
-              resultFileUploadImageLink,
-            })
 
             const questionEditorSnapshot = await snapshot.getPromise(
               questionEditorAtom,
@@ -158,6 +172,7 @@ export const fileUploadImageLinksSelector = selector({
       fileUploadImageLinks,
       getFileUploadImageLinks,
       addFileUploadImageLinks,
+      removeFileUploadImageLinks,
       removeUnusedFileUploadImage,
       clearFileUploadImageLinks,
       resetFileUploadImageLinks,
@@ -180,6 +195,11 @@ export const questionEditorLoadedAtom = atom<boolean>({
   default: false,
 })
 
+export const questionEditCancelByUserAtom = atom<boolean>({
+  key: "question-edit-cancel-by-user-atom",
+  default: false,
+})
+
 export const questionEditorState = selector({
   key: "question-editor-state-selector",
   get: ({ get, getCallback }) => {
@@ -189,6 +209,22 @@ export const questionEditorState = selector({
           await snapshot.getPromise(questionEditorLoadedAtom)
 
           set(questionEditorLoadedAtom, loaded)
+        },
+    )
+
+    const getQuestionEditCancelByUser = getCallback(
+      ({ snapshot }) =>
+        async () => {
+          return await snapshot.getPromise(questionEditCancelByUserAtom)
+        },
+    )
+
+    const setQustionEditCancelByUser = getCallback(
+      ({ set, snapshot }) =>
+        async (cancelByUser: boolean) => {
+          await snapshot.getPromise(questionEditCancelByUserAtom)
+
+          set(questionEditCancelByUserAtom, cancelByUser)
         },
     )
 
@@ -214,13 +250,31 @@ export const questionEditorState = selector({
         },
     )
 
-    const resetQuestionEditorState = getCallback(({ reset }) => async () => {
-      await get(fileUploadImageLinksSelector).resetFileUploadImageLinks()
+    const resetQuestionEditorState = getCallback(
+      ({ reset }) =>
+        async (editMode?: EditMode) => {
+          if (editMode === "create") {
+            const { removeUnusedFileUploadImage, clearFileUploadImageLinks } =
+              get(fileUploadImageLinksSelector)
 
-      reset(questionEditorAtom)
+            // 마크다운 콘텐츠에서 사용하지 않는 이미지 먼저 제거(삭제 api 요청)하여 반영
+            await removeUnusedFileUploadImage()
 
-      await get(tagListState).clearSelectedTagList()
-    })
+            // 남아있는 업로드 이미지 제거(삭제 api 요청)
+            await clearFileUploadImageLinks()
+
+            // 상태 초기화
+            reset(questionEditorAtom)
+            await get(tagListState).clearSelectedTagList()
+
+            return
+          }
+
+          reset(questionEditorAtom)
+
+          await get(tagListState).clearSelectedTagList()
+        },
+    )
 
     const questionSubmit = getCallback(
       ({ snapshot }) =>
@@ -247,17 +301,45 @@ export const questionEditorState = selector({
         },
     )
 
-    const cancelQuestionSubmit = getCallback(() => async () => {
-      await resetQuestionEditorState()
-    })
+    const updateQuestionSubmit = getCallback(
+      ({ snapshot }) =>
+        async (question_id: number) => {
+          const questionStateSnapshot = await snapshot.getPromise(
+            questionEditorAtom,
+          )
+
+          const fileUploadImageLinkSnapshot = await get(
+            fileUploadImageLinksSelector,
+          ).getFileUploadImageLinks()
+
+          const res = await onSubmitUpdateQuestion({
+            title: questionStateSnapshot.title,
+            content: questionStateSnapshot.content,
+            image_url: fileUploadImageLinkSnapshot[0] ?? "",
+            skills: questionStateSnapshot.skills,
+            question_id,
+          })
+
+          return res
+        },
+    )
+
+    const cancelQuestionSubmit = getCallback(
+      () => async (editMode?: EditMode) => {
+        await resetQuestionEditorState(editMode)
+      },
+    )
 
     return {
       getQuestionEditorLoaded,
       setQuestionEditorLoaded,
+      getQuestionEditCancelByUser,
+      setQustionEditCancelByUser,
       getQuestionEditorState,
       updateQuestionEditorState,
       resetQuestionEditorState,
       questionSubmit,
+      updateQuestionSubmit,
       cancelQuestionSubmit,
     }
   },

@@ -28,12 +28,16 @@ function UserProfileMenu({ userPayload }: UserProfileMenuProps) {
   return (
     <>
       <Tab
-        className="sticky top-[calc(var(--height-header)+66px)] sm:top-[calc(var(--height-header))] pt-4 cursor-pointer -mx-[1px]"
+        classNames={{
+          wrapper:
+            "h-[52px] sticky top-[calc(var(--height-header)+66px)] sm:top-[calc(var(--height-header))] -mx-[1px]",
+          tab: "flex-1 w-auto",
+        }}
         onTab={(label) => setMenu(label as MenuKey)}
         tabs={[
           {
             label: "Introduction",
-            content: <Button>README.md</Button>,
+            content: <Button className="w-full h-full">README.md</Button>,
             active: menu === "Introduction",
           },
         ]}
@@ -55,7 +59,7 @@ UserProfileMenu.MenuContentWrapper = function MenuContentWrapper({
   children: React.ReactNode
 }) {
   return (
-    <div className="min-h-[70dvh] sm:min-h-[36.625rem]">
+    <div className="min-h-[calc(581px+(100dvh-806px))] sm:min-h-[calc(584px+(100dvh-732px))]">
       <div className="bg-white rounded-lg border border-colorsGray h-max p-4">
         {children}
       </div>
@@ -76,7 +80,7 @@ function Introduction({ introduction }: Pick<UserPayload, "introduction">) {
 
   return (
     <UserProfileMenu.MenuContentWrapper>
-      <span>{introduction}</span>
+      <p className="whitespace-pre-wrap">{introduction}</p>
     </UserProfileMenu.MenuContentWrapper>
   )
 }

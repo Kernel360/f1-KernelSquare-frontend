@@ -1,4 +1,4 @@
-import AuthGuardModal from "@/components/shared/auth-modal/AuthGuardModal"
+import AuthGuardModal from "@/components/shared/auth-modal"
 import { layoutMeta } from "@/constants/layoutMeta"
 import Signup from "@/page/signup/Signup"
 import { isLogined } from "@/util/auth"
