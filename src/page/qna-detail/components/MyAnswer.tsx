@@ -12,11 +12,17 @@ import useModal from "@/hooks/useModal"
 import LoginForm from "@/components/form/LoginForm"
 import { useClientSession } from "@/hooks/useClientSession"
 import { toast } from "react-toastify"
-import { errorMessage, successMessage } from "@/constants/message"
+import {
+  buttonMessage,
+  errorMessage,
+  notificationMessage,
+  successMessage,
+} from "@/constants/message"
 import useQnADetail from "../hooks/useQnADetail"
 import ProgressModal from "@/page/signup/components/ProgressModal"
 import CheckSuccess from "@/components/shared/animation/CheckSuccess"
 import { sleep } from "@/util/sleep"
+import queryKey from "@/constants/queryKey"
 
 const MdEditor = dynamic(() => import("./Markdown/MdEditor"), {
   ssr: false,
@@ -49,21 +55,20 @@ const MyAnswer: React.FC<{
 
     try {
       if (user?.member_id) {
-        createAnswer({
+        const res = await createAnswer({
           questionId: id,
           member_id: user.member_id,
           content: submitValue || "",
-        }).then((res) => {
-          console.log("res", res.data.msg, res.config.data)
-          openModal({
-            content: <SuccessModalContent />,
-            onClose() {
-              queryClient.invalidateQueries({ queryKey: ["answer", id] })
-            },
-          })
-          sleep(5000).then(() => {
-            queryClient.invalidateQueries({ queryKey: ["answer", id] })
-          })
+        })
+        console.log("res", res.data.msg, res.config.data)
+        openModal({
+          content: <SuccessModalContent />,
+          onClose() {
+            queryClient.invalidateQueries({ queryKey: [queryKey.answer, id] })
+          },
+        })
+        sleep(5000).then(() => {
+          queryClient.invalidateQueries({ queryKey: [queryKey.answer, id] })
         })
       }
     } catch (err) {
@@ -83,7 +88,7 @@ const MyAnswer: React.FC<{
             className="w-[200px] h-[50px] text-lg"
             type="submit"
           >
-            Post Your Answer
+            {buttonMessage.postMyAnswer}
           </Button>
         </div>
       </form>
@@ -93,13 +98,13 @@ const MyAnswer: React.FC<{
   const WithoutToken = () => (
     <div className="text-center py-5">
       <CreateAnswerAnime style={{ width: "20%", margin: "0 auto" }} />
-      <div className="text-xl">로그인하고 질문에 대한 답변을 남겨보세요!</div>
+      <div className="text-xl">{notificationMessage.answerWithoutToken}</div>
       <Button
         buttonTheme="primary"
         className="mt-5 px-5 py-2"
         onClick={() => openModal({ content: <LoginForm /> })}
       >
-        로그인 하러 가기
+        {buttonMessage.goToLogIn}
       </Button>
     </div>
   )

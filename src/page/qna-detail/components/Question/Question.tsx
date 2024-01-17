@@ -37,28 +37,29 @@ const Question: React.FC<{ id: number }> = ({ id }) => {
     user?.nickname === question?.nickname ? "justify-between" : "justify-end",
   ])
 
-  if (question)
-    return (
-      <div className="flex flex-col border-box border border-colorsGray rounded-lg p-10 my-5 max-w-full min-w-[200px]">
-        <h3 className="font-bold text-2xl mb-5 max-w-full md:font-[16px] sm:font-[12px] t text-[#444444]">
-          Q. {question.title}
-        </h3>
-        <ul className="flex gap-1 flex-wrap my-1">{TagList}</ul>
-        <div className={DetailClassName}>
-          <HandleQuestionBox question={question!} />
-          <div className="w-full flex justify-end flex-wrap">
-            <div>
-              <div className="mb-1">
-                생성일: {getDate({ date: question.created_date })}
-              </div>
-              <div>마감일: {getDeadline({ date: question.created_date })}</div>
+  if (!question) return null
+
+  return (
+    <div className="flex flex-col border-box border border-colorsGray rounded-lg p-10 my-5 max-w-full min-w-[200px]">
+      <h3 className="font-bold text-2xl mb-5 max-w-full md:font-[16px] sm:font-[12px] t text-[#444444]">
+        Q. {question.title}
+      </h3>
+      <ul className="flex gap-1 flex-wrap my-1">{TagList}</ul>
+      <div className={DetailClassName}>
+        <HandleQuestionBox question={question!} />
+        <div className="w-full flex justify-end flex-wrap">
+          <div>
+            <div className="mb-1">
+              생성일: {getDate({ date: question.created_date })}
             </div>
-            <WriterBox question={question} />
+            <div>마감일: {getDeadline({ date: question.created_date })}</div>
           </div>
+          <WriterBox question={question} />
         </div>
-        <MdViewer content={question.content} />
       </div>
-    )
+      <MdViewer content={question.content} />
+    </div>
+  )
 }
 
 export default Question

@@ -1,5 +1,3 @@
-import { User } from "./user"
-
 /**
  * Answer (답변)
  *
@@ -41,5 +39,11 @@ export interface Answer {
   created_date: string
   modified_date: string
   vote_count: number
-  vote_status: -1 | 0 | 1
+  vote_status: VoteStatus
+}
+
+export enum VoteStatus {
+  LIKED = 1,
+  NONE = 0,
+  DISLIKED = -1,
 }

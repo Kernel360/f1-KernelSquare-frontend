@@ -5,7 +5,7 @@ import { answerQueries } from "@/react-query/answers"
 import ContentLoading from "@/components/shared/animation/ContentLoading"
 import LightBulb from "@/components/shared/animation/LightBulb"
 import { notificationMessage } from "@/constants/message"
-import { useState } from "react"
+import { PropsWithChildren, useState } from "react"
 import { Answer } from "@/interfaces/answer"
 import { useClientSession } from "@/hooks/useClientSession"
 import useQnADetail from "../../hooks/useQnADetail"
@@ -44,17 +44,15 @@ const AnswerList: React.FC<AnswerProps> = ({
           </div>
         </div>
         <div className="max-w-full box-border border border-colorsGray rounded-lg p-10 my-5">
-          {data?.data?.length ? (
+          {!data?.data?.length && <NoAnswer isMyAnswer={isMyAnswer} />}
+          {data?.data?.length &&
             filterMyAnswer(data.data).map((answer) => (
               <OneAnswer
                 key={answer.answer_id}
                 answer={answer}
                 createdby={createdby}
               />
-            ))
-          ) : (
-            <NoAnswer isMyAnswer={isMyAnswer} />
-          )}
+            ))}
         </div>
       </div>
     )
@@ -90,3 +88,9 @@ const NoAnswer: React.FC<{ isMyAnswer: boolean }> = ({ isMyAnswer }) => {
     </div>
   )
 }
+
+const Wrapper = ({ children }: PropsWithChildren) => (
+  <div className="max-w-full box-border border border-colorsGray rounded-lg p-10 my-5">
+    {children}
+  </div>
+)

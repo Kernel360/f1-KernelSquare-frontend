@@ -9,7 +9,7 @@ const useQuestionData = ({ id }: GetQuestionRequest) =>
     queryKey: [queryKey.question, id],
     queryFn: () => getQuestion({ id }),
     placeholderData: keepPreviousData,
-    staleTime: 1000 * 5,
+    staleTime: 1000 * 60 * 5,
     select(payload) {
       return payload.data
     },

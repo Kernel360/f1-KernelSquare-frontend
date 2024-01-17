@@ -2,13 +2,11 @@
 
 import { useForm } from "react-hook-form"
 import useHandleMyAnswer from "../../hooks/useHandleMyAnswer"
-import { useRef } from "react"
+import { PropsWithChildren, useRef } from "react"
 import type { Editor } from "@toast-ui/react-editor"
 import type { Answer } from "@/interfaces/answer"
 import Button from "@/components/shared/button/Button"
 import dynamic from "next/dynamic"
-import { useQueryClient } from "@tanstack/react-query"
-import queryKey from "@/constants/queryKey"
 
 const MdViewer = dynamic(() => import("../Markdown/MdViewer"), {
   ssr: false,
@@ -28,7 +26,6 @@ const AnswerContentBox = ({ answer }: EditAnswerProps) => {
   const { handleEditValue, isAnswerEditMode } = useHandleMyAnswer({
     answerId: Number(answer.answer_id),
   })
-  const queryClient = useQueryClient()
 
   const handleSubmitEditedValue = () => {
     const submitValue = editorRef.current?.getInstance().getMarkdown()
@@ -37,26 +34,30 @@ const AnswerContentBox = ({ answer }: EditAnswerProps) => {
       answer,
     })
   }
-  return (
-    <div className="w-[90%]">
-      {isAnswerEditMode ? (
-        <form onSubmit={handleSubmit(handleSubmitEditedValue)}>
-          <MdEditor previous={answer.content} editorRef={editorRef} />
-          <div className="flex justify-center my-5">
-            <Button
-              buttonTheme="primary"
-              className="p-2 w-[100px]"
-              type="submit"
-            >
-              저장하기
-            </Button>
-          </div>
-        </form>
-      ) : (
+
+  if (!isAnswerEditMode)
+    return (
+      <Wrapper>
         <MdViewer content={answer.content} />
-      )}
-    </div>
+      </Wrapper>
+    )
+
+  return (
+    <Wrapper>
+      <form onSubmit={handleSubmit(handleSubmitEditedValue)}>
+        <MdEditor previous={answer.content} editorRef={editorRef} />
+        <div className="flex justify-center my-5">
+          <Button buttonTheme="primary" className="p-2 w-[100px]" type="submit">
+            저장하기
+          </Button>
+        </div>
+      </form>
+    </Wrapper>
   )
 }
 
 export default AnswerContentBox
+
+const Wrapper = ({ children }: PropsWithChildren) => (
+  <div className="w-[90%]">{children}</div>
+)

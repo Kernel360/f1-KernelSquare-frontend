@@ -1,14 +1,20 @@
 "use client"
 
 import { Icons } from "@/components/icons/Icons"
+import { usePathname } from "next/navigation"
 
 const ScrollToTop = () => {
+  const pathname = usePathname()
+  const needScroll = pathname.includes("question")
+
   const scrollToTop = () => {
     window.scrollTo({
       top: 0,
       behavior: "smooth",
     })
   }
+
+  if (!needScroll) return null
 
   return (
     <div className="fixed right-[5%] bottom-[5%] z-10">

@@ -18,7 +18,7 @@ const useGetAnswers = ({ questionId }: GetAnswerRequest) =>
     queryKey: [queryKey.answer, questionId],
     queryFn: () => getAnswer({ questionId }),
     placeholderData: keepPreviousData,
-    staleTime: 1000 * 5,
+    staleTime: 1000 * 60 * 5,
     select(payload) {
       return payload.data
     },

@@ -12,7 +12,6 @@ interface ExperienceProps {
 function ExperiencePoint({ level, exp }: ExperienceProps) {
   const limit = levelStandard[level]
   const length = (exp / limit) * 100
-  console.log("len", length)
   const dynamic_width = twJoin([
     `absolute top-0 z-5 bg-primary rounded-md h-[25px] text-white text-center`,
     length === 0 && "hidden",

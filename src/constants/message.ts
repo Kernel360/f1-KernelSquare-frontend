@@ -7,6 +7,7 @@ export const errorMessage = {
     "이미지 업로드 중 오류가 발생하였습니다. 다시 시도해주세요.",
   emptyCookie: "쿠키가 비어있습니다.",
   deleteAnswer: "답변 삭제 중 오류가 발생하였습니다.",
+  deleteQuestion: "질문 삭제 중 오류가 발생하였습니다.",
   updateAnswer: "답변 수정 중 오류가 발생하였습니다.",
   tryAgain: "잠시 후 다시 시도해주세요.",
   saySorry: "이용에 불편을 드려 죄송해요.",
@@ -31,6 +32,7 @@ export const notificationMessage = {
   cancleDeleteAnswer: "답변 삭제가 취소되었습니다.",
   cancleDeleteQuestion: "질문 삭제가 취소되었습니다.",
   cancleDeleteVote: "투표 기록 삭제가 취소되었습니다.",
+  answerWithoutToken: "로그인하고 질문에 대한 답변을 남겨보세요!",
 } as const
 
 export const confirmMessage = {
@@ -41,4 +43,9 @@ export const confirmMessage = {
 
 export const loadingMessage = {
   deleteAnswer: "답변 삭제가 진행 중이에요.",
+} as const
+
+export const buttonMessage = {
+  goToLogIn: "로그인 하러 가기",
+  postMyAnswer: "답변 남기기",
 } as const

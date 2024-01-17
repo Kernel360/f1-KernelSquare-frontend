@@ -59,18 +59,17 @@ const useAnswerVote = ({ answer }: VoteProps) => {
     }
   }
 
-  const handleReduce = () => {
+  const handleReduce = async () => {
     if (!user)
       return toast.error(errorMessage.unauthorized, { position: "top-center" })
     try {
-      voteAnswer({
+      const res = await voteAnswer({
         answerId: answer.answer_id,
         member_id: user.member_id,
         status: -1,
-      }).then((res) => {
-        console.log("res", res.data.msg)
-        queryClient.invalidateQueries({ queryKey: [queryKey.answer] })
       })
+      console.log("res", res.data.msg)
+      queryClient.invalidateQueries({ queryKey: [queryKey.answer] })
     } catch (err) {
       console.error("error", err)
     }

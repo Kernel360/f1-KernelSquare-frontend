@@ -10,7 +10,6 @@ import HandleAnswerBox from "./HandleAnswerBox"
 import DayBox from "./DayBox"
 import AnswerContentBox from "./AnswerContentBox"
 import { Icons } from "@/components/icons/Icons"
-import { useRouter } from "next/navigation"
 
 interface OneAnswerProps {
   answer: Answer
@@ -20,7 +19,6 @@ interface OneAnswerProps {
 const OneAnswer: React.FC<OneAnswerProps> = ({ answer, createdby }) => {
   const { ProgressModalView } = useQnADetail()
   const { user } = useClientSession()
-  const router = useRouter()
 
   const ProfileImageBox = useCallback(() => {
     if (answer.member_image_url)

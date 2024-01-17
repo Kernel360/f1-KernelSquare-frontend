@@ -23,6 +23,7 @@ import {
   UpdateQuestionRequest,
   UpdateQuestionResponse,
 } from "@/interfaces/dto/question/update-question.dto"
+import { errorMessage } from "@/constants/message"
 
 export async function getQuestionList(
   { page = 0, size = 5 }: GetQuestionListRequest = { page: 0, size: 5 },
@@ -69,22 +70,24 @@ export async function createQuestion({
 }
 
 export async function deleteQuestion({ questionId }: DeleteQuestionRequest) {
-  const res = await apiInstance
-    .delete<any, AxiosResponse<DeleteQuestionResponse>, DefaultBodyType>(
-      RouteMap.question.deleteQuestion(questionId),
-    )
-    .catch((err) => {
-      if (err instanceof AxiosError) {
-        const { response } = err as AxiosError<APIResponse>
+  try {
+    const res = await apiInstance.delete<
+      any,
+      AxiosResponse<DeleteQuestionResponse>,
+      DefaultBodyType
+    >(RouteMap.question.deleteQuestion(questionId))
 
-        console.log({ response: response?.data })
-      }
-      console.log("err", err)
-      throw err
-    })
+    return res
+  } catch (err) {
+    if (err instanceof AxiosError) {
+      const { response } = err as AxiosError<APIResponse>
 
-  return res
+      console.log({ response: response?.data })
+    }
+    throw new Error(errorMessage.deleteQuestion)
+  }
 }
+
 export async function updateQuestion({
   questionId,
   title,

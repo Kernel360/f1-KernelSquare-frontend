@@ -37,20 +37,19 @@ function ProfileImage({ id, image_url }: ImageProps) {
         })
         console.log("upload", imageUploadResponse)
 
-        await updateMemberInfo({
+        const infoUpdateResponse = await updateMemberInfo({
           id,
           image_url: imageUploadResponse.data.data?.image_url,
-        }).then((res) => {
-          console.log("res", res)
-          if (res.data.code === 1242) {
-            toast.success(successMessage.editProfileImage, {
-              position: "top-center",
-            })
-            clientSessionUpdate({
-              image_url: imageUploadResponse.data.data?.image_url,
-            })
-          }
         })
+        console.log("res", infoUpdateResponse)
+        if (infoUpdateResponse.data.code === 1242) {
+          toast.success(successMessage.editProfileImage, {
+            position: "top-center",
+          })
+          clientSessionUpdate({
+            image_url: imageUploadResponse.data.data?.image_url,
+          })
+        }
       } catch (error) {
         toast.error(errorMessage.failToUploadImage)
         console.error("Error", error)

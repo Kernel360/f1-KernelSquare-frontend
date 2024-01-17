@@ -36,24 +36,23 @@ const useHandleQuestion = () => {
   }: DeleteQuestionProps) => {
     const onSuccess = async () => {
       try {
-        deleteQuestion({
+        const res = await deleteQuestion({
           questionId: question.id,
-        }).then((res) => {
-          console.log("success", res.data.msg)
-          openModal({
-            content: successModal,
-            onClose() {
-              queryClient.invalidateQueries({
-                queryKey: [queryKey.question, question.id],
-              })
-            },
-          })
-          sleep(5000).then(() => {
+        })
+        console.log("success", res.data.msg)
+        openModal({
+          content: successModal,
+          onClose() {
             queryClient.invalidateQueries({
-              queryKey: [queryKey.question],
+              queryKey: [queryKey.question, question.id],
             })
-            router.replace("/")
+          },
+        })
+        sleep(5000).then(() => {
+          queryClient.invalidateQueries({
+            queryKey: [queryKey.question],
           })
+          router.replace("/")
         })
       } catch (err) {
         console.error(err)
