@@ -4,7 +4,11 @@ import { Icon } from "@/components/icons/Icons"
 import { navigationRoutes, profileRoute } from "@/constants/navigationRoute"
 import { useClientSession } from "@/hooks/useClientSession"
 import Link from "next/link"
-import { usePathname, useSelectedLayoutSegment } from "next/navigation"
+import {
+  useParams,
+  usePathname,
+  useSelectedLayoutSegment,
+} from "next/navigation"
 import { twMerge } from "tailwind-merge"
 
 interface SideNavigationProps {
@@ -22,6 +26,7 @@ interface SideNavigationItemProps {
 function SideNavigation({ hasHeader }: SideNavigationProps) {
   const currentSegment = useSelectedLayoutSegment()
   const pathname = usePathname()
+  const params = useParams()
 
   const wrapperClassNames = twMerge([
     "hidden sm:sticky sm:inline-flex sm:w-[200px] sm:align-top sm:top-[--height-header] sm:bg-colorsLightGray sm:h-[calc(100vh-var(--height-header))] sm:z-navigation",
@@ -29,6 +34,8 @@ function SideNavigation({ hasHeader }: SideNavigationProps) {
   ])
 
   const { user } = useClientSession()
+  const isMyPage =
+    pathname.includes("profile") && Number(params.id) === user?.member_id
 
   // 로그인 된 사용자만 profile 탭 보이도록
   return (

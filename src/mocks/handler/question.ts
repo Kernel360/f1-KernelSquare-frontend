@@ -294,6 +294,7 @@ export function createMockQuestion({
     skills,
     close_status: false,
     created_date: dayjs(createdDate).format("YYYY-MM-DD HH:mm:ss"),
+    member_id,
     modified_date: dayjs(createdDate).format("YYYY-MM-DD HH:mm:ss"),
     level: user!.level,
     level_image_url: badge_url[user!.level],
