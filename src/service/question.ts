@@ -82,6 +82,8 @@ export async function deleteQuestion({ questionId }: DeleteQuestionRequest) {
       console.log("err", err)
       throw err
     })
+
+  return res
 }
 export async function updateQuestion({
   questionId,

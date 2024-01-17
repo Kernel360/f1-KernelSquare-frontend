@@ -10,6 +10,7 @@ import HandleAnswerBox from "./HandleAnswerBox"
 import DayBox from "./DayBox"
 import AnswerContentBox from "./AnswerContentBox"
 import { Icons } from "@/components/icons/Icons"
+import { useRouter } from "next/navigation"
 
 interface OneAnswerProps {
   answer: Answer
@@ -19,6 +20,7 @@ interface OneAnswerProps {
 const OneAnswer: React.FC<OneAnswerProps> = ({ answer, createdby }) => {
   const { ProgressModalView } = useQnADetail()
   const { user } = useClientSession()
+  const router = useRouter()
 
   const ProfileImageBox = useCallback(() => {
     if (answer.member_image_url)
@@ -28,7 +30,8 @@ const OneAnswer: React.FC<OneAnswerProps> = ({ answer, createdby }) => {
             src={answer.member_image_url}
             alt="답변자 프로필 이미지"
             fill
-            className="object-cover rounded-full"
+            className="object-cover rounded-full cursor-pointer"
+            // onClick={() => router.push(`/profile/${answer.=}`)}
           />
         </div>
       )
@@ -73,10 +76,7 @@ const OneAnswer: React.FC<OneAnswerProps> = ({ answer, createdby }) => {
         <ProfileImageBox />
         <UserInfoBox />
       </div>
-      <div className="flex flex-wrapjustify-end my-4">
-        {/* <div>댓글 쓰기</div> */}
-        <HandleAnswerBox createdby={createdby} answer={answer} />
-      </div>
+      <HandleAnswerBox createdby={createdby} answer={answer} />
       <ProgressModalView />
     </div>
   )

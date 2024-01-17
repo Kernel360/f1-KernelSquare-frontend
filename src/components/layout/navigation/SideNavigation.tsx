@@ -76,7 +76,7 @@ function SideNavigation({ hasHeader }: SideNavigationProps) {
                   <SideNavigationItem
                     label={label}
                     icon={icon}
-                    active={active}
+                    active={isMyPage || active}
                     activeClassName={activeClassName}
                     to={to}
                   />
@@ -87,59 +87,6 @@ function SideNavigation({ hasHeader }: SideNavigationProps) {
       </nav>
     </aside>
   )
-
-  // 로그인 된 사용자만 profile 탭 보이도록
-  // return (
-  //   <aside className={wrapperClassNames}>
-  //     <nav className={"w-full box-border px-2 py-6"}>
-  //       <ul className="flex flex-col gap-4">
-  //         {navigationRoutes.map(({ label, icon, to, activeClassName }) => {
-  //           const active =
-  //             currentSegment === null
-  //               ? to === "/"
-  //               : currentSegment === "question"
-  //               ? to === "/"
-  //               : pathname.startsWith("/profile/")
-  //               ? false
-  //               : to.startsWith(`/${currentSegment}`)
-
-  //           return (
-  //             <li key={label}>
-  //               <SideNavigationItem
-  //                 label={label}
-  //                 icon={icon}
-  //                 active={active}
-  //                 activeClassName={activeClassName}
-  //                 to={to}
-  //               />
-  //             </li>
-  //           )
-  //         })}
-  //         {!!user &&
-  //           profileRoute.map(({ label, icon, to, activeClassName }) => {
-  //             const active =
-  //               currentSegment === null
-  //                 ? to === "/"
-  //                 : currentSegment === "question"
-  //                 ? to === "/"
-  //                 : to.startsWith(`/${currentSegment}`)
-
-  //             return (
-  //               <li key={label}>
-  //                 <SideNavigationItem
-  //                   label={label}
-  //                   icon={icon}
-  //                   active={active}
-  //                   activeClassName={activeClassName}
-  //                   to={to}
-  //                 />
-  //               </li>
-  //             )
-  //           })}
-  //       </ul>
-  //     </nav>
-  //   </aside>
-  // )
 }
 
 function SideNavigationItem({

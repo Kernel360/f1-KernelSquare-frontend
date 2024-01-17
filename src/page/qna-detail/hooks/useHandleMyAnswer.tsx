@@ -59,6 +59,7 @@ const useHandleMyAnswer = ({ answerId }: AnswerProps) => {
       queryClient.invalidateQueries({
         queryKey: [queryKey.answer, answer.answer_id],
       })
+      toast.success(successMessage.updateAnswer, { position: "top-center" })
       setIsAnswerEditMode(false)
     } catch (err) {
       toast.error(errorMessage.updateAnswer, { position: "top-center" })

@@ -33,13 +33,13 @@ const Question: React.FC<{ id: number }> = ({ id }) => {
   })
 
   const DetailClassName = twJoin([
-    "flex mb-5",
+    "flex flex-wrap mb-5",
     user?.nickname === question?.nickname ? "justify-between" : "justify-end",
   ])
 
   if (question)
     return (
-      <div className="flex flex-col max-w-full border-box border border-colorsGray rounded-lg p-10 my-5">
+      <div className="flex flex-col border-box border border-colorsGray rounded-lg p-10 my-5 max-w-full min-w-[200px]">
         <h3 className="font-bold text-2xl mb-5 max-w-full md:font-[16px] sm:font-[12px] t text-[#444444]">
           Q. {question.title}
         </h3>

@@ -18,7 +18,7 @@ const HandleAnswerBox = ({ answer, createdby }: HandleAnswerProps) => {
 
   if (isMyAnswer)
     return (
-      <div className="flex">
+      <div className="flex flex-wrap justify-end my-4">
         <div
           onClick={handleEditMode}
           className="mr-3 hover:text-[#3887BE] font-bold cursor-pointer "
