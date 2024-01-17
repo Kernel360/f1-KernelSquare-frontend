@@ -39,15 +39,14 @@ const Question: React.FC<{ id: number }> = ({ id }) => {
 
   if (question)
     return (
-      <div className="max-w-full box-border border border-colorsGray rounded-lg p-10 my-5">
-        <div className="font-bold text-2xl mb-5">
-          <span className="mr-[10px]">Q.</span>
-          <span className="text-[#444444]">{question.title}</span>
-        </div>
-        <div className="flex mb-5">{TagList}</div>
+      <div className="flex flex-col max-w-full border-box border border-colorsGray rounded-lg p-10 my-5">
+        <h3 className="font-bold text-2xl mb-5 max-w-full md:font-[16px] sm:font-[12px] t text-[#444444]">
+          Q. {question.title}
+        </h3>
+        <ul className="flex gap-1 flex-wrap my-1">{TagList}</ul>
         <div className={DetailClassName}>
           <HandleQuestionBox question={question!} />
-          <div className="flex justify-end">
+          <div className="w-full flex justify-end flex-wrap">
             <div>
               <div className="mb-1">
                 생성일: {getDate({ date: question.created_date })}

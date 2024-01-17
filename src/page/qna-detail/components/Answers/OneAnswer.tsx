@@ -23,7 +23,7 @@ const OneAnswer: React.FC<OneAnswerProps> = ({ answer, createdby }) => {
   const ProfileImageBox = useCallback(() => {
     if (answer.member_image_url)
       return (
-        <div className="ml-[20px] w-[50px] h-[50px] relative">
+        <div className="ml-[20px] w-[50px] h-[50px] relative my-3">
           <Image
             src={answer.member_image_url}
             alt="답변자 프로필 이미지"
@@ -45,7 +45,7 @@ const OneAnswer: React.FC<OneAnswerProps> = ({ answer, createdby }) => {
         <div className="px-2 bg-[#F3EDC8] rounded-md mb-1">
           {answer.created_by}
         </div>
-        <div className="text-center flex justify-center">
+        <div className="text-center flex flex-wrap justify-center">
           <div className="ml-1">Lv.{answer.author_level}</div>
           {answer.rank_image_url && (
             <div className="flex flex-col justify-center">
@@ -64,16 +64,16 @@ const OneAnswer: React.FC<OneAnswerProps> = ({ answer, createdby }) => {
 
   return (
     <div className="border-b-[1px] border-b-gray my-5">
-      <div className="flex justify-between">
+      <div className="flex justify-between flex-wrap">
         <VoteBox userId={user?.member_id} answer={answer} />
         <AnswerContentBox answer={answer} />
       </div>
-      <div className="flex justify-end my-5">
+      <div className="flex flex-wrap justify-end my-5">
         <DayBox answer={answer} />
         <ProfileImageBox />
         <UserInfoBox />
       </div>
-      <div className="flex justify-end my-4">
+      <div className="flex flex-wrapjustify-end my-4">
         {/* <div>댓글 쓰기</div> */}
         <HandleAnswerBox createdby={createdby} answer={answer} />
       </div>

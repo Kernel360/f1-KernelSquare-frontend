@@ -25,6 +25,8 @@ import { User } from "./user"
  *
  * **member_image_url** 작성자 이미지(string)
  *
+ * **member_id** 작성자 아이디(number)
+ *
  * **level** 작성자 등급(number)
  *
  * **level_image_url** 작성자 등급 이미지(string)
@@ -47,6 +49,7 @@ export interface Question
   view_count: number
   close_status: boolean
   nickname: string
+  member_id: number
   member_image_url: string
   level: number
   level_image_url: string

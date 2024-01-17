@@ -31,7 +31,7 @@ const AnswerList: React.FC<AnswerProps> = ({
   if (data)
     return (
       <div>
-        <div className="flex justify-between">
+        <div className="flex flex-wrap justify-between">
           <div className="font-bold text-[24px]">Answers</div>
           <div className="mt-3 flex items-center">
             <input

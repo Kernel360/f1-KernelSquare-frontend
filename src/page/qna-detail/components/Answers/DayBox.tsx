@@ -13,7 +13,7 @@ const DayBox = ({ answer }: UserInfoProps) => {
   const isEdited = answer.created_date !== answer.modified_date
 
   return (
-    <div className="max-h-[52px] flex flex-col justify-center">
+    <div className="max-h-[52px] flex flex-col justify-center my-3">
       <div>
         {"답변일시: " +
           getKorRelativeTime({
@@ -21,8 +21,10 @@ const DayBox = ({ answer }: UserInfoProps) => {
             targetDate: isEdited ? answer.modified_date : answer.created_date,
           })}
       </div>
-      <div className="flex justify-between">
-        {isEdited && <div className="text-right text-slate-400">(수정됨)</div>}
+      <div className="flex flex-wrap justify-between">
+        {isEdited && (
+          <div className="text-right text-slate-400 my-3">(수정됨)</div>
+        )}
       </div>
     </div>
   )

@@ -15,8 +15,8 @@ export const mockQuestions: Array<Question> = [
       "i have the Array in js, but how to convert to object with nesting childs ? \n This is my array: \n ```javascript const arr = [{ no: 1 }, { no: 2 }, { no: 3 }];```",
     view_count: 98,
     close_status: false,
-    member_image_url:
-      "https://mobirise.com/bootstrap-template//profile-template/assets/images/timothy-paul-smith-256424-1200x800.jpg",
+    member_id: 1,
+    member_image_url: "",
     created_date: "2023-12-16T23:10:12",
     modified_date: "2023-12-16T23:10:12",
     list: [],
@@ -30,6 +30,7 @@ export const mockQuestions: Array<Question> = [
     question_image_url: "",
     view_count: 46,
     close_status: false,
+    member_id: 2,
     nickname: "홍주광",
     member_image_url:
       "https://mobirise.com/bootstrap-template//profile-template/assets/images/timothy-paul-smith-256424-1200x800.jpg",
@@ -49,6 +50,7 @@ export const mockQuestions: Array<Question> = [
     question_image_url: "",
     view_count: 32,
     close_status: false,
+    member_id: 3,
     nickname: "zi존",
     member_image_url:
       "https://mobirise.com/bootstrap-template//profile-template/assets/images/timothy-paul-smith-256424-1200x800.jpg",
@@ -71,6 +73,7 @@ export const mockQuestions: Array<Question> = [
     member_image_url:
       "https://mobirise.com/bootstrap-template//profile-template/assets/images/timothy-paul-smith-256424-1200x800.jpg",
     close_status: false,
+    member_id: 4,
     level: 4,
     level_image_url: badge_url[4],
     skills: ["java", "docker", "jpa"],
@@ -86,6 +89,7 @@ export const mockQuestions: Array<Question> = [
     question_image_url: "",
     view_count: 9,
     close_status: false,
+    member_id: 5,
     nickname: "zl존",
     member_image_url:
       "https://mobirise.com/bootstrap-template//profile-template/assets/images/timothy-paul-smith-256424-1200x800.jpg",
@@ -104,6 +108,7 @@ export const mockQuestions: Array<Question> = [
     question_image_url: "",
     view_count: 9,
     close_status: false,
+    member_id: 6,
     nickname: "zl존",
     member_image_url:
       "https://mobirise.com/bootstrap-template//profile-template/assets/images/timothy-paul-smith-256424-1200x800.jpg",
@@ -121,6 +126,7 @@ export const mockQuestions: Array<Question> = [
     question_image_url: "",
     view_count: 9,
     close_status: false,
+    member_id: 7,
     nickname: "zl존",
     member_image_url:
       "https://mobirise.com/bootstrap-template//profile-template/assets/images/timothy-paul-smith-256424-1200x800.jpg",
@@ -138,6 +144,7 @@ export const mockQuestions: Array<Question> = [
     question_image_url: "",
     view_count: 9,
     close_status: false,
+    member_id: 8,
     nickname: "zl존",
     member_image_url:
       "https://mobirise.com/bootstrap-template//profile-template/assets/images/timothy-paul-smith-256424-1200x800.jpg",
@@ -155,6 +162,7 @@ export const mockQuestions: Array<Question> = [
     question_image_url: "",
     view_count: 9,
     close_status: false,
+    member_id: 9,
     nickname: "zl존",
     member_image_url:
       "https://mobirise.com/bootstrap-template//profile-template/assets/images/timothy-paul-smith-256424-1200x800.jpg",
@@ -172,6 +180,7 @@ export const mockQuestions: Array<Question> = [
     question_image_url: "",
     view_count: 9,
     close_status: false,
+    member_id: 10,
     nickname: "zl존",
     member_image_url:
       "https://mobirise.com/bootstrap-template//profile-template/assets/images/timothy-paul-smith-256424-1200x800.jpg",
@@ -189,6 +198,7 @@ export const mockQuestions: Array<Question> = [
     question_image_url: "",
     view_count: 9,
     close_status: false,
+    member_id: 11,
     nickname: "zl존",
     member_image_url:
       "https://mobirise.com/bootstrap-template//profile-template/assets/images/timothy-paul-smith-256424-1200x800.jpg",
@@ -206,6 +216,7 @@ export const mockQuestions: Array<Question> = [
     question_image_url: "",
     view_count: 9,
     close_status: false,
+    member_id: 12,
     nickname: "zl존",
     member_image_url:
       "https://mobirise.com/bootstrap-template//profile-template/assets/images/timothy-paul-smith-256424-1200x800.jpg",
@@ -223,6 +234,7 @@ export const mockQuestions: Array<Question> = [
     question_image_url: "",
     view_count: 9,
     close_status: false,
+    member_id: 13,
     nickname: "zl존",
     member_image_url:
       "https://mobirise.com/bootstrap-template//profile-template/assets/images/timothy-paul-smith-256424-1200x800.jpg",
@@ -240,6 +252,7 @@ export const mockQuestions: Array<Question> = [
     question_image_url: "",
     view_count: 9,
     close_status: false,
+    member_id: 14,
     nickname: "zl존",
     member_image_url:
       "https://mobirise.com/bootstrap-template//profile-template/assets/images/timothy-paul-smith-256424-1200x800.jpg",
