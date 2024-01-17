@@ -1,6 +1,5 @@
 import { Answer } from "./answer"
 import { TechTag } from "./tech-tag"
-import { User } from "./user"
 
 /**
  * Question(질문)
@@ -40,8 +39,7 @@ import { User } from "./user"
  * **list** 해당 질문에 대한 답변들: Answer[]
  *
  */
-export interface Question
-  extends Pick<User, "level" | "image_url" | "nickname"> {
+export interface Question {
   id: number
   title: string
   content: string

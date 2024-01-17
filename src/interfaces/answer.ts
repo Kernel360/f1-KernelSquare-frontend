@@ -29,7 +29,7 @@ import { User } from "./user"
  *
  * **vote_status** 답변 투표 상태 (1: 추천, 0: 투표 x, -1: 비추천)
  */
-export interface Answer extends Pick<User, "image_url"> {
+export interface Answer {
   answer_id: number
   question_id: number
   content: string

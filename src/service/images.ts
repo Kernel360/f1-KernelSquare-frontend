@@ -6,6 +6,10 @@ import { apiInstance } from "./axios"
 import { RouteMap } from "./route-map"
 import { AxiosError, type AxiosResponse } from "axios"
 import type { APIResponse } from "@/interfaces/dto/api-response"
+import {
+  DeleteImagesRequest,
+  DeleteImagesResponse,
+} from "@/interfaces/dto/upload/delete-images.dto"
 
 export const uploadImages = async ({ category, file }: UploadImagesRequest) => {
   const formData = new FormData()
@@ -31,6 +35,18 @@ export const uploadImages = async ({ category, file }: UploadImagesRequest) => {
       console.log("err", err)
       throw err
     })
+
+  return res
+}
+
+export const deleteImages = async ({ imageUrl }: DeleteImagesRequest) => {
+  const searchParams = new URLSearchParams()
+
+  searchParams.set("imageUrl", imageUrl)
+
+  const res = await apiInstance.delete<DeleteImagesResponse>(
+    `${RouteMap.images.deleteImages}?${searchParams.toString()}`,
+  )
 
   return res
 }

@@ -130,8 +130,10 @@ export class RouteMap {
       }`
     },
     createQuestion: `${RouteMap.routeGroupBaseURL.question}`,
-    updateQuestion(questionId: number) {
-      return `${RouteMap.routeGroupBaseURL.question}/${questionId}`
+    updateQuestion(questionId?: number) {
+      return `${RouteMap.routeGroupBaseURL.question}/${
+        questionId === undefined ? ":id" : questionId
+      }`
     },
     deleteQuestion(questionId?: number) {
       return `${RouteMap.routeGroupBaseURL.question}/${questionId ?? ":id"}`

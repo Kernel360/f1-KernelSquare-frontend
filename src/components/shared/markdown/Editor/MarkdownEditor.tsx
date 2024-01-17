@@ -19,10 +19,8 @@ import {
   EditorRefObj,
   HookCallback,
 } from "@/components/shared/toast-ui-editor/editor/EditorWrapper"
-import { uploadImage } from "@/service/upload"
 import { toast } from "react-toastify"
 import { AxiosError, HttpStatusCode } from "axios"
-import { UploadImageResponse } from "@/interfaces/dto/upload/upload-image.dto"
 import { revalidatePage } from "@/util/actions/revalidatePage"
 import { useRecoilValue } from "recoil"
 import {
@@ -39,6 +37,8 @@ import "@toast-ui/editor-plugin-code-syntax-highlight/dist/toastui-editor-plugin
 import codeSyntaxHighlight from "@toast-ui/editor-plugin-code-syntax-highlight/dist/toastui-editor-plugin-code-syntax-highlight-all.js"
 import "@toast-ui/editor-plugin-code-syntax-highlight/dist/toastui-editor-plugin-code-syntax-highlight.css"
 import { errorMessage } from "@/constants/message"
+import { uploadImages } from "@/service/images"
+import { UploadImagesResponse } from "@/interfaces/dto/upload/upload-images.dto"
 // 전체 언어 지원
 
 type MdTabMode = "write" | "preview"
@@ -116,7 +116,7 @@ const MarkdownEditor = (
         throw exceedingUploadableImagesError
       }
 
-      const res = await uploadImage({ image: blob })
+      const res = await uploadImages({ category: "answer", file: blob as File })
 
       callback(res.data.data!.image_url, "uploadedImage")
 
@@ -133,7 +133,7 @@ const MarkdownEditor = (
       }
 
       if (error instanceof AxiosError) {
-        const { response } = error as AxiosError<UploadImageResponse>
+        const { response } = error as AxiosError<UploadImagesResponse>
 
         if (response?.status === HttpStatusCode.Unauthorized) {
           toast.error(errorMessage.unauthorized, {

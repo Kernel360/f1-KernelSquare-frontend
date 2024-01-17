@@ -16,6 +16,10 @@ import badge_url from "@/assets/images/badges"
 import { ApiStatus } from "@/constants/response/api"
 import { DeleteQuestionResponse } from "@/interfaces/dto/question/delete-question.dto"
 import { HttpStatusCode } from "axios"
+import {
+  UpdateQuestionRequest,
+  UpdateQuestionResponse,
+} from "@/interfaces/dto/question/update-question.dto"
 
 export const questionHandler = [
   http.get<PathParams, DefaultBodyType, GetQuestionListResponse>(
@@ -46,7 +50,9 @@ export const questionHandler = [
           Question & { member_id: number }
         >(
           mockQuestions.map((question) => {
-            const member_id = Math.floor(Math.random() * mockUsers.length) + 1
+            const member_id = mockUsers.find(
+              (user) => user.nickname === question.nickname,
+            )!.id
 
             return { ...question, member_id }
           }),
@@ -202,6 +208,20 @@ export const questionHandler = [
           )
         }
 
+        if (!mockUsers.find((mockUser) => mockUser.id === member_id)) {
+          const { Code, HttpStatus } = ApiStatus.QnA.createQuestion.NotFound
+
+          return HttpResponse.json(
+            {
+              code: Code,
+              msg: "존재하지 않는 회원입니다",
+            },
+            {
+              status: HttpStatus,
+            },
+          )
+        }
+
         const { Code, HttpStatus } = ApiStatus.QnA.createQuestion.Ok
 
         const id = createMockQuestion({
@@ -216,7 +236,9 @@ export const questionHandler = [
           {
             code: Code,
             msg: "질문 생성 성공",
-            data: id,
+            data: {
+              question_id: id,
+            },
           },
           {
             status: HttpStatus,
@@ -262,6 +284,71 @@ export const questionHandler = [
       )
     },
   ),
+  http.put<
+    { id: string },
+    Omit<UpdateQuestionRequest, "questionId">,
+    UpdateQuestionResponse
+  >(
+    `${process.env.NEXT_PUBLIC_SERVER}${RouteMap.question.updateQuestion()}`,
+    async ({ params, request }) => {
+      try {
+        const header = request.headers
+        const token = header.get("Authorization")
+
+        if (!token) {
+          const { Code, HttpStatus } = ApiStatus.QnA.updateQustion.Unauthorized
+          return HttpResponse.json(
+            {
+              code: Code,
+              msg: "인증된 유저가 아닙니다",
+            },
+            { status: HttpStatus },
+          )
+        }
+
+        const targetQuestionId = Number(params.id)
+
+        const { title, content, image_url, skills } = await request.json()
+
+        const targetMockQuestionId = mockQuestions.findIndex(
+          (mockQuestion) => mockQuestion.id === targetQuestionId,
+        )
+
+        if (targetMockQuestionId < 0) {
+          const { Code, HttpStatus } = ApiStatus.QnA.updateQustion.NotFound
+
+          return HttpResponse.json(
+            {
+              code: Code,
+              msg: "존재하지 않는 질문",
+            },
+            { status: HttpStatus },
+          )
+        }
+
+        const { Code, HttpStatus } = ApiStatus.QnA.updateQustion.Ok
+
+        return HttpResponse.json(
+          {
+            code: Code,
+            msg: "질문 수정 성공",
+          },
+          { status: HttpStatus },
+        )
+      } catch (error) {
+        const { Code, HttpStatus } =
+          ApiStatus.QnA.updateQustion.InternalServerError
+
+        return HttpResponse.json(
+          {
+            code: Code,
+            msg: "서버 오류",
+          },
+          { status: HttpStatus },
+        )
+      }
+    },
+  ),
 ]
 
 export function createMockQuestion({
@@ -302,4 +389,23 @@ export function createMockQuestion({
   })
 
   return latestId + 1
+}
+
+export function updateMockQuestion({
+  questionId,
+  title,
+  content,
+  image_url,
+  skills,
+}: UpdateQuestionRequest) {
+  const targetIndex = mockQuestions.findIndex(
+    (mockQuestion) => mockQuestion.id === questionId,
+  )
+
+  const targetMockQuestion = mockQuestions[targetIndex]
+
+  targetMockQuestion.title = title
+  targetMockQuestion.content = content
+  targetMockQuestion.question_image_url = image_url || ""
+  targetMockQuestion.skills = skills
 }

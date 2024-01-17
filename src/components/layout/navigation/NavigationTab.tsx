@@ -1,7 +1,12 @@
 "use client"
 
 import Tab from "@/components/shared/tab/Tab"
-import { navigationRoutes } from "@/constants/navigationRoute"
+import {
+  getActiveNavigationItem,
+  navigationRoutes,
+  profileRoute,
+} from "@/constants/navigationRoute"
+import { useClientSession } from "@/hooks/useClientSession"
 import Link from "next/link"
 import { usePathname, useSelectedLayoutSegment } from "next/navigation"
 import { twMerge } from "tailwind-merge"
@@ -22,42 +27,59 @@ function NavigationTab({ hasHeader }: NavigationTabProps) {
     !hasHeader && "top-0",
   ])
 
+  const { user } = useClientSession()
+
+  const activeNavItem = getActiveNavigationItem({
+    segment: currentSegment,
+    pathname,
+  })
+
+  const navigationRouteTabs = navigationRoutes.map(({ label, to }) => {
+    return {
+      label,
+      content: <NavigationTabItem label={label} to={to} />,
+      active: activeNavItem ? activeNavItem.label === label : false,
+    }
+  })
+
+  const profileRouteTabs = user
+    ? profileRoute.map(({ label, to }) => {
+        return {
+          label,
+          content: <NavigationTabItem label={label} to={to} />,
+          active: activeNavItem ? activeNavItem.label === label : false,
+        }
+      })
+    : []
+
+  const renderTabs = [...navigationRouteTabs, ...profileRouteTabs]
+
   return (
     <nav className={wrapperClassNames}>
       <Tab
-        defaultTab={
-          navigationRoutes.find((route) =>
-            currentSegment === null
-              ? route.to === "/"
-              : currentSegment === "question"
-              ? route.to === "/"
-              : pathname.startsWith("/profile/")
-              ? undefined
-              : route.to.startsWith(`/${currentSegment}`),
-          )?.label
-        }
-        className="mt-4"
-        tabs={navigationRoutes.map(({ label, to }) => {
-          return {
-            label,
-            content: <NavigationTabItem label={label} to={to} />,
-            active:
-              currentSegment === null
-                ? to === "/"
-                : currentSegment === "question"
-                ? to === "/"
-                : pathname.startsWith("/profile/")
-                ? false
-                : to.startsWith(`/${currentSegment}`),
-          }
-        })}
+        defaultTab={activeNavItem?.label}
+        classNames={{
+          wrapper: "h-[59px] font-bold px-4",
+        }}
+        activeClassNames={{
+          tab: "text-secondary",
+          gutter: "bg-secondary",
+        }}
+        tabs={renderTabs}
       />
     </nav>
   )
 }
 
 function NavigationTabItem({ label, to }: NavigationTabItemProps) {
-  return <Link href={to}>{label}</Link>
+  return (
+    <Link
+      href={to}
+      className="flex w-full h-full justify-center items-center px-2"
+    >
+      {label}
+    </Link>
+  )
 }
 
 export default NavigationTab

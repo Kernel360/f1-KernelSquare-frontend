@@ -19,6 +19,10 @@ import type {
 } from "@/interfaces/dto/question/delete-question.dto"
 import type { DefaultBodyType } from "msw"
 import type { APIResponse } from "@/interfaces/dto/api-response"
+import {
+  UpdateQuestionRequest,
+  UpdateQuestionResponse,
+} from "@/interfaces/dto/question/update-question.dto"
 
 export async function getQuestionList(
   { page = 0, size = 5 }: GetQuestionListRequest = { page: 0, size: 5 },
@@ -49,13 +53,6 @@ export async function createQuestion({
   image_url,
   skills,
 }: CreateQuestionRequest) {
-  console.log("[create question api request]", {
-    member_id,
-    title,
-    content,
-    image_url,
-    skills,
-  })
   const res = await apiInstance.post<
     any,
     AxiosResponse<CreateQuestionResponse>,
@@ -85,6 +82,24 @@ export async function deleteQuestion({ questionId }: DeleteQuestionRequest) {
       console.log("err", err)
       throw err
     })
+}
+export async function updateQuestion({
+  questionId,
+  title,
+  content,
+  image_url,
+  skills,
+}: UpdateQuestionRequest) {
+  const res = await apiInstance.put<
+    any,
+    AxiosResponse<UpdateQuestionResponse>,
+    Omit<UpdateQuestionRequest, "questionId">
+  >(RouteMap.question.getQuestion(questionId), {
+    title,
+    content,
+    image_url,
+    skills,
+  })
 
   return res
 }

@@ -1,7 +1,11 @@
 "use client"
 
 import { Icon } from "@/components/icons/Icons"
-import { navigationRoutes, profileRoute } from "@/constants/navigationRoute"
+import {
+  getActiveNavigationItem,
+  navigationRoutes,
+  profileRoute,
+} from "@/constants/navigationRoute"
 import { useClientSession } from "@/hooks/useClientSession"
 import Link from "next/link"
 import {
@@ -37,20 +41,17 @@ function SideNavigation({ hasHeader }: SideNavigationProps) {
   const isMyPage =
     pathname.includes("profile") && Number(params.id) === user?.member_id
 
-  // 로그인 된 사용자만 profile 탭 보이도록
+  const activeNavItem = getActiveNavigationItem({
+    segment: currentSegment,
+    pathname,
+  })
+
   return (
     <aside className={wrapperClassNames}>
       <nav className={"w-full box-border px-2 py-6"}>
         <ul className="flex flex-col gap-4">
           {navigationRoutes.map(({ label, icon, to, activeClassName }) => {
-            const active =
-              currentSegment === null
-                ? to === "/"
-                : currentSegment === "question"
-                ? to === "/"
-                : pathname.startsWith("/profile/")
-                ? false
-                : to.startsWith(`/${currentSegment}`)
+            const active = activeNavItem ? activeNavItem.label === label : false
 
             return (
               <li key={label}>
@@ -66,12 +67,9 @@ function SideNavigation({ hasHeader }: SideNavigationProps) {
           })}
           {!!user &&
             profileRoute.map(({ label, icon, to, activeClassName }) => {
-              const active =
-                currentSegment === null
-                  ? to === "/"
-                  : currentSegment === "question"
-                  ? to === "/"
-                  : to.startsWith(`/${currentSegment}`)
+              const active = activeNavItem
+                ? activeNavItem.label === label
+                : false
 
               return (
                 <li key={label}>
@@ -89,6 +87,59 @@ function SideNavigation({ hasHeader }: SideNavigationProps) {
       </nav>
     </aside>
   )
+
+  // 로그인 된 사용자만 profile 탭 보이도록
+  // return (
+  //   <aside className={wrapperClassNames}>
+  //     <nav className={"w-full box-border px-2 py-6"}>
+  //       <ul className="flex flex-col gap-4">
+  //         {navigationRoutes.map(({ label, icon, to, activeClassName }) => {
+  //           const active =
+  //             currentSegment === null
+  //               ? to === "/"
+  //               : currentSegment === "question"
+  //               ? to === "/"
+  //               : pathname.startsWith("/profile/")
+  //               ? false
+  //               : to.startsWith(`/${currentSegment}`)
+
+  //           return (
+  //             <li key={label}>
+  //               <SideNavigationItem
+  //                 label={label}
+  //                 icon={icon}
+  //                 active={active}
+  //                 activeClassName={activeClassName}
+  //                 to={to}
+  //               />
+  //             </li>
+  //           )
+  //         })}
+  //         {!!user &&
+  //           profileRoute.map(({ label, icon, to, activeClassName }) => {
+  //             const active =
+  //               currentSegment === null
+  //                 ? to === "/"
+  //                 : currentSegment === "question"
+  //                 ? to === "/"
+  //                 : to.startsWith(`/${currentSegment}`)
+
+  //             return (
+  //               <li key={label}>
+  //                 <SideNavigationItem
+  //                   label={label}
+  //                   icon={icon}
+  //                   active={active}
+  //                   activeClassName={activeClassName}
+  //                   to={to}
+  //                 />
+  //               </li>
+  //             )
+  //           })}
+  //       </ul>
+  //     </nav>
+  //   </aside>
+  // )
 }
 
 function SideNavigationItem({
