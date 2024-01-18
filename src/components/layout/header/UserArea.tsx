@@ -63,7 +63,7 @@ function LoginedUserArea({ user }: { user: LoginUserPayload }) {
 
   const menu = useMemo(() => {
     const profileDropdownMenu: Array<ProfileDropdownMenu> = [
-      { label: "내 프로필", to: "/profile", role: "menu" },
+      { label: "내 프로필", to: `/profile/${user.member_id}`, role: "menu" },
       { role: "divider" },
       {
         label: "로그아웃",
