@@ -32,6 +32,7 @@ export const notificationMessage = {
   cancleDeleteAnswer: "답변 삭제가 취소되었습니다.",
   cancleDeleteQuestion: "질문 삭제가 취소되었습니다.",
   cancleDeleteVote: "투표 기록 삭제가 취소되었습니다.",
+  cancleEditIntroduction: "자기소개 수정이 취소되었습니다.",
   answerWithoutToken: "로그인하고 질문에 대한 답변을 남겨보세요!",
 } as const
 
@@ -52,4 +53,6 @@ export const buttonMessage = {
   updateProfile: "프로필 변경",
   edit: "수정하기",
   delete: "삭제하기",
+  cancle: "취소",
+  save: "저장",
 } as const

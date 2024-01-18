@@ -3,6 +3,6 @@ export interface TitleProps {
 }
 
 export interface ImageProps {
-  id: number
+  memberId: number
   image_url: string
 }

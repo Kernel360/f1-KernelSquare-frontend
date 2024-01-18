@@ -15,7 +15,7 @@ function MyPage() {
     return (
       <div className="max-w-[60%] m-auto mt-[50px]">
         <div className="w-full flex justify-evenly mb-[50px]">
-          <ProfileImage id={user.member_id} image_url={user.image_url} />
+          <ProfileImage memberId={user.member_id} image_url={user.image_url} />
           <div className="flex items-center">
             <div>
               <Image
@@ -33,7 +33,10 @@ function MyPage() {
         </div>
         <ExperiencePoint level={user.level} exp={user.experience} />
         <Divider className="mb-[50px]" />
-        <Introduction introduction={user.introduction} id={user.member_id} />
+        <Introduction
+          introduction={user.introduction}
+          memberId={user.member_id}
+        />
         <Divider />
       </div>
     )

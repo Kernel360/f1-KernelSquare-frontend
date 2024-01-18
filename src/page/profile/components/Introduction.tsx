@@ -4,68 +4,23 @@ import { Icons } from "@/components/icons/Icons"
 import Button from "@/components/shared/button/Button"
 import Textarea from "@/components/shared/textarea/Textarea"
 import instructions from "@/constants/instructions"
-import useMyPage from "../hooks/useMyPage"
-import { type FormEvent, useState } from "react"
-import { updateMemberInfo } from "@/service/member"
-import { toast } from "react-toastify"
-import { errorMessage, successMessage } from "@/constants/message"
 import { twJoin } from "tailwind-merge"
-import useDebounce from "@/hooks/useDebounce"
-import { useClientSession } from "@/hooks/useClientSession"
+import type { EditBoxProps, IntroductionProps } from "./Introduction.types"
+import useIntroduction from "../hooks/useIntroduction"
+import { buttonMessage } from "@/constants/message"
 
-interface IntroductionProps {
-  id: number
-  introduction?: string
-}
-
-const EditBox: React.FC<{ previous?: string; id: number }> = ({
-  previous,
-  id,
-}) => {
-  const { closeEditMode, introduction, setIntroduction } = useMyPage()
-  const { clientSessionUpdate } = useClientSession()
-
-  const introductionValue = useDebounce(introduction, 200)
-  const [textLen, setTextLen] = useState<number>(introductionValue.length || 0)
+const EditBox: React.FC<EditBoxProps> = ({ previous, memberId }) => {
+  const { closeEditMode, textLen, handleChange, handleSubmitIntroduction } =
+    useIntroduction()
 
   const styleWithWarning = twJoin([textLen > 300 && "text-[#EF4040]"])
 
-  const handleChange = (textValue: string) => {
-    setIntroduction(textValue)
-    setTextLen(textValue.length)
-  }
-
-  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
-    if (introduction.length > 300) {
-      toast.error(errorMessage.introductionLimit, {
-        position: "top-center",
-        autoClose: 1000,
-      })
-      return
-    }
-
-    try {
-      await updateMemberInfo({
-        id,
-        introduction,
-      })
-      toast.success(successMessage.editIntroduction, {
-        position: "top-center",
-        autoClose: 1000,
-      })
-      clientSessionUpdate({
-        introduction,
-      })
-    } catch (err) {
-      console.error("error", err)
-    }
-    closeEditMode()
-  }
-
   return (
     <div>
-      <form className="w-full" onSubmit={(e) => handleSubmit(e)}>
+      <form
+        className="w-full"
+        onSubmit={(e) => handleSubmitIntroduction(e, memberId)}
+      >
         <Textarea
           fullWidth={true}
           rows={5}
@@ -81,10 +36,10 @@ const EditBox: React.FC<{ previous?: string; id: number }> = ({
             className="w-[70px] mr-[10px]"
             onClick={closeEditMode}
           >
-            취소
+            {buttonMessage.cancle}
           </Button>
           <Button buttonTheme="primary" className="w-[70px]" type="submit">
-            저장
+            {buttonMessage.save}
           </Button>
         </div>
       </form>
@@ -92,8 +47,11 @@ const EditBox: React.FC<{ previous?: string; id: number }> = ({
   )
 }
 
-const Introduction = ({ id, introduction }: IntroductionProps) => {
-  const { isEditMode, handleEditMode } = useMyPage()
+const Introduction: React.FC<IntroductionProps> = ({
+  memberId,
+  introduction,
+}) => {
+  const { isEditMode, handleEditMode } = useIntroduction()
 
   return (
     <div className="mb-[50px]">
@@ -104,11 +62,8 @@ const Introduction = ({ id, introduction }: IntroductionProps) => {
           onClick={handleEditMode}
         />
       </div>
-      {isEditMode ? (
-        <EditBox previous={introduction} id={id} />
-      ) : (
-        <div>{introduction || instructions.noIntroduction}</div>
-      )}
+      {isEditMode && <EditBox previous={introduction} memberId={memberId} />}
+      {!isEditMode && <div>{introduction || instructions.noIntroduction}</div>}
     </div>
   )
 }

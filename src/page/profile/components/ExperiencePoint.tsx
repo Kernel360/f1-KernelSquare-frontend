@@ -1,15 +1,13 @@
 "use client"
 
 import levelStandard from "@/constants/levelStandard"
-import { PropsWithChildren } from "react"
 import { twJoin } from "tailwind-merge"
+import type {
+  ExperiencePointProps,
+  GraphWrapperProps,
+} from "./ExperiencePoint.types"
 
-interface ExperienceProps {
-  level: number
-  exp: number
-}
-
-function ExperiencePoint({ level, exp }: ExperienceProps) {
+const ExperiencePoint: React.FC<ExperiencePointProps> = ({ level, exp }) => {
   const limit = levelStandard[level]
   const length = (exp / limit) * 100
   const dynamic_width = twJoin([
@@ -17,7 +15,7 @@ function ExperiencePoint({ level, exp }: ExperienceProps) {
     length === 0 && "hidden",
   ])
   return (
-    <GraphWrapper limit={levelStandard[level]}>
+    <GraphWrapper limit={limit}>
       <div className="relative w-[90%] mx-[10px]">
         <div className="z-0 bg-gray-300 rounded-md h-[25px] "></div>
         <div className={dynamic_width} style={{ width: `${length}%` }}>
@@ -30,11 +28,7 @@ function ExperiencePoint({ level, exp }: ExperienceProps) {
 
 export default ExperiencePoint
 
-type WrapperProps = PropsWithChildren<{
-  limit: number
-}>
-
-const GraphWrapper = ({ limit, children }: WrapperProps) => {
+const GraphWrapper: React.FC<GraphWrapperProps> = ({ limit, children }) => {
   return (
     <div className="mb-[50px]">
       <div className="font-bold text-lg mb-[20px]">경험치</div>
