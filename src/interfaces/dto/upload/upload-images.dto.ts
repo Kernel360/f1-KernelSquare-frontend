@@ -1,6 +1,6 @@
 import { APIResponse } from "../api-response"
 
-type UploadImagesCategory = "member" | "question" | "answer" | "level"
+export type UploadImagesCategory = "member" | "question" | "answer" | "level"
 
 export interface UploadImagesRequest {
   category: UploadImagesCategory

@@ -1,6 +1,7 @@
 export type LayoutMetaKey =
   | "/"
   | "question"
+  | "updateQuestion"
   | "signup"
   | "notice"
   | "chat"
@@ -33,6 +34,15 @@ export const layoutMeta = {
   question: {
     title: "개발자 Q&A",
     description: "Q&A",
+    containLayout: {
+      header: true,
+      navigation: true,
+      footer: false,
+    },
+  },
+  updateQuestion: {
+    title: "질문 수정",
+    description: "질문 수정",
     containLayout: {
       header: true,
       navigation: true,

@@ -1,4 +1,4 @@
-import AuthGuardModal from "@/components/shared/auth-modal/AuthGuardModal"
+import AuthGuardModal from "@/components/shared/auth-modal"
 import { UserPayload } from "@/interfaces/dto/member/get-member.dto"
 import { getMemeber } from "@/service/member"
 import { isLogined } from "@/util/auth"

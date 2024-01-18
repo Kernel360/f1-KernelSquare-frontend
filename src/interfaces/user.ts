@@ -35,7 +35,7 @@ export interface User {
   experience: number
   level: Rank
   introduction?: string
-  image_url?: string | null
+  image_url: string | null
   authorities: Array<UserRole>
   account_status: ACCOUNT_STATUS
 }

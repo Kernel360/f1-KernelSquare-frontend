@@ -130,11 +130,13 @@ export class RouteMap {
       }`
     },
     createQuestion: `${RouteMap.routeGroupBaseURL.question}`,
-    updateQuestion(questionId: number) {
-      return `${RouteMap.routeGroupBaseURL.question}/${questionId}`
+    updateQuestion(questionId?: number) {
+      return `${RouteMap.routeGroupBaseURL.question}/${
+        questionId === undefined ? ":id" : questionId
+      }`
     },
-    deleteQuestion(questionId: number) {
-      return `${RouteMap.routeGroupBaseURL.question}/${questionId}`
+    deleteQuestion(questionId?: number) {
+      return `${RouteMap.routeGroupBaseURL.question}/${questionId ?? ":id"}`
     },
   }
 
@@ -169,8 +171,10 @@ export class RouteMap {
         RouteMap.prefix.answer
       }/${answerId ?? ":id"}`
     },
-    deleteAnswer(answerId: number) {
-      return `${RouteMap.routeGroupBaseURL.question}/${RouteMap.prefix.answer}/${answerId}`
+    deleteAnswer(answerId?: number) {
+      return `${RouteMap.routeGroupBaseURL.question}/${
+        RouteMap.prefix.answer
+      }/${answerId ?? ":id"}`
     },
     voteAnswer(answerId?: number) {
       return `${RouteMap.routeGroupBaseURL.question}/${

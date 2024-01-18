@@ -1,3 +1,18 @@
+export function replaceAllMarkdownImageLink(
+  markdown: string,
+  { targetLink, replaceValue }: { targetLink: string; replaceValue: string },
+) {
+  if (!markdown || !targetLink) return null
+
+  return markdown.replaceAll(
+    new RegExp(
+      `!\\[.*?\\]\\(${targetLink.replaceAll(/([/.?])/g, `\\$1`)}\\)`,
+      "gm",
+    ),
+    replaceValue,
+  )
+}
+
 export function findImageLinkUrlFromMarkdown(markdown?: string) {
   if (!markdown) return null
 
@@ -13,10 +28,9 @@ export function findImageLinkUrlFromMarkdown(markdown?: string) {
 export function getImageIdFromLink(imageUrl: string) {
   if (!imageUrl) return null
 
-  const id =
-    process.env.NEXT_PUBLIC_API_MOCKING === "enabled"
-      ? getMockImageIdFromLink(imageUrl)
-      : getCloudFlareImageIdFromLink(imageUrl)
+  if (process.env.NEXT_PUBLIC_API_MOCKING !== "enabled") return null
+
+  const id = getMockImageIdFromLink(imageUrl)
 
   return id
 }
@@ -32,18 +46,4 @@ function getMockImageIdFromLink(mockImageUrl: string) {
   if (!imageIdResultArray) return null
 
   return imageIdResultArray[0]
-}
-
-function getCloudFlareImageIdFromLink(cloudflareImageUrl: string) {
-  if (!cloudflareImageUrl) return null
-
-  // https://imagedelivery.net/<hash>/<image_id>/<variant_name>
-  const regExp =
-    /(?<=\.net\/)(?<hash>(.*?))\/(?<id>(.*?))(?=\/)\/(?<variant>(.*))/g
-
-  const imageIdResultArray = Array.from(cloudflareImageUrl.matchAll(regExp))
-
-  if (!imageIdResultArray.length) return null
-
-  return imageIdResultArray[0].groups!.id
 }

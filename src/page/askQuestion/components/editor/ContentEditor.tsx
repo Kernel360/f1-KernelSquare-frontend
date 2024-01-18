@@ -1,46 +1,60 @@
 "use client"
 
+import "prismjs/themes/prism.css"
+import Prism from "prismjs"
 import { ToastUiEditor } from "@/components/shared/toast-ui-editor"
 import { Editor as ToastEditor, EditorProps } from "@toast-ui/react-editor"
+import codeSyntaxHighlight from "@toast-ui/editor-plugin-code-syntax-highlight/dist/toastui-editor-plugin-code-syntax-highlight-all.js"
+import "@toast-ui/editor-plugin-code-syntax-highlight/dist/toastui-editor-plugin-code-syntax-highlight.css"
 import {
   ForwardedRef,
   forwardRef,
   useCallback,
   useEffect,
+  useRef,
   useState,
 } from "react"
 import Button from "@/components/shared/button/Button"
 import { twMerge } from "tailwind-merge"
 import { contentEditorToolbarItems } from "@/constants/editor"
+import { EditorRefObj } from "@/components/shared/toast-ui-editor/editor/EditorWrapper"
+import { useRecoilValue, useSetRecoilState } from "recoil"
 import {
-  EditorRefObj,
-  HookCallback,
-} from "@/components/shared/toast-ui-editor/editor/EditorWrapper"
-import { uploadImage } from "@/service/upload"
-import { toast } from "react-toastify"
-import { AxiosError, HttpStatusCode } from "axios"
-import { UploadImageResponse } from "@/interfaces/dto/upload/upload-image.dto"
-import { revalidatePage } from "@/util/actions/revalidatePage"
-import { useRecoilValue } from "recoil"
-import {
-  fileUploadImageLinksSelector,
+  editorRefAtomFamily,
   questionEditorState,
 } from "@/recoil/atoms/questionEditor"
-import { useClientSession } from "@/hooks/useClientSession"
+import { useToastUiEditorImageUploadHook } from "@/hooks/useToastUiEditorImageUploadHook"
+import Tab from "@/components/shared/tab/Tab"
 
 type MdTabMode = "write" | "preview"
 
+type ContentEditorProps = Partial<EditorProps> & {
+  initialUploadImages?: Array<string> | null
+  action: "create" | "update"
+}
+
 const ContentEditor = (
-  { minHeight = "300px", ...props }: Partial<EditorProps>,
+  {
+    minHeight = "300px",
+    action,
+    initialUploadImages,
+    ...props
+  }: ContentEditorProps,
   ref: ForwardedRef<ToastEditor>,
 ) => {
   const editorRef = ref as EditorRefObj
+  const wrapperRef = useRef<HTMLDivElement>(null)
 
-  const { clientSessionLogout } = useClientSession()
+  const { uploadImageHook, uploadImageStatus } =
+    useToastUiEditorImageUploadHook({
+      category: "question",
+      action,
+      initialUploadLink: initialUploadImages
+        ? initialUploadImages[0]
+        : undefined,
+    })
 
-  const { getFileUploadImageLinks, addFileUploadImageLinks } = useRecoilValue(
-    fileUploadImageLinksSelector,
-  )
+  const setEditorRef = useSetRecoilState(editorRefAtomFamily("question"))
   const { setQuestionEditorLoaded } = useRecoilValue(questionEditorState)
 
   const [mdTabVisible, setMdTabVisible] = useState(true)
@@ -71,6 +85,7 @@ const ContentEditor = (
 
     if (editorRef.current) {
       const instance = editorRef.current.getInstance()
+
       mode === "write"
         ? instance?.eventEmitter.emit("changePreviewTabWrite")
         : instance?.eventEmitter.emit("changePreviewTabPreview")
@@ -89,65 +104,8 @@ const ContentEditor = (
     window.addEventListener("resize", handleResize)
 
     await setQuestionEditorLoaded(true)
-  }
 
-  async function uploadImageHook(blob: Blob | File, callback: HookCallback) {
-    const fileUploadLinkSnapshot = await getFileUploadImageLinks()
-
-    const exceedingUploadableImagesError = new Error(
-      "exceeding uploadable images",
-    )
-
-    try {
-      if (fileUploadLinkSnapshot.length >= 1) {
-        throw exceedingUploadableImagesError
-      }
-
-      const res = await uploadImage({ image: blob })
-
-      callback(res.data.data!.image_url, "uploadedImage")
-
-      await addFileUploadImageLinks(res.data.data!.image_url)
-    } catch (error) {
-      if (error instanceof Error) {
-        if (error.message === exceedingUploadableImagesError.message) {
-          toast.error("이미지 파일 업로드는 1장만 가능합니다", {
-            position: "top-center",
-          })
-
-          return
-        }
-      }
-
-      if (error instanceof AxiosError) {
-        const { response } = error as AxiosError<UploadImageResponse>
-
-        if (response?.status === HttpStatusCode.Unauthorized) {
-          toast.error("로그인 후 다시 이용해주세요", {
-            position: "top-center",
-          })
-
-          await clientSessionLogout()
-
-          editorRef.current?.getInstance().eventEmitter.emit("pageOut")
-          await revalidatePage("/question")
-
-          return
-        }
-
-        toast.error("이미지 업로드에 실패했습니다", {
-          position: "top-center",
-        })
-
-        return
-      }
-
-      toast.error("이미지 업로드에 실패했습니다", {
-        position: "top-center",
-      })
-
-      return
-    }
+    setEditorRef(editorRef.current)
   }
 
   useEffect(() => {
@@ -158,8 +116,9 @@ const ContentEditor = (
 
   return (
     <div
+      ref={wrapperRef}
       className={
-        "relative z-[1] [&_.toastui-editor-popup]:toastify:!ml-0 [&_.toastui-editor-defaultUI-toolbar]:!flex-wrap [&_.toastui-editor-dropdown-toolbar]:!max-w-full [&_.toastui-editor-dropdown-toolbar]:!h-max [&_.toastui-editor-dropdown-toolbar]:flex-wrap [&_.toastui-editor-main-container]:break-all"
+        "relative z-[1] [&_.toastui-editor-popup]:toastify:!ml-0 [&_.toastui-editor-defaultUI-toolbar]:!flex-wrap [&_.toastui-editor-dropdown-toolbar]:!max-w-full [&_.toastui-editor-dropdown-toolbar]:!h-max [&_.toastui-editor-dropdown-toolbar]:flex-wrap [&_.toastui-editor-toolbar-group]:flex-wrap [&_.toastui-editor-main-container]:break-all"
       }
     >
       <div className="flex w-full -mt-2 box-border pl-4 relative top-2 z-[1] editor:hidden">
@@ -195,10 +154,20 @@ const ContentEditor = (
         hooks={{
           addImageBlobHook: uploadImageHook,
         }}
+        plugins={[[codeSyntaxHighlight as any, { highlighter: Prism }]]}
         {...props}
       />
+      {uploadImageStatus.isUploadingImage ? <UploadingIndicator /> : null}
     </div>
   )
 }
 
 export default forwardRef(ContentEditor)
+
+function UploadingIndicator() {
+  return (
+    <div className="absolute w-full h-full left-0 top-0 flex justify-center items-center bg-white/50 z-[31]">
+      이미지 업로드 중...
+    </div>
+  )
+}

@@ -1,6 +1,5 @@
 import { Answer } from "./answer"
 import { TechTag } from "./tech-tag"
-import { User } from "./user"
 
 /**
  * Question(질문)
@@ -25,6 +24,8 @@ import { User } from "./user"
  *
  * **member_image_url** 작성자 이미지(string)
  *
+ * **member_id** 작성자 아이디(number)
+ *
  * **level** 작성자 등급(number)
  *
  * **level_image_url** 작성자 등급 이미지(string)
@@ -38,8 +39,7 @@ import { User } from "./user"
  * **list** 해당 질문에 대한 답변들: Answer[]
  *
  */
-export interface Question
-  extends Pick<User, "level" | "image_url" | "nickname"> {
+export interface Question {
   id: number
   title: string
   content: string
@@ -47,6 +47,7 @@ export interface Question
   view_count: number
   close_status: boolean
   nickname: string
+  member_id: number
   member_image_url: string
   level: number
   level_image_url: string

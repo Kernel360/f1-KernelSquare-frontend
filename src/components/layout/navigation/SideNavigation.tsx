@@ -1,10 +1,18 @@
 "use client"
 
 import { Icon } from "@/components/icons/Icons"
-import { navigationRoutes, profileRoute } from "@/constants/navigationRoute"
+import {
+  getActiveNavigationItem,
+  navigationRoutes,
+  profileRoute,
+} from "@/constants/navigationRoute"
 import { useClientSession } from "@/hooks/useClientSession"
 import Link from "next/link"
-import { usePathname, useSelectedLayoutSegment } from "next/navigation"
+import {
+  useParams,
+  usePathname,
+  useSelectedLayoutSegment,
+} from "next/navigation"
 import { twMerge } from "tailwind-merge"
 
 interface SideNavigationProps {
@@ -22,6 +30,7 @@ interface SideNavigationItemProps {
 function SideNavigation({ hasHeader }: SideNavigationProps) {
   const currentSegment = useSelectedLayoutSegment()
   const pathname = usePathname()
+  const params = useParams()
 
   const wrapperClassNames = twMerge([
     "hidden sm:sticky sm:inline-flex sm:w-[200px] sm:align-top sm:top-[--height-header] sm:bg-colorsLightGray sm:h-[calc(100vh-var(--height-header))] sm:z-navigation",
@@ -29,21 +38,20 @@ function SideNavigation({ hasHeader }: SideNavigationProps) {
   ])
 
   const { user } = useClientSession()
+  const isMyPage =
+    pathname.includes("profile") && Number(params.id) === user?.member_id
 
-  // 로그인 된 사용자만 profile 탭 보이도록
+  const activeNavItem = getActiveNavigationItem({
+    segment: currentSegment,
+    pathname,
+  })
+
   return (
     <aside className={wrapperClassNames}>
       <nav className={"w-full box-border px-2 py-6"}>
         <ul className="flex flex-col gap-4">
           {navigationRoutes.map(({ label, icon, to, activeClassName }) => {
-            const active =
-              currentSegment === null
-                ? to === "/"
-                : currentSegment === "question"
-                ? to === "/"
-                : pathname.startsWith("/profile/")
-                ? false
-                : to.startsWith(`/${currentSegment}`)
+            const active = activeNavItem ? activeNavItem.label === label : false
 
             return (
               <li key={label}>
@@ -59,19 +67,16 @@ function SideNavigation({ hasHeader }: SideNavigationProps) {
           })}
           {!!user &&
             profileRoute.map(({ label, icon, to, activeClassName }) => {
-              const active =
-                currentSegment === null
-                  ? to === "/"
-                  : currentSegment === "question"
-                  ? to === "/"
-                  : to.startsWith(`/${currentSegment}`)
+              const active = activeNavItem
+                ? activeNavItem.label === label
+                : false
 
               return (
                 <li key={label}>
                   <SideNavigationItem
                     label={label}
                     icon={icon}
-                    active={active}
+                    active={isMyPage || active}
                     activeClassName={activeClassName}
                     to={to}
                   />

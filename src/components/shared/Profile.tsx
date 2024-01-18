@@ -4,6 +4,7 @@ import Image from "next/image"
 import Button from "./button/Button"
 import Skeleton from "react-loading-skeleton"
 import { ButtonHTMLAttributes, useState } from "react"
+import { flushSync } from "react-dom"
 
 interface ProfileProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   profileImage?: string | null
@@ -12,6 +13,7 @@ interface ProfileProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 
 function Profile({ profileImage, className, ...props }: ProfileProps) {
   const [imageLoaded, setImageLoaded] = useState(false)
+  const [invalidImage, setInvalidImage] = useState(false)
 
   const classNames = {
     noProfile: twMerge("w-8 h-8 p-0", className),
@@ -21,7 +23,7 @@ function Profile({ profileImage, className, ...props }: ProfileProps) {
     ),
   }
 
-  if (!profileImage)
+  if (!profileImage || invalidImage)
     return (
       <Button className={classNames.noProfile} {...props}>
         <Icons.UserProfile className="text-[30px] leading-8 fill-colorsGray shrink-0" />
@@ -35,6 +37,13 @@ function Profile({ profileImage, className, ...props }: ProfileProps) {
         src={profileImage}
         alt={"profileImgge"}
         onLoad={() => setImageLoaded(true)}
+        onError={(e) => {
+          flushSync(() => {
+            setInvalidImage(true)
+          })
+
+          setImageLoaded(true)
+        }}
         fill
         style={{
           objectFit: "cover",

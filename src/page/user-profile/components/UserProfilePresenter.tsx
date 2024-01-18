@@ -4,12 +4,11 @@ import { Icons } from "@/components/icons/Icons"
 import Spacing from "@/components/shared/Spacing"
 import { UserPayload } from "@/interfaces/dto/member/get-member.dto"
 import Image from "next/image"
-import { PropsWithChildren, useEffect, useLayoutEffect, useRef } from "react"
+import { PropsWithChildren, useEffect, useRef } from "react"
 import UserProfileSection from "./UserProfileSection"
 import UserProfileMenu from "./UserProfileMenu"
 import badge_url from "@/assets/images/badges"
 import levelStandard from "@/constants/levelStandard"
-import styled from "@emotion/styled"
 
 interface UserProfilePresenterProps {
   userPayload: UserPayload
@@ -44,7 +43,7 @@ UserProfilePresenter.Container = function UserProfileContainer({
 UserProfilePresenter.BackgroundSection =
   function UserProfileBackgroundSection() {
     return (
-      <div className="relative w-full h-0 pb-36 sm:aspect-video sm:max-h-[400px] sm:h-fit bg-colorsLightGray ">
+      <div className="relative w-full h-0 pb-36 sm:aspect-video sm:max-h-[400px] sm:h-fit bg-colorsLightGray">
         <Image
           src={
             "https://images.unsplash.com/photo-1516727052521-08079c40df80?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
@@ -63,7 +62,7 @@ UserProfilePresenter.UserInfo = function UserProfileInfo({
   userPayload: UserPayload
 }) {
   return (
-    <div className="w-full flex flex-col justify-center items-center sticky top-0 [margin-block-start:-60px] sm:[margin-block-start:-88px] sm:h-max sm:min-h-[200px] sm:justify-start sm:top-[calc(var(--height-header))] sm:w-max sm:box-border sm:pt-4 sm:-translate-x-[1px]">
+    <div className="w-full flex flex-col justify-center items-center sticky top-0 [margin-block-start:-60px] sm:[margin-block-start:-88px] sm:h-max sm:min-h-[200px] sm:justify-start sm:top-[calc(var(--height-header))] sm:w-max sm:box-border sm:pt-4 sm:-translate-x-[7px]">
       <div className="relative w-[120px] h-[120px] rounded-full overflow-hidden [&_svg]:w-[120px] [&>svg]:h-[120px]">
         {userPayload.image_url ? (
           <Image

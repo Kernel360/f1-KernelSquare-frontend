@@ -1,5 +1,3 @@
-import { User } from "./user"
-
 /**
  * Answer (답변)
  *
@@ -27,19 +25,25 @@ import { User } from "./user"
  *
  * **vote_count** 답변 추천수(number)
  *
- * **vote_yn** 답변 투표 여부(boolean)
+ * **vote_status** 답변 투표 상태 (1: 추천, 0: 투표 x, -1: 비추천)
  */
-export interface Answer extends Pick<User, "image_url"> {
+export interface Answer {
   answer_id: number
   question_id: number
   content: string
-  rank_image_url: string
-  member_image_url: string
+  rank_image_url: string | null
+  member_image_url: string | null
   created_by: string
   author_level: number
   answer_image_url: string
   created_date: string
   modified_date: string
   vote_count: number
-  vote_yn: boolean
+  vote_status: VoteStatus
+}
+
+export enum VoteStatus {
+  LIKED = 1,
+  NONE = 0,
+  DISLIKED = -1,
 }

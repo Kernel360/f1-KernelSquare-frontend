@@ -5,30 +5,49 @@ import { answerQueries } from "@/react-query/answers"
 import ContentLoading from "@/components/shared/animation/ContentLoading"
 import LightBulb from "@/components/shared/animation/LightBulb"
 import { notificationMessage } from "@/constants/message"
+import useQnADetail from "../../hooks/useQnADetail"
+import type { AnswerProps, NoAnswerProps } from "./AnswerList.types"
 
-interface AnswerProps {
-  user: string | undefined
-  id: number
-  isMyAnswer: boolean
-}
-
-const AnswerList: React.FC<AnswerProps> = ({ user, id, isMyAnswer }) => {
+const AnswerList: React.FC<AnswerProps> = ({
+  createdby,
+  questionId,
+  isMyAnswer,
+}) => {
   const { data, isPending } = answerQueries.useGetAnswers({
-    questionId: id,
+    questionId,
   })
+  const { filterMyAnswer, handleIsChecked } = useQnADetail()
+  const isAnswer = !!data?.data?.length
 
   if (isPending) return <Loading />
 
   if (data)
     return (
-      <div className="max-w-full box-border border border-colorsGray rounded-lg p-10 my-5">
-        {data?.data?.length ? (
-          data?.data?.map((answer) => (
-            <OneAnswer key={answer.answer_id} answer={answer} user={user} />
-          ))
-        ) : (
-          <NoAnswer isMyAnswer={isMyAnswer} />
-        )}
+      <div>
+        <div className="flex flex-wrap justify-between">
+          <div className="font-bold text-[24px]">Answers</div>
+          <div className="mt-3 flex items-center">
+            <input
+              type="checkbox"
+              id="My Answer"
+              className="mr-3"
+              onChange={handleIsChecked}
+            />
+            <label htmlFor="My Answer">내 답변 보기</label>
+          </div>
+        </div>
+        <div className="max-w-full box-border border border-colorsGray rounded-lg p-10 my-5">
+          {!isAnswer && <NoAnswer isMyAnswer={isMyAnswer} />}
+          {isAnswer &&
+            !!data.data &&
+            filterMyAnswer(data?.data).map((answer) => (
+              <OneAnswer
+                key={answer.answer_id}
+                answer={answer}
+                createdby={createdby}
+              />
+            ))}
+        </div>
       </div>
     )
 }
@@ -49,7 +68,7 @@ const Loading = () => {
   )
 }
 
-const NoAnswer: React.FC<{ isMyAnswer: boolean }> = ({ isMyAnswer }) => {
+const NoAnswer: React.FC<NoAnswerProps> = ({ isMyAnswer }) => {
   return (
     <div className="text-center">
       <div className="flex justify-center">

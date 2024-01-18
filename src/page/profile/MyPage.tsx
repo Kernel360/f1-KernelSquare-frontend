@@ -8,7 +8,6 @@ import Introduction from "./components/Introduction"
 import { twMerge } from "tailwind-merge"
 import { useClientSession } from "@/hooks/useClientSession"
 
-// 아이디 값 관련 로직 수정 예정
 function MyPage() {
   const { user } = useClientSession()
 

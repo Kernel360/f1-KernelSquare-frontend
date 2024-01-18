@@ -25,18 +25,17 @@ const EditBox: React.FC<{ previous?: string; id: number }> = ({
   const { closeEditMode, introduction, setIntroduction } = useMyPage()
   const { clientSessionUpdate } = useClientSession()
 
-  const [textLen, setTextLen] = useState<number>(0)
+  const introductionValue = useDebounce(introduction, 200)
+  const [textLen, setTextLen] = useState<number>(introductionValue.length || 0)
 
   const styleWithWarning = twJoin([textLen > 300 && "text-[#EF4040]"])
-
-  const value = useDebounce(introduction, 200)
 
   const handleChange = (textValue: string) => {
     setIntroduction(textValue)
     setTextLen(textValue.length)
   }
 
-  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     if (introduction.length > 300) {
       toast.error(errorMessage.introductionLimit, {
@@ -47,17 +46,16 @@ const EditBox: React.FC<{ previous?: string; id: number }> = ({
     }
 
     try {
-      updateMemberInfo({
+      await updateMemberInfo({
         id,
         introduction,
-      }).then(() => {
-        toast.success(successMessage.editIntroduction, {
-          position: "top-center",
-          autoClose: 1000,
-        })
-        clientSessionUpdate({
-          introduction,
-        })
+      })
+      toast.success(successMessage.editIntroduction, {
+        position: "top-center",
+        autoClose: 1000,
+      })
+      clientSessionUpdate({
+        introduction,
       })
     } catch (err) {
       console.error("error", err)

@@ -6,9 +6,12 @@ import { useEffect } from "react"
 import Spacing from "../Spacing"
 import ConfirmModalMessage, { type MessageKey } from "./ConfirmModalMessage"
 
+type BasicFunc = () => void
+type PromiseFunc = () => Promise<void>
+
 interface ConfirmModalProps {
-  onSuccess: () => Promise<void>
-  onCancel: () => Promise<void>
+  onSuccess: BasicFunc | PromiseFunc
+  onCancel: BasicFunc | PromiseFunc
   situation: MessageKey
 }
 
@@ -30,7 +33,7 @@ function ConfirmModal({ ...props }: ConfirmModalProps) {
   return null
 }
 
-ConfirmModal.ModalContent = function DeleteContentModal({
+ConfirmModal.ModalContent = function ConfirmModal({
   onSuccess,
   onCancel,
   situation,

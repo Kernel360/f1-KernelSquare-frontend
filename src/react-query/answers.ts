@@ -1,10 +1,12 @@
 import queryKey from "@/constants/queryKey"
-import { CreateAnswerRequest } from "@/interfaces/dto/answer/create-answer.dto"
-import { CreateVoteRequest } from "@/interfaces/dto/answer/create-vote.dto"
-import { GetAnswerRequest } from "@/interfaces/dto/answer/get-answerlist.dto"
-import { UpdateAnswerRequest } from "@/interfaces/dto/answer/update-answer.dto"
+import type { CreateAnswerRequest } from "@/interfaces/dto/answer/create-answer.dto"
+import type { CreateVoteRequest } from "@/interfaces/dto/answer/create-vote.dto"
+import type { DeleteAnswerRequest } from "@/interfaces/dto/answer/delete-answer.dto"
+import type { GetAnswerRequest } from "@/interfaces/dto/answer/get-answerlist.dto"
+import type { UpdateAnswerRequest } from "@/interfaces/dto/answer/update-answer.dto"
 import {
   createAnswer,
+  deleteAnswer,
   getAnswer,
   updateAnswer,
   voteAnswer,
@@ -13,10 +15,10 @@ import { keepPreviousData, useMutation, useQuery } from "@tanstack/react-query"
 
 const useGetAnswers = ({ questionId }: GetAnswerRequest) =>
   useQuery({
-    queryKey: ["answer", questionId],
+    queryKey: [queryKey.answer, questionId],
     queryFn: () => getAnswer({ questionId }),
     placeholderData: keepPreviousData,
-    staleTime: 1000 * 5,
+    staleTime: 1000 * 60 * 5,
     select(payload) {
       return payload.data
     },
@@ -44,16 +46,25 @@ const useUpdateAnswer = ({
     mutationFn: () => updateAnswer({ answerId, content, image_url }),
   })
 
-const useVoteAnswer = ({ answerId, member_id, status }: CreateVoteRequest) =>
+const useDeleteAnswer = ({ answerId }: DeleteAnswerRequest) =>
   useMutation({
     mutationKey: [queryKey.answer],
-    mutationFn: () => voteAnswer({ answerId, member_id, status }),
+    mutationFn: () => deleteAnswer({ answerId }),
+  })
+
+const useVoteAnswer = () =>
+  useMutation({
+    mutationKey: ["ans"],
+    mutationFn: ({ answerId, member_id, status }: CreateVoteRequest) =>
+      voteAnswer({ answerId, member_id, status }),
     onSuccess: () => console.log("투표 성공"),
     onError: (error) => console.log("error", error.message),
   })
+
 export const answerQueries = {
   useGetAnswers,
   useCreateAnswer,
   useUpdateAnswer,
+  useDeleteAnswer,
   useVoteAnswer,
 }
