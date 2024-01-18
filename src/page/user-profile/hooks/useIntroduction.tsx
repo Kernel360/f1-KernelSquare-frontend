@@ -29,7 +29,7 @@ const useIntroduction = () => {
   const handleSubmitIntroduction: SubmitHandler<IntroductionValue> = async (
     data,
   ) => {
-    if (data.intro.length > 300) {
+    if (data.introduction.length > 300) {
       toast.error(errorMessage.introductionLimit, {
         position: "top-center",
         autoClose: 1000,
@@ -48,14 +48,11 @@ const useIntroduction = () => {
     try {
       await updateMemberInfo({
         id: user?.member_id,
-        introduction: data.intro,
+        introduction: data.introduction,
       })
       toast.success(successMessage.editIntroduction, {
         position: "top-center",
         autoClose: 1000,
-      })
-      clientSessionUpdate({
-        introduction: data.intro,
       })
       queryClient.invalidateQueries({
         queryKey: [queryKey.user, queryKey.profile, user.member_id],

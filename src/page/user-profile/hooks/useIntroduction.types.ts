@@ -1,3 +1,3 @@
 export interface IntroductionValue {
-  intro: string
+  introduction: string
 }

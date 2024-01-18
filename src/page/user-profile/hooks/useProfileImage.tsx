@@ -14,12 +14,15 @@ import type {
   SaveImageProps,
   UseProfileImageProps,
 } from "./useProfileImage.types"
+import queryKey from "@/constants/queryKey"
+import { useQueryClient } from "@tanstack/react-query"
 
 const useProfileImage = ({ image_url }: UseProfileImageProps) => {
   const { user, clientSessionUpdate } = useClientSession()
   const { openModal } = useModal()
   const [image, setImage] = useState<string | ArrayBuffer | null>(image_url)
   const [preview, setPreview] = useState<string>("")
+  const queryClient = useQueryClient()
 
   const handleSaveImage = async ({ image, memberId }: SaveImageProps) => {
     const onSuccess = async () => {
@@ -41,6 +44,9 @@ const useProfileImage = ({ image_url }: UseProfileImageProps) => {
           })
           clientSessionUpdate({
             image_url: imageUploadResponse.data.data?.image_url,
+          })
+          queryClient.invalidateQueries({
+            queryKey: [queryKey.user, queryKey.profile, memberId],
           })
         }
       } catch (error) {
