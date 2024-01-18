@@ -12,18 +12,20 @@ import {
   notificationMessage,
   errorMessage,
   successMessage,
+  buttonMessage,
 } from "@/constants/message"
 import { Icons } from "@/components/icons/Icons"
 import { uploadImages } from "@/service/images"
 import useModal from "@/hooks/useModal"
 import ConfirmModal from "@/components/shared/confirm-modal/ConfirmModal"
 import { useClientSession } from "@/hooks/useClientSession"
+import AuthGuardModal from "@/components/shared/auth-modal/AuthGuardModal"
 
 function ProfileImage({ id, image_url }: ImageProps) {
   const [image, setImage] = useState<string | ArrayBuffer | null>(image_url)
   const [preview, setPreview] = useState<string>("")
   const imageUploadRef = useRef<HTMLInputElement>(null)
-  const { clientSessionUpdate } = useClientSession()
+  const { user, clientSessionUpdate } = useClientSession()
 
   const { openModal } = useModal()
 
@@ -36,27 +38,26 @@ function ProfileImage({ id, image_url }: ImageProps) {
         })
         console.log("upload", imageUploadResponse)
 
-        await updateMemberInfo({
+        const infoUpdateResponse = await updateMemberInfo({
           id,
           image_url: imageUploadResponse.data.data?.image_url,
-        }).then((res) => {
-          console.log("res", res)
-          if (res.data.code === 1242) {
-            toast.success(successMessage.editProfileImage, {
-              position: "top-center",
-            })
-            clientSessionUpdate({
-              image_url: imageUploadResponse.data.data?.image_url,
-            })
-          }
         })
+        console.log("res", infoUpdateResponse)
+        if (infoUpdateResponse.data.code === 1242) {
+          toast.success(successMessage.editProfileImage, {
+            position: "top-center",
+          })
+          clientSessionUpdate({
+            image_url: imageUploadResponse.data.data?.image_url,
+          })
+        }
       } catch (error) {
         toast.error(errorMessage.failToUploadImage)
         console.error("Error", error)
       }
     }
 
-    const onCancel = async () => {
+    const onCancel = () => {
       toast.error(notificationMessage.cancleUploadImage, {
         position: "top-center",
       })
@@ -110,10 +111,12 @@ function ProfileImage({ id, image_url }: ImageProps) {
     }
   }, []) /* eslint-disable-line */
 
+  if (!user) return <AuthGuardModal page="profile" />
+
   return (
     <div>
       <div className="w-[150px] h-[150px] relative">
-        {typeof image === "string" && <ImageArea image={image_url} />}
+        {typeof image === "string" && <ImageArea image={user?.image_url} />}
       </div>
       <Spacing size={10} />
       <input
@@ -129,7 +132,7 @@ function ProfileImage({ id, image_url }: ImageProps) {
         className="w-[150px] h-[30px]"
         onClick={handleUpload}
       >
-        프로필 변경
+        {buttonMessage.updateProfile}
       </Button>
     </div>
   )

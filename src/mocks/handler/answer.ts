@@ -3,7 +3,7 @@ import type {
   CreateAnswerResponse,
 } from "@/interfaces/dto/answer/create-answer.dto"
 import { RouteMap } from "@/service/route-map"
-import { HttpResponse, http } from "msw"
+import { DefaultBodyType, HttpResponse, http } from "msw"
 import { mockQuestions } from "../db/questions"
 import { mockUsers } from "../db/user"
 import { getNow } from "@/util/getDate"
@@ -21,6 +21,13 @@ import type {
   GetAnswerRequest,
   GetAnswerResponse,
 } from "@/interfaces/dto/answer/get-answerlist.dto"
+import { DeleteAnswerResponse } from "@/interfaces/dto/answer/delete-answer.dto"
+import badge_url from "@/assets/images/badges"
+import type { Answer } from "@/interfaces/answer"
+import {
+  DeleteVoteRequest,
+  DeleteVoteResponse,
+} from "@/interfaces/dto/answer/delete-vote.dto"
 
 export const answerHandler = [
   // 특정 질문 답변 조회
@@ -81,14 +88,14 @@ export const answerHandler = [
         )
       }
 
-      const newAnswer = {
+      const newAnswer: Answer = {
         answer_id: targetQuestion
           ? targetQuestion.list.length + 1
           : Math.random() * 1000,
         question_id: questionId,
         content,
         author_level: 1,
-        rank_image_url: "",
+        rank_image_url: badge_url[1],
         member_image_url:
           "https://mobirise.com/bootstrap-template//profile-template/assets/images/timothy-paul-smith-256424-1200x800.jpg",
         created_by: targetMember.nickname,
@@ -96,11 +103,10 @@ export const answerHandler = [
         created_date: getNow(),
         modified_date: getNow(),
         vote_count: 0,
-        vote_yn: false,
+        vote_status: 0,
       }
 
-      targetQuestion?.list.push(newAnswer)
-      mockAnswers.push(newAnswer)
+      mockAnswers.unshift(newAnswer)
 
       return HttpResponse.json(
         {
@@ -143,37 +149,41 @@ export const answerHandler = [
       )
     },
   ),
+  // 답변 삭제
+  http.delete<{ id: string }, DefaultBodyType, DeleteAnswerResponse>(
+    `${process.env.NEXT_PUBLIC_SERVER}${RouteMap.answer.updateAnswer()}`,
+    async ({ params }) => {
+      const answerId = Number(params.id)
+
+      const targetAnswer = mockAnswers.findIndex(
+        (answer) => answer.answer_id === answerId,
+      )
+
+      mockAnswers.splice(targetAnswer, 1)
+
+      return HttpResponse.json(
+        {
+          code: 2150,
+          msg: "답변 삭제 성공",
+        },
+        {
+          status: HttpStatusCode.Ok,
+        },
+      )
+    },
+  ),
   // 답변 투표 생성
   http.post<{ id: string }, CreateVoteRequest, CreateVoteResponse>(
     `${process.env.NEXT_PUBLIC_SERVER}${RouteMap.answer.voteAnswer()}`,
     async ({ request, params }) => {
       const answerId = Number(params.id)
       try {
-        const { member_id, status } = await request.json()
-        console.log(answerId, member_id, status)
+        const { status } = await request.json()
 
-        // 답변 목록에서
+        // 질문 목록에서
         const targetAnswer = mockAnswers.find(
           (answer) => answer.answer_id === answerId,
         )
-        // 질문 목록에서
-        const targetQuestion = mockQuestions.find((question) =>
-          question.list.some((answer) => answer.answer_id === answerId),
-        )
-
-        // const targetMember = mockUsers.find((member) => member.id === member_id)
-
-        if (!targetQuestion)
-          return HttpResponse.json(
-            {
-              code: 500,
-              msg: "해당 질문이 존재하지 않습니다.",
-            },
-            {
-              status: HttpStatusCode.InternalServerError,
-            },
-          )
-
         if (!targetAnswer)
           return HttpResponse.json(
             {
@@ -186,11 +196,7 @@ export const answerHandler = [
           )
 
         targetAnswer.vote_count += status
-
-        const targetInQuestoinList = targetQuestion.list.find(
-          (answer) => answer.answer_id === answerId,
-        )!
-        targetInQuestoinList.vote_count += status
+        targetAnswer.vote_status = status
 
         return HttpResponse.json(
           {
@@ -208,6 +214,55 @@ export const answerHandler = [
           {
             code: 500,
             msg: "투표 생성 실패",
+          },
+          {
+            status: HttpStatusCode.InternalServerError,
+          },
+        )
+      }
+    },
+  ),
+  // 답변 투표 삭제
+  http.delete<{ id: string }, DeleteVoteRequest, DeleteVoteResponse>(
+    `${process.env.NEXT_PUBLIC_SERVER}${RouteMap.answer.voteAnswer()}`,
+    async ({ params }) => {
+      const answerId = Number(params.id)
+      try {
+        // 질문 목록에서
+        const targetAnswer = mockAnswers.find(
+          (answer) => answer.answer_id === answerId,
+        )
+        if (!targetAnswer)
+          return HttpResponse.json(
+            {
+              code: 500,
+              msg: "해당 답변이 존재하지 않습니다.",
+            },
+            {
+              status: HttpStatusCode.InternalServerError,
+            },
+          )
+
+        if (targetAnswer.vote_status === 1) targetAnswer.vote_count--
+        if (targetAnswer.vote_status === -1) targetAnswer.vote_count++
+        targetAnswer.vote_status = 0
+
+        return HttpResponse.json(
+          {
+            code: 2245,
+            msg: "투표 삭제 성공",
+          },
+          {
+            status: HttpStatusCode.Ok,
+          },
+        )
+      } catch (err) {
+        console.log(`%cError`, `background:red; color:#fff`)
+        console.log({ err })
+        return HttpResponse.json(
+          {
+            code: 500,
+            msg: "투표 삭제 실패",
           },
           {
             status: HttpStatusCode.InternalServerError,

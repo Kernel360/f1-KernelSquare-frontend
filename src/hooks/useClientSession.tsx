@@ -5,13 +5,18 @@ import { useRecoilValue } from "recoil"
 
 export function useClientSession() {
   const user = useRecoilValue(userAtom)
-  const { clientSessionLogin, clientSessionLogout, clientSessionUpdate } =
-    useRecoilValue(userClientSession)
+  const {
+    clientSessionLogin,
+    clientSessionLogout,
+    clientSessionUpdate,
+    clientSessionReset,
+  } = useRecoilValue(userClientSession)
 
   return {
     user,
     clientSessionLogin,
     clientSessionLogout,
     clientSessionUpdate,
+    clientSessionReset,
   }
 }

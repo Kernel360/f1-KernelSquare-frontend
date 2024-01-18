@@ -43,7 +43,9 @@ export function getServerSession() {
   const payloadToken = cookieStore.get(ENCRYPTED_PAYLOAD_KEY)?.value
 
   const user =
-    !accessToken || !payloadToken ? null : JSON.parse(decrypt(payloadToken))
+    !accessToken || !payloadToken
+      ? null
+      : (JSON.parse(decrypt(payloadToken)) as LoginUserPayload)
 
   return {
     user,

@@ -9,4 +9,9 @@ export interface CreateQuestionRequest {
   skills: Array<TechTag>
 }
 
-export interface CreateQuestionResponse extends APIResponse<number> {}
+export interface CreateQuestionPayload {
+  question_id: number
+}
+
+export interface CreateQuestionResponse
+  extends APIResponse<CreateQuestionPayload> {}

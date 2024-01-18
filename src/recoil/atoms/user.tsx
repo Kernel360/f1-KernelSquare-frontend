@@ -4,25 +4,31 @@ import { AxiosError } from "axios"
 import { decrypt, encrypt } from "@/util/crypto"
 import {
   deleteAuthCookie,
-  getAuthCookie,
+  deleteUserPayloadCookie,
   getPayloadCookie,
   setAuthCookie,
+  updateUserPayloadCookie,
 } from "@/util/actions/cookie"
 import { LoginUserPayload } from "@/interfaces/dto/auth/login.dto"
 import { ENCRYPTED_PAYLOAD_KEY } from "@/constants/token"
 import type { UpdateMemberInfoRequest } from "@/interfaces/dto/member/update-member-info.dto"
 import { errorMessage } from "@/constants/message"
+import dayjs from "dayjs"
 
-const userSelector = selector<LoginUserPayload | null>({
-  key: "user-selector",
-  get: async () => {
-    return await getPayload()
-  },
-})
+type SessionPayload = (LoginUserPayload & { expires: string }) | null
 
-export const userAtom = atom<LoginUserPayload | null>({
+export const userAtom = atom<SessionPayload>({
   key: "user-atom",
-  default: userSelector,
+  default: null,
+  effects: [
+    ({ setSelf, trigger }) => {
+      if (trigger === "get") {
+        getPayload().then((payload) => {
+          setSelf(payload)
+        })
+      }
+    },
+  ],
 })
 
 export const userClientSession = selector({
@@ -52,12 +58,30 @@ export const userClientSession = selector({
               ...userPayload,
             }
 
-            const stringifyPayload = JSON.stringify(payload)
+            const expires = dayjs().add(1, "hours").startOf("second").toDate()
+
+            console.log("user expires", {
+              iso: expires.toISOString(),
+              json: expires.toJSON(),
+            })
+
+            const stringifyPayload = JSON.stringify({
+              ...payload,
+              expires: expires.toISOString(),
+            } as SessionPayload)
             const encryptedPayload = encrypt(stringifyPayload)
 
-            await setAuthCookie(access_token, refresh_token, encryptedPayload)
+            await setAuthCookie(
+              access_token,
+              refresh_token,
+              encryptedPayload,
+              expires,
+            )
 
-            set(userAtom, payload)
+            set(userAtom, {
+              ...payload,
+              expires: expires.toJSON(),
+            })
           } catch (error) {
             if (!(error instanceof AxiosError)) {
               console.log({ sessionError: error })
@@ -82,6 +106,18 @@ export const userClientSession = selector({
     })
 
     /**
+     * 세션 리셋
+     *
+     * - 리프레시 토큰은 유지시키고, 클라이언트 유저 상태를 클리어
+     *
+     */
+    const clientSessionReset = getCallback(({ set }) => async () => {
+      await deleteUserPayloadCookie()
+
+      set(userAtom, null)
+    })
+
+    /**
      * 수정된 사용자 정보 반영
      *
      * - 프론트에서 수정한 사용자 정보(프로필 이미지, 자기소개)를 쿠키에 반영하는 목적
@@ -95,23 +131,28 @@ export const userClientSession = selector({
           introduction,
         }: Omit<UpdateMemberInfoRequest, "id">) => {
           try {
-            const { accessToken, refreshToken } = await getAuthCookie()
-
             const payloadResponse = await getPayloadCookie()
 
             if (payloadResponse === null) {
               console.error(errorMessage.emptyCookie)
-              return
+
+              throw new Error(errorMessage.emptyCookie)
             }
 
-            const editedPayload = JSON.parse(decrypt(payloadResponse))
+            const editedPayload = JSON.parse(
+              decrypt(payloadResponse),
+            ) as NonNullable<SessionPayload>
+
             if (image_url) editedPayload.image_url = image_url
             if (introduction) editedPayload.introduction = introduction
 
             const stringifyPayload = JSON.stringify(editedPayload)
             const encryptedPayload = encrypt(stringifyPayload)
 
-            await setAuthCookie(accessToken!, refreshToken!, encryptedPayload)
+            await updateUserPayloadCookie(
+              encryptedPayload,
+              dayjs(editedPayload.expires).startOf("second").toDate(),
+            )
 
             set(userAtom, editedPayload)
           } catch (error) {
@@ -128,6 +169,7 @@ export const userClientSession = selector({
       clientSessionLogin,
       clientSessionLogout,
       clientSessionUpdate,
+      clientSessionReset,
     }
   },
 })
@@ -145,7 +187,7 @@ export const userClientSession = selector({
  * 2) Payload가 존재하면 해당 값을 복호화 + LoaginUserPayload 타입으로 파싱한다.
  */
 
-async function getPayload(): Promise<LoginUserPayload | null> {
+async function getPayload(): Promise<SessionPayload> {
   if (typeof window === "undefined") {
     const { cookies } = await import("next/headers")
     const payloadCookie = cookies().get(ENCRYPTED_PAYLOAD_KEY)
