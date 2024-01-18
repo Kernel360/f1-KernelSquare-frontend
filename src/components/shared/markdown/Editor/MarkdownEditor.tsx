@@ -36,6 +36,7 @@ import "@toast-ui/editor-plugin-color-syntax/dist/toastui-editor-plugin-color-sy
 import "@toast-ui/editor-plugin-code-syntax-highlight/dist/toastui-editor-plugin-code-syntax-highlight-all.js"
 import codeSyntaxHighlight from "@toast-ui/editor-plugin-code-syntax-highlight/dist/toastui-editor-plugin-code-syntax-highlight-all.js"
 import "@toast-ui/editor-plugin-code-syntax-highlight/dist/toastui-editor-plugin-code-syntax-highlight.css"
+import { errorMessage } from "@/constants/message"
 import { uploadImages } from "@/service/images"
 import { UploadImagesResponse } from "@/interfaces/dto/upload/upload-images.dto"
 // 전체 언어 지원
@@ -123,7 +124,7 @@ const MarkdownEditor = (
     } catch (error) {
       if (error instanceof Error) {
         if (error.message === exceedingUploadableImagesError.message) {
-          toast.error("이미지 파일 업로드는 1장만 가능합니다", {
+          toast.error(errorMessage.imageUploadLimit, {
             position: "top-center",
           })
 
@@ -135,7 +136,7 @@ const MarkdownEditor = (
         const { response } = error as AxiosError<UploadImagesResponse>
 
         if (response?.status === HttpStatusCode.Unauthorized) {
-          toast.error("로그인 후 다시 이용해주세요", {
+          toast.error(errorMessage.unauthorized, {
             position: "top-center",
           })
 
@@ -147,14 +148,14 @@ const MarkdownEditor = (
           return
         }
 
-        toast.error("이미지 업로드에 실패했습니다", {
+        toast.error(errorMessage.failToUploadImage, {
           position: "top-center",
         })
 
         return
       }
 
-      toast.error("이미지 업로드에 실패했습니다", {
+      toast.error(errorMessage.failToUploadImage, {
         position: "top-center",
       })
 

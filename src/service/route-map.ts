@@ -135,8 +135,8 @@ export class RouteMap {
         questionId === undefined ? ":id" : questionId
       }`
     },
-    deleteQuestion(questionId: number) {
-      return `${RouteMap.routeGroupBaseURL.question}/${questionId}`
+    deleteQuestion(questionId?: number) {
+      return `${RouteMap.routeGroupBaseURL.question}/${questionId ?? ":id"}`
     },
   }
 
@@ -171,8 +171,10 @@ export class RouteMap {
         RouteMap.prefix.answer
       }/${answerId ?? ":id"}`
     },
-    deleteAnswer(answerId: number) {
-      return `${RouteMap.routeGroupBaseURL.question}/${RouteMap.prefix.answer}/${answerId}`
+    deleteAnswer(answerId?: number) {
+      return `${RouteMap.routeGroupBaseURL.question}/${
+        RouteMap.prefix.answer
+      }/${answerId ?? ":id"}`
     },
     voteAnswer(answerId?: number) {
       return `${RouteMap.routeGroupBaseURL.question}/${

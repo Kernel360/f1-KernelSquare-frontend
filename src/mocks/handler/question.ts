@@ -14,6 +14,8 @@ import dayjs from "dayjs"
 import { TechTag } from "@/interfaces/tech-tag"
 import badge_url from "@/assets/images/badges"
 import { ApiStatus } from "@/constants/response/api"
+import { DeleteQuestionResponse } from "@/interfaces/dto/question/delete-question.dto"
+import { HttpStatusCode } from "axios"
 import {
   UpdateQuestionRequest,
   UpdateQuestionResponse,
@@ -258,6 +260,30 @@ export const questionHandler = [
       }
     },
   ),
+  // 질문 삭제
+  http.delete<{ id: string }, DefaultBodyType, DeleteQuestionResponse>(
+    `${process.env.NEXT_PUBLIC_SERVER}${RouteMap.question.deleteQuestion()}`,
+    async ({ params }) => {
+      const questionId = Number(params.id)
+
+      const targetQuestion = mockQuestions.findIndex(
+        (question) => question.id === questionId,
+      )
+      console.log("t", targetQuestion)
+
+      mockQuestions.splice(targetQuestion, 1)
+
+      return HttpResponse.json(
+        {
+          code: 2144,
+          msg: "질문 삭제 성공",
+        },
+        {
+          status: HttpStatusCode.Ok,
+        },
+      )
+    },
+  ),
   http.put<
     { id: string },
     Omit<UpdateQuestionRequest, "questionId">,
@@ -355,6 +381,7 @@ export function createMockQuestion({
     skills,
     close_status: false,
     created_date: dayjs(createdDate).format("YYYY-MM-DD HH:mm:ss"),
+    member_id,
     modified_date: dayjs(createdDate).format("YYYY-MM-DD HH:mm:ss"),
     level: user!.level,
     level_image_url: badge_url[user!.level],

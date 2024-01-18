@@ -1,19 +1,20 @@
 "use client"
 
-import React, { useEffect, useState } from "react"
-import Question from "./components/Question"
+import React, { useEffect } from "react"
+import Question from "./components/Question/Question"
 import MyAnswer from "./components/MyAnswer"
 import AnswerList from "./components/Answers/AnswerList"
 import { questionQueries } from "@/react-query/question"
 import ContentLoading from "@/components/shared/animation/ContentLoading"
-import type { Answer } from "@/interfaces/answer"
 import { answerQueries } from "@/react-query/answers"
 import { useClientSession } from "@/hooks/useClientSession"
+import useQnADetail from "./hooks/useQnADetail"
 
 const QnADetail: React.FC<{ id: string }> = ({ id }) => {
   const { data, isPending } = questionQueries.useQuestionData({
     id: Number(id),
   })
+  const { setIsAnswerMode, handleCheckMyAnswer } = useQnADetail()
 
   const { user } = useClientSession()
 
@@ -21,11 +22,6 @@ const QnADetail: React.FC<{ id: string }> = ({ id }) => {
     answerQueries.useGetAnswers({
       questionId: Number(id),
     })
-
-  const [isAnswerMode, setIsAnswerMode] = useState(false)
-
-  const handleCheckMyAnswer = (list: Answer[], nickname?: string) =>
-    list?.some((answer) => answer.created_by === nickname)
 
   useEffect(() => {
     const fetchData = async () => {
@@ -50,15 +46,10 @@ const QnADetail: React.FC<{ id: string }> = ({ id }) => {
         <div className="w-[calc(100%-12px)] sm:w-[calc(100%-22px)] lg:w-[calc(100%-42px)] mx-auto">
           <div className="font-bold text-[36px]">Q&A</div>
           <Question id={Number(id)} />
-          <MyAnswer
-            id={Number(id)}
-            isAnswerMode={isAnswerMode}
-            setIsAnswerMode={setIsAnswerMode}
-          />
-          <Title title="Answers" />
+          <MyAnswer questionId={Number(id)} />
           <AnswerList
-            user={user?.nickname}
-            id={Number(id)}
+            createdby={user?.nickname!}
+            questionId={Number(id)}
             isMyAnswer={data?.data?.nickname === user?.nickname}
           />
         </div>
@@ -67,10 +58,6 @@ const QnADetail: React.FC<{ id: string }> = ({ id }) => {
 }
 
 export default QnADetail
-
-const Title: React.FC<{ title: string }> = ({ title }) => {
-  return <div className="font-bold text-[24px]">{title}</div>
-}
 
 function Loading() {
   return (

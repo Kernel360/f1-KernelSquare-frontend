@@ -8,7 +8,11 @@ import {
 } from "@/constants/navigationRoute"
 import { useClientSession } from "@/hooks/useClientSession"
 import Link from "next/link"
-import { usePathname, useSelectedLayoutSegment } from "next/navigation"
+import {
+  useParams,
+  usePathname,
+  useSelectedLayoutSegment,
+} from "next/navigation"
 import { twMerge } from "tailwind-merge"
 
 interface SideNavigationProps {
@@ -26,6 +30,7 @@ interface SideNavigationItemProps {
 function SideNavigation({ hasHeader }: SideNavigationProps) {
   const currentSegment = useSelectedLayoutSegment()
   const pathname = usePathname()
+  const params = useParams()
 
   const wrapperClassNames = twMerge([
     "hidden sm:sticky sm:inline-flex sm:w-[200px] sm:align-top sm:top-[--height-header] sm:bg-colorsLightGray sm:h-[calc(100vh-var(--height-header))] sm:z-navigation",
@@ -33,6 +38,8 @@ function SideNavigation({ hasHeader }: SideNavigationProps) {
   ])
 
   const { user } = useClientSession()
+  const isMyPage =
+    pathname.includes("profile") && Number(params.id) === user?.member_id
 
   const activeNavItem = getActiveNavigationItem({
     segment: currentSegment,
@@ -69,7 +76,7 @@ function SideNavigation({ hasHeader }: SideNavigationProps) {
                   <SideNavigationItem
                     label={label}
                     icon={icon}
-                    active={active}
+                    active={isMyPage || active}
                     activeClassName={activeClassName}
                     to={to}
                   />
@@ -80,59 +87,6 @@ function SideNavigation({ hasHeader }: SideNavigationProps) {
       </nav>
     </aside>
   )
-
-  // 로그인 된 사용자만 profile 탭 보이도록
-  // return (
-  //   <aside className={wrapperClassNames}>
-  //     <nav className={"w-full box-border px-2 py-6"}>
-  //       <ul className="flex flex-col gap-4">
-  //         {navigationRoutes.map(({ label, icon, to, activeClassName }) => {
-  //           const active =
-  //             currentSegment === null
-  //               ? to === "/"
-  //               : currentSegment === "question"
-  //               ? to === "/"
-  //               : pathname.startsWith("/profile/")
-  //               ? false
-  //               : to.startsWith(`/${currentSegment}`)
-
-  //           return (
-  //             <li key={label}>
-  //               <SideNavigationItem
-  //                 label={label}
-  //                 icon={icon}
-  //                 active={active}
-  //                 activeClassName={activeClassName}
-  //                 to={to}
-  //               />
-  //             </li>
-  //           )
-  //         })}
-  //         {!!user &&
-  //           profileRoute.map(({ label, icon, to, activeClassName }) => {
-  //             const active =
-  //               currentSegment === null
-  //                 ? to === "/"
-  //                 : currentSegment === "question"
-  //                 ? to === "/"
-  //                 : to.startsWith(`/${currentSegment}`)
-
-  //             return (
-  //               <li key={label}>
-  //                 <SideNavigationItem
-  //                   label={label}
-  //                   icon={icon}
-  //                   active={active}
-  //                   activeClassName={activeClassName}
-  //                   to={to}
-  //                 />
-  //               </li>
-  //             )
-  //           })}
-  //       </ul>
-  //     </nav>
-  //   </aside>
-  // )
 }
 
 function SideNavigationItem({
