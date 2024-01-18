@@ -3,8 +3,6 @@ import { errorMessage, notificationMessage } from "@/constants/message"
 import queryKey from "@/constants/queryKey"
 import { useClientSession } from "@/hooks/useClientSession"
 import useModal from "@/hooks/useModal"
-import type { Answer } from "@/interfaces/answer"
-import type { ModalState } from "@/interfaces/modal"
 import voteAtoms from "@/recoil/atoms/vote"
 import { deleteVote, voteAnswer } from "@/service/answers"
 import { sleep } from "@/util/sleep"
@@ -12,14 +10,7 @@ import { useQueryClient } from "@tanstack/react-query"
 import { toast } from "react-toastify"
 import { useRecoilState } from "recoil"
 import { twJoin } from "tailwind-merge"
-
-interface VoteProps {
-  answer: Answer
-}
-
-interface DeleteVoteProps {
-  successModal: NonNullable<ModalState["content"]>
-}
+import type { DeleteVoteProps, VoteProps } from "./useAnswerVote.types"
 
 const useAnswerVote = ({ answer }: VoteProps) => {
   const [vote, setVote] = useRecoilState(voteAtoms(answer?.created_by))

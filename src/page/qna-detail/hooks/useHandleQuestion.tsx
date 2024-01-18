@@ -3,24 +3,16 @@
 import ConfirmModal from "@/components/shared/confirm-modal/ConfirmModal"
 import { notificationMessage } from "@/constants/message"
 import queryKey from "@/constants/queryKey"
-import { useClientSession } from "@/hooks/useClientSession"
 import useModal from "@/hooks/useModal"
-import type { ModalState } from "@/interfaces/modal"
-import type { Question } from "@/interfaces/question"
 import { deleteQuestion } from "@/service/question"
 import { sleep } from "@/util/sleep"
 import { useQueryClient } from "@tanstack/react-query"
 import { useRouter } from "next/navigation"
 import { toast } from "react-toastify"
-
-interface QuestionProps {
-  questionId: number
-}
-
-interface DeleteQuestionProps {
-  question: Question
-  successModal: NonNullable<ModalState["content"]>
-}
+import type {
+  DeleteQuestionProps,
+  QuestionProps,
+} from "./useHandleQuestion.types"
 
 const useHandleQuestion = () => {
   const router = useRouter()

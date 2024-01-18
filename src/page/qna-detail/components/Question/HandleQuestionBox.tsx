@@ -4,13 +4,10 @@ import type { Question } from "@/interfaces/question"
 import useHandleQuestion from "../../hooks/useHandleQuestion"
 import SuccessModalContent from "../SuccessModalContent"
 import useQnADetail from "../../hooks/useQnADetail"
-import { successMessage } from "@/constants/message"
+import { buttonMessage, successMessage } from "@/constants/message"
+import type { HandleQuestionBoxProps } from "./HandleQuestionBox.types"
 
-interface HandleQuestionProps {
-  question: Question
-}
-
-const HandleQuestionBox = ({ question }: HandleQuestionProps) => {
+const HandleQuestionBox: React.FC<HandleQuestionBoxProps> = ({ question }) => {
   const { handleEditQuestion, handleDeleteQuestion } = useHandleQuestion()
   const { user } = useQnADetail()
 
@@ -21,7 +18,7 @@ const HandleQuestionBox = ({ question }: HandleQuestionProps) => {
           onClick={() => handleEditQuestion({ questionId: question.id })}
           className="mr-3 cursor-pointer hover:text-primary font-bold min-w-[70px]"
         >
-          수정하기
+          {buttonMessage.edit}
         </div>
         <div
           onClick={() =>
@@ -34,7 +31,7 @@ const HandleQuestionBox = ({ question }: HandleQuestionProps) => {
           }
           className="cursor-pointer hover:text-primary font-bold min-w-[70px]"
         >
-          삭제하기
+          {buttonMessage.delete}
         </div>
       </div>
     )

@@ -1,14 +1,10 @@
 "use client"
 
-import type { Answer } from "@/interfaces/answer"
 import { getKorRelativeTime } from "@/util/getDate"
 import dayjs from "dayjs"
+import type { DayBoxProps } from "./DayBox.types"
 
-type UserInfoProps = {
-  answer: Answer
-}
-
-const DayBox = ({ answer }: UserInfoProps) => {
+const DayBox: React.FC<DayBoxProps> = ({ answer }) => {
   const now = dayjs().format()
   const isEdited = answer.created_date !== answer.modified_date
 

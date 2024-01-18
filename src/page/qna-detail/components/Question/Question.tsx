@@ -21,17 +21,6 @@ const Question: React.FC<{ id: number }> = ({ id }) => {
 
   const question = data?.data
 
-  const TagList = question?.skills.map((skill, index) => {
-    return (
-      <Tag
-        key={`${id}-${index}-${skill}`}
-        className="px-3 py-2 bg-slate-200 rounded mr-3"
-      >
-        {skill}
-      </Tag>
-    )
-  })
-
   const DetailClassName = twJoin([
     "flex flex-wrap mb-5",
     user?.nickname === question?.nickname ? "justify-between" : "justify-end",
@@ -44,7 +33,18 @@ const Question: React.FC<{ id: number }> = ({ id }) => {
       <h3 className="font-bold text-2xl mb-5 max-w-full md:font-[16px] sm:font-[12px] t text-[#444444]">
         Q. {question.title}
       </h3>
-      <ul className="flex gap-1 flex-wrap my-1">{TagList}</ul>
+      <ul className="flex gap-1 flex-wrap my-1">
+        {question?.skills.map((skill, index) => {
+          return (
+            <Tag
+              key={`${id}-${index}-${skill}`}
+              className="px-3 py-2 bg-slate-200 rounded mr-3"
+            >
+              {skill}
+            </Tag>
+          )
+        })}
+      </ul>
       <div className={DetailClassName}>
         <HandleQuestionBox question={question!} />
         <div className="w-full flex justify-end flex-wrap">

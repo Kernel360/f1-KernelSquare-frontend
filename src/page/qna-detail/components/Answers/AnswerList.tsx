@@ -5,16 +5,8 @@ import { answerQueries } from "@/react-query/answers"
 import ContentLoading from "@/components/shared/animation/ContentLoading"
 import LightBulb from "@/components/shared/animation/LightBulb"
 import { notificationMessage } from "@/constants/message"
-import { PropsWithChildren, useState } from "react"
-import { Answer } from "@/interfaces/answer"
-import { useClientSession } from "@/hooks/useClientSession"
 import useQnADetail from "../../hooks/useQnADetail"
-
-interface AnswerProps {
-  createdby: string
-  questionId: number
-  isMyAnswer: boolean
-}
+import type { AnswerProps, NoAnswerProps } from "./AnswerList.types"
 
 const AnswerList: React.FC<AnswerProps> = ({
   createdby,
@@ -25,6 +17,7 @@ const AnswerList: React.FC<AnswerProps> = ({
     questionId,
   })
   const { filterMyAnswer, handleIsChecked } = useQnADetail()
+  const isAnswer = !!data?.data?.length
 
   if (isPending) return <Loading />
 
@@ -44,9 +37,10 @@ const AnswerList: React.FC<AnswerProps> = ({
           </div>
         </div>
         <div className="max-w-full box-border border border-colorsGray rounded-lg p-10 my-5">
-          {!data?.data?.length && <NoAnswer isMyAnswer={isMyAnswer} />}
-          {data?.data?.length &&
-            filterMyAnswer(data.data).map((answer) => (
+          {!isAnswer && <NoAnswer isMyAnswer={isMyAnswer} />}
+          {isAnswer &&
+            !!data.data &&
+            filterMyAnswer(data?.data).map((answer) => (
               <OneAnswer
                 key={answer.answer_id}
                 answer={answer}
@@ -74,7 +68,7 @@ const Loading = () => {
   )
 }
 
-const NoAnswer: React.FC<{ isMyAnswer: boolean }> = ({ isMyAnswer }) => {
+const NoAnswer: React.FC<NoAnswerProps> = ({ isMyAnswer }) => {
   return (
     <div className="text-center">
       <div className="flex justify-center">
@@ -88,9 +82,3 @@ const NoAnswer: React.FC<{ isMyAnswer: boolean }> = ({ isMyAnswer }) => {
     </div>
   )
 }
-
-const Wrapper = ({ children }: PropsWithChildren) => (
-  <div className="max-w-full box-border border border-colorsGray rounded-lg p-10 my-5">
-    {children}
-  </div>
-)

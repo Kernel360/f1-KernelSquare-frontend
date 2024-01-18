@@ -1,6 +1,7 @@
 "use client"
 
 import { Icons } from "@/components/icons/Icons"
+import { buttonMessage } from "@/constants/message"
 import { usePathname } from "next/navigation"
 
 const ScrollToTop = () => {
@@ -25,7 +26,9 @@ const ScrollToTop = () => {
         <div className="flex justify-center mt-[-5px]">
           <Icons.ScrollToTop className="text-white text-[30px]" />
         </div>
-        <div className="text-white text-sm text-center mt-[-5px]">TOP</div>
+        <div className="text-white text-sm text-center mt-[-5px]">
+          {buttonMessage.scrollToTop}
+        </div>
       </button>
     </div>
   )

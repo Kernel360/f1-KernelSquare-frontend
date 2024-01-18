@@ -5,121 +5,68 @@ import { PropsWithChildren, useRef } from "react"
 import { useForm } from "react-hook-form"
 import { Editor } from "@toast-ui/react-editor"
 import Button from "@/components/shared/button/Button"
-import { createAnswer } from "@/service/answers"
-import { useQueryClient } from "@tanstack/react-query"
 import CreateAnswerAnime from "@/components/shared/animation/CreateAnswerAnime"
 import useModal from "@/hooks/useModal"
 import LoginForm from "@/components/form/LoginForm"
-import { useClientSession } from "@/hooks/useClientSession"
-import { toast } from "react-toastify"
-import {
-  buttonMessage,
-  errorMessage,
-  notificationMessage,
-  successMessage,
-} from "@/constants/message"
+import { buttonMessage, notificationMessage } from "@/constants/message"
 import useQnADetail from "../hooks/useQnADetail"
-import ProgressModal from "@/page/signup/components/ProgressModal"
-import CheckSuccess from "@/components/shared/animation/CheckSuccess"
-import { sleep } from "@/util/sleep"
-import queryKey from "@/constants/queryKey"
+import type { MyAnswerProps } from "./MyAnswer.types"
 
 const MdEditor = dynamic(() => import("./Markdown/MdEditor"), {
   ssr: false,
 })
 
-const MyAnswer: React.FC<{
-  id: number
-  isAnswerMode: boolean
-  setIsAnswerMode: React.Dispatch<React.SetStateAction<boolean>>
-}> = ({ id, isAnswerMode, setIsAnswerMode }) => {
+const MyAnswer: React.FC<MyAnswerProps> = ({ questionId }) => {
   const { openModal } = useModal()
-  const { checkNullValue } = useQnADetail()
+  const { user, handleSubmitValue, isAnswerMode } = useQnADetail()
 
   const { handleSubmit } = useForm()
   const editorRef = useRef<Editor>(null)
 
-  const { user } = useClientSession()
-  const queryClient = useQueryClient()
-
-  const handleSubmitValue = async () => {
+  const handleSubmitAnswer = async () => {
     const submitValue = editorRef.current?.getInstance().getMarkdown()
-
-    if (checkNullValue(submitValue)) {
-      toast.error(errorMessage.noContent, {
-        position: "top-center",
-        autoClose: 1000,
-      })
-      return
-    }
-
-    try {
-      if (user?.member_id) {
-        const res = await createAnswer({
-          questionId: id,
-          member_id: user.member_id,
-          content: submitValue || "",
-        })
-        console.log("res", res.data.msg, res.config.data)
-        openModal({
-          content: <SuccessModalContent />,
-          onClose() {
-            queryClient.invalidateQueries({ queryKey: [queryKey.answer, id] })
-          },
-        })
-        sleep(5000).then(() => {
-          queryClient.invalidateQueries({ queryKey: [queryKey.answer, id] })
-        })
-      }
-    } catch (err) {
-      console.error("error", err)
-    }
-    setIsAnswerMode(false)
+    handleSubmitValue({ questionId, submitValue })
   }
 
-  const WithToken = () => (
-    <div>
-      <Title title="My Answer" />
-      <form onSubmit={handleSubmit(handleSubmitValue)}>
-        <MdEditor editorRef={editorRef} previous="" />
-        <div className="flex justify-center my-[20px]">
-          <Button
-            buttonTheme="primary"
-            className="w-[200px] h-[50px] text-lg"
-            type="submit"
-          >
-            {buttonMessage.postMyAnswer}
-          </Button>
-        </div>
-      </form>
-    </div>
-  )
-
-  const WithoutToken = () => (
-    <div className="text-center py-5">
-      <CreateAnswerAnime style={{ width: "20%", margin: "0 auto" }} />
-      <div className="text-xl">{notificationMessage.answerWithoutToken}</div>
-      <Button
-        buttonTheme="primary"
-        className="mt-5 px-5 py-2"
-        onClick={() => openModal({ content: <LoginForm /> })}
-      >
-        {buttonMessage.goToLogIn}
-      </Button>
-    </div>
-  )
+  console.log("is", isAnswerMode)
 
   if (!user)
     return (
       <Container>
-        <WithoutToken />
+        <div className="text-center py-5">
+          <CreateAnswerAnime style={{ width: "20%", margin: "0 auto" }} />
+          <div className="text-xl">
+            {notificationMessage.answerWithoutToken}
+          </div>
+          <Button
+            buttonTheme="primary"
+            className="mt-5 px-5 py-2"
+            onClick={() => openModal({ content: <LoginForm /> })}
+          >
+            {buttonMessage.goToLogIn}
+          </Button>
+        </div>
       </Container>
     )
 
   return (
     isAnswerMode && (
       <Container>
-        <WithToken />
+        <div>
+          <Title title="My Answer" />
+          <form onSubmit={handleSubmit(handleSubmitAnswer)}>
+            <MdEditor editorRef={editorRef} previous="" />
+            <div className="flex justify-center my-[20px]">
+              <Button
+                buttonTheme="primary"
+                className="w-[200px] h-[50px] text-lg"
+                type="submit"
+              >
+                {buttonMessage.postMyAnswer}
+              </Button>
+            </div>
+          </form>
+        </div>
       </Container>
     )
   )
@@ -136,14 +83,3 @@ const Container = ({ children }: PropsWithChildren) => (
     {children}
   </div>
 )
-
-const SuccessModalContent = () => {
-  return (
-    <ProgressModal.Success>
-      <ProgressModal.StepContentWrapper>
-        <CheckSuccess style={{ width: "100px" }} />
-        <p className="font-bold">{successMessage.createAnswer}</p>
-      </ProgressModal.StepContentWrapper>
-    </ProgressModal.Success>
-  )
-}

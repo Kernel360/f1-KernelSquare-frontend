@@ -12,6 +12,7 @@ import {
   notificationMessage,
   errorMessage,
   successMessage,
+  buttonMessage,
 } from "@/constants/message"
 import { Icons } from "@/components/icons/Icons"
 import { uploadImages } from "@/service/images"
@@ -131,7 +132,7 @@ function ProfileImage({ id, image_url }: ImageProps) {
         className="w-[150px] h-[30px]"
         onClick={handleUpload}
       >
-        프로필 변경
+        {buttonMessage.updateProfile}
       </Button>
     </div>
   )

@@ -7,34 +7,23 @@ import {
   successMessage,
 } from "@/constants/message"
 import useModal from "@/hooks/useModal"
-import { Answer } from "@/interfaces/answer"
-import type { ModalState } from "@/interfaces/modal"
 import { deleteAnswer, updateAnswer } from "@/service/answers"
 import { sleep } from "@/util/sleep"
 import { useQueryClient } from "@tanstack/react-query"
 import { toast } from "react-toastify"
 import useQnADetail from "./useQnADetail"
 import { useRecoilState } from "recoil"
-import { AnswerMode } from "@/recoil/atoms/mode"
+import { AnswerEditMode } from "@/recoil/atoms/mode"
 import queryKey from "@/constants/queryKey"
-
-interface EditValueProps {
-  submitValue: string | undefined
-  answer: Answer
-}
-
-interface DeleteValueProps {
-  answer: Answer
-  successModal: NonNullable<ModalState["content"]>
-}
-
-interface AnswerProps {
-  answerId: number
-}
+import type {
+  AnswerProps,
+  DeleteValueProps,
+  EditValueProps,
+} from "./useHandleMyAnswer.types"
 
 const useHandleMyAnswer = ({ answerId }: AnswerProps) => {
   const [isAnswerEditMode, setIsAnswerEditMode] = useRecoilState(
-    AnswerMode(answerId),
+    AnswerEditMode(answerId),
   )
   const queryClient = useQueryClient()
   const { openModal } = useModal()

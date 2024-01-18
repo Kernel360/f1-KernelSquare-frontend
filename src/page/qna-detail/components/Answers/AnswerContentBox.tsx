@@ -2,11 +2,11 @@
 
 import { useForm } from "react-hook-form"
 import useHandleMyAnswer from "../../hooks/useHandleMyAnswer"
-import { PropsWithChildren, useRef } from "react"
+import { type PropsWithChildren, useRef } from "react"
 import type { Editor } from "@toast-ui/react-editor"
-import type { Answer } from "@/interfaces/answer"
 import Button from "@/components/shared/button/Button"
 import dynamic from "next/dynamic"
+import type { EditAnswerProps } from "./AnswerContentBox.types"
 
 const MdViewer = dynamic(() => import("../Markdown/MdViewer"), {
   ssr: false,
@@ -16,11 +16,7 @@ const MdEditor = dynamic(() => import("../Markdown/MdEditor"), {
   ssr: false,
 })
 
-type EditAnswerProps = {
-  answer: Answer
-}
-
-const AnswerContentBox = ({ answer }: EditAnswerProps) => {
+const AnswerContentBox: React.FC<EditAnswerProps> = ({ answer }) => {
   const editorRef = useRef<Editor>(null)
   const { handleSubmit } = useForm()
   const { handleEditValue, isAnswerEditMode } = useHandleMyAnswer({
@@ -35,6 +31,9 @@ const AnswerContentBox = ({ answer }: EditAnswerProps) => {
     })
   }
 
+  /**
+   * 답변 보기 상태일 경우
+   */
   if (!isAnswerEditMode)
     return (
       <Wrapper>
@@ -42,6 +41,9 @@ const AnswerContentBox = ({ answer }: EditAnswerProps) => {
       </Wrapper>
     )
 
+  /**
+   * 답변 수정 상태일 경우
+   */
   return (
     <Wrapper>
       <form onSubmit={handleSubmit(handleSubmitEditedValue)}>
@@ -58,6 +60,6 @@ const AnswerContentBox = ({ answer }: EditAnswerProps) => {
 
 export default AnswerContentBox
 
-const Wrapper = ({ children }: PropsWithChildren) => (
+const Wrapper: React.FC<PropsWithChildren> = ({ children }) => (
   <div className="w-[90%]">{children}</div>
 )

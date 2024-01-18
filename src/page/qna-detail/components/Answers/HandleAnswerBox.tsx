@@ -1,16 +1,14 @@
 "use client"
 
-import type { Answer } from "@/interfaces/answer"
 import useHandleMyAnswer from "../../hooks/useHandleMyAnswer"
 import SuccessModalContent from "../SuccessModalContent"
-import { successMessage } from "@/constants/message"
+import { buttonMessage, successMessage } from "@/constants/message"
+import type { HandleAnswerProps } from "./HandleAnswerBox.types"
 
-type HandleAnswerProps = {
-  answer: Answer
-  createdby?: string
-}
-
-const HandleAnswerBox = ({ answer, createdby }: HandleAnswerProps) => {
+const HandleAnswerBox: React.FC<HandleAnswerProps> = ({
+  answer,
+  createdby,
+}) => {
   const isMyAnswer = createdby === answer.created_by
   const { handleEditMode, handleDeleteValue } = useHandleMyAnswer({
     answerId: Number(answer.answer_id),
@@ -23,7 +21,7 @@ const HandleAnswerBox = ({ answer, createdby }: HandleAnswerProps) => {
           onClick={handleEditMode}
           className="mr-3 hover:text-[#3887BE] font-bold cursor-pointer "
         >
-          수정하기
+          {buttonMessage.edit}
         </div>
         <div
           onClick={() =>
@@ -36,7 +34,7 @@ const HandleAnswerBox = ({ answer, createdby }: HandleAnswerProps) => {
           }
           className="hover:text-[#3887BE] font-bold cursor-pointer "
         >
-          삭제하기
+          {buttonMessage.delete}
         </div>
       </div>
     )

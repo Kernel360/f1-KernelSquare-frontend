@@ -1,15 +1,11 @@
 "use client"
 
 import { Icons } from "@/components/icons/Icons"
-import type { Question } from "@/interfaces/question"
 import Image from "next/image"
 import { useRouter } from "next/navigation"
+import type { WriterBoxProps } from "./WriterBox.types"
 
-interface WriterProps {
-  question: Question
-}
-
-const WriterBox = ({ question }: WriterProps) => {
+const WriterBox: React.FC<WriterBoxProps> = ({ question }) => {
   const router = useRouter()
   return (
     <div className="flex flex-wrap">
