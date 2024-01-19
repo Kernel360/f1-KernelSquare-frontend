@@ -1,79 +1,76 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+ 
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 222.2 84% 4.9%;
 
-@import "pretendard/dist/web/static/pretendard.css";
+    --card: 0 0% 100%;
+    --card-foreground: 222.2 84% 4.9%;
+ 
+    --popover: 0 0% 100%;
+    --popover-foreground: 222.2 84% 4.9%;
+ 
+    --primary: 222.2 47.4% 11.2%;
+    --primary-foreground: 210 40% 98%;
+ 
+    --secondary: 210 40% 96.1%;
+    --secondary-foreground: 222.2 47.4% 11.2%;
+ 
+    --muted: 210 40% 96.1%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+ 
+    --accent: 210 40% 96.1%;
+    --accent-foreground: 222.2 47.4% 11.2%;
+ 
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
 
-:root {
-  --colors-primary: #00c471;
-  --colors-secondary: #343a40;
-  --colors-gray: #ced4da;
-  --colors-light-gray: #f6f6f6;
-  --colors-dark-gray: #616568;
-  --colors-success: #198754;
-  --colors-info: #ecf5ff;
-  --colors-danger: #dc3545;
-  --bg-socialKakao: #fae500;
-  --bg-socialGoogle: #f8f8f8;
-  --bg-socialGithub: #3c4043;
-  --zIndex-header: 8;
-  --zIndex-navigation: 7;
-  --zIndex-modal-container: 9;
-  --zIndex-modal-dim: 10;
-  --zIndex-modal: 11;
-  --height-header: 64px;
-}
-
-body {
-  font-family: Pretendard, -apple-system, BlinkMacSystemFont, system-ui, Roboto,
-    "Helvetica Neue", "Segoe UI", "Apple SD Gothic Neo", "Noto Sans KR",
-    "Malgun Gothic", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol",
-    sans-serif;
-}
-
-/* scroll-bar */
-::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
-}
-
-::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-::-webkit-scrollbar-thumb {
-  background: var(--colors-gray);
-  border-radius: 16px;
-}
-
-/* react toastify */
-.Toastify__toast-container--top-center {
-  margin-top: 2rem !important;
-}
-
-.Toastify__toast-container--bottom-center {
-  margin-top: 2rem !important;
-}
-
-@media only screen and (max-width: 480px) {
-  .Toastify__toast-container--top-center {
-    margin-top: 2rem !important;
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 222.2 84% 4.9%;
+ 
+    --radius: 0.5rem;
   }
-
-  .Toastify__toast-container--bottom-center {
-    margin-bottom: 2rem !important;
+ 
+  .dark {
+    --background: 222.2 84% 4.9%;
+    --foreground: 210 40% 98%;
+ 
+    --card: 222.2 84% 4.9%;
+    --card-foreground: 210 40% 98%;
+ 
+    --popover: 222.2 84% 4.9%;
+    --popover-foreground: 210 40% 98%;
+ 
+    --primary: 210 40% 98%;
+    --primary-foreground: 222.2 47.4% 11.2%;
+ 
+    --secondary: 217.2 32.6% 17.5%;
+    --secondary-foreground: 210 40% 98%;
+ 
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
+ 
+    --accent: 217.2 32.6% 17.5%;
+    --accent-foreground: 210 40% 98%;
+ 
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+ 
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
+    --ring: 212.7 26.8% 83.9%;
   }
 }
-
-/*toast ui button 속성 재정의*/
-.toastui-editor-defaultUI [type="button"],
-.toastui-editor-defaultUI [type="reset"],
-.toastui-editor-defaultUI [type="submit"],
-.toastui-editor-defaultUI button {
-  background-image: inherit;
-}
-/*toast ui button icon 이미지 주소*/
-.toastui-editor-toolbar-group {
-  background-image: url("../assets/images/toolbarBackgrond.png");
-  background-size: 0;
+ 
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
 }
