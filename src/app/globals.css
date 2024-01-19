@@ -2,6 +2,8 @@
 @tailwind components;
 @tailwind utilities;
 
+@import "pretendard/dist/web/static/pretendard.css";
+
 @layer base {
   :root {
     --colors-primary: #00c471;
