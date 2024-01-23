@@ -32,7 +32,9 @@ const VoteBox: React.FC<VoteBoxProps> = ({ answer }) => {
         <VoteIcons.Up className={raiseClass} onClick={handleVoteRaise} />
       </div>
       <div className="text-[30px]">
-        {answer.vote_count < 10 ? "0" + answer.vote_count : answer.vote_count}
+        {0 <= answer.vote_count && answer.vote_count < 10
+          ? "0" + answer.vote_count
+          : answer.vote_count}
       </div>
       <div className="flex justify-center">
         <VoteIcons.Down className={reduceClass} onClick={handleVoteReduce} />
