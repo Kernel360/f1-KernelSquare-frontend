@@ -1,16 +1,21 @@
 "use client"
 
-import { mockQuestions } from "@/mocks/db/questions"
 import QnAList from "../qna/components/QnAList"
+import { useSearchParams } from "next/navigation"
 
 const WithResult = () => {
+  const searchParams = useSearchParams()
+  const keyword = searchParams.get("keyword")
+
   const num = 1500
   return (
     <div className="w-[80%] m-auto">
       <div className="text-center text-[28px] my-[30px]">
         <div>
-          <span className="font-bold bg-primary/60 rounded px-3">socket</span>에
-          대한
+          <span className="font-bold bg-primary/60 rounded px-3">
+            {keyword}
+          </span>
+          에 대한
         </div>
         <div>
           총{" "}
