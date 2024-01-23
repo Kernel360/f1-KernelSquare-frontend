@@ -1,13 +1,13 @@
 import { Question } from "@/interfaces/question"
 import { APIPagenationResponse, PaginationParams } from "../api-response"
 
-export interface GetSearchQuestionResultRequest extends PaginationParams {
+export interface GetSearchQuestionRequest extends PaginationParams {
   keyword: string
 }
 
-export interface SearchQuestionResultPayload {
+export interface SearchQuestionPayload {
   list: Array<Question>
 }
 
-export interface GetSearchQuestionResultPayloadResponse
-  extends APIPagenationResponse<SearchQuestionResultPayload> {}
+export interface GetSearchQuestionResponse
+  extends APIPagenationResponse<SearchQuestionPayload> {}

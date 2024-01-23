@@ -1,12 +1,8 @@
 "use client"
 
-import Button from "@/components/shared/button/Button"
-import SearchField from "./SearchField"
-import SearchModal from "./SearchModal"
 import { Icons } from "@/components/icons/Icons"
 import useModal from "@/hooks/useModal"
-import { CommonCommand } from "@/components/shared/command/CommonCommand"
-import { ChangeEvent, KeyboardEvent, useRef, useState } from "react"
+import { ChangeEvent, useRef, useState } from "react"
 import {
   Controller,
   ControllerRenderProps,
@@ -14,7 +10,6 @@ import {
   useForm,
 } from "react-hook-form"
 import { useRouter } from "next/navigation"
-import { twMerge } from "tailwind-merge"
 
 enum KeyBoardEventKey {
   Enter = "Enter",
@@ -53,7 +48,7 @@ function SearchArea() {
     if (data.search) {
       console.log("data", data.search)
 
-      router.replace(`/search?keyword=${data.search}`)
+      router.replace(`/search?keyword=${data.search}&page=0`)
     }
   })
 

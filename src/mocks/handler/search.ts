@@ -1,14 +1,13 @@
 import { ApiStatus } from "@/constants/response/api"
-import { GetSearchQuestionResultPayloadResponse } from "@/interfaces/dto/search/search-questions.dto"
+import { GetSearchQuestionResponse } from "@/interfaces/dto/search/search-questions.dto"
 import { Question } from "@/interfaces/question"
 import { RouteMap } from "@/service/route-map"
 import { generatePagination } from "@/util/paginate"
 import { DefaultBodyType, HttpResponse, PathParams, http } from "msw"
 import { mockQuestions } from "../db/questions"
-import { mockUsers } from "../db/user"
 
 export const searchHandler = [
-  http.get<PathParams, DefaultBodyType, GetSearchQuestionResultPayloadResponse>(
+  http.get<PathParams, DefaultBodyType, GetSearchQuestionResponse>(
     `${process.env.NEXT_PUBLIC_SERVER}${RouteMap.search.getSearchQuestions}`,
     ({ request }) => {
       try {
@@ -16,6 +15,7 @@ export const searchHandler = [
 
         const page = Number(url.searchParams.get("page"))
         const perPage = Number(url.searchParams.get("size"))
+        const keyword = url.searchParams.get("keyword") ?? ""
 
         const invalidQueries = []
 
@@ -32,13 +32,24 @@ export const searchHandler = [
           )
         }
 
-        const { pages, maximumPage } = generatePagination<Question>(
-          mockQuestions.map((question) => {
-            const member_id = mockUsers.find(
-              (user) => user.nickname === question.nickname,
-            )!.id
+        console.log(
+          "target",
+          mockQuestions.filter((question) => {
+            if (keyword === "") return true
+            return (
+              question.title.includes(keyword) ||
+              question.skills.some((skill) => skill === keyword)
+            )
+          }),
+        )
 
-            return { ...question, member_id }
+        const { pages, maximumPage } = generatePagination<Question>(
+          mockQuestions.filter((question) => {
+            if (keyword === "") return true
+            return (
+              question.title.includes("keyword") ||
+              question.skills.some((skill) => skill === keyword)
+            )
           }),
           { perPage },
         )

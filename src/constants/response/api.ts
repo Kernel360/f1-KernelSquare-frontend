@@ -3,6 +3,7 @@ import { QnaApiStatus } from "./qna"
 import { MemberApiStatus } from "./member"
 import { AuthApiStatus } from "./auth"
 import { ImageApiStatus } from "./image"
+import { SearchApiStatus } from "./search"
 
 type ResponseCase = keyof typeof HttpStatusCode
 
@@ -64,4 +65,5 @@ export const ApiStatus = {
    *
    */
   Image: ImageApiStatus,
+  Search: SearchApiStatus,
 } satisfies ApiStatusMap
