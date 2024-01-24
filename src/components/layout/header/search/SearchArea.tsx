@@ -10,6 +10,7 @@ import {
   useForm,
 } from "react-hook-form"
 import { useRouter } from "next/navigation"
+import SearchField from "./SearchField"
 
 enum KeyBoardEventKey {
   Enter = "Enter",
@@ -46,8 +47,6 @@ function SearchArea() {
 
   const handleSubmitData = handleSubmit((data) => {
     if (data.search) {
-      console.log("data", data.search)
-
       router.replace(`/search?keyword=${data.search}&page=0`)
     }
   })
@@ -64,7 +63,7 @@ function SearchArea() {
   return (
     <>
       <form
-        className="flex flex-col justify-center"
+        className="hidden flex flex-col justify-center sm:block"
         onSubmit={handleSubmitData}
       >
         <Controller
@@ -95,6 +94,7 @@ function SearchArea() {
           )}
         />
       </form>
+      {/* <SearchField /> */}
     </>
   )
 }

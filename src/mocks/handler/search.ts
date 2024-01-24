@@ -32,27 +32,17 @@ export const searchHandler = [
           )
         }
 
-        console.log(
-          "target",
-          mockQuestions.filter((question) => {
-            if (keyword === "") return true
-            return (
-              question.title.includes(keyword) ||
-              question.skills.some((skill) => skill === keyword)
-            )
-          }),
-        )
+        const target = mockQuestions.filter((question) => {
+          if (keyword === "") return true
+          return (
+            question.title.includes(keyword) ||
+            question.skills.some((skill) => skill === keyword)
+          )
+        })
 
-        const { pages, maximumPage } = generatePagination<Question>(
-          mockQuestions.filter((question) => {
-            if (keyword === "") return true
-            return (
-              question.title.includes("keyword") ||
-              question.skills.some((skill) => skill === keyword)
-            )
-          }),
-          { perPage },
-        )
+        const { pages, maximumPage } = generatePagination<Question>(target, {
+          perPage,
+        })
 
         const pagePayload = pages[page] ?? []
 
@@ -77,12 +67,13 @@ export const searchHandler = [
             code: Code,
             msg: "모든 질문 조회 성공",
             data: {
+              total_count: target.length,
               pagination: {
                 total_page: maximumPage,
                 pageable: pagePayload.length,
                 is_end: page === maximumPage - 1,
               },
-              list: [...pagePayload],
+              question_list: [...pagePayload],
             },
           },
           {

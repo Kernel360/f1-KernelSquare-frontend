@@ -4,10 +4,10 @@ import { notificationMessage, searchTipMessage } from "@/constants/message"
 const WithoutResult = () => {
   return (
     <div>
-      <div className="w-full flex justify-center">
+      <div className="w-full flex justify-center mt-[-70px] ">
         <NoSearchResult style={{ width: "350px" }} />
       </div>
-      <div className="text-xl font-bold text-center mt-[-50px] mb-[50px]">
+      <div className="text-xl font-bold text-center mt-[-70px] mb-[50px]">
         {notificationMessage.noSearchResult}
       </div>
       <div className="m-auto border-[1px] border-slate-300 px-[60px] py-[20px] rounded w-[60%] text-slate-500">

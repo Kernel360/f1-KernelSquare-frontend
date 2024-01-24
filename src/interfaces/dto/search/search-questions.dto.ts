@@ -6,7 +6,8 @@ export interface GetSearchQuestionRequest extends PaginationParams {
 }
 
 export interface SearchQuestionPayload {
-  list: Array<Question>
+  question_list: Array<Question>
+  total_count: number
 }
 
 export interface GetSearchQuestionResponse

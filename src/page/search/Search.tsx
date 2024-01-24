@@ -2,11 +2,12 @@
 
 import WithoutResult from "./WithoutResult"
 import { useSearchParams } from "next/navigation"
-import QnAList from "../qna/components/QnAList"
 import { AxiosError } from "axios"
 import { APIResponse } from "@/interfaces/dto/api-response"
 import { ApiStatus } from "@/constants/response/api"
 import { useSearchQuestion } from "@/react-query/search"
+import QnAList from "@/components/shared/qna/QnAList"
+import { CommonCheckbox } from "@/components/shared/checkbox/CommonCheckbox"
 
 const Search = () => {
   const searchParams = useSearchParams()
@@ -14,10 +15,12 @@ const Search = () => {
   const page = searchParams.get("page") ?? 0
 
   const {
-    data: seasrchResults,
+    data: searchResults,
     isPending,
     error,
   } = useSearchQuestion({ keyword, page: Number(page) })
+
+  console.log("data", searchResults)
 
   if (isPending) {
     return <QnAList.Loading />
@@ -36,9 +39,9 @@ const Search = () => {
   }
 
   if (
-    !seasrchResults ||
-    !seasrchResults?.pagination.total_page ||
-    !seasrchResults.pagination.pageable
+    !searchResults ||
+    !searchResults?.pagination.total_page ||
+    !searchResults.pagination.pageable
   ) {
     return <WithoutResult />
   }
@@ -46,7 +49,7 @@ const Search = () => {
   return (
     <div>
       <div className="w-[80%] m-auto">
-        <div className="text-center text-[28px] my-[30px]">
+        <div className="text-center text-[1.5em] my-[30px]">
           <div>
             <span className="font-bold bg-primary/60 rounded px-3">
               {keyword}
@@ -56,7 +59,7 @@ const Search = () => {
           <div>
             총{" "}
             <span className="border-b-[2px] border-b-primary font-bold">
-              {seasrchResults.list.length.toLocaleString()}
+              {searchResults.total_count.toLocaleString()}
             </span>
             개의 검색 결과가 있습니다.
           </div>
@@ -73,11 +76,19 @@ const Search = () => {
               인기순
             </div>
           </div>
-          <div>
-            <input type="checkbox" /> 진행 중인 QnA
+          <div className="flex space-x-2 items-center">
+            <CommonCheckbox id="ongoing" />
+            <div className="grid gap-1.5 leading-none">
+              <label
+                htmlFor="ongoing"
+                className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+              >
+                진행 중인 QnA
+              </label>
+            </div>
           </div>
         </div>
-        <QnAList questions={seasrchResults} />
+        <QnAList questions={searchResults} keyword={keyword} isSearch={true} />
       </div>
     </div>
   )
