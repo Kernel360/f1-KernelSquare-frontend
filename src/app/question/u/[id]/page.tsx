@@ -2,13 +2,13 @@ import Spacing from "@/components/shared/Spacing"
 import AuthGuardModal from "@/components/shared/auth-modal"
 import { layoutMeta } from "@/constants/layoutMeta"
 import { ApiStatus } from "@/constants/response/api"
-import { GetQuestionResponse } from "@/interfaces/dto/question/get-question.dto"
 import { getQuestion } from "@/service/question"
 import { getServerSession } from "@/util/auth"
 import { AxiosError } from "axios"
 import { Metadata } from "next"
 import dynamic from "next/dynamic"
 import { notFound } from "next/navigation"
+import type { GetQuestionResponse } from "@/interfaces/dto/question/get-question.dto"
 
 export interface QuestionUpdatePageProps {
   params: {

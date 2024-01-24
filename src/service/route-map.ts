@@ -213,8 +213,8 @@ export class RouteMap {
     deleteCoffeeChatPost(postId: number) {
       return `${RouteMap.routeGroupBaseURL.coffeeChat}/posts/${postId}`
     },
-    getCoffeeChatDetail(postId: number) {
-      return `${RouteMap.routeGroupBaseURL.coffeeChat}/posts/${postId}`
+    getCoffeeChatDetail(postId?: number) {
+      return `${RouteMap.routeGroupBaseURL.coffeeChat}/posts/${postId ?? ":id"}`
     },
     getCoffeeChatReservationInfo(postId: number) {
       return `${RouteMap.routeGroupBaseURL.coffeeChat}/posts/${postId}/reservation`
