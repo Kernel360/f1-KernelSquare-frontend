@@ -1,12 +1,12 @@
 "use server"
 
-import { APIResponse } from "@/interfaces/dto/api-response"
-import {
+import { createQuestion, updateQuestion } from "@/service/question"
+import { AxiosError } from "axios"
+import type { APIResponse } from "@/interfaces/dto/api-response"
+import type {
   SubmitAskQuestionData,
   SubmitUpdateQuestionData,
 } from "@/page/askQuestion/components/AskQuestionForm"
-import { createQuestion, updateQuestion } from "@/service/question"
-import { AxiosError } from "axios"
 
 interface SubmitResultBase {
   success: boolean
@@ -27,8 +27,6 @@ export async function onSubmitQuestion({
   skills,
 }: SubmitAskQuestionData): Promise<CreateQuestionResult> {
   "use server"
-
-  console.log("[question submit]")
 
   try {
     const res = await createQuestion({
@@ -67,15 +65,6 @@ export async function onSubmitUpdateQuestion({
   question_id,
 }: SubmitUpdateQuestionData): Promise<UpdateQuestionResult> {
   "use server"
-
-  console.log("[question update]")
-  console.log({
-    title,
-    content,
-    image_url,
-    skills,
-    question_id,
-  })
 
   try {
     await updateQuestion({

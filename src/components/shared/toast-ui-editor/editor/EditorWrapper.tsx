@@ -54,7 +54,6 @@ function EditorWrapper({
     if (!autofocus) {
       setTimeout(() => {
         editorRef.current?.getInstance().blur()
-        window.scroll({ top: 0 })
       }, 0)
     }
   }, []) /* eslint-disable-line */

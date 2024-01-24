@@ -1,13 +1,12 @@
-import { TechTag } from "@/interfaces/tech-tag"
 import { onSubmitQuestion, onSubmitUpdateQuestion } from "@/util/actions/form"
 import { findImageLinkUrlFromMarkdown } from "@/util/editor"
-import { AxiosResponse } from "axios"
 import { atom, atomFamily, selector } from "recoil"
-import { tagListState } from "./tag"
 import { deleteImages } from "@/service/images"
-import { DeleteImagesResponse } from "@/interfaces/dto/upload/delete-images.dto"
-import { EditMode } from "@/page/askQuestion/components/AskQuestionPageControl"
 import { Editor } from "@toast-ui/react-editor"
+import type { TechTag } from "@/interfaces/tech-tag"
+import type { AxiosResponse } from "axios"
+import type { DeleteImagesResponse } from "@/interfaces/dto/upload/delete-images.dto"
+import type { EditMode } from "@/page/askQuestion/components/AskQuestionPageControl"
 
 interface QuestionEditorState {
   title: string
@@ -16,9 +15,44 @@ interface QuestionEditorState {
   skills: Array<TechTag>
 }
 
+export const questionEditorAtomFamily = atomFamily<QuestionEditorState, string>(
+  {
+    key: "question-editor-atom-family",
+    default: {
+      title: "",
+      content: "",
+      fileUploadImageLinks: [],
+      skills: [],
+    },
+  },
+)
+
 export const editorRefAtomFamily = atomFamily<Editor | null, any>({
   key: "editor-ref-atom-family",
   default: null,
+})
+
+export const questionEditorLoadedAtomFamily = atomFamily<boolean, string>({
+  key: "question-editor-loaded-atom-family",
+  default: false,
+})
+
+// --- legacy (삭제 예정) ---
+// 삭제이후 빌드 용량 개선에 도움될 것 같음
+
+export const questionEditorAtom = atom<QuestionEditorState>({
+  key: "question-editor-state-atom",
+  default: {
+    title: "",
+    content: "",
+    fileUploadImageLinks: [],
+    skills: [],
+  },
+})
+
+export const questionEditorLoadedAtom = atom<boolean>({
+  key: "question-editor-loaded-atom",
+  default: false,
 })
 
 export const fileUploadImageLinksSelector = selector({
@@ -180,21 +214,6 @@ export const fileUploadImageLinksSelector = selector({
   },
 })
 
-export const questionEditorAtom = atom<QuestionEditorState>({
-  key: "question-editor-state-atom",
-  default: {
-    title: "",
-    content: "",
-    fileUploadImageLinks: [],
-    skills: [],
-  },
-})
-
-export const questionEditorLoadedAtom = atom<boolean>({
-  key: "question-editor-loaded-atom",
-  default: false,
-})
-
 export const questionEditCancelByUserAtom = atom<boolean>({
   key: "question-edit-cancel-by-user-atom",
   default: false,
@@ -264,15 +283,15 @@ export const questionEditorState = selector({
             await clearFileUploadImageLinks()
 
             // 상태 초기화
-            reset(questionEditorAtom)
-            await get(tagListState).clearSelectedTagList()
+            // reset(questionEditorAtom)
+            // await get(tagListState).clearSelectedTagList()
 
             return
           }
 
           reset(questionEditorAtom)
 
-          await get(tagListState).clearSelectedTagList()
+          // await get(tagListState).clearSelectedTagList()
         },
     )
 
