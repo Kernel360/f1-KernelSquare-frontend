@@ -1,14 +1,14 @@
 "use client"
 
-import { HookCallback } from "@/components/shared/toast-ui-editor/editor/EditorWrapper"
-import { APIResponse } from "@/interfaces/dto/api-response"
-import {
-  UploadImagesCategory,
-  UploadImagesResponse,
-} from "@/interfaces/dto/upload/upload-images.dto"
 import { uploadImages } from "@/service/images"
 import { useMutation } from "@tanstack/react-query"
 import { AxiosError, AxiosResponse } from "axios"
+import type { HookCallback } from "@/components/shared/toast-ui-editor/editor/EditorWrapper"
+import type { APIResponse } from "@/interfaces/dto/api-response"
+import type {
+  UploadImagesCategory,
+  UploadImagesResponse,
+} from "@/interfaces/dto/upload/upload-images.dto"
 
 interface UploadImageVariables {
   category: UploadImagesCategory

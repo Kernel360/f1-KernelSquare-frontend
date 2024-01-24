@@ -6,7 +6,8 @@ import {
 } from "@/constants/token"
 import { cookies, headers } from "next/headers"
 import { decrypt } from "./crypto"
-import { LoginUserPayload } from "@/interfaces/dto/auth/login.dto"
+import dayjs from "dayjs"
+import type { SessionPayload } from "@/recoil/atoms/user"
 
 /**
  * 로그인 여부
@@ -37,17 +38,29 @@ export function isLogined() {
  *
  */
 export function getServerSession() {
+  const session = {
+    user: null,
+  } as { user: SessionPayload }
+
   const cookieStore = cookies()
 
   const accessToken = cookieStore.get(ACCESS_TOKEN_KEY)?.value
   const payloadToken = cookieStore.get(ENCRYPTED_PAYLOAD_KEY)?.value
 
-  const user =
-    !accessToken || !payloadToken
-      ? null
-      : (JSON.parse(decrypt(payloadToken)) as LoginUserPayload)
+  if (!accessToken) return session
 
-  return {
-    user,
+  if (payloadToken) {
+    const sessionPayload = JSON.parse(decrypt(payloadToken)) as SessionPayload
+
+    if (
+      sessionPayload?.expires &&
+      !dayjs().isAfter(dayjs(sessionPayload.expires))
+    ) {
+      session.user = sessionPayload
+
+      return session
+    }
   }
+
+  return session
 }

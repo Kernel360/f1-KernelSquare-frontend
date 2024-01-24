@@ -1,3 +1,4 @@
+import dayjs from "dayjs"
 import { atom, selector } from "recoil"
 import { login } from "@/service/auth"
 import { AxiosError } from "axios"
@@ -9,24 +10,58 @@ import {
   setAuthCookie,
   updateUserPayloadCookie,
 } from "@/util/actions/cookie"
-import { LoginUserPayload } from "@/interfaces/dto/auth/login.dto"
 import { ENCRYPTED_PAYLOAD_KEY } from "@/constants/token"
-import type { UpdateMemberInfoRequest } from "@/interfaces/dto/member/update-member-info.dto"
 import { errorMessage } from "@/constants/message"
-import dayjs from "dayjs"
+import { USER_LOCAL_STORAGE_KEY } from "@/constants/editor"
+import type { UpdateMemberInfoRequest } from "@/interfaces/dto/member/update-member-info.dto"
+import type { LoginUserPayload } from "@/interfaces/dto/auth/login.dto"
 
-type SessionPayload = (LoginUserPayload & { expires: string }) | null
+export type SessionPayload = (LoginUserPayload & { expires: string }) | null
 
 export const userAtom = atom<SessionPayload>({
   key: "user-atom",
   default: null,
   effects: [
-    ({ setSelf, trigger }) => {
+    ({ setSelf, trigger, onSet }) => {
       if (trigger === "get") {
-        getPayload().then((payload) => {
-          setSelf(payload)
-        })
+        if (typeof window !== "undefined") {
+          const userStorage = localStorage.getItem(USER_LOCAL_STORAGE_KEY)
+
+          if (userStorage) {
+            const userPayload = JSON.parse(decrypt(userStorage))
+
+            const isExpired = dayjs().isAfter(dayjs(userPayload.expires))
+
+            setSelf(isExpired ? null : userPayload)
+
+            isExpired && localStorage.removeItem(USER_LOCAL_STORAGE_KEY)
+          }
+        }
+
+        if (typeof window === "undefined") {
+          const { cookies } = require("next/headers")
+
+          const payloadCookie =
+            cookies().get(ENCRYPTED_PAYLOAD_KEY)?.value ?? null
+
+          if (payloadCookie) {
+            const userPayload = JSON.parse(decrypt(payloadCookie))
+
+            const isExpired = dayjs().isAfter(dayjs(userPayload.expires))
+
+            setSelf(isExpired ? null : userPayload)
+          }
+        }
       }
+
+      onSet((newPayload, currentPayload, isReset) => {
+        isReset || newPayload === null
+          ? localStorage.removeItem(USER_LOCAL_STORAGE_KEY)
+          : localStorage.setItem(
+              USER_LOCAL_STORAGE_KEY,
+              encrypt(JSON.stringify(newPayload)),
+            )
+      })
     },
   ],
 })
@@ -59,11 +94,6 @@ export const userClientSession = selector({
             }
 
             const expires = dayjs().add(1, "hours").startOf("second").toDate()
-
-            console.log("user expires", {
-              iso: expires.toISOString(),
-              json: expires.toJSON(),
-            })
 
             const stringifyPayload = JSON.stringify({
               ...payload,

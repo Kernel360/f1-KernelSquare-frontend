@@ -1,6 +1,5 @@
 "use client"
 
-import { useMemo } from "react"
 import LoginForm from "@/components/form/LoginForm"
 import Button from "@/components/shared/button/Button"
 import useModal from "@/hooks/useModal"
@@ -12,9 +11,9 @@ import Menu, { Item as MenuItem, Divider } from "rc-menu"
 import { logout } from "@/service/auth"
 import { toast } from "react-toastify"
 import { useClientSession } from "@/hooks/useClientSession"
-import { LoginUserPayload } from "@/interfaces/dto/auth/login.dto"
 import { getAuthCookie } from "@/util/actions/cookie"
 import { revalidatePage } from "@/util/actions/revalidatePage"
+import type { LoginUserPayload } from "@/interfaces/dto/auth/login.dto"
 
 type ProfileDropdownMenu = {
   label?: string
@@ -61,7 +60,7 @@ function NotLoginedUserArea() {
 function LoginedUserArea({ user }: { user: LoginUserPayload }) {
   const { clientSessionLogout } = useClientSession()
 
-  const menu = useMemo(() => {
+  const DropDownMenu = () => {
     const profileDropdownMenu: Array<ProfileDropdownMenu> = [
       { label: "내 프로필", to: "/profile", role: "menu" },
       { role: "divider" },
@@ -124,11 +123,11 @@ function LoginedUserArea({ user }: { user: LoginUserPayload }) {
         })}
       </Menu>
     )
-  }, [clientSessionLogout])
+  }
 
   return (
     <div className="flex gap-2 items-center">
-      <Dropdown trigger={["click"]} overlay={menu}>
+      <Dropdown trigger={["click"]} overlay={DropDownMenu}>
         <Profile profileImage={user?.image_url} />
       </Dropdown>
       <Button className="p-0">

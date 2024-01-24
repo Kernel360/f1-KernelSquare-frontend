@@ -1,29 +1,29 @@
+import { AxiosError, AxiosResponse } from "axios"
+import { apiInstance } from "./axios"
+import { RouteMap } from "./route-map"
+import { errorMessage } from "@/constants/message"
 import type {
   GetQuestionListRequest,
   GetQuestionListResponse,
 } from "@/interfaces/dto/question/get-questionlist.dto"
-import { apiInstance } from "./axios"
-import { RouteMap } from "./route-map"
 import type {
   GetQuestionRequest,
   GetQuestionResponse,
 } from "@/interfaces/dto/question/get-question.dto"
-import {
+import type {
   CreateQuestionRequest,
   CreateQuestionResponse,
 } from "@/interfaces/dto/question/create-question.dto"
-import { AxiosError, AxiosResponse } from "axios"
 import type {
   DeleteQuestionRequest,
   DeleteQuestionResponse,
 } from "@/interfaces/dto/question/delete-question.dto"
 import type { DefaultBodyType } from "msw"
 import type { APIResponse } from "@/interfaces/dto/api-response"
-import {
+import type {
   UpdateQuestionRequest,
   UpdateQuestionResponse,
 } from "@/interfaces/dto/question/update-question.dto"
-import { errorMessage } from "@/constants/message"
 
 export async function getQuestionList(
   { page = 0, size = 5 }: GetQuestionListRequest = { page: 0, size: 5 },

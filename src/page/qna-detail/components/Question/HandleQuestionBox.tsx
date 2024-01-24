@@ -1,6 +1,5 @@
 "use client"
 
-import type { Question } from "@/interfaces/question"
 import useHandleQuestion from "../../hooks/useHandleQuestion"
 import SuccessModalContent from "../SuccessModalContent"
 import useQnADetail from "../../hooks/useQnADetail"
@@ -9,7 +8,7 @@ import type { HandleQuestionBoxProps } from "./HandleQuestionBox.types"
 
 const HandleQuestionBox: React.FC<HandleQuestionBoxProps> = ({ question }) => {
   const { handleEditQuestion, handleDeleteQuestion } = useHandleQuestion()
-  const { user } = useQnADetail()
+  const { user } = useQnADetail({ questionId: question.id })
 
   if (user?.nickname === question.nickname)
     return (
