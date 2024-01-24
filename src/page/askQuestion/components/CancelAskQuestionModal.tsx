@@ -2,14 +2,14 @@
 
 import Spacing from "@/components/shared/Spacing"
 import Button from "@/components/shared/button/Button"
-import { questionEditorState } from "@/recoil/atoms/questionEditor"
 import { useRouter } from "next/navigation"
-import { useRecoilValue } from "recoil"
-import { EditMode } from "./AskQuestionPageControl"
+import { useToastUiQuestionEditor } from "@/hooks/editor/useToastuiQuestionEditor"
+import { DELETE_IMAGE_LOCAL_STORAGE_KEY } from "@/constants/editor"
+import type { EditMode } from "./AskQuestionPageControl"
 
 interface CancelAskQuestionModalProps {
   questionId?: number
-  editMode?: EditMode
+  editMode: EditMode
 }
 
 function CancelAskQuestionModal({
@@ -18,22 +18,22 @@ function CancelAskQuestionModal({
 }: CancelAskQuestionModalProps) {
   const { replace } = useRouter()
 
-  const { setQustionEditCancelByUser, cancelQuestionSubmit } =
-    useRecoilValue(questionEditorState)
+  const { cancelQuestionSubmit } = useToastUiQuestionEditor({
+    uniqueKey: editMode,
+  })
 
   const handleCancel = async () => {
-    await cancelQuestionSubmit(editMode)
-    setQustionEditCancelByUser(true)
-
-    queueMicrotask(() => {
-      if (editMode === "update") {
-        replace(`/question/${questionId}`)
-
-        return
-      }
-
-      replace("/")
-    })
+    try {
+      await cancelQuestionSubmit({ editMode: editMode })
+      localStorage.removeItem(DELETE_IMAGE_LOCAL_STORAGE_KEY)
+    } catch (error) {
+    } finally {
+      queueMicrotask(() => {
+        editMode === "create"
+          ? replace("/")
+          : replace(`/question/${questionId}`)
+      })
+    }
 
     return
   }
@@ -46,7 +46,7 @@ function CancelAskQuestionModal({
       <Spacing size={26} />
       <div className="flex w-full justify-center items-center">
         <Button buttonTheme="primary" onClick={handleCancel}>
-          작성 취소
+          {editMode === "create" ? "작성 취소" : "수정 취소"}
         </Button>
       </div>
     </div>

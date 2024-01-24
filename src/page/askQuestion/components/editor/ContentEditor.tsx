@@ -6,25 +6,14 @@ import { ToastUiEditor } from "@/components/shared/toast-ui-editor"
 import { Editor as ToastEditor, EditorProps } from "@toast-ui/react-editor"
 import codeSyntaxHighlight from "@toast-ui/editor-plugin-code-syntax-highlight/dist/toastui-editor-plugin-code-syntax-highlight-all.js"
 import "@toast-ui/editor-plugin-code-syntax-highlight/dist/toastui-editor-plugin-code-syntax-highlight.css"
-import {
-  ForwardedRef,
-  forwardRef,
-  useCallback,
-  useEffect,
-  useRef,
-  useState,
-} from "react"
+import { ForwardedRef, forwardRef, useEffect, useRef, useState } from "react"
 import Button from "@/components/shared/button/Button"
 import { twMerge } from "tailwind-merge"
 import { contentEditorToolbarItems } from "@/constants/editor"
-import { EditorRefObj } from "@/components/shared/toast-ui-editor/editor/EditorWrapper"
-import { useRecoilValue, useSetRecoilState } from "recoil"
-import {
-  editorRefAtomFamily,
-  questionEditorState,
-} from "@/recoil/atoms/questionEditor"
-import { useToastUiEditorImageUploadHook } from "@/hooks/useToastUiEditorImageUploadHook"
-import Tab from "@/components/shared/tab/Tab"
+import { useSetRecoilState } from "recoil"
+import { questionEditorLoadedAtomFamily } from "@/recoil/atoms/questionEditor"
+import { throttle } from "lodash-es"
+import type { EditorRefObj } from "@/components/shared/toast-ui-editor/editor/EditorWrapper"
 
 type MdTabMode = "write" | "preview"
 
@@ -38,6 +27,8 @@ const ContentEditor = (
     minHeight = "300px",
     action,
     initialUploadImages,
+    onLoad,
+    hooks,
     ...props
   }: ContentEditorProps,
   ref: ForwardedRef<ToastEditor>,
@@ -45,17 +36,7 @@ const ContentEditor = (
   const editorRef = ref as EditorRefObj
   const wrapperRef = useRef<HTMLDivElement>(null)
 
-  const { uploadImageHook, uploadImageStatus } =
-    useToastUiEditorImageUploadHook({
-      category: "question",
-      action,
-      initialUploadLink: initialUploadImages
-        ? initialUploadImages[0]
-        : undefined,
-    })
-
-  const setEditorRef = useSetRecoilState(editorRefAtomFamily("question"))
-  const { setQuestionEditorLoaded } = useRecoilValue(questionEditorState)
+  const setLoaded = useSetRecoilState(questionEditorLoadedAtomFamily(action))
 
   const [mdTabVisible, setMdTabVisible] = useState(true)
   const [mode, setMode] = useState<MdTabMode>("write")
@@ -94,25 +75,31 @@ const ContentEditor = (
     }
   }
 
-  const handleResize = useCallback((e: UIEvent) => {
+  const handleResize = (e: UIEvent) => {
     handleMdTab()
-  }, [])
+  }
+
+  const throttleResize = throttle(handleResize, 200)
 
   const handleLoad = async (editor: ToastEditor) => {
     handleMdTab()
 
-    window.addEventListener("resize", handleResize)
+    window.addEventListener("resize", throttleResize)
 
-    await setQuestionEditorLoaded(true)
+    setLoaded(true)
 
-    setEditorRef(editorRef.current)
+    queueMicrotask(() => {
+      if (onLoad) {
+        onLoad(editorRef.current)
+      }
+    })
   }
 
   useEffect(() => {
     return () => {
-      window.removeEventListener("resize", handleResize)
+      window.removeEventListener("resize", throttleResize)
     }
-  }, [handleResize])
+  }, []) /* eslint-disable-line */
 
   return (
     <div
@@ -151,23 +138,12 @@ const ContentEditor = (
         height="auto"
         minHeight={minHeight}
         onLoad={handleLoad}
-        hooks={{
-          addImageBlobHook: uploadImageHook,
-        }}
+        hooks={hooks}
         plugins={[[codeSyntaxHighlight as any, { highlighter: Prism }]]}
         {...props}
       />
-      {uploadImageStatus.isUploadingImage ? <UploadingIndicator /> : null}
     </div>
   )
 }
 
 export default forwardRef(ContentEditor)
-
-function UploadingIndicator() {
-  return (
-    <div className="absolute w-full h-full left-0 top-0 flex justify-center items-center bg-white/50 z-[31]">
-      이미지 업로드 중...
-    </div>
-  )
-}

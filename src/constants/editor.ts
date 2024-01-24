@@ -1,5 +1,5 @@
-import { TechTag } from "@/interfaces/tech-tag"
-import { EditorProps } from "@toast-ui/react-editor"
+import type { EditorProps } from "@toast-ui/react-editor"
+import type { TechTag } from "@/interfaces/tech-tag"
 
 export const TOAST_UI_EDITOR_TOOLBAR_NAME = {
   HEADING: "heading",
@@ -55,3 +55,7 @@ export const techTagList: Array<TechTag> = [
 ]
 
 export const MAXIMUM_SELECT_TAG_LENGTH = 5
+
+export const USER_LOCAL_STORAGE_KEY = "user"
+
+export const DELETE_IMAGE_LOCAL_STORAGE_KEY = "delete_list"
