@@ -3,6 +3,7 @@ import { authHandler } from "./auth"
 import { coffeeChatHandler } from "./coffee-chat"
 import { memberHandler } from "./member"
 import { questionHandler } from "./question"
+import { searchHandler } from "./search"
 import { uploadHandler } from "./upload"
 
 export const mswHandler = [
@@ -12,4 +13,5 @@ export const mswHandler = [
   ...answerHandler,
   ...uploadHandler,
   ...coffeeChatHandler,
+  ...searchHandler,
 ]

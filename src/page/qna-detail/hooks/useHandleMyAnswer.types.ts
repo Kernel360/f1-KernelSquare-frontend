@@ -13,4 +13,5 @@ export interface DeleteValueProps {
 
 export interface AnswerProps {
   answerId: number
+  questionId: number
 }

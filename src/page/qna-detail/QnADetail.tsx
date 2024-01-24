@@ -14,7 +14,9 @@ const QnADetail: React.FC<{ id: string }> = ({ id }) => {
   const { data, isPending } = questionQueries.useQuestionData({
     id: Number(id),
   })
-  const { setIsAnswerMode, handleCheckMyAnswer } = useQnADetail()
+  const { setIsAnswerMode, handleCheckMyAnswer } = useQnADetail({
+    questionId: Number(id),
+  })
 
   const { user } = useClientSession()
 
@@ -28,7 +30,7 @@ const QnADetail: React.FC<{ id: string }> = ({ id }) => {
       if (
         answers?.data &&
         user?.nickname &&
-        !handleCheckMyAnswer(answers.data, user.nickname) &&
+        !handleCheckMyAnswer(answers.data.answer_responses, user.nickname) &&
         data?.data?.nickname !== user.nickname
       ) {
         setIsAnswerMode(true)
@@ -36,7 +38,13 @@ const QnADetail: React.FC<{ id: string }> = ({ id }) => {
     }
 
     fetchData()
-  }, [answers, data?.data?.nickname, user?.nickname])
+  }, [
+    answers,
+    data?.data?.nickname,
+    handleCheckMyAnswer,
+    setIsAnswerMode,
+    user?.nickname,
+  ])
 
   if (isPending || isAnswerPending || !data) return <Loading />
 

@@ -4,6 +4,7 @@ import { MemberApiStatus } from "./member"
 import { AuthApiStatus } from "./auth"
 import { ImageApiStatus } from "./image"
 import { CoffeeChatApiStatus } from "./coffeechat"
+import { SearchApiStatus } from "./search"
 
 type ResponseCase = keyof typeof HttpStatusCode
 
@@ -76,4 +77,11 @@ export const ApiStatus = {
    *
    */
   CoffeeChat: CoffeeChatApiStatus,
+  /**
+   * 검색 관련 api status
+   *
+   * `searchQuestionList`: 질문 관련 검색 결과 조회
+   *
+   */
+  Search: SearchApiStatus,
 } satisfies ApiStatusMap

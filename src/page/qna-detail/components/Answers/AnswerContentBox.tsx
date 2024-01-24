@@ -21,6 +21,7 @@ const AnswerContentBox: React.FC<EditAnswerProps> = ({ answer }) => {
   const { handleSubmit } = useForm()
   const { handleEditValue, isAnswerEditMode } = useHandleMyAnswer({
     answerId: Number(answer.answer_id),
+    questionId: Number(answer.question_id),
   })
 
   const handleSubmitEditedValue = () => {

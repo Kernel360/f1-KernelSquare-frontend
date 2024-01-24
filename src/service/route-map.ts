@@ -296,7 +296,7 @@ export class RouteMap {
    * **getSearch**: 검색(GET)
    */
   static search = {
-    getSearch: `${RouteMap.routeGroupBaseURL.search}`,
+    getSearchQuestions: `${RouteMap.routeGroupBaseURL.search}/questions`,
   }
 
   /**

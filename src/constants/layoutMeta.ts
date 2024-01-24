@@ -8,6 +8,7 @@ export type LayoutMetaKey =
   | "faq"
   | "profile"
   | "userProfile"
+  | "search"
 
 export type LayoutMeta = {
   title: string
@@ -97,6 +98,15 @@ export const layoutMeta = {
   userProfile: {
     title: "유저 프로필",
     description: "유저 프로필",
+    containLayout: {
+      header: true,
+      navigation: true,
+      footer: false,
+    },
+  },
+  search: {
+    title: "검색",
+    description: "검색",
     containLayout: {
       header: true,
       navigation: true,
