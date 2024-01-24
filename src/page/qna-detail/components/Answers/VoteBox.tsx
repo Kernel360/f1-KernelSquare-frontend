@@ -7,10 +7,16 @@ import { successMessage } from "@/constants/message"
 import type { VoteBoxProps } from "./VoteBox.types"
 
 const VoteBox: React.FC<VoteBoxProps> = ({ answer }) => {
-  const { handleRaise, handleReduce, handleCancle, raiseClass, reduceClass } =
-    useAnswerVote({
-      answer,
-    })
+  const {
+    handleRaise,
+    handleReduce,
+    handleCancle,
+    raiseClass,
+    reduceClass,
+    replaceNumber,
+  } = useAnswerVote({
+    answer,
+  })
 
   const handleVoteRaise = () => {
     if (answer.vote_status === 0) return handleRaise()
@@ -31,11 +37,7 @@ const VoteBox: React.FC<VoteBoxProps> = ({ answer }) => {
       <div className="flex justify-center">
         <VoteIcons.Up className={raiseClass} onClick={handleVoteRaise} />
       </div>
-      <div className="text-[30px]">
-        {0 <= answer.vote_count && answer.vote_count < 10
-          ? "0" + answer.vote_count
-          : answer.vote_count}
-      </div>
+      <div className="text-[30px]">{replaceNumber(answer.vote_count)}</div>
       <div className="flex justify-center">
         <VoteIcons.Down className={reduceClass} onClick={handleVoteReduce} />
       </div>

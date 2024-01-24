@@ -77,5 +77,11 @@ export const ApiStatus = {
    *
    */
   CoffeeChat: CoffeeChatApiStatus,
+  /**
+   * 검색 관련 api status
+   *
+   * `searchQuestionList`: 질문 관련 검색 결과 조회
+   *
+   */
   Search: SearchApiStatus,
 } satisfies ApiStatusMap

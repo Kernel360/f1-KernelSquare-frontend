@@ -7,6 +7,7 @@ import LightBulb from "@/components/shared/animation/LightBulb"
 import { notificationMessage } from "@/constants/message"
 import useQnADetail from "../../hooks/useQnADetail"
 import type { AnswerProps, NoAnswerProps } from "./AnswerList.types"
+import { PropsWithChildren } from "react"
 
 const AnswerList: React.FC<AnswerProps> = ({
   createdby,
@@ -55,6 +56,11 @@ const AnswerList: React.FC<AnswerProps> = ({
 }
 
 export default AnswerList
+
+/**
+ * [TODO]
+ */
+const Wrapper = () => {}
 
 const Loading = () => {
   return (
