@@ -12,6 +12,7 @@ const HandleAnswerBox: React.FC<HandleAnswerProps> = ({
   const isMyAnswer = createdby === answer.created_by
   const { handleEditMode, handleDeleteValue } = useHandleMyAnswer({
     answerId: Number(answer.answer_id),
+    questionId: Number(answer.question_id),
   })
 
   if (isMyAnswer)

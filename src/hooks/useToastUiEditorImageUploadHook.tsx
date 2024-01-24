@@ -1,24 +1,46 @@
 "use client"
 
-import { HookCallback } from "@/components/shared/toast-ui-editor/editor/EditorWrapper"
-import { APIResponse } from "@/interfaces/dto/api-response"
-import { UploadImagesCategory } from "@/interfaces/dto/upload/upload-images.dto"
-import {
-  fileUploadImageLinksSelector,
-  questionEditorLoadedAtom,
-} from "@/recoil/atoms/questionEditor"
-import { revalidatePage } from "@/util/actions/revalidatePage"
 import { AxiosError, HttpStatusCode } from "axios"
-import { useEffect } from "react"
-import { toast } from "react-toastify"
-import { useRecoilValue } from "recoil"
 import { useUploadImage } from "./image/useUploadImage"
+import { useRecoilCallback } from "recoil"
+import { questionEditorAtomFamily } from "@/recoil/atoms/questionEditor"
+import type { HookCallback } from "@/components/shared/toast-ui-editor/editor/EditorWrapper"
+import type { APIResponse } from "@/interfaces/dto/api-response"
+import type { UploadImagesCategory } from "@/interfaces/dto/upload/upload-images.dto"
+
+type SuccessCallbackArg = {
+  file: File
+  linkUrl: string
+}
+type UploadSuccessCallback =
+  | ((arg: SuccessCallbackArg) => void)
+  | ((arg: SuccessCallbackArg) => Promise<void>)
+
+type UploadErrorCallbackArg = {
+  error: Error | AxiosError<APIResponse<string>, any>
+  action?: "create" | "update"
+  errorCase?: "unauthorized"
+}
+type UploadErrorCallback =
+  | ((arg: UploadErrorCallbackArg) => void)
+  | ((arg: UploadErrorCallbackArg) => Promise<void>)
+
+type ErrorCallbackArg = {
+  error: unknown
+  errorCase?: "isMaximum"
+}
+type ErrorCallback =
+  | ((arg: ErrorCallbackArg) => void)
+  | ((arg: ErrorCallbackArg) => Promise<void>)
 
 interface UseToastUiEditorImageUploadHookOption {
+  atomKey?: string
   category: UploadImagesCategory
   action?: "create" | "update"
-  initialUploadLink?: string
   maximumUploadImageLength?: number
+  onUploadSuccess?: UploadSuccessCallback
+  onUploadError?: UploadErrorCallback
+  onError?: ErrorCallback
 }
 
 export const exceedingUploadableImagesError = new Error(
@@ -26,14 +48,29 @@ export const exceedingUploadableImagesError = new Error(
   { cause: "exceeding uploadable images" },
 )
 
-const MAXIMUM_UPLOAD_IMAGE_LENGTH = 1
+export const MAXIMUM_UPLOAD_IMAGE_LENGTH = 1
 
 export function useToastUiEditorImageUploadHook({
+  atomKey,
   category,
   action,
-  initialUploadLink,
   maximumUploadImageLength = MAXIMUM_UPLOAD_IMAGE_LENGTH,
+  onUploadSuccess,
+  onUploadError,
+  onError,
 }: UseToastUiEditorImageUploadHookOption) {
+  const editorSnapshot = useRecoilCallback(
+    ({ snapshot }) =>
+      async () => {
+        const editorSnapshot = await snapshot.getPromise(
+          questionEditorAtomFamily(atomKey ?? action ?? "create"),
+        )
+
+        return editorSnapshot
+      },
+    [atomKey],
+  )
+
   const { uploadImage, uploadImageStatus } = useUploadImage({
     onSuccess(res, variables) {
       const { image_url } = res.data.data!
@@ -43,43 +80,35 @@ export function useToastUiEditorImageUploadHook({
         uploadImageHookCallback(image_url, file.name)
       }
 
-      addFileUploadImageLinks(image_url)
+      onUploadSuccess && onUploadSuccess({ file, linkUrl: image_url })
     },
     onError(error) {
       if (error instanceof AxiosError) {
         const { response } = error as AxiosError<APIResponse>
 
         if (response?.status === HttpStatusCode.Unauthorized) {
-          if (category === "question") {
-            action === "create"
-              ? revalidatePage("/question")
-              : revalidatePage("/question/u/[id]", "page")
-
-            return
-          }
-
-          toast.error("이미지 업로드에 실패했습니다", {
-            position: "top-center",
-          })
+          onUploadError &&
+            onUploadError({ error, action, errorCase: "unauthorized" })
 
           return
         }
 
-        toast.error("이미지 업로드에 실패했습니다", { position: "top-center" })
+        onUploadError && onUploadError({ error, action })
+
+        return
       }
+
+      onUploadError && onUploadError({ error, action })
+
+      return
     },
   })
 
-  const { getFileUploadImageLinks, addFileUploadImageLinks } = useRecoilValue(
-    fileUploadImageLinksSelector,
-  )
-  const formLoaded = useRecoilValue(questionEditorLoadedAtom)
-
   const uploadImageHook = async (blob: File | Blob, callback: HookCallback) => {
-    const fileUploadLinkSnapshot = await getFileUploadImageLinks()
-
     try {
-      if (fileUploadLinkSnapshot.length >= maximumUploadImageLength) {
+      const { fileUploadImageLinks } = await editorSnapshot()
+
+      if (fileUploadImageLinks.length >= maximumUploadImageLength) {
         throw exceedingUploadableImagesError
       }
 
@@ -91,26 +120,19 @@ export function useToastUiEditorImageUploadHook({
     } catch (error) {
       if (error instanceof Error) {
         if (error.cause === exceedingUploadableImagesError.cause) {
-          toast.error(
-            `이미지 파일 업로드는 최대${maximumUploadImageLength}장 가능합니다`,
-            { position: "top-center" },
-          )
+          onError && onError({ error, errorCase: "isMaximum" })
+
+          return
         }
+
+        onError && onError({ error })
 
         return
       }
 
-      toast.error("이미지 업로드에 실패했습니다", { position: "top-center" })
+      onError && onError({ error })
     }
   }
-
-  useEffect(() => {
-    if (initialUploadLink && formLoaded) {
-      queueMicrotask(() => {
-        addFileUploadImageLinks(initialUploadLink)
-      })
-    }
-  }, [initialUploadLink, formLoaded]) /* eslint-disable-line */
 
   return {
     uploadImageHook,

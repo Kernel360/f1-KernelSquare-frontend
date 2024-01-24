@@ -3,10 +3,12 @@
 import Spacing from "@/components/shared/Spacing"
 import Button from "@/components/shared/button/Button"
 import Image from "next/image"
+import type { EditMode } from "./components/AskQuestionPageControl"
 
-interface CancelUploadImageModalPorps {
+interface CancelUploadImageModalProps {
   imageUrl: string
-  initialUploadImages?: Array<string> | null
+  initialUploadImages?: Array<string>
+  editMode: EditMode
   onAgree: () => void | Promise<void>
   onCancel: () => void | Promise<void>
 }
@@ -14,12 +16,13 @@ interface CancelUploadImageModalPorps {
 function CancelUploadImageModal({
   imageUrl,
   initialUploadImages,
+  editMode,
   onAgree,
   onCancel,
-}: CancelUploadImageModalPorps) {
-  const isSoftDelteTargetImage = initialUploadImages?.length
-    ? initialUploadImages.includes(imageUrl)
-    : false
+}: CancelUploadImageModalProps) {
+  const isSoftDelteTargetImage = initialUploadImages?.includes(imageUrl)
+
+  console.log({ initialUploadImages, imageUrl })
 
   return (
     <div className="w-full sm:w-[320px]">

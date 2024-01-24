@@ -5,7 +5,9 @@ interface GetAnswerRequest {
   questionId: number
 }
 
-type AnswerPayload = Answer[]
+type AnswerPayload = {
+  answer_responses: Answer[]
+}
 
 interface GetAnswerResponse extends APIResponse<AnswerPayload> {}
 

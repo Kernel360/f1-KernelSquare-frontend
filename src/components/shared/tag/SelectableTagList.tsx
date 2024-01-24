@@ -1,20 +1,18 @@
 "use client"
 
-import { TechTag } from "@/interfaces/tech-tag"
-import { useEffect, useRef } from "react"
+import { useRef } from "react"
 import SelectableTag from "./SelectableTag"
 import { Input } from "../input/Input"
 import Spacing from "../Spacing"
-import { useRecoilValue } from "recoil"
-import {
-  renderedTagListSelector,
-  selectedTagListAtom,
-  tagListState,
-} from "@/recoil/atoms/tag"
 import Tag from "./Tag"
 import { MdClose } from "react-icons/md"
-import { questionEditorState } from "@/recoil/atoms/questionEditor"
-import { toast } from "react-toastify"
+import { useSelectTagList } from "@/hooks/useSelectTagList"
+import { techTagList } from "@/constants/editor"
+import type { TechTag } from "@/interfaces/tech-tag"
+import type {
+  TagListAtomParam,
+  UseSelectTagListOption,
+} from "@/hooks/useSelectTagList"
 
 interface TagState {
   renderTagList: Array<TechTag>
@@ -22,88 +20,75 @@ interface TagState {
 }
 
 interface SelectableTagListProps {
+  uniqueKey: string
   tagList?: Array<TechTag>
   initialSelectedTagList?: TagState["selectedTagList"]
   searchable?: boolean
   maximumLength?: number
+  callback?: UseSelectTagListOption["callback"]
+}
+
+export const maximumSelectableError = new Error()
+maximumSelectableError.cause = {
+  type: "maximumSelectable",
 }
 
 function SelectableTagList({
+  uniqueKey,
   tagList,
   initialSelectedTagList,
   searchable = false,
   maximumLength,
+  callback,
 }: SelectableTagListProps) {
-  const renderedTagList = useRecoilValue(renderedTagListSelector)
-  const selectedTagList = useRecoilValue(selectedTagListAtom)
-  const { updateQuestionEditorState } = useRecoilValue(questionEditorState)
-
   const {
-    loadRenderableTagList,
-    renderableTagListInit,
-    selectedTagListInit,
-    selectTag,
-    unSelectTag,
-  } = useRecoilValue(tagListState)
-
-  useEffect(() => {
-    updateQuestionEditorState({
-      skills: [...selectedTagList],
-    })
-  }, [selectedTagList]) /* eslint-disable-line */
-
-  useEffect(() => {
-    tagList ? renderableTagListInit(tagList) : loadRenderableTagList()
-
-    if (initialSelectedTagList) {
-      selectedTagListInit(initialSelectedTagList)
-    }
-  }, [tagList, initialSelectedTagList]) /* eslint-disable-line */
+    tagList: selectTagList,
+    select,
+    unselect,
+  } = useSelectTagList({
+    uniqueKey,
+    initialTagList: tagList,
+    initialSelectedTagList,
+    callback,
+  })
 
   return (
     <div>
       {searchable && (
         <>
-          <SelectableTagList.Search />
+          <SelectableTagList.Search
+            uniqueKey="question"
+            initialTagList={techTagList}
+            initialSelectedTagList={initialSelectedTagList}
+          />
           <Spacing size={20} />
         </>
       )}
       <ul className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-x-4 gap-y-3">
-        {renderedTagList.map((tag, index) => {
+        {selectTagList.tagList.map((tag, index) => {
           return (
             <li key={`${tag}-${index}`}>
               <SelectableTag
                 tag={tag}
-                {...(maximumLength && {
-                  onBeforeSelect({
-                    maybeSelectedTagList,
-                    maybeSelected,
-                    next,
-                    disallow,
-                  }) {
-                    if (
-                      maybeSelectedTagList?.length > maximumLength &&
-                      maybeSelected
-                    ) {
-                      disallow()
-
-                      toast.error(
-                        `태그는 최대 ${maximumLength}개 선택 가능합니다`,
-                        { position: "bottom-center" },
-                      )
-
-                      return
-                    }
-
-                    next()
-                  },
-                })}
                 onSelect={({ selected, tag }) => {
-                  selected ? selectTag(tag) : unSelectTag(tag)
+                  if (!maximumLength) {
+                    selected ? select(tag) : unselect(tag)
+
+                    return
+                  }
+
+                  if (
+                    selected &&
+                    selectTagList.selectedTagList.length >= maximumLength
+                  ) {
+                    ;(maximumSelectableError.cause as any).maximum =
+                      maximumLength
+                    throw maximumSelectableError
+                  }
+
+                  selected ? select(tag) : unselect(tag)
                 }}
-                initialSelected={
-                  !!selectedTagList.find((selectedTag) => selectedTag === tag)
-                }
+                selected={selectTagList.selectedTagList.includes(tag)}
               />
             </li>
           )
@@ -113,9 +98,16 @@ function SelectableTagList({
   )
 }
 
-SelectableTagList.Search = function SelectableTagListSearch() {
-  const renderedTagList = useRecoilValue(renderedTagListSelector)
-  const { renderTagList, resetRenderTagList } = useRecoilValue(tagListState)
+SelectableTagList.Search = function SelectableTagListSearch({
+  uniqueKey,
+  initialTagList,
+  initialSelectedTagList,
+}: TagListAtomParam) {
+  const { searchTagList } = useSelectTagList({
+    uniqueKey,
+    initialTagList,
+    initialSelectedTagList,
+  })
 
   const inputRef = useRef<HTMLInputElement>(null)
 
@@ -124,18 +116,7 @@ SelectableTagList.Search = function SelectableTagListSearch() {
 
     const targetValue = inputRef.current.value
 
-    if (!targetValue) {
-      resetRenderTagList()
-
-      return
-    }
-
-    const matchedTagList = renderedTagList.filter((tag) => {
-      const regExp = new RegExp(`${targetValue}`, "gi")
-      return regExp.test(tag)
-    })
-
-    renderTagList([...matchedTagList])
+    searchTagList(targetValue)
   }
 
   return (
@@ -149,13 +130,22 @@ SelectableTagList.Search = function SelectableTagListSearch() {
 }
 
 SelectableTagList.SummarizedSelectedTagList =
-  function SummerizedSelectedTagList() {
-    const selectedTagList = useRecoilValue(selectedTagListAtom)
-    const { unSelectTag } = useRecoilValue(tagListState)
+  function SummerizedSelectedTagList({
+    uniqueKey,
+    initialTagList,
+    initialSelectedTagList,
+    callback,
+  }: UseSelectTagListOption) {
+    const { tagList, unselect } = useSelectTagList({
+      uniqueKey,
+      initialTagList,
+      initialSelectedTagList,
+      callback,
+    })
 
     return (
       <ul className="flex gap-2 flex-wrap">
-        {selectedTagList.map((selectedTag) => {
+        {tagList.selectedTagList.map((selectedTag) => {
           return (
             <li key={`${selectedTag}`}>
               <Tag className="inline-flex align-top items-center gap-2 border bg-white text-secondary hover:bg-white border-primary text-xs">
@@ -165,7 +155,7 @@ SelectableTagList.SummarizedSelectedTagList =
                 <div
                   className="transition-colors w-5 h-5 p-1 rounded-full border flex justify-center items-center bg-white hover:bg-secondary hover:text-white"
                   onClick={() => {
-                    unSelectTag(selectedTag)
+                    unselect(selectedTag)
                   }}
                 >
                   <MdClose />

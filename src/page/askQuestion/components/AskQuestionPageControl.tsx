@@ -1,14 +1,13 @@
 "use client"
 
 import Button from "@/components/shared/button/Button"
-import { useLayoutEffect } from "react"
+import { useLayoutEffect, useRef } from "react"
 import useModal from "@/hooks/useModal"
 import CancelAskQuestionModal from "./CancelAskQuestionModal"
-import { useRecoilValue } from "recoil"
+import { useRecoilValue, useSetRecoilState } from "recoil"
 import {
-  editorRefAtomFamily,
-  fileUploadImageLinksSelector,
-  questionEditorLoadedAtom,
+  questionEditorAtomFamily,
+  questionEditorLoadedAtomFamily,
 } from "@/recoil/atoms/questionEditor"
 import Image from "next/image"
 import { MdClose } from "react-icons/md"
@@ -16,6 +15,10 @@ import { toast } from "react-toastify"
 import CancelUploadImageModal from "../CancelUploadImage"
 import { useDeleteImage } from "@/hooks/image/useDeleteImage"
 import { Editor } from "@toast-ui/react-editor"
+import { AxiosError, HttpStatusCode } from "axios"
+import { revalidatePage } from "@/util/actions/revalidatePage"
+import { DELETE_IMAGE_LOCAL_STORAGE_KEY } from "@/constants/editor"
+import type { APIResponse } from "@/interfaces/dto/api-response"
 
 export type EditMode = "create" | "update"
 
@@ -28,21 +31,29 @@ interface AskQuestionPageControlProps {
 export interface DeleteImageLinkFromMarkdownPayload {
   targetLink: string
 }
+export interface SendEditorRefPayload {
+  ref: Editor | null
+}
 
 export const deleteImageLinkFromMarkdownEventName =
   "deleteImageLinkFormMarkDown"
+export const sendEditorRefEventName = "sendToastUiEditorRef"
 
 function AskQuestionPageControl({
   questionId,
   editMode = "create",
   initialUploadImages,
 }: AskQuestionPageControlProps) {
-  const form = document.querySelector("form")!
-
-  const formLoaded = useRecoilValue(questionEditorLoadedAtom)
-  const { fileUploadImageLinks } = useRecoilValue(fileUploadImageLinksSelector)
+  const editorRef = useRef<Editor | null>(null)
 
   const { openModal, closeModal } = useModal()
+
+  const { fileUploadImageLinks } = useRecoilValue(
+    questionEditorAtomFamily(editMode),
+  )
+
+  const form = document.querySelector("form")!
+  const formLoaded = useRecoilValue(questionEditorLoadedAtomFamily(editMode))
 
   const onSubmit = () => {
     form.requestSubmit()
@@ -58,7 +69,16 @@ function AskQuestionPageControl({
   }
 
   useLayoutEffect(() => {
+    const assignRef = (e: CustomEvent) => {
+      const { ref } = e.detail as SendEditorRefPayload
+
+      editorRef.current = ref
+    }
+
+    window.addEventListener(sendEditorRefEventName as any, assignRef)
     return () => {
+      window.removeEventListener(sendEditorRefEventName as any, assignRef)
+
       closeModal()
     }
   }, []) /* eslint-disable-line */
@@ -70,6 +90,8 @@ function AskQuestionPageControl({
         <UploadedImageList
           srcList={fileUploadImageLinks}
           initialUploadImages={initialUploadImages}
+          editMode={editMode}
+          editorRef={editorRef.current}
         />
         <div className="flex gap-2 flex-row justify-center items-center lgDevice:flex-col">
           <Button buttonTheme="primary" className="w-[68px]" onClick={onSubmit}>
@@ -92,12 +114,14 @@ function AskQuestionPageControl({
 function UploadedImageList({
   srcList,
   initialUploadImages,
+  editMode,
+  editorRef,
 }: {
   srcList: Array<string>
-  initialUploadImages?: Array<string> | null
+  initialUploadImages?: Array<string>
+  editMode: EditMode
+  editorRef: Editor | null
 }) {
-  const editorRef = useRecoilValue(editorRefAtomFamily("question"))
-
   if (!srcList.length) {
     return <div className="text-center">업로드 이미지 없음</div>
   }
@@ -110,6 +134,7 @@ function UploadedImageList({
             <UploadedImage
               src={src}
               initialUploadImages={initialUploadImages}
+              editMode={editMode}
               editorRef={editorRef}
             />
           </li>
@@ -122,34 +147,55 @@ function UploadedImageList({
 function UploadedImage({
   src,
   initialUploadImages,
+  editMode,
   editorRef,
 }: {
   src: string
-  initialUploadImages?: Array<string> | null
+  initialUploadImages?: Array<string>
+  editMode: EditMode
   editorRef: Editor | null
 }) {
   const { openModal, closeModal } = useModal()
 
-  const { removeFileUploadImageLinks } = useRecoilValue(
-    fileUploadImageLinksSelector,
-  )
+  const setEditorState = useSetRecoilState(questionEditorAtomFamily(editMode))
+
+  const removeFileUploadLinks = async (imageUrl: string) => {
+    setEditorState((prev) => ({
+      ...prev,
+      fileUploadImageLinks: prev.fileUploadImageLinks.filter(
+        (uploadedImageUrl) => uploadedImageUrl !== imageUrl,
+      ),
+    }))
+
+    queueMicrotask(() => {
+      window.dispatchEvent(
+        new CustomEvent(deleteImageLinkFromMarkdownEventName, {
+          detail: {
+            targetLink: imageUrl,
+          } as DeleteImageLinkFromMarkdownPayload,
+        }),
+      )
+    })
+  }
 
   // delete image 관련
   const { deleteImage, deleteImageStatus } = useDeleteImage({
     async onSuccess(res, imageUrl) {
-      await removeFileUploadImageLinks(imageUrl)
-
-      queueMicrotask(() => {
-        window.dispatchEvent(
-          new CustomEvent(deleteImageLinkFromMarkdownEventName, {
-            detail: {
-              targetLink: imageUrl,
-            } as DeleteImageLinkFromMarkdownPayload,
-          }),
-        )
-      })
+      removeFileUploadLinks(imageUrl)
     },
     onError(error, imageUrl) {
+      if (error instanceof AxiosError) {
+        const { response } = error as AxiosError<APIResponse>
+
+        if (response?.status === HttpStatusCode.Unauthorized) {
+          editMode === "create"
+            ? revalidatePage("/question")
+            : revalidatePage("/question/u/[id]", "page")
+
+          return
+        }
+      }
+
       toast.error("이미지 삭제에 실패했습니다", {
         position: "bottom-center",
       })
@@ -158,21 +204,27 @@ function UploadedImage({
 
   const handleDeleteImage = async (imageUrl: string) => {
     try {
-      if (
-        initialUploadImages?.length &&
-        initialUploadImages.includes(imageUrl)
-      ) {
-        await removeFileUploadImageLinks(imageUrl)
+      if (initialUploadImages?.includes(src)) {
+        const deleteImageListStorage = localStorage.getItem(
+          DELETE_IMAGE_LOCAL_STORAGE_KEY,
+        )
 
-        queueMicrotask(() => {
-          window.dispatchEvent(
-            new CustomEvent(deleteImageLinkFromMarkdownEventName, {
-              detail: {
-                targetLink: imageUrl,
-              } as DeleteImageLinkFromMarkdownPayload,
-            }),
+        if (!deleteImageListStorage) {
+          localStorage.setItem(
+            DELETE_IMAGE_LOCAL_STORAGE_KEY,
+            JSON.stringify([imageUrl]),
           )
-        })
+        } else {
+          const list = Array.from(
+            new Set([...JSON.parse(deleteImageListStorage), imageUrl]),
+          )
+          localStorage.setItem(
+            DELETE_IMAGE_LOCAL_STORAGE_KEY,
+            JSON.stringify(list),
+          )
+        }
+
+        removeFileUploadLinks(imageUrl)
 
         return
       }
@@ -195,6 +247,7 @@ function UploadedImage({
         <CancelUploadImageModal
           imageUrl={imageUrl}
           initialUploadImages={initialUploadImages}
+          editMode={editMode}
           onAgree={() => {
             handleDeleteImage(imageUrl)
             closeModal()
@@ -207,11 +260,10 @@ function UploadedImage({
 
   // 업로드 이미지 클릭시 본문에 추가
   const appendImageToMarkdownContent = () => {
-    const currentMarkdown = editorRef?.getInstance().getMarkdown()
+    const currentInstance = editorRef?.getInstance()
 
-    editorRef
-      ?.getInstance()
-      .setMarkdown(`${currentMarkdown}\n![upload_image](${src})`)
+    const currentMarkdown = currentInstance?.getMarkdown()
+    currentInstance?.setMarkdown(`${currentMarkdown}\n![upload_image](${src})`)
   }
 
   return (

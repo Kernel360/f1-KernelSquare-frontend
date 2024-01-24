@@ -110,6 +110,11 @@ const useAnswerVote = ({ answer }: VoteProps) => {
     })
   }
 
+  const replaceNumber = (num: number) => {
+    if (0 <= num && num < 10) return "0" + num
+    return num
+  }
+
   return {
     vote,
     setVote,
@@ -118,6 +123,7 @@ const useAnswerVote = ({ answer }: VoteProps) => {
     handleCancle,
     raiseClass,
     reduceClass,
+    replaceNumber,
   }
 }
 

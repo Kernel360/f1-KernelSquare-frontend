@@ -3,6 +3,8 @@ import { QnaApiStatus } from "./qna"
 import { MemberApiStatus } from "./member"
 import { AuthApiStatus } from "./auth"
 import { ImageApiStatus } from "./image"
+import { CoffeeChatApiStatus } from "./coffeechat"
+import { SearchApiStatus } from "./search"
 
 type ResponseCase = keyof typeof HttpStatusCode
 
@@ -64,4 +66,22 @@ export const ApiStatus = {
    *
    */
   Image: ImageApiStatus,
+  /**
+   * 커피챗 관련 api status
+   *
+   * `getAllCoffeeChatPosts`: 모든 커피챗 등록글 조회
+   *
+   * `getCoffeePostDetail`: 커피챗 등록글 상세 조회
+   *
+   * `createCoffeeChatPost`: 커피챗 등록글 생성
+   *
+   */
+  CoffeeChat: CoffeeChatApiStatus,
+  /**
+   * 검색 관련 api status
+   *
+   * `searchQuestionList`: 질문 관련 검색 결과 조회
+   *
+   */
+  Search: SearchApiStatus,
 } satisfies ApiStatusMap
