@@ -21,13 +21,13 @@ import type {
   EditValueProps,
 } from "./useHandleMyAnswer.types"
 
-const useHandleMyAnswer = ({ answerId }: AnswerProps) => {
+const useHandleMyAnswer = ({ answerId, questionId }: AnswerProps) => {
   const [isAnswerEditMode, setIsAnswerEditMode] = useRecoilState(
     AnswerEditMode(answerId),
   )
   const queryClient = useQueryClient()
   const { openModal } = useModal()
-  const { checkNullValue } = useQnADetail()
+  const { checkNullValue } = useQnADetail({ questionId })
 
   const handleEditValue = async ({ submitValue, answer }: EditValueProps) => {
     if (checkNullValue(submitValue)) {

@@ -11,6 +11,7 @@ import {
 } from "react-hook-form"
 import { useRouter } from "next/navigation"
 import SearchField from "./SearchField"
+import SearchModal from "./SearchModal"
 
 enum KeyBoardEventKey {
   Enter = "Enter",
@@ -24,18 +25,7 @@ function SearchArea() {
   const { openModal } = useModal()
   const { handleSubmit, control } = useForm()
   const router = useRouter()
-  /**
-   * 키보드 이벤트 발생 시 저장될 값
-   */
-  const [autoKeyword, setAutoKeyword] = useState<string>("")
-  /**
-   * 키보드 이벤트로 선택되게 하는 자동 완성 모드 결정
-   */
-  const [isAuto, setIsAuto] = useState<boolean>(false)
-  /**
-   * 현재 키보드로 선택된 위치
-   */
-  const [focusIdx, setFocusIdx] = useState<number>(0)
+  const [isBtnShown, setIsBtnShown] = useState<boolean>(true)
 
   const handleFocus = (e: React.FocusEvent<HTMLDivElement, Element>) => {
     if (e.target.tagName === "INPUT") {
@@ -51,19 +41,19 @@ function SearchArea() {
     }
   })
 
-  const handleInputChange = (
-    e: ChangeEvent<HTMLInputElement>,
-    field: ControllerRenderProps<FieldValues, "search">,
-  ) => {
-    field.onChange(e.target.value)
-    setIsAuto(false)
-    setFocusIdx(-1)
+  const handleButtonClick = () => {
+    setIsBtnShown(false)
+    openModal({
+      containsHeader: false,
+      content: <SearchModal />,
+      classNames: "self-start mt-[72px]",
+    })
   }
 
   return (
     <>
       <form
-        className="hidden flex flex-col justify-center sm:block"
+        className="flex flex-col justify-center"
         onSubmit={handleSubmitData}
       >
         <Controller
@@ -74,18 +64,26 @@ function SearchArea() {
             <div className="relative z-[100] mt-1 inline-flex align-top flex-col max-w-full">
               <div
                 ref={wrapperRef}
-                className="relative flex w-[400px] border border-colorsGray inline-flex align-top px-4 py-1 justify-between items-center rounded-lg focus:bg-primary"
+                className="relative flex sm:w-[400px] sm:border sm:border-colorsGray inline-flex align-top sm:px-4 py-1 justify-between items-center rounded-lg focus:bg-primary"
               >
                 <input
                   {...field}
                   onFocus={handleFocus}
-                  onChange={(e) => handleInputChange(e, field)}
-                  className="w-[90%] text-align-center text-s focus:outline-none border-transparent focus:border-transparent"
+                  className="w-[90%] text-align-center text-s focus:outline-none border-transparent focus:border-transparent hidden sm:block"
                   placeholder={""}
                   autoComplete="off"
                 />
                 <div className="mt-1 cursor-pointer">
-                  <button className="cursor-pointer">
+                  <button
+                    className="cursor-pointer"
+                    onClick={() =>
+                      openModal({
+                        containsHeader: false,
+                        content: <SearchModal />,
+                        classNames: "self-start mt-[72px]",
+                      })
+                    }
+                  >
                     <Icons.Search />
                   </button>
                 </div>
@@ -94,7 +92,6 @@ function SearchArea() {
           )}
         />
       </form>
-      {/* <SearchField /> */}
     </>
   )
 }

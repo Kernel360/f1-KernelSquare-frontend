@@ -16,8 +16,10 @@ const AnswerList: React.FC<AnswerProps> = ({
   const { data, isPending } = answerQueries.useGetAnswers({
     questionId,
   })
-  const { filterMyAnswer, handleIsChecked } = useQnADetail()
-  const isAnswer = !!data?.data?.length
+  const { filterMyAnswer, handleIsChecked } = useQnADetail({
+    questionId,
+  })
+  const isAnswer = !!data?.data?.answer_responses.length
 
   if (isPending) return <Loading />
 
@@ -40,7 +42,7 @@ const AnswerList: React.FC<AnswerProps> = ({
           {!isAnswer && <NoAnswer isMyAnswer={isMyAnswer} />}
           {isAnswer &&
             !!data.data &&
-            filterMyAnswer(data?.data).map((answer) => (
+            filterMyAnswer(data?.data.answer_responses).map((answer) => (
               <OneAnswer
                 key={answer.answer_id}
                 answer={answer}

@@ -21,8 +21,6 @@ function QnAList({ questions, keyword, isSearch }: QnAListProps) {
 
   const { push } = useRouter()
 
-  console.log("qq", questions)
-
   return (
     <div className="py-4 w-[calc(100%-12px)] sm:w-[calc(100%-22px)] lg:w-[calc(100%-42px)] mx-auto">
       <ul className="flex flex-col gap-8">

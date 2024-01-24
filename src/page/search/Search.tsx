@@ -20,8 +20,6 @@ const Search = () => {
     error,
   } = useSearchQuestion({ keyword, page: Number(page) })
 
-  console.log("data", searchResults)
-
   if (isPending) {
     return <QnAList.Loading />
   }

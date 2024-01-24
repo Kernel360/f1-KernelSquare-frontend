@@ -7,6 +7,7 @@ import { useClientSession } from "@/hooks/useClientSession"
 import Profile from "../Profile"
 import Image from "next/image"
 import { useRouter } from "next/navigation"
+import { twJoin } from "tailwind-merge"
 
 interface OneQnAProps {
   question: Question
@@ -27,6 +28,15 @@ const OneQnA = ({ question }: OneQnAProps) => {
   const now = dayjs().format()
   const { user } = useClientSession()
   const { push } = useRouter()
+
+  const ProfileClass = twJoin(
+    ["shrink-0 flex h-max max-h-14 items-center gap-1 ml-4 rounded-lg"],
+    [
+      user &&
+        "cursor-pointer relative outline outline-[2px] outline-transparent transition-colors hover:outline hover:outline-primary outline-offset-1",
+    ],
+    [!user && "cursor-default"],
+  )
 
   return (
     <li
@@ -53,11 +63,7 @@ const OneQnA = ({ question }: OneQnAProps) => {
           </time>
         </div>
         <div
-          className={`shrink-0 flex h-max max-h-14 items-center gap-1 ml-4 rounded-lg ${
-            user
-              ? "cursor-pointer relative outline outline-[2px] outline-transparent transition-colors hover:outline hover:outline-primary outline-offset-1"
-              : "cursor-default"
-          } `}
+          className={ProfileClass}
           {...(user && {
             onClick: (e) => push(`/profile/${member_id}`),
             title: "유저 프로필로 이동",
