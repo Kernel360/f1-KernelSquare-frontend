@@ -28,8 +28,6 @@ const MyAnswer: React.FC<MyAnswerProps> = ({ questionId }) => {
     handleSubmitValue({ questionId, submitValue })
   }
 
-  console.log("is", isAnswerMode)
-
   if (!user)
     return (
       <Container>

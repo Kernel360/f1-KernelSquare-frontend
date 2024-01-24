@@ -3,30 +3,41 @@
 import { Icons } from "@/components/icons/Icons"
 import Button from "@/components/shared/button/Button"
 import RowInput from "@/components/shared/input/RowInput"
-import { useRef } from "react"
+import useModal from "@/hooks/useModal"
+import { useRouter } from "next/navigation"
+import { useForm } from "react-hook-form"
+
+interface SearchForm {
+  search: string
+}
 
 function SearchModal() {
-  const inputRef = useRef<HTMLInputElement>(null)
+  const { closeModal } = useModal()
+  const router = useRouter()
+  const { register, handleSubmit } = useForm<SearchForm>()
+
+  const handleSubmitData = (data: SearchForm) => {
+    router.replace(`/search?keyword=${data.search}&page=0`)
+    closeModal()
+  }
 
   return (
-    <RowInput
-      ref={inputRef}
-      spellCheck="false"
-      sideField={
-        <Button
-          onClick={() =>
-            console.log("search:modal", { keyword: inputRef.current?.value })
-          }
-        >
-          <Icons.Search />
-        </Button>
-      }
-      classNames={{
-        wrapper:
-          "bg-colorsLightGray border-transparent hover:border-primary focus-within:outline focus-within:outline-offset-[3px] focus-within:outline-emerald-200/30",
-        input: "bg-transparent",
-      }}
-    />
+    <form onSubmit={handleSubmit(handleSubmitData)}>
+      <RowInput
+        {...(register("search"), { required: true })}
+        spellCheck="false"
+        sideField={
+          <Button type="submit">
+            <Icons.Search />
+          </Button>
+        }
+        classNames={{
+          wrapper:
+            "bg-colorsLightGray border-transparent hover:border-primary focus-within:outline focus-within:outline-offset-[3px] focus-within:outline-emerald-200/30",
+          input: "bg-transparent",
+        }}
+      />
+    </form>
   )
 }
 

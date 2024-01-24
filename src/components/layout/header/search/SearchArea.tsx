@@ -2,30 +2,16 @@
 
 import { Icons } from "@/components/icons/Icons"
 import useModal from "@/hooks/useModal"
-import { ChangeEvent, useRef, useState } from "react"
-import {
-  Controller,
-  ControllerRenderProps,
-  FieldValues,
-  useForm,
-} from "react-hook-form"
+import { useRef } from "react"
+import { Controller, useForm } from "react-hook-form"
 import { useRouter } from "next/navigation"
-import SearchField from "./SearchField"
 import SearchModal from "./SearchModal"
-
-enum KeyBoardEventKey {
-  Enter = "Enter",
-  ArrowDown = "ArrowDown",
-  ArrowUp = "ArrowUp",
-  Escape = "Escape",
-}
 
 function SearchArea() {
   const wrapperRef = useRef<HTMLDivElement>(null)
   const { openModal } = useModal()
   const { handleSubmit, control } = useForm()
   const router = useRouter()
-  const [isBtnShown, setIsBtnShown] = useState<boolean>(true)
 
   const handleFocus = (e: React.FocusEvent<HTMLDivElement, Element>) => {
     if (e.target.tagName === "INPUT") {
@@ -41,19 +27,10 @@ function SearchArea() {
     }
   })
 
-  const handleButtonClick = () => {
-    setIsBtnShown(false)
-    openModal({
-      containsHeader: false,
-      content: <SearchModal />,
-      classNames: "self-start mt-[72px]",
-    })
-  }
-
   return (
     <>
       <form
-        className="flex flex-col justify-center"
+        className="flex flex-col justify-center hidden sm:block"
         onSubmit={handleSubmitData}
       >
         <Controller
@@ -69,21 +46,12 @@ function SearchArea() {
                 <input
                   {...field}
                   onFocus={handleFocus}
-                  className="w-[90%] text-align-center text-s focus:outline-none border-transparent focus:border-transparent hidden sm:block"
+                  className="w-[90%] text-align-center text-s focus:outline-none border-transparent focus:border-transparent"
                   placeholder={""}
                   autoComplete="off"
                 />
                 <div className="mt-1 cursor-pointer">
-                  <button
-                    className="cursor-pointer"
-                    onClick={() =>
-                      openModal({
-                        containsHeader: false,
-                        content: <SearchModal />,
-                        classNames: "self-start mt-[72px]",
-                      })
-                    }
-                  >
+                  <button className="cursor-pointer" type="submit">
                     <Icons.Search />
                   </button>
                 </div>
@@ -92,6 +60,18 @@ function SearchArea() {
           )}
         />
       </form>
+      <button
+        className="cursor-pointer sm:hidden block"
+        onClick={() =>
+          openModal({
+            containsHeader: false,
+            content: <SearchModal />,
+            classNames: "self-start mt-[72px]",
+          })
+        }
+      >
+        <Icons.Search />
+      </button>
     </>
   )
 }
