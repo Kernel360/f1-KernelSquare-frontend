@@ -13,7 +13,7 @@ import React from "react"
 import type { OneAnswerProps } from "./OneAnswer.types"
 
 const OneAnswer: React.FC<OneAnswerProps> = ({ answer, createdby }) => {
-  const { ProgressModalView } = useQnADetail()
+  const { ProgressModalView } = useQnADetail({ questionId: answer.question_id })
   const { user } = useClientSession()
 
   return (

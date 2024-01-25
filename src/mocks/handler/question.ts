@@ -1,25 +1,25 @@
-import type { GetQuestionListResponse } from "@/interfaces/dto/question/get-questionlist.dto"
 import { RouteMap } from "@/service/route-map"
 import { DefaultBodyType, HttpResponse, PathParams, http } from "msw"
 import { mockQuestions } from "../db/questions"
 import { Question } from "@/interfaces/question"
 import { generatePagination } from "@/util/paginate"
+import { mockUsers } from "../db/user"
+import dayjs from "dayjs"
+import badge_url from "@/assets/images/badges"
+import { ApiStatus } from "@/constants/response/api"
+import { HttpStatusCode } from "axios"
+import type { TechTag } from "@/interfaces/tech-tag"
+import type { GetQuestionListResponse } from "@/interfaces/dto/question/get-questionlist.dto"
 import type { GetQuestionResponse } from "@/interfaces/dto/question/get-question.dto"
-import {
+import type {
   CreateQuestionRequest,
   CreateQuestionResponse,
 } from "@/interfaces/dto/question/create-question.dto"
-import { mockUsers } from "../db/user"
-import dayjs from "dayjs"
-import { TechTag } from "@/interfaces/tech-tag"
-import badge_url from "@/assets/images/badges"
-import { ApiStatus } from "@/constants/response/api"
-import { DeleteQuestionResponse } from "@/interfaces/dto/question/delete-question.dto"
-import { HttpStatusCode } from "axios"
-import {
+import type {
   UpdateQuestionRequest,
   UpdateQuestionResponse,
 } from "@/interfaces/dto/question/update-question.dto"
+import type { DeleteQuestionResponse } from "@/interfaces/dto/question/delete-question.dto"
 
 export const questionHandler = [
   http.get<PathParams, DefaultBodyType, GetQuestionListResponse>(
@@ -357,21 +357,24 @@ export function createMockQuestion({
   content,
   image_url,
   skills,
+  question_id,
 }: {
   member_id: number
   title: string
   content: string
   skills: Array<TechTag>
   image_url?: string | null
+  question_id?: number
 }) {
-  const latestId = Math.max(...mockQuestions.map((question) => question.id))
+  const targetId =
+    question_id ?? Math.max(...mockQuestions.map((question) => question.id)) + 1
 
   const createdDate = new Date()
 
   const user = mockUsers.find((user) => user.id === member_id)
 
   mockQuestions.splice(0, 0, {
-    id: latestId + 1,
+    id: targetId,
     title,
     content,
     question_image_url: image_url ?? "",
@@ -380,15 +383,15 @@ export function createMockQuestion({
     nickname: user!.nickname,
     skills,
     close_status: false,
-    created_date: dayjs(createdDate).format("YYYY-MM-DD HH:mm:ss"),
+    created_date: dayjs(createdDate).format("YYYY-MM-DDTHH:mm:ss"),
     member_id,
-    modified_date: dayjs(createdDate).format("YYYY-MM-DD HH:mm:ss"),
+    modified_date: dayjs(createdDate).format("YYYY-MM-DDTHH:mm:ss"),
     level: user!.level,
     level_image_url: badge_url[user!.level],
     list: [],
   })
 
-  return latestId + 1
+  return targetId
 }
 
 export function updateMockQuestion({
@@ -398,6 +401,8 @@ export function updateMockQuestion({
   image_url,
   skills,
 }: UpdateQuestionRequest) {
+  const modifiedDate = new Date()
+
   const targetIndex = mockQuestions.findIndex(
     (mockQuestion) => mockQuestion.id === questionId,
   )
@@ -408,4 +413,8 @@ export function updateMockQuestion({
   targetMockQuestion.content = content
   targetMockQuestion.question_image_url = image_url || ""
   targetMockQuestion.skills = skills
+
+  targetMockQuestion.modified_date = dayjs(modifiedDate).format(
+    "YYYY-MM-DDTHH:mm:ss",
+  )
 }

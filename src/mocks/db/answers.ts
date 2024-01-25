@@ -15,7 +15,7 @@ const mockAnswers: Answer[] = [
       "https://mobirise.com/bootstrap-template//profile-template/assets/images/timothy-paul-smith-256424-1200x800.jpg",
     created_date: "2023-10-07 10:02:46",
     modified_date: "2023-10-07 10:02:47",
-    vote_count: 53,
+    vote_count: 0,
     vote_status: VoteStatus.NONE,
   },
   {
@@ -32,7 +32,7 @@ const mockAnswers: Answer[] = [
       "https://mobirise.com/bootstrap-template//profile-template/assets/images/timothy-paul-smith-256424-1200x800.jpg",
     created_date: "2023-10-07 10:02:46",
     modified_date: "2023-10-07 10:02:46",
-    vote_count: 53,
+    vote_count: -10,
     vote_status: VoteStatus.NONE,
   },
   {

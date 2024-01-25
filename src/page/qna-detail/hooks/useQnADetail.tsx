@@ -16,12 +16,16 @@ import type { SubmitValueProps } from "./useQnADetail.types"
 import { useRecoilState } from "recoil"
 import { AnswerWriteMode } from "@/recoil/atoms/mode"
 
-const useQnADetail = () => {
+type useQnADetailProps = { questionId: number }
+
+const useQnADetail = ({ questionId }: useQnADetailProps) => {
   const { ProgressModalView, setStep } = useProgressModal()
   const { user } = useClientSession()
   const { openModal } = useModal()
   const queryClient = useQueryClient()
-  const [isAnswerMode, setIsAnswerMode] = useRecoilState(AnswerWriteMode)
+  const [isAnswerMode, setIsAnswerMode] = useRecoilState(
+    AnswerWriteMode(questionId),
+  )
 
   const checkNullValue = (submitValue: string | undefined) => {
     if (typeof submitValue === undefined) return true
@@ -32,12 +36,18 @@ const useQnADetail = () => {
 
   const [isChecked, setIsChecked] = useState(false)
 
+  /**
+   * 내 답변 보기 checkbox 선택 시
+   */
   const filterMyAnswer = (answerArr: Answer[]) => {
     if (isChecked)
       return answerArr.filter((answer) => answer.created_by === user?.nickname)
     return answerArr
   }
 
+  /**
+   * 본인이 쓴 답변이 존재하면 editor 보이지 않게 하기
+   */
   const handleCheckMyAnswer = (list: Answer[], nickname?: string) =>
     list?.some((answer) => answer.created_by === nickname)
 
@@ -95,6 +105,7 @@ const useQnADetail = () => {
     filterMyAnswer,
     handleIsChecked: () => setIsChecked((prev: boolean) => !prev),
     handleSubmitValue,
+    isChecked,
     handleCheckMyAnswer,
   }
 }

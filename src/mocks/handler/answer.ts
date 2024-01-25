@@ -53,7 +53,9 @@ export const answerHandler = [
         {
           code: 2151,
           msg: "질문에 대한 모든 답변 조회 성공",
-          data: [...targetAnswers],
+          data: {
+            answer_responses: [...targetAnswers],
+          },
         },
         { status: HttpStatusCode.Ok },
       )

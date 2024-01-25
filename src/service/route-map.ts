@@ -213,8 +213,8 @@ export class RouteMap {
     deleteCoffeeChatPost(postId: number) {
       return `${RouteMap.routeGroupBaseURL.coffeeChat}/posts/${postId}`
     },
-    getCoffeeChatDetail(postId: number) {
-      return `${RouteMap.routeGroupBaseURL.coffeeChat}/posts/${postId}`
+    getCoffeeChatDetail(postId?: number) {
+      return `${RouteMap.routeGroupBaseURL.coffeeChat}/posts/${postId ?? ":id"}`
     },
     getCoffeeChatReservationInfo(postId: number) {
       return `${RouteMap.routeGroupBaseURL.coffeeChat}/posts/${postId}/reservation`
@@ -296,7 +296,7 @@ export class RouteMap {
    * **getSearch**: 검색(GET)
    */
   static search = {
-    getSearch: `${RouteMap.routeGroupBaseURL.search}`,
+    getSearchQuestions: `${RouteMap.routeGroupBaseURL.search}/questions`,
   }
 
   /**

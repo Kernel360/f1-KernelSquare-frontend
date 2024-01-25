@@ -30,6 +30,7 @@ export const notificationMessage = {
   noIntroduction:
     "마이페이지에 자기소개글을 작성하여 다른 사용자들에게 나를 소개하고 더 많은 사용자들과 소통해보세요.",
   myQuestion: "아직 작성된 답변이 존재하지 않습니다.",
+  noSearchResult: "검색어와 일치하는 결과가 없습니다.",
   cancleUploadImage: "사진 저장이 취소되었습니다.",
   cancleDeleteAnswer: "답변 삭제가 취소되었습니다.",
   cancleDeleteQuestion: "질문 삭제가 취소되었습니다.",
@@ -58,3 +59,9 @@ export const buttonMessage = {
   cancle: "취소",
   save: "저장",
 } as const
+
+export const searchTipMessage = [
+  "단어의 철자가 정확한지 확인해주세요.",
+  "조금 더 일반적인 단어로 다시 검색해보세요.",
+  "검색하는 단어의 수를 줄여보세요.",
+] as const

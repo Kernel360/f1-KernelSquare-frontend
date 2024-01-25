@@ -44,13 +44,9 @@ function QnAList({ questions }: QnAListProps) {
             created_date,
             level,
           }) => {
-            // console.log({
-            //   created_date,
-            //   relative: getKorRelati3veTime({ now, targetDate: created_date }),
-            // })
             return (
               <li
-                key={title}
+                key={id}
                 className={`shadow-sm hover:shadow-md transition-shadow max-w-full box-border border border-colorsGray rounded-lg p-2`}
               >
                 <h3 className="w-fit">
@@ -143,7 +139,9 @@ QnAList.NotHasQnAContent = function QnAListNotHasContent({
             : "페이지를 찾을 수 없습니다"}
         </h3>
         <Spacing size={24} />
-        <Button buttonTheme="primary">질문 작성하기</Button>
+        <Link href={`/question`}>
+          <Button buttonTheme="primary">질문 작성하기</Button>
+        </Link>
       </div>
     </div>
   )

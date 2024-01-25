@@ -17,7 +17,7 @@ const Question: React.FC<{ id: number }> = ({ id }) => {
     id: Number(id),
   })
 
-  const { user } = useQnADetail()
+  const { user } = useQnADetail({ questionId: id })
 
   const question = data?.data
 

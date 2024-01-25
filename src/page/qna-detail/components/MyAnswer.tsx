@@ -18,7 +18,7 @@ const MdEditor = dynamic(() => import("./Markdown/MdEditor"), {
 
 const MyAnswer: React.FC<MyAnswerProps> = ({ questionId }) => {
   const { openModal } = useModal()
-  const { user, handleSubmitValue, isAnswerMode } = useQnADetail()
+  const { user, handleSubmitValue, isAnswerMode } = useQnADetail({ questionId })
 
   const { handleSubmit } = useForm()
   const editorRef = useRef<Editor>(null)
@@ -27,8 +27,6 @@ const MyAnswer: React.FC<MyAnswerProps> = ({ questionId }) => {
     const submitValue = editorRef.current?.getInstance().getMarkdown()
     handleSubmitValue({ questionId, submitValue })
   }
-
-  console.log("is", isAnswerMode)
 
   if (!user)
     return (
