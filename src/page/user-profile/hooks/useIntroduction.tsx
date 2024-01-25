@@ -11,7 +11,7 @@ import type { FormEvent } from "react"
 import { SubmitHandler } from "react-hook-form"
 import { toast } from "react-toastify"
 import { useRecoilState } from "recoil"
-import { IntroductionValue } from "./useIntroduction.types"
+import type { IntroductionValue } from "./useIntroduction.types"
 import { useQueryClient } from "@tanstack/react-query"
 import queryKey from "@/constants/queryKey"
 
@@ -26,17 +26,7 @@ const useIntroduction = () => {
   const { user, clientSessionUpdate } = useClientSession()
   const queryClient = useQueryClient()
 
-  const handleSubmitIntroduction: SubmitHandler<IntroductionValue> = async (
-    data,
-  ) => {
-    if (data.introduction.length > 300) {
-      toast.error(errorMessage.introductionLimit, {
-        position: "top-center",
-        autoClose: 1000,
-      })
-      return
-    }
-
+  const handleSubmitIntroduction = async (introduction: string) => {
     if (!user) {
       toast.error(errorMessage.unauthorized, {
         position: "top-center",
@@ -45,10 +35,11 @@ const useIntroduction = () => {
       return
     }
 
+    console.log("d", introduction)
     try {
       await updateMemberInfo({
         id: user?.member_id,
-        introduction: data.introduction,
+        introduction: introduction,
       })
       toast.success(successMessage.editIntroduction, {
         position: "top-center",

@@ -12,9 +12,12 @@ import { buttonMessage, notificationMessage } from "@/constants/message"
 import useQnADetail from "../hooks/useQnADetail"
 import type { MyAnswerProps } from "./MyAnswer.types"
 
-const MdEditor = dynamic(() => import("./Markdown/MdEditor"), {
-  ssr: false,
-})
+const MdEditor = dynamic(
+  () => import("../../user-profile/components/introduction/MdEditor"),
+  {
+    ssr: false,
+  },
+)
 
 const MyAnswer: React.FC<MyAnswerProps> = ({ questionId }) => {
   const { openModal } = useModal()

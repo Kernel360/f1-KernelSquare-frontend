@@ -4,24 +4,36 @@ import { useForm } from "react-hook-form"
 import useIntroduction from "../../hooks/useIntroduction"
 import type { IntroductionProps } from "./Introduction.types"
 import type { IntroductionValue } from "../../hooks/useIntroduction.types"
-import { useState } from "react"
+import { useRef, useState } from "react"
 import { twJoin } from "tailwind-merge"
-import { buttonMessage, notificationMessage } from "@/constants/message"
+import {
+  buttonMessage,
+  errorMessage,
+  notificationMessage,
+} from "@/constants/message"
 import Textarea from "@/components/shared/textarea/Textarea"
 import Button from "@/components/shared/button/Button"
 import UserProfileMenu from "../UserProfileMenu"
+import dynamic from "next/dynamic"
+import { Editor } from "@toast-ui/react-editor"
+import { toast } from "react-toastify"
+
+const MdEditor = dynamic(() => import("./MdEditor"), {
+  ssr: false,
+})
 
 function Introduction({ introduction, isMyPage }: IntroductionProps) {
+  const editorRef = useRef<Editor>(null)
   const { closeEditMode, handleSubmitIntroduction, isEditMode } =
     useIntroduction()
+  const { handleSubmit } = useForm<IntroductionValue>()
 
-  const { handleSubmit, register } = useForm<IntroductionValue>({
-    defaultValues: { introduction },
-  })
-
-  const [textLen, setTextLen] = useState(introduction?.length ?? 0)
-
-  const styleWithWarning = twJoin([textLen > 300 && "text-[#EF4040]"])
+  const onsubmit = () => {
+    const introduction = editorRef.current?.getInstance().getMarkdown()
+    if (!introduction)
+      toast.error(errorMessage.noContent, { position: "top-center" })
+    if (introduction) handleSubmitIntroduction(introduction)
+  }
 
   if (!introduction) {
     return (
@@ -37,21 +49,8 @@ function Introduction({ introduction, isMyPage }: IntroductionProps) {
     return (
       <UserProfileMenu.MenuContentWrapper>
         <div>
-          <form
-            className="w-full"
-            onSubmit={handleSubmit(handleSubmitIntroduction)}
-          >
-            <Textarea
-              fullWidth={true}
-              rows={5}
-              {...register("introduction", {
-                onChange: (e) => setTextLen(e.target.value.length),
-              })}
-            />
-            <div className="text-right">
-              <span className={styleWithWarning}>{textLen}</span>
-              /300
-            </div>
+          <form className="w-full" onSubmit={handleSubmit(onsubmit)}>
+            <MdEditor previous={introduction} editorRef={editorRef} />
             <div className="flex justify-center mt-[20px]">
               <Button
                 buttonTheme="third"
