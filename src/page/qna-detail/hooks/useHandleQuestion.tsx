@@ -13,11 +13,14 @@ import type {
   DeleteQuestionProps,
   QuestionProps,
 } from "./useHandleQuestion.types"
+import Regex from "@/constants/regex"
+import { useDeleteImage } from "@/hooks/image/useDeleteImage"
 
 const useHandleQuestion = () => {
   const router = useRouter()
   const { openModal } = useModal()
   const queryClient = useQueryClient()
+  const { deleteImage } = useDeleteImage()
 
   const handleEditQuestion = ({ questionId }: QuestionProps) =>
     router.push(`/question/u/${questionId}`)
@@ -28,6 +31,8 @@ const useHandleQuestion = () => {
   }: DeleteQuestionProps) => {
     const onSuccess = async () => {
       try {
+        const imageUrl = question.content?.match(Regex.mdImage)
+
         const res = await deleteQuestion({
           questionId: question.id,
         })
@@ -40,12 +45,15 @@ const useHandleQuestion = () => {
             })
           },
         })
-        sleep(5000).then(() => {
-          queryClient.invalidateQueries({
-            queryKey: [queryKey.question],
-          })
-          router.replace("/")
+        if (imageUrl)
+          for (let image of imageUrl) {
+            const url = image.split("(")[1].split(")")[0]
+            deleteImage(url)
+          }
+        queryClient.invalidateQueries({
+          queryKey: [queryKey.question],
         })
+        router.replace("/")
       } catch (err) {
         console.error(err)
       }

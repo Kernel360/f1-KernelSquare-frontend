@@ -20,6 +20,9 @@ import type {
   DeleteValueProps,
   EditValueProps,
 } from "./useHandleMyAnswer.types"
+import { match } from "assert"
+import { useDeleteImage } from "@/hooks/image/useDeleteImage"
+import Regex from "@/constants/regex"
 
 const useHandleMyAnswer = ({ answerId, questionId }: AnswerProps) => {
   const [isAnswerEditMode, setIsAnswerEditMode] = useRecoilState(
@@ -28,6 +31,7 @@ const useHandleMyAnswer = ({ answerId, questionId }: AnswerProps) => {
   const queryClient = useQueryClient()
   const { openModal } = useModal()
   const { checkNullValue } = useQnADetail({ questionId })
+  const { deleteImage } = useDeleteImage()
 
   const handleEditValue = async ({ submitValue, answer }: EditValueProps) => {
     if (checkNullValue(submitValue)) {
@@ -61,6 +65,8 @@ const useHandleMyAnswer = ({ answerId, questionId }: AnswerProps) => {
   }: DeleteValueProps) => {
     const onSuccess = async () => {
       try {
+        const imageUrl = answer.content?.match(Regex.mdImage)
+
         const res = await deleteAnswer({
           answerId: answer.answer_id,
         })
@@ -78,6 +84,11 @@ const useHandleMyAnswer = ({ answerId, questionId }: AnswerProps) => {
           queryClient.invalidateQueries({
             queryKey: ["answer", answer.question_id],
           })
+          if (imageUrl)
+            for (let image of imageUrl) {
+              const url = image.split("(")[1].split(")")[0]
+              deleteImage(url)
+            }
         })
       } catch (err) {
         console.error(err)
