@@ -1,4 +1,5 @@
 import type { APIPagenationResponse, PaginationParams } from "../api-response"
+import type { CoffeeChatReservationTime } from "./coffeechat-reservation-detail.dto"
 
 /**
  full_check
@@ -9,6 +10,11 @@ import type { APIPagenationResponse, PaginationParams } from "../api-response"
 export const enum CoffeeChatReservationStatus {
   Available = 0,
   UnAvailable = 1,
+}
+
+export interface CoffeeChatReservationHashTag {
+  hashtag_id: number
+  content: string
 }
 
 export interface GetCoffeeChatReservationListRequest extends PaginationParams {}
@@ -22,9 +28,10 @@ export interface CoffeeChatReservation {
   level_image_url: string
   title: string
   content: string
-  hash_tag_list: Array<string>
+  hashtags: CoffeeChatReservationHashTag[]
   created_date: string
   modified_date: string
+  date_times: CoffeeChatReservationTime[]
   full_check: CoffeeChatReservationStatus
 }
 

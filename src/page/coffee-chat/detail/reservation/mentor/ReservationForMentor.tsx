@@ -8,58 +8,16 @@ import "../Calendar.css"
 import { CircleIcons } from "@/components/icons/Icons"
 import { basic_profile } from "@/assets/images/basic"
 import Image from "next/image"
+import { mockCoffeeChatReservations } from "@/mocks/db/coffee-chat"
+import { useParams } from "next/navigation"
 
 type ValuePiece = Date | null
 
 type Value = ValuePiece | [ValuePiece, ValuePiece]
 
 function ReservationForMentor() {
+  const params = useParams<{ id: string }>()
   const [date, setDate] = useState<Value>(new Date())
-  // ui 구현용 임시 배열
-  const schedule = [
-    {
-      reservation_id: 1,
-      room_id: 1,
-      start_time: "2023-12-12T18:00:00",
-      menti_nickname: "자바덕",
-      menti_image_url: basic_profile,
-    },
-    {
-      reservation_id: 2,
-      room_id: 2,
-      start_time: "2023-12-12T18:00:00",
-      menti_nickname: null,
-      menti_image_url: null,
-    },
-    {
-      reservation_id: 3,
-      room_id: 3,
-      start_time: "2023-12-12T18:00:00",
-      menti_nickname: "자바덕",
-      menti_image_url: null,
-    },
-    {
-      reservation_id: 4,
-      room_id: 4,
-      start_time: "2023-12-12T18:00:00",
-      menti_nickname: "자바덕",
-      menti_image_url: basic_profile,
-    },
-    {
-      reservation_id: 5,
-      room_id: 5,
-      start_time: "2023-12-12T18:00:00",
-      menti_nickname: null,
-      menti_image_url: null,
-    },
-    {
-      reservation_id: 6,
-      room_id: 6,
-      start_time: "2023-12-12T18:00:00",
-      menti_nickname: "자바덕",
-      menti_image_url: null,
-    },
-  ]
   return (
     <section className="text-center mb-20">
       <div className="font-bold text-primary text-[28px] mb-5">SCHEDULE</div>
@@ -83,7 +41,7 @@ function ReservationForMentor() {
       </div>
       <div className="w-[50%] m-auto max-h-[300px] overflow-scroll px-4 py-3 border-[1px] border-primary flex justify-center gap-10">
         <div>
-          {schedule.map((s) => (
+          {mockCoffeeChatReservations[Number(params.id)].date_times.map((s) => (
             <div
               key={s.reservation_id}
               className="flex justify-around w-full flex-wrap min-h-[50px] my-5"
@@ -96,7 +54,7 @@ function ReservationForMentor() {
           ))}
         </div>
         <div>
-          {schedule.map((s) => (
+          {mockCoffeeChatReservations[Number(params.id)].date_times.map((s) => (
             <div
               key={s.reservation_id}
               className="flex justify-around w-full flex-wrap min-h-[50px] my-5"

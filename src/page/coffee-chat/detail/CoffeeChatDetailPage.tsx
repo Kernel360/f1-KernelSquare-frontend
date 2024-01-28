@@ -22,7 +22,7 @@ function CoffeeChatDetailPage({
         member_image_url={coffeeChatDetailPayload.member_image_url}
         level={coffeeChatDetailPayload.level}
         level_image_url={coffeeChatDetailPayload.level_image_url}
-        hash_tag_list={coffeeChatDetailPayload.hash_tag_list}
+        hashtags={coffeeChatDetailPayload.hashtags}
       />
       <Spacing size={16} />
       <CoffeeChatDetailContent content={coffeeChatDetailPayload.content} />

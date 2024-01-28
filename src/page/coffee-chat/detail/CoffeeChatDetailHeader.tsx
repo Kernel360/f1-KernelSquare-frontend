@@ -12,7 +12,7 @@ interface CoffeeChatDetailHeaderProps
     | "member_image_url"
     | "level"
     | "level_image_url"
-    | "hash_tag_list"
+    | "hashtags"
   > {}
 
 function CoffeeChatDetailHeader({
@@ -21,7 +21,7 @@ function CoffeeChatDetailHeader({
   member_image_url,
   level,
   level_image_url,
-  hash_tag_list,
+  hashtags,
 }: CoffeeChatDetailHeaderProps) {
   return (
     <section>
@@ -30,9 +30,9 @@ function CoffeeChatDetailHeader({
           <h3>{title}</h3>
           <Spacing size={12} />
           <ul className="w-full flex flex-wrap gap-2">
-            {hash_tag_list.map((tag) => (
-              <li key={`hash-${tag}`}>
-                <HashTag>{tag}</HashTag>
+            {hashtags.map((tag) => (
+              <li key={`hash-${tag.hashtag_id}`}>
+                <HashTag>{tag.content}</HashTag>
               </li>
             ))}
           </ul>
