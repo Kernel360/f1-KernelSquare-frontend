@@ -1,7 +1,7 @@
 import { IconBaseProps } from "react-icons"
 import { IoSearchOutline } from "react-icons/io5"
 import { IoIosNotifications } from "react-icons/io"
-import { FaUserCircle } from "react-icons/fa"
+import { FaCircle, FaRegCircle, FaUserCircle } from "react-icons/fa"
 import { LuCode2, LuSearchCode } from "react-icons/lu"
 import { AiOutlineNotification } from "react-icons/ai"
 import { HiOutlineChatBubbleLeftRight } from "react-icons/hi2"
@@ -23,6 +23,7 @@ type IconsKey =
   | "Search"
 type NavigationIconsKey = "QnA" | "Chat" | "Notice" | "FaQ" | "MyPage"
 type VoteIconsKey = "Up" | "Down"
+type CircleIconsKey = "Line" | "Fill"
 export type Icon = (props: IconBaseProps) => JSX.Element
 
 export const Icons: Record<IconsKey, Icon> = {
@@ -73,5 +74,14 @@ export const VoteIcons: Record<VoteIconsKey, Icon> = {
   },
   Down(props) {
     return <BiSolidDownArrow {...props} />
+  },
+}
+
+export const CircleIcons: Record<CircleIconsKey, Icon> = {
+  Line(props) {
+    return <FaRegCircle {...props} />
+  },
+  Fill(props) {
+    return <FaCircle {...props} />
   },
 }

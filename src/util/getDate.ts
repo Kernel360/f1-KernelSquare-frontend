@@ -6,6 +6,20 @@ interface dateProps {
 
 const getDate = ({ date }: dateProps) => dayjs(date).format("YYYY년 MM월 DD일")
 
+/**
+ *
+ * @param date Date (날짜 객체)
+ * @returns 'DD'로 일자만 반환
+ */
+const getDay = (date: Date) => dayjs(date).format("DD")
+
+/**
+ *
+ * @param date Date (날짜 객체)
+ * @returns 'HH:mm'으로 시간, 분만 반환
+ */
+const getTime = (date: Date | string) => dayjs(date).format("HH:mm")
+
 const getDeadline = ({ date }: dateProps) =>
   dayjs(date).add(7, "day").format("YYYY년 MM월 DD일")
 
@@ -152,4 +166,4 @@ const getKorRelativeTime = ({
   return IntlFormatter.format(targetDiff, targetUnit)
 }
 
-export { getDate, getDeadline, getNow, getKorRelativeTime }
+export { getDate, getDay, getTime, getDeadline, getNow, getKorRelativeTime }

@@ -12,6 +12,7 @@ export const errorMessage = {
   tryAgain: "잠시 후 다시 시도해주세요.",
   saySorry: "이용에 불편을 드려 죄송해요.",
   duplicatedVote: "답변에 대한 투표는 한 번만 진행할 수 있습니다.",
+  failToReserve: "커피챗 예약 중 오류가 발생하였습니다. 다시 시도해주세요.",
 } as const
 
 export const successMessage = {
@@ -22,6 +23,7 @@ export const successMessage = {
   updateAnswer: "답변이 수정되었습니다.",
   deleteQuestion: "질문이 삭제되었습니다.",
   cancleVote: "투표 기록이 삭제되었습니다.",
+  reserveCoffeeChat: "커피챗 예약에 성공했습니다.",
 } as const
 
 export const notificationMessage = {
@@ -34,12 +36,14 @@ export const notificationMessage = {
   cancleDeleteQuestion: "질문 삭제가 취소되었습니다.",
   cancleDeleteVote: "투표 기록 삭제가 취소되었습니다.",
   answerWithoutToken: "로그인하고 질문에 대한 답변을 남겨보세요!",
+  cancleReservation: "커피챗 예약이 취소되었습니다.",
 } as const
 
 export const confirmMessage = {
   editProfileImage: "변경된 사진으로 저장하시겠습니까?",
   deleteContent: "정말 삭제하시겠습니까?",
   cancleVote: "투표 기록을 삭제하시겠습니까?",
+  reserveCoffeeChat: "해당 일정으로 예약하시겠습니까?",
 } as const
 
 export const loadingMessage = {
