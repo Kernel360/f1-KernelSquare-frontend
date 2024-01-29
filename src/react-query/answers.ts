@@ -15,7 +15,7 @@ import { keepPreviousData, useMutation, useQuery } from "@tanstack/react-query"
 
 const useGetAnswers = ({ questionId }: GetAnswerRequest) =>
   useQuery({
-    queryKey: [queryKey.answer, questionId],
+    queryKey: [queryKey.answer],
     queryFn: () => getAnswer({ questionId }),
     placeholderData: keepPreviousData,
     staleTime: 1000 * 60 * 5,
@@ -36,15 +36,27 @@ const useCreateAnswer = ({
       createAnswer({ questionId, member_id, content, image_url }),
   })
 
-const useUpdateAnswer = ({
-  answerId,
-  content,
-  image_url,
-}: UpdateAnswerRequest) =>
-  useMutation({
+const useUpdateAnswer = () => {
+  const {
+    mutate: updateAnswerMutate,
+    isPending: isUpdateAnswer,
+    isError: isUpdaetAnswerError,
+    isSuccess: isUpdateAnswerSuccess,
+  } = useMutation({
     mutationKey: [queryKey.answer],
-    mutationFn: () => updateAnswer({ answerId, content, image_url }),
+    mutationFn: ({ answerId, content, image_url }: UpdateAnswerRequest) =>
+      updateAnswer({ answerId, content, image_url }),
   })
+
+  return {
+    updateAnswer: updateAnswerMutate,
+    updateAnswerStatus: {
+      isUpdateAnswer,
+      isUpdaetAnswerError,
+      isUpdateAnswerSuccess,
+    },
+  }
+}
 
 const useDeleteAnswer = ({ answerId }: DeleteAnswerRequest) =>
   useMutation({

@@ -77,13 +77,13 @@ const useQnADetail = ({ questionId }: useQnADetailProps) => {
           ),
           onClose() {
             queryClient.invalidateQueries({
-              queryKey: [queryKey.answer, questionId],
+              queryKey: [queryKey.answer],
             })
           },
         })
         sleep(5000).then(() => {
           queryClient.invalidateQueries({
-            queryKey: [queryKey.answer, questionId],
+            queryKey: [queryKey.answer],
           })
         })
       }

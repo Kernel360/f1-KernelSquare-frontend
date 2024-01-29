@@ -19,7 +19,7 @@ const HandleAnswerBox: React.FC<HandleAnswerProps> = ({
     return (
       <div className="flex flex-wrap justify-end my-4">
         <div
-          onClick={handleEditMode}
+          onClick={() => handleEditMode(answer)}
           className="mr-3 hover:text-[#3887BE] font-bold cursor-pointer "
         >
           {buttonMessage.edit}
