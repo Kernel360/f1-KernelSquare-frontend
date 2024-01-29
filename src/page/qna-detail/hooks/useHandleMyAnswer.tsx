@@ -41,7 +41,7 @@ const useHandleMyAnswer = ({ answerId, questionId }: AnswerProps) => {
   )
   const queryClient = useQueryClient()
   const { openModal } = useModal()
-  const { checkNullValue } = useQnADetail({ questionId })
+  const { checkNullValue, setIsAnswerMode } = useQnADetail({ questionId })
   const { deleteImage } = useDeleteImage()
   const { updateAnswer } = answerQueries.useUpdateAnswer()
   const { deleteAnswer } = answerQueries.useDeleteAnswer()
@@ -98,12 +98,14 @@ const useHandleMyAnswer = ({ answerId, questionId }: AnswerProps) => {
                   queryClient.invalidateQueries({
                     queryKey: [queryKey.answer],
                   })
+                  setIsAnswerMode(true)
                 },
               })
               sleep(5000).then(() => {
                 queryClient.invalidateQueries({
                   queryKey: [queryKey.answer],
                 })
+                setIsAnswerMode(true)
                 if (imageUrl)
                   for (let image of imageUrl) {
                     const url = image.split("(")[1].split(")")[0]
