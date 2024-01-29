@@ -7,7 +7,6 @@ import {
   successMessage,
 } from "@/constants/message"
 import useModal from "@/hooks/useModal"
-import { deleteAnswer } from "@/service/answers"
 import { sleep } from "@/util/sleep"
 import { useQueryClient } from "@tanstack/react-query"
 import { toast } from "react-toastify"
@@ -15,15 +14,26 @@ import useQnADetail from "./useQnADetail"
 import { useRecoilState } from "recoil"
 import { AnswerEditMode } from "@/recoil/atoms/mode"
 import queryKey from "@/constants/queryKey"
-import type {
-  AnswerProps,
-  DeleteValueProps,
-  EditValueProps,
-} from "./useHandleMyAnswer.types"
 import { useDeleteImage } from "@/hooks/image/useDeleteImage"
 import Regex from "@/constants/regex"
 import { answerQueries } from "@/react-query/answers"
 import type { Answer } from "@/interfaces/answer"
+import type { ModalState } from "@/interfaces/modal"
+
+export interface EditValueProps {
+  submitValue: string | undefined
+  answer: Answer
+}
+
+export interface DeleteValueProps {
+  answer: Answer
+  successModal: NonNullable<ModalState["content"]>
+}
+
+export interface AnswerProps {
+  answerId: number
+  questionId: number
+}
 
 const useHandleMyAnswer = ({ answerId, questionId }: AnswerProps) => {
   const [isAnswerEditMode, setIsAnswerEditMode] = useRecoilState(
@@ -34,6 +44,7 @@ const useHandleMyAnswer = ({ answerId, questionId }: AnswerProps) => {
   const { checkNullValue } = useQnADetail({ questionId })
   const { deleteImage } = useDeleteImage()
   const { updateAnswer } = answerQueries.useUpdateAnswer()
+  const { deleteAnswer } = answerQueries.useDeleteAnswer()
 
   const handleEditValue = ({ submitValue, answer }: EditValueProps) => {
     if (checkNullValue(submitValue)) {
@@ -75,29 +86,33 @@ const useHandleMyAnswer = ({ answerId, questionId }: AnswerProps) => {
       try {
         const imageUrl = answer.content?.match(Regex.mdImage)
 
-        const res = await deleteAnswer({
-          answerId: answer.answer_id,
-        })
-
-        console.log("success", res.data.msg)
-        openModal({
-          content: successModal,
-          onClose() {
-            queryClient.invalidateQueries({
-              queryKey: [queryKey.answer],
-            })
+        deleteAnswer(
+          {
+            answerId: answer.answer_id,
           },
-        })
-        sleep(5000).then(() => {
-          queryClient.invalidateQueries({
-            queryKey: [queryKey.answer],
-          })
-          if (imageUrl)
-            for (let image of imageUrl) {
-              const url = image.split("(")[1].split(")")[0]
-              deleteImage(url)
-            }
-        })
+          {
+            onSuccess: () => {
+              openModal({
+                content: successModal,
+                onClose() {
+                  queryClient.invalidateQueries({
+                    queryKey: [queryKey.answer],
+                  })
+                },
+              })
+              sleep(5000).then(() => {
+                queryClient.invalidateQueries({
+                  queryKey: [queryKey.answer],
+                })
+                if (imageUrl)
+                  for (let image of imageUrl) {
+                    const url = image.split("(")[1].split(")")[0]
+                    deleteImage(url)
+                  }
+              })
+            },
+          },
+        )
       } catch (err) {
         console.error(err)
       }
