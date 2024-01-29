@@ -115,7 +115,7 @@ const MarkdownEditor = (
       if (fileUploadLinkSnapshot.length >= 1) {
         throw exceedingUploadableImagesError
       }
-
+      // 이미지 저장
       const res = await uploadImages({ category: "answer", file: blob as File })
 
       callback(res.data.data!.image_url, "uploadedImage")

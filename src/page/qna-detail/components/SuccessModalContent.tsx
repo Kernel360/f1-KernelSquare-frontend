@@ -1,8 +1,17 @@
 import DeleteSuccess from "@/components/shared/animation/DeleteSuccess"
 import ProgressModal from "@/page/signup/components/ProgressModal"
-import type { IconProps, SuccesssModalProps } from "./SuccessModalContent.types"
 import CheckSuccess from "@/components/shared/animation/CheckSuccess"
 import { successMessage } from "@/constants/message"
+import { CSSProperties } from "react"
+
+export interface SuccesssModalProps {
+  message: string
+}
+
+export interface IconProps {
+  message: string
+  style?: CSSProperties | undefined
+}
 
 const SuccessModalContent: React.FC<SuccesssModalProps> = ({ message }) => {
   return (

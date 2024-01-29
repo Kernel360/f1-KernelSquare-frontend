@@ -6,7 +6,6 @@ import { type PropsWithChildren, useRef, useState } from "react"
 import type { Editor } from "@toast-ui/react-editor"
 import Button from "@/components/shared/button/Button"
 import dynamic from "next/dynamic"
-import type { EditAnswerProps } from "./AnswerContentBox.types"
 import useQnADetail from "../../hooks/useQnADetail"
 import { toast } from "react-toastify"
 import { errorMessage, successMessage } from "@/constants/message"
@@ -14,6 +13,11 @@ import Regex from "@/constants/regex"
 import { answerQueries } from "@/react-query/answers"
 import { useQueryClient } from "@tanstack/react-query"
 import queryKey from "@/constants/queryKey"
+import type { Answer } from "@/interfaces/answer"
+
+export type EditAnswerProps = {
+  answer: Answer
+}
 
 const MdViewer = dynamic(() => import("../Markdown/MdViewer"), {
   ssr: false,

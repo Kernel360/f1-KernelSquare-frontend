@@ -4,7 +4,11 @@ import useHandleQuestion from "../../hooks/useHandleQuestion"
 import SuccessModalContent from "../SuccessModalContent"
 import useQnADetail from "../../hooks/useQnADetail"
 import { buttonMessage, successMessage } from "@/constants/message"
-import type { HandleQuestionBoxProps } from "./HandleQuestionBox.types"
+import type { Question } from "@/interfaces/question"
+
+export interface HandleQuestionBoxProps {
+  question: Question
+}
 
 const HandleQuestionBox: React.FC<HandleQuestionBoxProps> = ({ question }) => {
   const { handleEditQuestion, handleDeleteQuestion } = useHandleQuestion()

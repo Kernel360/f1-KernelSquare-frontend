@@ -5,16 +5,22 @@ import { notificationMessage } from "@/constants/message"
 import queryKey from "@/constants/queryKey"
 import useModal from "@/hooks/useModal"
 import { deleteQuestion } from "@/service/question"
-import { sleep } from "@/util/sleep"
 import { useQueryClient } from "@tanstack/react-query"
 import { useRouter } from "next/navigation"
 import { toast } from "react-toastify"
-import type {
-  DeleteQuestionProps,
-  QuestionProps,
-} from "./useHandleQuestion.types"
 import Regex from "@/constants/regex"
 import { useDeleteImage } from "@/hooks/image/useDeleteImage"
+import type { ModalState } from "@/interfaces/modal"
+import type { Question } from "@/interfaces/question"
+
+export interface QuestionProps {
+  questionId: number
+}
+
+export interface DeleteQuestionProps {
+  question: Question
+  successModal: NonNullable<ModalState["content"]>
+}
 
 const useHandleQuestion = () => {
   const router = useRouter()

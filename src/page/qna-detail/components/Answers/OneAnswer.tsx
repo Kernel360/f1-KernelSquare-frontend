@@ -10,7 +10,11 @@ import DayBox from "./DayBox"
 import AnswerContentBox from "./AnswerContentBox"
 import { Icons } from "@/components/icons/Icons"
 import React from "react"
-import type { OneAnswerProps } from "./OneAnswer.types"
+
+export interface OneAnswerProps {
+  answer: Answer
+  createdby: string
+}
 
 const OneAnswer: React.FC<OneAnswerProps> = ({ answer, createdby }) => {
   const { ProgressModalView } = useQnADetail({ questionId: answer.question_id })

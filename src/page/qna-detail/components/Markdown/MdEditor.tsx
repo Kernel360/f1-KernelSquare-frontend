@@ -1,7 +1,13 @@
 "use client"
 
 import MarkdownEditor from "@/components/shared/markdown/Editor/MarkdownEditor"
-import type { EditorProps } from "./MdEditor.types"
+import type { Editor } from "@toast-ui/react-editor"
+import type { RefObject } from "react"
+
+export interface EditorProps {
+  previous?: string
+  editorRef: RefObject<Editor>
+}
 
 const MdEditor: React.FC<EditorProps> = ({ previous, editorRef }) => {
   return (
