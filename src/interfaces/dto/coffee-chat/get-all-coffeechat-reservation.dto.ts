@@ -32,7 +32,6 @@ export interface CoffeeChatReservation {
   created_date: string
   modified_date: string
   date_times: CoffeeChatReservationTime[]
-  full_check: CoffeeChatReservationStatus
 }
 
 export interface CoffeeChatReservationListPayload {

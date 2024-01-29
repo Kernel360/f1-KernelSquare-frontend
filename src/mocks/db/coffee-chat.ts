@@ -1,12 +1,6 @@
-import dayjs from "dayjs"
-import {
-  CoffeeChatReservationStatus,
-  type CoffeeChatReservation,
-} from "@/interfaces/dto/coffee-chat/get-all-coffeechat-reservation.dto"
+import { type CoffeeChatReservation } from "@/interfaces/dto/coffee-chat/get-all-coffeechat-reservation.dto"
 import { mockUsers } from "./user"
 import badge_url from "@/assets/images/badges"
-
-// mentor id list: [1, 2]
 
 export const mockCoffeeChatReservations: Array<CoffeeChatReservation> = [
   {
@@ -22,13 +16,11 @@ export const mockCoffeeChatReservations: Array<CoffeeChatReservation> = [
       { hashtag_id: 1, content: "홍주광" },
       { hashtag_id: 2, content: "알고리즘" },
     ],
-    full_check: CoffeeChatReservationStatus.Available,
     date_times: [
       {
         reservation_id: 1,
         room_id: 1,
         start_time: "2024-01-25T10:00:00",
-        finished: dayjs().isAfter("2024-01-25T19:30:00"),
         menti_nickname: mockUsers[0].nickname,
         menti_image_url: mockUsers[0].image_url!,
       },
@@ -36,7 +28,6 @@ export const mockCoffeeChatReservations: Array<CoffeeChatReservation> = [
         reservation_id: 2,
         room_id: 2,
         start_time: "2024-01-25T11:00:00",
-        finished: dayjs().isAfter("2024-01-25T19:30:00"),
         menti_nickname: null,
         menti_image_url: null,
       },
@@ -44,7 +35,6 @@ export const mockCoffeeChatReservations: Array<CoffeeChatReservation> = [
         reservation_id: 3,
         room_id: 3,
         start_time: "2024-01-25T12:00:00",
-        finished: dayjs().isAfter("2024-01-25T19:30:00"),
         menti_nickname: null,
         menti_image_url: null,
       },
@@ -52,7 +42,6 @@ export const mockCoffeeChatReservations: Array<CoffeeChatReservation> = [
         reservation_id: 4,
         room_id: 4,
         start_time: "2024-01-25T15:00:00",
-        finished: dayjs().isAfter("2024-01-25T19:30:00"),
         menti_nickname: null,
         menti_image_url: null,
       },
@@ -60,7 +49,6 @@ export const mockCoffeeChatReservations: Array<CoffeeChatReservation> = [
         reservation_id: 5,
         room_id: 5,
         start_time: "2024-01-25T19:00:00",
-        finished: dayjs().isAfter("2024-01-25T19:30:00"),
         menti_nickname: null,
         menti_image_url: null,
       },
@@ -68,7 +56,6 @@ export const mockCoffeeChatReservations: Array<CoffeeChatReservation> = [
         reservation_id: 6,
         room_id: 6,
         start_time: "2024-01-25T19:30:00",
-        finished: dayjs().isAfter("2024-01-25T19:30:00"),
         menti_nickname: null,
         menti_image_url: null,
       },
@@ -89,13 +76,11 @@ export const mockCoffeeChatReservations: Array<CoffeeChatReservation> = [
       { hashtag_id: 3, content: "CI/CD" },
       { hashtag_id: 4, content: "devops" },
     ],
-    full_check: CoffeeChatReservationStatus.Available,
     date_times: [
       {
         reservation_id: 3,
         room_id: 3,
         start_time: "2024-01-25T19:00:00",
-        finished: dayjs().isAfter("2024-01-25T19:30:00"),
         menti_nickname: mockUsers[0].nickname,
         menti_image_url: mockUsers[0].image_url!,
       },
@@ -103,7 +88,6 @@ export const mockCoffeeChatReservations: Array<CoffeeChatReservation> = [
         reservation_id: 4,
         room_id: 4,
         start_time: "2024-01-25T19:00:00",
-        finished: dayjs().isAfter("2024-01-25T19:30:00"),
         menti_nickname: null,
         menti_image_url: null,
       },
@@ -124,13 +108,11 @@ export const mockCoffeeChatReservations: Array<CoffeeChatReservation> = [
       { hashtag_id: 1, content: "홍주광" },
       { hashtag_id: 2, content: "알고리즘" },
     ],
-    full_check: CoffeeChatReservationStatus.Available,
     date_times: [
       {
         reservation_id: 5,
         room_id: 5,
         start_time: "2024-01-25T19:00:00",
-        finished: dayjs().isAfter("2024-01-25T19:30:00"),
         menti_nickname: mockUsers[0].nickname,
         menti_image_url: mockUsers[0].image_url!,
       },
@@ -138,7 +120,6 @@ export const mockCoffeeChatReservations: Array<CoffeeChatReservation> = [
         reservation_id: 6,
         room_id: 6,
         start_time: "2024-01-25T19:00:00",
-        finished: dayjs().isAfter("2024-01-25T19:30:00"),
         menti_nickname: null,
         menti_image_url: null,
       },
@@ -159,13 +140,11 @@ export const mockCoffeeChatReservations: Array<CoffeeChatReservation> = [
       { hashtag_id: 3, content: "CI/CD" },
       { hashtag_id: 4, content: "devops" },
     ],
-    full_check: CoffeeChatReservationStatus.Available,
     date_times: [
       {
         reservation_id: 7,
         room_id: 7,
         start_time: "2024-01-25T19:00:00",
-        finished: dayjs().isAfter("2024-01-25T19:30:00"),
         menti_nickname: mockUsers[0].nickname,
         menti_image_url: mockUsers[0].image_url!,
       },
@@ -173,7 +152,6 @@ export const mockCoffeeChatReservations: Array<CoffeeChatReservation> = [
         reservation_id: 8,
         room_id: 8,
         start_time: "2024-01-25T19:00:00",
-        finished: dayjs().isAfter("2024-01-25T19:30:00"),
         menti_nickname: null,
         menti_image_url: null,
       },
@@ -194,13 +172,11 @@ export const mockCoffeeChatReservations: Array<CoffeeChatReservation> = [
       { hashtag_id: 1, content: "홍주광" },
       { hashtag_id: 2, content: "알고리즘" },
     ],
-    full_check: CoffeeChatReservationStatus.Available,
     date_times: [
       {
         reservation_id: 9,
         room_id: 9,
         start_time: "2024-01-25T19:00:00",
-        finished: dayjs().isAfter("2024-01-25T19:30:00"),
         menti_nickname: mockUsers[0].nickname,
         menti_image_url: mockUsers[0].image_url!,
       },
@@ -208,7 +184,6 @@ export const mockCoffeeChatReservations: Array<CoffeeChatReservation> = [
         reservation_id: 10,
         room_id: 10,
         start_time: "2024-01-25T19:00:00",
-        finished: dayjs().isAfter("2024-01-25T19:30:00"),
         menti_nickname: null,
         menti_image_url: null,
       },
@@ -229,13 +204,11 @@ export const mockCoffeeChatReservations: Array<CoffeeChatReservation> = [
       { hashtag_id: 3, content: "CI/CD" },
       { hashtag_id: 4, content: "devops" },
     ],
-    full_check: CoffeeChatReservationStatus.Available,
     date_times: [
       {
         reservation_id: 11,
         room_id: 11,
         start_time: "2024-01-25T19:00:00",
-        finished: dayjs().isAfter("2024-01-25T19:30:00"),
         menti_nickname: mockUsers[0].nickname,
         menti_image_url: mockUsers[0].image_url!,
       },
@@ -243,7 +216,6 @@ export const mockCoffeeChatReservations: Array<CoffeeChatReservation> = [
         reservation_id: 12,
         room_id: 12,
         start_time: "2024-01-25T19:00:00",
-        finished: dayjs().isAfter("2024-01-25T19:30:00"),
         menti_nickname: null,
         menti_image_url: null,
       },

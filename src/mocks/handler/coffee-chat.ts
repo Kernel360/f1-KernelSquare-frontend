@@ -35,15 +35,16 @@ export const coffeeChatHandler = [
           )
         }
 
-        const { pages, maximumPage } =
-          generatePagination<CoffeeChatReservation>(
-            mockCoffeeChatReservations.map((mockReservation) => {
-              const { date_times, ...reservation } = mockReservation
+        const { pages, maximumPage } = generatePagination<
+          Omit<CoffeeChatReservation, "date_times">
+        >(
+          mockCoffeeChatReservations.map((mockReservation) => {
+            const { date_times, ...reservation } = mockReservation
 
-              return { ...reservation }
-            }),
-            { perPage: 5 },
-          )
+            return { ...reservation }
+          }),
+          { perPage: 5 },
+        )
 
         const pagePayload = pages[page] ?? []
 

@@ -7,10 +7,9 @@ import ReservationForMentor from "./mentor/ReservationForMentor"
 function ScheduleMentoringSession() {
   const { user } = useClientSession()
 
-  const role = user?.roles[0]
-  console.log("role", role)
+  const isMyCoffeeChat = user?.roles.includes("ROLE_MENTOR")
 
-  if (role === "ROLE_MENTOR") return <ReservationForMentor />
+  if (isMyCoffeeChat) return <ReservationForMentor />
   else return <ReservationForMentee />
 }
 

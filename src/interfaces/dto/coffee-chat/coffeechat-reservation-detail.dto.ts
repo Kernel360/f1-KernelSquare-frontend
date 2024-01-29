@@ -16,7 +16,6 @@ export interface CoffeeChatReservationTime {
   reservation_id: number
   room_id: number
   start_time: string
-  finished: boolean
   menti_nickname: string | null
   menti_image_url: string | null
 }
