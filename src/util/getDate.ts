@@ -20,6 +20,13 @@ const getDay = (date: Date) => dayjs(date).format("DD")
  */
 const getTime = (date: Date | string) => dayjs(date).format("HH:mm")
 
+/**
+ *
+ * @param date Date (날짜 객체)
+ * @returns 'HH'으로 시간만 반환
+ */
+const getHour = (date: Date | string) => dayjs(date).format("HH")
+
 const getDeadline = ({ date }: dateProps) =>
   dayjs(date).add(7, "day").format("YYYY년 MM월 DD일")
 
@@ -166,4 +173,12 @@ const getKorRelativeTime = ({
   return IntlFormatter.format(targetDiff, targetUnit)
 }
 
-export { getDate, getDay, getTime, getDeadline, getNow, getKorRelativeTime }
+export {
+  getDate,
+  getDay,
+  getTime,
+  getHour,
+  getDeadline,
+  getNow,
+  getKorRelativeTime,
+}

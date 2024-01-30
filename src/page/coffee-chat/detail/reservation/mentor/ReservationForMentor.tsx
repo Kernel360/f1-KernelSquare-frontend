@@ -1,41 +1,27 @@
 "use client"
 
-import { getDate, getDay, getTime } from "@/util/getDate"
-import { useState } from "react"
-import Calendar from "react-calendar"
-import "react-calendar/dist/Calendar.css"
-import "../Calendar.css"
+import { getDate, getTime } from "@/util/getDate"
 import { CircleIcons } from "@/components/icons/Icons"
 import { basic_profile } from "@/assets/images/basic"
 import Image from "next/image"
 import { mockCoffeeChatReservations } from "@/mocks/db/coffee-chat"
 import { useParams } from "next/navigation"
-
-type ValuePiece = Date | null
-
-type Value = ValuePiece | [ValuePiece, ValuePiece]
+import CustomCalendar from "../CustomCalendar/CustomCalendar"
+import { useState } from "react"
+import type { Value } from "../CustomCalendar/Calendar.types"
 
 function ReservationForMentor() {
-  const params = useParams<{ id: string }>()
   const [date, setDate] = useState<Value>(new Date())
+  const params = useParams<{ id: string }>()
+  const targetChat = mockCoffeeChatReservations[Number(params.id)]
   return (
     <section className="text-center mb-20">
       <div className="font-bold text-primary text-[28px] mb-5">SCHEDULE</div>
-      <div className="react-calendar">
-        <Calendar
-          locale="ko"
-          onChange={setDate}
-          value={date}
-          // 숫자만 보이게 설정
-          formatDay={(_, date) => getDay(date)}
-          navigationLabel={undefined}
-          minDetail="month"
-          maxDetail="month"
-          className={"mx-auto text-sm border-white"}
-          // 날짜 타일에 추가할 컨텐츠
-          // tileContent={}
-        />
-      </div>
+      <CustomCalendar
+        start={targetChat.created_date}
+        date={date}
+        setDate={setDate}
+      />
       <div className="my-10 text-xl text-secondary font-bold">
         {getDate({ date: date + "" })}
       </div>
