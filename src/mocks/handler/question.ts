@@ -269,7 +269,6 @@ export const questionHandler = [
       const targetQuestion = mockQuestions.findIndex(
         (question) => question.id === questionId,
       )
-      console.log("t", targetQuestion)
 
       mockQuestions.splice(targetQuestion, 1)
 

@@ -78,7 +78,7 @@ function SideNavigation({ hasHeader }: SideNavigationProps) {
                     icon={icon}
                     active={isMyPage || active}
                     activeClassName={activeClassName}
-                    to={to}
+                    to={to + `/${user.member_id}`}
                   />
                 </li>
               )

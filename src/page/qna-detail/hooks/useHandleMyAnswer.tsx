@@ -7,7 +7,6 @@ import {
   successMessage,
 } from "@/constants/message"
 import useModal from "@/hooks/useModal"
-import { deleteAnswer, updateAnswer } from "@/service/answers"
 import { sleep } from "@/util/sleep"
 import { useQueryClient } from "@tanstack/react-query"
 import { toast } from "react-toastify"
@@ -15,11 +14,27 @@ import useQnADetail from "./useQnADetail"
 import { useRecoilState } from "recoil"
 import { AnswerEditMode } from "@/recoil/atoms/mode"
 import queryKey from "@/constants/queryKey"
-import type {
-  AnswerProps,
-  DeleteValueProps,
-  EditValueProps,
-} from "./useHandleMyAnswer.types"
+import { useDeleteImage } from "@/hooks/image/useDeleteImage"
+import Regex from "@/constants/regex"
+import { answerQueries } from "@/react-query/answers"
+import type { Answer } from "@/interfaces/answer"
+import type { ModalState } from "@/interfaces/modal"
+import { findImageLinkUrlFromMarkdown } from "@/util/editor"
+
+export interface EditValueProps {
+  submitValue: string | undefined
+  answer: Answer
+}
+
+export interface DeleteValueProps {
+  answer: Answer
+  successModal: NonNullable<ModalState["content"]>
+}
+
+export interface AnswerProps {
+  answerId: number
+  questionId: number
+}
 
 const useHandleMyAnswer = ({ answerId, questionId }: AnswerProps) => {
   const [isAnswerEditMode, setIsAnswerEditMode] = useRecoilState(
@@ -27,9 +42,12 @@ const useHandleMyAnswer = ({ answerId, questionId }: AnswerProps) => {
   )
   const queryClient = useQueryClient()
   const { openModal } = useModal()
-  const { checkNullValue } = useQnADetail({ questionId })
+  const { checkNullValue, setIsAnswerMode } = useQnADetail({ questionId })
+  const { deleteImage } = useDeleteImage()
+  const { updateAnswer } = answerQueries.useUpdateAnswer()
+  const { deleteAnswer } = answerQueries.useDeleteAnswer()
 
-  const handleEditValue = async ({ submitValue, answer }: EditValueProps) => {
+  const handleEditValue = ({ submitValue, answer }: EditValueProps) => {
     if (checkNullValue(submitValue)) {
       toast.error(errorMessage.noContent, {
         position: "top-center",
@@ -37,22 +55,28 @@ const useHandleMyAnswer = ({ answerId, questionId }: AnswerProps) => {
       })
       return
     }
+    const imageUrl = findImageLinkUrlFromMarkdown(submitValue)
 
-    try {
-      const res = await updateAnswer({
+    updateAnswer(
+      {
         answerId: answer.answer_id,
         content: submitValue as string,
-      })
-      answer.content = JSON.parse(res.config.data).content
-      answer.answer_image_url = JSON.parse(res.config.data).answer_image_url
-      queryClient.invalidateQueries({
-        queryKey: [queryKey.answer, answer.answer_id],
-      })
-      toast.success(successMessage.updateAnswer, { position: "top-center" })
-      setIsAnswerEditMode(false)
-    } catch (err) {
-      toast.error(errorMessage.updateAnswer, { position: "top-center" })
-    }
+        image_url: imageUrl && imageUrl[0],
+      },
+      {
+        onSuccess: () => {
+          toast.success(successMessage.updateAnswer, {
+            position: "top-center",
+          })
+          setIsAnswerEditMode(false)
+          return queryClient.invalidateQueries({
+            queryKey: [queryKey.answer],
+          })
+        },
+        onError: () =>
+          toast.error(errorMessage.updateAnswer, { position: "top-center" }),
+      },
+    )
   }
 
   const handleDeleteValue = async ({
@@ -61,24 +85,33 @@ const useHandleMyAnswer = ({ answerId, questionId }: AnswerProps) => {
   }: DeleteValueProps) => {
     const onSuccess = async () => {
       try {
-        const res = await deleteAnswer({
-          answerId: answer.answer_id,
-        })
-
-        console.log("success", res.data.msg)
-        openModal({
-          content: successModal,
-          onClose() {
-            queryClient.invalidateQueries({
-              queryKey: ["answer", answer.question_id],
-            })
+        deleteAnswer(
+          {
+            answerId: answer.answer_id,
           },
-        })
-        sleep(5000).then(() => {
-          queryClient.invalidateQueries({
-            queryKey: ["answer", answer.question_id],
-          })
-        })
+          {
+            onSuccess: () => {
+              openModal({
+                content: successModal,
+                onClose() {
+                  queryClient.invalidateQueries({
+                    queryKey: [queryKey.answer],
+                  })
+                  setIsAnswerMode(true)
+                },
+              })
+              sleep(5000).then(() => {
+                queryClient.invalidateQueries({
+                  queryKey: [queryKey.answer],
+                })
+                setIsAnswerMode(true)
+
+                if (answer.answer_image_url)
+                  deleteImage(answer.answer_image_url)
+              })
+            },
+          },
+        )
       } catch (err) {
         console.error(err)
       }
@@ -100,10 +133,12 @@ const useHandleMyAnswer = ({ answerId, questionId }: AnswerProps) => {
     })
   }
 
+  const handleEditMode = () => setIsAnswerEditMode((prev: boolean) => !prev)
+
   return {
     isAnswerEditMode,
     setIsAnswerEditMode,
-    handleEditMode: () => setIsAnswerEditMode((prev: boolean) => !prev),
+    handleEditMode,
     handleEditValue,
     handleDeleteValue,
   }

@@ -5,7 +5,10 @@ import "prismjs/themes/prism.css"
 import "@toast-ui/editor-plugin-code-syntax-highlight/dist/toastui-editor-plugin-code-syntax-highlight.css"
 import "@toast-ui/editor-plugin-code-syntax-highlight/dist/toastui-editor-plugin-code-syntax-highlight-all.js"
 import codeSyntaxHighlight from "@toast-ui/editor-plugin-code-syntax-highlight/dist/toastui-editor-plugin-code-syntax-highlight-all.js"
-import type { ViewerProps } from "./MdViewer.types"
+
+export interface ViewerProps {
+  content: string
+}
 
 const MdViewer: React.FC<ViewerProps> = ({ content }) => {
   return (

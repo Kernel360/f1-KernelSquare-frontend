@@ -9,8 +9,16 @@ import UserProfileSection from "./UserProfileSection"
 import UserProfileMenu from "./UserProfileMenu"
 import badge_url from "@/assets/images/badges"
 import levelStandard from "@/constants/levelStandard"
+import { useClientSession } from "@/hooks/useClientSession"
+import Button from "@/components/shared/button/Button"
+import { buttonMessage } from "@/constants/message"
+import useProfileImage from "../hooks/useProfileImage"
 
 interface UserProfilePresenterProps {
+  userPayload: UserPayload
+}
+
+interface ProfileImageWrapperProps {
   userPayload: UserPayload
 }
 
@@ -61,20 +69,60 @@ UserProfilePresenter.UserInfo = function UserProfileInfo({
 }: {
   userPayload: UserPayload
 }) {
+  const { user } = useClientSession()
+  const isMyPage = user?.member_id === userPayload.id
+  const { handleImageChange, handleUpload } = useProfileImage({
+    image_url: userPayload.image_url!,
+  })
+  const imageUploadRef = useRef<HTMLInputElement>(null)
+
+  if (!userPayload.image_url)
+    return (
+      <ProfileImageWrapper userPayload={userPayload}>
+        <div className="relative w-[120px] h-[120px] rounded-full overflow-hidden [&_svg]:w-[120px] [&>svg]:h-[120px]">
+          <Icons.UserProfile className="absolute text-colorsGray bg-white" />
+        </div>
+      </ProfileImageWrapper>
+    )
+
+  return (
+    <ProfileImageWrapper userPayload={userPayload}>
+      <div className="relative w-[120px] h-[120px] rounded-full overflow-hidden [&_svg]:w-[120px] [&>svg]:h-[120px]">
+        <Image
+          src={userPayload.image_url}
+          alt={`profile`}
+          fill
+          style={{ objectFit: "cover", objectPosition: "center" }}
+        />
+      </div>
+      <input
+        type="file"
+        ref={imageUploadRef}
+        className="hidden"
+        accept="image/*"
+        onChange={(e) => handleImageChange(e, userPayload.id)}
+      />
+      {isMyPage && (
+        <Button
+          type="button"
+          buttonTheme="primary"
+          className="max-w-[100px] h-[30px] my-3"
+          onClick={() => handleUpload(imageUploadRef)}
+        >
+          {buttonMessage.updateProfile}
+        </Button>
+      )}
+    </ProfileImageWrapper>
+  )
+}
+
+function ProfileImageWrapper({
+  children,
+  userPayload,
+}: PropsWithChildren<ProfileImageWrapperProps>) {
   return (
     <div className="w-full flex flex-col justify-center items-center sticky top-0 [margin-block-start:-60px] sm:[margin-block-start:-88px] sm:h-max sm:min-h-[200px] sm:justify-start sm:top-[calc(var(--height-header))] sm:w-max sm:box-border sm:pt-4 sm:-translate-x-[7px]">
-      <div className="relative w-[120px] h-[120px] rounded-full overflow-hidden [&_svg]:w-[120px] [&>svg]:h-[120px]">
-        {userPayload.image_url ? (
-          <Image
-            src={userPayload.image_url}
-            alt={`profile`}
-            fill
-            style={{ objectFit: "cover", objectPosition: "center" }}
-          />
-        ) : (
-          <Icons.UserProfile className="absolute text-colorsGray bg-white" />
-        )}
-      </div>
+      {children}
       <div className="flex flex-col w-full justify-center items-center">
         <Spacing size={16} />
         <div className="text-4xl text-secondary font-semibold">

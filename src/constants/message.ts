@@ -27,12 +27,15 @@ export const successMessage = {
 export const notificationMessage = {
   noAnswer:
     "아직 작성된 답변이 존재하지 않습니다. 첫 번째 답변의 주인공이 되어보세요!",
+  noIntroduction:
+    "마이페이지에 자기소개글을 작성하여 다른 사용자들에게 나를 소개하고 더 많은 사용자들과 소통해보세요.",
   myQuestion: "아직 작성된 답변이 존재하지 않습니다.",
   noSearchResult: "검색어와 일치하는 결과가 없습니다.",
   cancleUploadImage: "사진 저장이 취소되었습니다.",
   cancleDeleteAnswer: "답변 삭제가 취소되었습니다.",
   cancleDeleteQuestion: "질문 삭제가 취소되었습니다.",
   cancleDeleteVote: "투표 기록 삭제가 취소되었습니다.",
+  cancleEditIntroduction: "자기소개 수정이 취소되었습니다.",
   answerWithoutToken: "로그인하고 질문에 대한 답변을 남겨보세요!",
 } as const
 
@@ -53,6 +56,8 @@ export const buttonMessage = {
   updateProfile: "프로필 변경",
   edit: "수정하기",
   delete: "삭제하기",
+  cancle: "취소",
+  save: "저장",
 } as const
 
 export const searchTipMessage = [

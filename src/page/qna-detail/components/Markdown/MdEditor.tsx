@@ -1,12 +1,26 @@
 "use client"
 
 import MarkdownEditor from "@/components/shared/markdown/Editor/MarkdownEditor"
-import type { EditorProps } from "./MdEditor.types"
+import type { EditorType } from "@toast-ui/editor"
+import type { Editor } from "@toast-ui/react-editor"
+import type { RefObject } from "react"
 
-const MdEditor: React.FC<EditorProps> = ({ previous, editorRef }) => {
+export interface EditorProps {
+  previous?: string
+  editorRef: RefObject<Editor>
+  onChange?: (editorType: EditorType) => void
+}
+
+const MdEditor: React.FC<EditorProps> = ({ previous, editorRef, onChange }) => {
   return (
     <div className="text-[20px] text-left">
-      {editorRef && <MarkdownEditor ref={editorRef} initialValue={previous} />}
+      {editorRef && (
+        <MarkdownEditor
+          ref={editorRef}
+          initialValue={previous}
+          onChange={onChange}
+        />
+      )}
     </div>
   )
 }
