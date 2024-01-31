@@ -15,7 +15,7 @@ import { keepPreviousData, useMutation, useQuery } from "@tanstack/react-query"
 
 const useGetAnswers = ({ questionId }: GetAnswerRequest) =>
   useQuery({
-    queryKey: [queryKey.answer],
+    queryKey: [queryKey.answer, questionId],
     queryFn: () => getAnswer({ questionId }),
     placeholderData: keepPreviousData,
     staleTime: 1000 * 60 * 5,
