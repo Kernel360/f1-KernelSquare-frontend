@@ -19,6 +19,7 @@ import Regex from "@/constants/regex"
 import { answerQueries } from "@/react-query/answers"
 import type { Answer } from "@/interfaces/answer"
 import type { ModalState } from "@/interfaces/modal"
+import { findImageLinkUrlFromMarkdown } from "@/util/editor"
 
 export interface EditValueProps {
   submitValue: string | undefined
@@ -54,8 +55,7 @@ const useHandleMyAnswer = ({ answerId, questionId }: AnswerProps) => {
       })
       return
     }
-    const imageUrl = answer.content?.match(Regex.mdImage)
-    console.log("image", answer, imageUrl)
+    const imageUrl = findImageLinkUrlFromMarkdown(submitValue)
 
     updateAnswer(
       {
@@ -85,8 +85,6 @@ const useHandleMyAnswer = ({ answerId, questionId }: AnswerProps) => {
   }: DeleteValueProps) => {
     const onSuccess = async () => {
       try {
-        const imageUrl = answer.content?.match(Regex.mdImage)
-
         deleteAnswer(
           {
             answerId: answer.answer_id,
@@ -107,11 +105,9 @@ const useHandleMyAnswer = ({ answerId, questionId }: AnswerProps) => {
                   queryKey: [queryKey.answer],
                 })
                 setIsAnswerMode(true)
-                if (imageUrl)
-                  for (let image of imageUrl) {
-                    const url = image.split("(")[1].split(")")[0]
-                    deleteImage(url)
-                  }
+
+                if (answer.answer_image_url)
+                  deleteImage(answer.answer_image_url)
               })
             },
           },
@@ -137,16 +133,7 @@ const useHandleMyAnswer = ({ answerId, questionId }: AnswerProps) => {
     })
   }
 
-  const handleEditMode = (answer: Answer) => {
-    setIsAnswerEditMode((prev: boolean) => !prev)
-    console.log("a", answer.content)
-    const imageUrl = answer.content.match(Regex.mdImage)
-    if (imageUrl)
-      for (let image of imageUrl) {
-        const url = image.split("(")[1].split(")")[0]
-        deleteImage(url)
-      }
-  }
+  const handleEditMode = () => setIsAnswerEditMode((prev: boolean) => !prev)
 
   return {
     isAnswerEditMode,

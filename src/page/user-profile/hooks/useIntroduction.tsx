@@ -4,14 +4,10 @@ import {
   successMessage,
 } from "@/constants/message"
 import { useClientSession } from "@/hooks/useClientSession"
-import { Introduction, TextLen } from "@/recoil/atoms/member"
 import { IntroductionEditMode } from "@/recoil/atoms/mode"
 import { updateMemberInfo } from "@/service/member"
-import type { FormEvent } from "react"
-import { SubmitHandler } from "react-hook-form"
 import { toast } from "react-toastify"
 import { useRecoilState } from "recoil"
-import type { IntroductionValue } from "./useIntroduction.types"
 import { useQueryClient } from "@tanstack/react-query"
 import queryKey from "@/constants/queryKey"
 

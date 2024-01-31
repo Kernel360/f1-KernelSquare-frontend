@@ -60,7 +60,7 @@ const AnswerContentBox: React.FC<EditAnswerProps> = ({ answer }) => {
       })
       return
     }
-    const imageUrl = submitValue.match(Regex.mdImage)
+    const imageUrl = findImageLinkUrlFromMarkdown(submitValue)
     console.log("prev", previousImage, "img", imageUrl)
     const updateProps: UpdateAnswerRequest = {
       answerId: answer.answer_id,
@@ -83,7 +83,7 @@ const AnswerContentBox: React.FC<EditAnswerProps> = ({ answer }) => {
           deleteImages({ imageUrl: previousImage })
         }
         return queryClient.resetQueries({
-          queryKey: [queryKey.answer],
+          queryKey: [queryKey.answer, answer.question_id],
           exact: true,
         })
       },

@@ -12,6 +12,7 @@ import Regex from "@/constants/regex"
 import { useDeleteImage } from "@/hooks/image/useDeleteImage"
 import type { ModalState } from "@/interfaces/modal"
 import type { Question } from "@/interfaces/question"
+import { findImageLinkUrlFromMarkdown } from "@/util/editor"
 
 export interface QuestionProps {
   questionId: number
@@ -37,7 +38,7 @@ const useHandleQuestion = () => {
   }: DeleteQuestionProps) => {
     const onSuccess = async () => {
       try {
-        const imageUrl = question.content?.match(Regex.mdImage)
+        const imageUrl = findImageLinkUrlFromMarkdown(question.content)
 
         const res = await deleteQuestion({
           questionId: question.id,
