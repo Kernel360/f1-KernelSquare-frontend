@@ -48,7 +48,7 @@ const UserInfoBox: React.FC<{ answer: Answer }> = ({ answer }) => {
       <div className="text-center flex flex-wrap justify-center">
         <div className="ml-1">Lv.{answer.author_level}</div>
         {answer.rank_image_url && (
-          <div className="flex flex-col justify-center">
+          <div className="flex flex-col justify-center ml-1">
             <Image
               src={answer.rank_image_url}
               alt="답변자 배지 이미지"
@@ -65,13 +65,12 @@ const UserInfoBox: React.FC<{ answer: Answer }> = ({ answer }) => {
 const ProfileImageBox: React.FC<{ answer: Answer }> = ({ answer }) => {
   if (answer.member_image_url)
     return (
-      <div className="ml-[20px] w-[50px] h-[50px] relative my-3">
+      <div className="ml-[20px] w-[50px] h-[50px] relative">
         <Image
           src={answer.member_image_url}
           alt="답변자 프로필 이미지"
           fill
           className="object-cover rounded-full cursor-pointer"
-          // onClick={() => router.push(`/profile/${answer.=}`)}
         />
       </div>
     )

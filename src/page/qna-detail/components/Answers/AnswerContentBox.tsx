@@ -17,6 +17,7 @@ import type { Answer } from "@/interfaces/answer"
 import type { EditorType } from "@toast-ui/editor"
 import { findImageLinkUrlFromMarkdown } from "@/util/editor"
 import { UpdateAnswerRequest } from "@/interfaces/dto/answer/update-answer.dto"
+import { deleteImages } from "@/service/images"
 
 export type EditAnswerProps = {
   answer: Answer
@@ -45,27 +46,12 @@ const AnswerContentBox: React.FC<EditAnswerProps> = ({ answer }) => {
   const { updateAnswer } = answerQueries.useUpdateAnswer()
   const queryClient = useQueryClient()
 
-  // 실시간 답변 내용
-  const handleValueChange = () => {
-    const answerValue = editorRef.current?.getInstance().getMarkdown()
-    const image_url = findImageLinkUrlFromMarkdown(answerValue)
-    const previous_url = findImageLinkUrlFromMarkdown(answer.answer_image_url)
-    // 1. 기존 이미지는 있는데 현재 image_url은 없다면
-    const case1 =
-      (previous_url && !image_url) ||
-      (previous_url && image_url && !image_url[0])
-    // 만약 기존 이미지와 image_url이 다르다면
-    const case2 = previous_url && image_url && previous_url[0] !== image_url[0]
-
-    console.log("prev", previous_url, "img", image_url)
-    console.log("image changed")
-  }
-
   /**
    *
    * @returns 답변 수정
    */
   const handleSubmitEditedValue = () => {
+    const previousImage = answer.answer_image_url
     const submitValue = editorRef.current?.getInstance().getMarkdown()
     if (!submitValue || checkNullValue(submitValue)) {
       toast.error(errorMessage.noContent, {
@@ -75,14 +61,14 @@ const AnswerContentBox: React.FC<EditAnswerProps> = ({ answer }) => {
       return
     }
     const imageUrl = submitValue.match(Regex.mdImage)
+    console.log("prev", previousImage, "img", imageUrl)
     const updateProps: UpdateAnswerRequest = {
       answerId: answer.answer_id,
       content: submitValue,
+      image_url: null,
     }
+    if (!imageUrl) updateProps.image_url = null
     if (imageUrl && imageUrl[0]) updateProps.image_url = imageUrl[0]
-    // 없을 경우에는 어떻게 할지
-    if (!imageUrl || (imageUrl && !imageUrl[0]))
-      updateProps.image_url = undefined
 
     updateAnswer(updateProps, {
       onSuccess: () => {
@@ -90,6 +76,12 @@ const AnswerContentBox: React.FC<EditAnswerProps> = ({ answer }) => {
           position: "top-center",
         })
         setIsAnswerEditMode(false)
+        if (
+          (previousImage && !imageUrl) ||
+          (previousImage && imageUrl && previousImage !== imageUrl[0])
+        ) {
+          deleteImages({ imageUrl: previousImage })
+        }
         return queryClient.resetQueries({
           queryKey: [queryKey.answer],
           exact: true,
@@ -116,11 +108,7 @@ const AnswerContentBox: React.FC<EditAnswerProps> = ({ answer }) => {
   return (
     <Wrapper>
       <form onSubmit={handleSubmit(handleSubmitEditedValue)}>
-        <MdEditor
-          previous={answer.content}
-          editorRef={editorRef}
-          onChange={handleValueChange}
-        />
+        <MdEditor previous={answer.content} editorRef={editorRef} />
         <div className="flex justify-center my-5">
           <Button buttonTheme="primary" className="p-2 w-[100px]" type="submit">
             저장하기

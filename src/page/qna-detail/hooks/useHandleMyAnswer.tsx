@@ -61,6 +61,7 @@ const useHandleMyAnswer = ({ answerId, questionId }: AnswerProps) => {
       {
         answerId: answer.answer_id,
         content: submitValue as string,
+        image_url: imageUrl && imageUrl[0],
       },
       {
         onSuccess: () => {
