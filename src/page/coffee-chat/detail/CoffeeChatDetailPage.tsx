@@ -31,7 +31,7 @@ function CoffeeChatDetailPage({
         <EnterCoffeeChat />
       </div>
       <Spacing size={32} />
-      <ScheduleMentoringSession />
+      <ScheduleMentoringSession mentor={coffeeChatDetailPayload.member_id} />
     </div>
   )
 }

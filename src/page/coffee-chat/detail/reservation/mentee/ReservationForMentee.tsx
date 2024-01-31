@@ -15,6 +15,7 @@ import Image from "next/image"
 import { basic_profile } from "@/assets/images/basic"
 import { CoffeeChatReservationTime } from "@/interfaces/dto/coffee-chat/coffeechat-reservation-detail.dto"
 import { twJoin } from "tailwind-merge"
+import { useClientSession } from "@/hooks/useClientSession"
 
 function ReservationForMentee() {
   const params = useParams<{ id: string }>()
@@ -62,7 +63,10 @@ type TimeOptionsProps = { date: CoffeeChatReservationTime[] }
 
 function TimeOptions({ date }: TimeOptionsProps) {
   const { openModal } = useModal()
+  const { user } = useClientSession()
   const handleRegister = (nickname: string | null) => {
+    if (!user)
+      return toast.error(errorMessage.unauthorized, { position: "top-center" })
     if (nickname)
       return toast.error(errorMessage.alreadyReserved, {
         position: "top-center",
@@ -90,7 +94,8 @@ function TimeOptions({ date }: TimeOptionsProps) {
     twJoin(
       ["flex border-[1px] border-slate-200 px-6 py-2 rounded justify-center"],
       [menti_nickname && "bg-slate-200"],
-      [!menti_nickname && "hover:bg-slate-100 cursor-pointer"],
+      [!user && "cursor-default"],
+      [user && !menti_nickname && "hover:bg-slate-100 cursor-pointer"],
     )
 
   return (
@@ -120,7 +125,7 @@ function ProfileImage({ image_url }: ProfileImageProps) {
         src={image_url}
         fill
         alt="예약자 프로필 이미지"
-        className="object-cover rounded-full cursor-pointer mt-[2px]"
+        className="object-cover rounded-full mt-[2px]"
       />
     </div>
   )
