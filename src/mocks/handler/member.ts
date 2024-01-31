@@ -10,6 +10,14 @@ import {
   UpdateMemberInfoResponse,
 } from "@/interfaces/dto/member/update-member-info.dto"
 import { ApiStatus } from "@/constants/response/api"
+import type {
+  UpdateMemberIntroductionRequest,
+  UpdateMemberIntroductionResponse,
+} from "@/interfaces/dto/member/update-member-introduction.dto"
+import type {
+  UpdateMemberProfileImageRequest,
+  UpdateMemberProfileImageResponse,
+} from "@/interfaces/dto/member/update-member-profile-image-dto"
 
 export const memberHandler = [
   http.get<{ id: string }, DefaultBodyType, GetMemberResponse>(
@@ -88,6 +96,7 @@ export const memberHandler = [
       }
     },
   ),
+  // 일반 회원 정보 수정
   http.put<
     { id: string },
     Omit<UpdateMemberInfoRequest, "id">,
@@ -110,6 +119,64 @@ export const memberHandler = [
         {
           code: Code,
           msg: "회원 정보 수정 완료",
+        },
+        { status: HttpStatus },
+      )
+    },
+  ),
+  // 회원 자기소개 수정
+  http.put<
+    { id: string },
+    Omit<UpdateMemberIntroductionRequest, "memberId">,
+    UpdateMemberIntroductionResponse
+  >(
+    `${
+      process.env.NEXT_PUBLIC_SERVER
+    }${RouteMap.member.updateMemberIntroduction()}`,
+    async ({ request, params }) => {
+      // 정보 수정
+      const userId = params.id
+      const { introduction } = await request.json()
+
+      const target = mockUsers.find((user) => user.id === Number(userId))!
+      target.introduction = introduction
+
+      const { Code, HttpStatus } = ApiStatus.Member.updateMember.Ok
+
+      return HttpResponse.json(
+        {
+          code: Code,
+          msg: "회원 정보 수정 성공",
+        },
+        { status: HttpStatus },
+      )
+    },
+  ),
+  // 회원 프로필 이미지 수정
+  http.put<
+    { id: string },
+    Omit<UpdateMemberProfileImageRequest, "memberId">,
+    UpdateMemberProfileImageResponse
+  >(
+    `${
+      process.env.NEXT_PUBLIC_SERVER
+    }${RouteMap.member.updateMemberProfileImage()}`,
+    async ({ request, params }) => {
+      // 정보 수정
+      console.log("프로필 이미지 수정")
+      const userId = params.id
+      const { image_url } = await request.json()
+
+      const target = mockUsers.find((user) => user.id === Number(userId))!
+
+      if (typeof image_url !== "undefined") target.image_url = image_url
+
+      const { Code, HttpStatus } = ApiStatus.Member.updateMember.Ok
+
+      return HttpResponse.json(
+        {
+          code: Code,
+          msg: "회원 정보 수정 성공",
         },
         { status: HttpStatus },
       )

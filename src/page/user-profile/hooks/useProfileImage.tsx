@@ -16,6 +16,7 @@ import type {
 } from "./useProfileImage.types"
 import queryKey from "@/constants/queryKey"
 import { useQueryClient } from "@tanstack/react-query"
+import { memberQueries } from "@/react-query/member"
 
 const useProfileImage = ({ image_url }: UseProfileImageProps) => {
   const { user, clientSessionUpdate } = useClientSession()
@@ -23,6 +24,8 @@ const useProfileImage = ({ image_url }: UseProfileImageProps) => {
   const [image, setImage] = useState<string | ArrayBuffer | null>(image_url)
   const [preview, setPreview] = useState<string>("")
   const queryClient = useQueryClient()
+  const { updateMemberProfileImage } =
+    memberQueries.useUpdateMemberProfileImage()
 
   const handleSaveImage = async ({ image, memberId }: SaveImageProps) => {
     const onSuccess = async () => {
@@ -31,24 +34,26 @@ const useProfileImage = ({ image_url }: UseProfileImageProps) => {
           category: "member",
           file: image,
         })
-        console.log("upload", imageUploadResponse)
-
-        const infoUpdateResponse = await updateMemberInfo({
-          id: memberId,
-          image_url: imageUploadResponse.data.data?.image_url,
-        })
-        console.log("res", infoUpdateResponse)
-        if (infoUpdateResponse.data.code === 1242) {
-          toast.success(successMessage.editProfileImage, {
-            position: "top-center",
-          })
-          clientSessionUpdate({
+        console.log("image upload")
+        updateMemberProfileImage(
+          {
+            memberId: memberId,
             image_url: imageUploadResponse.data.data?.image_url,
-          })
-          queryClient.invalidateQueries({
-            queryKey: [queryKey.user, queryKey.profile, memberId],
-          })
-        }
+          },
+          {
+            onSuccess: () => {
+              toast.success(successMessage.editProfileImage, {
+                position: "top-center",
+              })
+              clientSessionUpdate({
+                image_url: imageUploadResponse.data.data?.image_url,
+              })
+              queryClient.invalidateQueries({
+                queryKey: [queryKey.user, queryKey.profile, memberId],
+              })
+            },
+          },
+        )
       } catch (error) {
         toast.error(errorMessage.failToUploadImage, {
           position: "top-center",
