@@ -3,7 +3,7 @@
 import Calendar, { TileArgs } from "react-calendar"
 import "react-calendar/dist/Calendar.css"
 import "./Calendar.css"
-import { type Dispatch, type SetStateAction, useState } from "react"
+import { type Dispatch, type SetStateAction } from "react"
 import { getDay } from "@/util/getDate"
 import dayjs from "dayjs"
 import Holidays from "@/constants/holidays"
@@ -23,6 +23,13 @@ const CustomCalendar = ({ start, date, setDate }: CustomCalendarProps) => {
   const startDate = new Date(start)
   // 종료 날짜
   const calendarValue = new Date(dayjs(startDate).add(2, "day").format())
+  // 공휴일 포함 여부
+  const isHoliday = (date: Date) =>
+    Holidays.some((day) => day.date === dayjs(date).format("YYYY-MM-DD"))
+  const getHoliday = (date: Date) =>
+    Holidays.find((day) => day.date === dayjs(date).format("YYYY-MM-DD"))
+  // 공휴일 이름 formatting
+  const formatName = (name: string) => name.replaceAll(" ", "\n")
 
   // 타일에 특정 정보 표시
   const showSpecificDays = ({ date }: TileArgs) => {
@@ -30,8 +37,12 @@ const CustomCalendar = ({ start, date, setDate }: CustomCalendarProps) => {
     if (date === today) {
       return <div>Today</div>
     }
-    if (Holidays.includes(dayjs(date).format("YYYY-MM-DD"))) {
-      return <div className="text-[10px]">공휴일</div>
+    if (isHoliday(date)) {
+      const name = getHoliday(date)?.name
+      if (name)
+        return (
+          <div className="text-[10px] whitespace-pre ">{formatName(name)}</div>
+        )
     }
   }
 

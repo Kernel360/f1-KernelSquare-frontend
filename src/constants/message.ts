@@ -13,6 +13,7 @@ export const errorMessage = {
   saySorry: "이용에 불편을 드려 죄송해요.",
   duplicatedVote: "답변에 대한 투표는 한 번만 진행할 수 있습니다.",
   failToReserve: "커피챗 예약 중 오류가 발생하였습니다. 다시 시도해주세요.",
+  alreadyReserved: "이미 예약된 시간대입니다.",
 } as const
 
 export const successMessage = {

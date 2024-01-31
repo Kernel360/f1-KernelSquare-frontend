@@ -92,8 +92,8 @@ export const mockCoffeeChatReservations: Array<CoffeeChatReservation> = [
         menti_image_url: null,
       },
     ],
-    created_date: "2024-01-21T18:40:02",
-    modified_date: "2024-01-21T18:40:02",
+    created_date: "2024-01-31T18:40:02",
+    modified_date: "2024-01-31T18:40:02",
   },
   {
     article_id: 3,
