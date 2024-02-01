@@ -14,8 +14,13 @@ import UserProfileMenu from "../UserProfileMenu"
 import dynamic from "next/dynamic"
 import { Editor } from "@toast-ui/react-editor"
 import { toast } from "react-toastify"
+import LoginForm from "@/components/form/LoginForm"
 
 const MdEditor = dynamic(() => import("./MdEditor"), {
+  ssr: false,
+})
+
+const MdViewer = dynamic(() => import("./MdViewer"), {
   ssr: false,
 })
 
@@ -51,8 +56,10 @@ function Introduction({ introduction, isMyPage, userId }: IntroductionProps) {
     )
   }
 
-  if (!userId) return <div></div>
-  if (isMyPage && isIntroductionEditMode)
+  if (!userId) return <LoginForm />
+  if (!isMyPage) return null
+
+  if (isIntroductionEditMode)
     return (
       <UserProfileMenu.MenuContentWrapper>
         <div>
@@ -81,7 +88,7 @@ function Introduction({ introduction, isMyPage, userId }: IntroductionProps) {
 
   return (
     <UserProfileMenu.MenuContentWrapper>
-      <p className="whitespace-pre-wrap">{introduction}</p>
+      <MdViewer content={introduction} />
     </UserProfileMenu.MenuContentWrapper>
   )
 }
