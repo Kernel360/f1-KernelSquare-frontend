@@ -1,8 +1,8 @@
 import { atom, atomFamily } from "recoil"
 
 // 마이페이지 소개글 수정 상태
-export const EditMode = atom<boolean>({
-  key: "EditMode-atom",
+export const IntroductionEditMode = atom<boolean>({
+  key: "IntroductionEditMode-atom",
   default: false,
 })
 

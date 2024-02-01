@@ -37,7 +37,7 @@ export const MemberApiStatus = {
     },
   },
   /**
-   * 회원 정보 수정 관련 api status
+   * 회원 정보 수정 관련 api status (자기소개 수정 + 프로필 이미지 수정)
    */
   updateMember: {
     /**

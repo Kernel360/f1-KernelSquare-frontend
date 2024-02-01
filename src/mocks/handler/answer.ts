@@ -138,7 +138,7 @@ export const answerHandler = [
       )
 
       if (targetAnswer) targetAnswer.content = content
-      if (targetAnswer && image_url) targetAnswer.answer_image_url = image_url
+      if (targetAnswer) targetAnswer.answer_image_url = image_url
 
       return HttpResponse.json(
         {

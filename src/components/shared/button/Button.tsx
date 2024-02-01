@@ -23,13 +23,14 @@ function Button({
   const bgThemeClassNames = twMerge([
     buttonTheme === "primary" &&
       (ghost
-        ? "text-primary hover:text-white hover:bg-primary"
+        ? "text-primary hover:border-[1px] hover:border-primary"
         : "text-white bg-primary hover:bg-[#02a35f]"),
     buttonTheme === "secondary" &&
       (ghost
         ? "text-secondary hover:text-white hover:bg-secondary"
         : "text-white bg-secondary hover:bg-[#464e57]"),
-    buttonTheme === "third" && "text-black border-[1px] border-primary",
+    buttonTheme === "third" &&
+      "text-black border-[1px] border-primary hover:bg-primary",
     ghost && "bg-transparent",
   ])
 

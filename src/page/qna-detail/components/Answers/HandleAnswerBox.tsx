@@ -3,7 +3,12 @@
 import useHandleMyAnswer from "../../hooks/useHandleMyAnswer"
 import SuccessModalContent from "../SuccessModalContent"
 import { buttonMessage, successMessage } from "@/constants/message"
-import type { HandleAnswerProps } from "./HandleAnswerBox.types"
+import type { Answer } from "@/interfaces/answer"
+
+export type HandleAnswerProps = {
+  answer: Answer
+  createdby?: string
+}
 
 const HandleAnswerBox: React.FC<HandleAnswerProps> = ({
   answer,
@@ -19,7 +24,7 @@ const HandleAnswerBox: React.FC<HandleAnswerProps> = ({
     return (
       <div className="flex flex-wrap justify-end my-4">
         <div
-          onClick={handleEditMode}
+          onClick={() => handleEditMode()}
           className="mr-3 hover:text-[#3887BE] font-bold cursor-pointer "
         >
           {buttonMessage.edit}

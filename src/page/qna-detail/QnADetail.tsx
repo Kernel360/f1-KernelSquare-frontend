@@ -26,7 +26,7 @@ const QnADetail: React.FC<{ id: string }> = ({ id }) => {
     })
 
   useEffect(() => {
-    const fetchData = async () => {
+    const fetchData = () => {
       if (
         answers?.data &&
         user?.nickname &&
