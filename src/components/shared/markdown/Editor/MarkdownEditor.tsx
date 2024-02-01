@@ -19,7 +19,7 @@ import {
   contentEditorToolbarItemsWithoutImage,
 } from "@/constants/editor"
 import { EditorRefObj } from "@/components/shared/toast-ui-editor/editor/EditorWrapper"
-import { type SetterOrUpdater, useSetRecoilState } from "recoil"
+import { type SetterOrUpdater } from "recoil"
 // 텍스트 색상 변경 지원
 import colorSyntax from "@toast-ui/editor-plugin-color-syntax"
 import "tui-color-picker/dist/tui-color-picker.css"
@@ -28,7 +28,6 @@ import "@toast-ui/editor-plugin-color-syntax/dist/toastui-editor-plugin-color-sy
 import "@toast-ui/editor-plugin-code-syntax-highlight/dist/toastui-editor-plugin-code-syntax-highlight-all.js"
 import codeSyntaxHighlight from "@toast-ui/editor-plugin-code-syntax-highlight/dist/toastui-editor-plugin-code-syntax-highlight-all.js"
 import "@toast-ui/editor-plugin-code-syntax-highlight/dist/toastui-editor-plugin-code-syntax-highlight.css"
-import { answerEditorLoadedAtomFamily } from "@/recoil/atoms/answerEditor"
 // 전체 언어 지원
 
 type MdTabMode = "write" | "preview"

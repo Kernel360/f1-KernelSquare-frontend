@@ -20,18 +20,9 @@ const ProfileImage = ({ user_id, image_url }: ProfileImageProps) => {
     useProfileImage(image_url)
   const imageUploadRef = useRef<HTMLInputElement>(null)
 
-  if (!image_url) return <NoProfileImage />
-
   return (
     <>
-      <div className="relative w-[120px] h-[120px] rounded-full overflow-hidden [&_svg]:w-[120px] [&>svg]:h-[120px]">
-        <Image
-          src={image_url}
-          alt={`profile`}
-          fill
-          style={{ objectFit: "cover", objectPosition: "center" }}
-        />
-      </div>
+      <ImageArea image_url={image_url} />
       <input
         type="file"
         ref={imageUploadRef}
@@ -66,12 +57,27 @@ const ProfileImage = ({ user_id, image_url }: ProfileImageProps) => {
 
 export default ProfileImage
 
-function NoProfileImage() {
+interface ImageAreaProps {
+  image_url: string | null
+}
+
+function ImageArea({ image_url }: ImageAreaProps) {
+  // 이미지 없으면 기본
+  if (!image_url)
+    return (
+      <div className="relative w-[120px] h-[120px] rounded-full overflow-hidden [&_svg]:w-[120px] [&>svg]:h-[120px]">
+        <Icons.UserProfile className="absolute text-colorsGray bg-white" />
+      </div>
+    )
+  // 이미지 있을 경우
   return (
     <div className="relative w-[120px] h-[120px] rounded-full overflow-hidden [&_svg]:w-[120px] [&>svg]:h-[120px]">
-      <Icons.UserProfile className="absolute text-colorsGray bg-white" />
+      <Image
+        src={image_url}
+        alt={`profile`}
+        fill
+        style={{ objectFit: "cover", objectPosition: "center" }}
+      />
     </div>
   )
 }
-
-function EditProfileButtons() {}

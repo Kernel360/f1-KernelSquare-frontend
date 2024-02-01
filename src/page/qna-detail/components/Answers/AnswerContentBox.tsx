@@ -59,7 +59,6 @@ const AnswerContentBox: React.FC<EditAnswerProps> = ({ answer }) => {
       return
     }
     const imageUrl = findImageLinkUrlFromMarkdown(submitValue)
-    console.log("prev", previousImage, "img", imageUrl)
     const updateProps: UpdateAnswerRequest = {
       answerId: answer.answer_id,
       content: submitValue,

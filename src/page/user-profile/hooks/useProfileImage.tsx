@@ -12,7 +12,6 @@ import { toast } from "react-toastify"
 import queryKey from "@/constants/queryKey"
 import { useQueryClient } from "@tanstack/react-query"
 import { memberQueries } from "@/react-query/member"
-import { basic_profile } from "@/assets/images/basic"
 
 export interface SaveImageProps {
   image: File
@@ -53,6 +52,12 @@ const useProfileImage = (image_url: string | null) => {
               queryClient.invalidateQueries({
                 queryKey: [queryKey.user, queryKey.profile, memberId],
               })
+              queryClient.invalidateQueries({
+                queryKey: [queryKey.question],
+              })
+              queryClient.invalidateQueries({
+                queryKey: [queryKey.answer],
+              })
             },
           },
         )
@@ -60,7 +65,6 @@ const useProfileImage = (image_url: string | null) => {
         toast.error(errorMessage.failToUploadImage, {
           position: "top-center",
         })
-        console.error("Error", error)
       }
     }
 
@@ -131,6 +135,12 @@ const useProfileImage = (image_url: string | null) => {
               })
               queryClient.invalidateQueries({
                 queryKey: [queryKey.user, queryKey.profile, memberId],
+              })
+              queryClient.invalidateQueries({
+                queryKey: [queryKey.question],
+              })
+              queryClient.invalidateQueries({
+                queryKey: [queryKey.answer],
               })
             },
           },

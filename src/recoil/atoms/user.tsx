@@ -178,7 +178,7 @@ export const userClientSession = selector({
               decrypt(payloadResponse),
             ) as NonNullable<SessionPayload>
 
-            if (image_url) editedPayload.image_url = image_url
+            editedPayload.image_url = image_url ?? null
             if (introduction) editedPayload.introduction = introduction
 
             const stringifyPayload = JSON.stringify(editedPayload)
