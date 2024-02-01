@@ -21,7 +21,7 @@ function UserProfileMenu({ userPayload }: UserProfileMenuProps) {
   const { user } = useClientSession()
   const isMyPage = userPayload.id === user?.member_id
   const [menu, setMenu] = useState<MenuKey>("Introduction")
-  const { handleEditMode } = useIntroduction()
+  const { handleIntroductionEditMode } = useIntroduction()
 
   const MenuContent = () => {
     switch (menu) {
@@ -55,7 +55,7 @@ function UserProfileMenu({ userPayload }: UserProfileMenuProps) {
                 {isMyPage && (
                   <Icons.EditIntro
                     className="ml-[2px] text-[16px] mt-[6px] hrink-0 cursor-pointer"
-                    onClick={handleEditMode}
+                    onClick={handleIntroductionEditMode}
                   />
                 )}
               </div>

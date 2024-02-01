@@ -4,14 +4,12 @@ import { useForm } from "react-hook-form"
 import useIntroduction from "../../hooks/useIntroduction"
 import type { IntroductionProps } from "./Introduction.types"
 import type { IntroductionValue } from "../../hooks/useIntroduction.types"
-import { useRef, useState } from "react"
-import { twJoin } from "tailwind-merge"
+import { useRef } from "react"
 import {
   buttonMessage,
   errorMessage,
   notificationMessage,
 } from "@/constants/message"
-import Textarea from "@/components/shared/textarea/Textarea"
 import Button from "@/components/shared/button/Button"
 import UserProfileMenu from "../UserProfileMenu"
 import dynamic from "next/dynamic"
@@ -24,8 +22,11 @@ const MdEditor = dynamic(() => import("./MdEditor"), {
 
 function Introduction({ introduction, isMyPage }: IntroductionProps) {
   const editorRef = useRef<Editor>(null)
-  const { closeEditMode, handleSubmitIntroduction, isEditMode } =
-    useIntroduction()
+  const {
+    closeIntroductionEditMode,
+    handleSubmitIntroduction,
+    isIntroductionEditMode,
+  } = useIntroduction()
   const { handleSubmit } = useForm<IntroductionValue>()
 
   const onsubmit = () => {
@@ -45,7 +46,7 @@ function Introduction({ introduction, isMyPage }: IntroductionProps) {
     )
   }
 
-  if (isMyPage && isEditMode)
+  if (isMyPage && isIntroductionEditMode)
     return (
       <UserProfileMenu.MenuContentWrapper>
         <div>
@@ -55,7 +56,7 @@ function Introduction({ introduction, isMyPage }: IntroductionProps) {
               <Button
                 buttonTheme="third"
                 className="w-[70px] mr-[10px]"
-                onClick={closeEditMode}
+                onClick={closeIntroductionEditMode}
               >
                 {buttonMessage.cancle}
               </Button>
