@@ -7,18 +7,21 @@ import {
 import { useClientSession } from "@/hooks/useClientSession"
 import useModal from "@/hooks/useModal"
 import { uploadImages } from "@/service/images"
-import { updateMemberInfo } from "@/service/member"
 import { useState, type ChangeEvent, type RefObject } from "react"
 import { toast } from "react-toastify"
-import type {
-  SaveImageProps,
-  UseProfileImageProps,
-} from "./useProfileImage.types"
 import queryKey from "@/constants/queryKey"
 import { useQueryClient } from "@tanstack/react-query"
 import { memberQueries } from "@/react-query/member"
+import { basic_profile } from "@/assets/images/basic"
 
-const useProfileImage = ({ image_url }: UseProfileImageProps) => {
+export interface SaveImageProps {
+  image: File
+  memberId: number
+}
+
+export interface ResetImageProps {}
+
+const useProfileImage = (image_url: string | null) => {
   const { user, clientSessionUpdate } = useClientSession()
   const { openModal } = useModal()
   const [image, setImage] = useState<string | ArrayBuffer | null>(image_url)
@@ -34,7 +37,6 @@ const useProfileImage = ({ image_url }: UseProfileImageProps) => {
           category: "member",
           file: image,
         })
-        console.log("image upload")
         updateMemberProfileImage(
           {
             memberId: memberId,
@@ -111,6 +113,54 @@ const useProfileImage = ({ image_url }: UseProfileImageProps) => {
     if (fileInput) fileInput.click()
   }
 
+  const handleResetImage = async (memberId: number) => {
+    const onSuccess = async () => {
+      try {
+        updateMemberProfileImage(
+          {
+            memberId: memberId,
+            image_url: null,
+          },
+          {
+            onSuccess: () => {
+              toast.success(successMessage.editResetProfileImage, {
+                position: "top-center",
+              })
+              clientSessionUpdate({
+                image_url: null,
+              })
+              queryClient.invalidateQueries({
+                queryKey: [queryKey.user, queryKey.profile, memberId],
+              })
+            },
+          },
+        )
+      } catch (error) {
+        toast.error(errorMessage.failToResetImage, {
+          position: "top-center",
+        })
+        console.error("Error", error)
+      }
+    }
+
+    const onCancel = () => {
+      toast.error(notificationMessage.cancleResetImage, {
+        position: "top-center",
+      })
+    }
+
+    openModal({
+      containsHeader: false,
+      content: (
+        <ConfirmModal.ModalContent
+          onSuccess={onSuccess}
+          onCancel={onCancel}
+          situation="resetProfileImage"
+        />
+      ),
+    })
+  }
+
   return {
     user,
     handleSaveImage,
@@ -120,6 +170,7 @@ const useProfileImage = ({ image_url }: UseProfileImageProps) => {
     preview,
     setPreview,
     handleImageChange,
+    handleResetImage,
   }
 }
 

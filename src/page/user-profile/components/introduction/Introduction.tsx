@@ -2,7 +2,6 @@
 
 import { useForm } from "react-hook-form"
 import useIntroduction from "../../hooks/useIntroduction"
-import type { IntroductionValue } from "../../hooks/useIntroduction.types"
 import { useRef } from "react"
 import {
   buttonMessage,
@@ -37,7 +36,7 @@ function Introduction({ introduction, isMyPage, userId }: IntroductionProps) {
     handleSubmitIntroduction,
     isIntroductionEditMode,
   } = useIntroduction()
-  const { handleSubmit } = useForm<IntroductionValue>()
+  const { handleSubmit } = useForm<{ introduction: string }>()
 
   const onsubmit = () => {
     const introduction = editorRef.current?.getInstance().getMarkdown()

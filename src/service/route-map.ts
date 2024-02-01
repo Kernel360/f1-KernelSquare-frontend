@@ -51,11 +51,6 @@ export class RouteMap {
         memberId === undefined ? ":id" : memberId
       }`
     },
-    updateMemberInfo(memberId?: number) {
-      return `${RouteMap.routeGroupBaseURL.member}/${
-        memberId === undefined ? ":id" : memberId
-      }`
-    },
     updateMemberIntroduction(memberId?: number) {
       return `${RouteMap.routeGroupBaseURL.member}/${
         memberId === undefined ? ":id" : memberId

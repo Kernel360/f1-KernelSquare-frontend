@@ -1,11 +1,9 @@
 import queryKey from "@/constants/queryKey"
 import type { GetMemberRequest } from "@/interfaces/dto/member/get-member.dto"
-import type { UpdateMemberInfoRequest } from "@/interfaces/dto/member/update-member-info.dto"
 import type { UpdateMemberIntroductionRequest } from "@/interfaces/dto/member/update-member-introduction.dto"
 import type { UpdateMemberProfileImageRequest } from "@/interfaces/dto/member/update-member-profile-image-dto"
 import {
   getMemeber,
-  updateMemberInfo,
   updateMemberIntroduction,
   updateMemberProfileImage,
 } from "@/service/member"
@@ -25,16 +23,6 @@ const useMemberData = ({ id }: GetMemberRequest) =>
     select(payload) {
       return payload.data.data
     },
-  })
-
-const useUpdateInfo = ({
-  id,
-  image_url,
-  introduction,
-}: UpdateMemberInfoRequest) =>
-  useMutation({
-    mutationKey: [queryKey.member, queryKey.updateInfo],
-    mutationFn: () => updateMemberInfo({ id, image_url, introduction }),
   })
 
 /**
@@ -93,7 +81,6 @@ const useUpdateMemberProfileImage = () => {
 
 export const memberQueries = {
   useMemberData,
-  useUpdateInfo,
   useUpdateMemberIntroduction,
   useUpdateMemberProfileImage,
 }

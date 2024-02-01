@@ -16,9 +16,8 @@ interface ProfileImageProps {
 const ProfileImage = ({ user_id, image_url }: ProfileImageProps) => {
   const { user } = useClientSession()
   const isMyPage = user?.member_id === user_id
-  const { handleImageChange, handleUpload } = useProfileImage({
-    image_url: image_url!,
-  })
+  const { handleImageChange, handleUpload, handleResetImage } =
+    useProfileImage(image_url)
   const imageUploadRef = useRef<HTMLInputElement>(null)
 
   if (!image_url) return <NoProfileImage />
@@ -41,14 +40,25 @@ const ProfileImage = ({ user_id, image_url }: ProfileImageProps) => {
         onChange={(e) => handleImageChange(e, user_id)}
       />
       {isMyPage && (
-        <Button
-          type="button"
-          buttonTheme="primary"
-          className="max-w-[100px] h-[30px] my-3"
-          onClick={() => handleUpload(imageUploadRef)}
-        >
-          {buttonMessage.updateProfile}
-        </Button>
+        <div>
+          <Button
+            type="button"
+            buttonTheme="primary"
+            className="max-w-[100px] min-w-[93px] h-[30px] mt-3 mb-1 block"
+            onClick={() => handleUpload(imageUploadRef)}
+          >
+            {buttonMessage.updateProfile}
+          </Button>
+          <Button
+            type="button"
+            buttonTheme="primary"
+            ghost
+            className="max-w-[100px] h-[30px]"
+            onClick={() => handleResetImage(user_id)}
+          >
+            {buttonMessage.resetProfile}
+          </Button>
+        </div>
       )}
     </>
   )
@@ -63,3 +73,5 @@ function NoProfileImage() {
     </div>
   )
 }
+
+function EditProfileButtons() {}
