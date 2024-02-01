@@ -13,10 +13,15 @@ import {
 import { ENCRYPTED_PAYLOAD_KEY } from "@/constants/token"
 import { errorMessage } from "@/constants/message"
 import { USER_LOCAL_STORAGE_KEY } from "@/constants/editor"
-import type { UpdateMemberInfoRequest } from "@/interfaces/dto/member/update-member-info.dto"
 import type { LoginUserPayload } from "@/interfaces/dto/auth/login.dto"
+import type { User } from "@/interfaces/user"
 
 export type SessionPayload = (LoginUserPayload & { expires: string }) | null
+
+interface UpdateMemberInfoRequest
+  extends Partial<Pick<User, "image_url" | "introduction">> {
+  id: number
+}
 
 export const userAtom = atom<SessionPayload>({
   key: "user-atom",
@@ -173,7 +178,7 @@ export const userClientSession = selector({
               decrypt(payloadResponse),
             ) as NonNullable<SessionPayload>
 
-            if (image_url) editedPayload.image_url = image_url
+            editedPayload.image_url = image_url ?? null
             if (introduction) editedPayload.introduction = introduction
 
             const stringifyPayload = JSON.stringify(editedPayload)

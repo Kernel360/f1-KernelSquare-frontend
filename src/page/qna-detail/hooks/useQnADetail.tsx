@@ -4,7 +4,6 @@ import { errorMessage, successMessage } from "@/constants/message"
 import { useClientSession } from "@/hooks/useClientSession"
 import { useProgressModal } from "@/hooks/useProgressModal"
 import type { Answer } from "@/interfaces/answer"
-import { createAnswer } from "@/service/answers"
 import { useState } from "react"
 import { toast } from "react-toastify"
 import SuccessModalContent from "../components/SuccessModalContent"
@@ -12,9 +11,14 @@ import queryKey from "@/constants/queryKey"
 import { sleep } from "@/util/sleep"
 import useModal from "@/hooks/useModal"
 import { useQueryClient } from "@tanstack/react-query"
-import type { SubmitValueProps } from "./useQnADetail.types"
 import { useRecoilState } from "recoil"
 import { AnswerWriteMode } from "@/recoil/atoms/mode"
+import { answerQueries } from "@/react-query/answers"
+
+export interface SubmitValueProps {
+  questionId: number
+  submitValue: string | undefined
+}
 
 type useQnADetailProps = { questionId: number }
 
@@ -26,6 +30,7 @@ const useQnADetail = ({ questionId }: useQnADetailProps) => {
   const [isAnswerMode, setIsAnswerMode] = useRecoilState(
     AnswerWriteMode(questionId),
   )
+  const { createAnswer } = answerQueries.useCreateAnswer()
 
   const checkNullValue = (submitValue: string | undefined) => {
     if (typeof submitValue === undefined) return true
@@ -65,27 +70,32 @@ const useQnADetail = ({ questionId }: useQnADetailProps) => {
 
     try {
       if (user?.member_id) {
-        const res = await createAnswer({
-          questionId,
-          member_id: user.member_id,
-          content: submitValue || "",
-        })
-        console.log("res", res.data.msg, res.config.data)
-        openModal({
-          content: (
-            <SuccessModalContent message={successMessage.createAnswer} />
-          ),
-          onClose() {
-            queryClient.invalidateQueries({
-              queryKey: [queryKey.answer, questionId],
-            })
+        createAnswer(
+          {
+            questionId,
+            member_id: user.member_id,
+            content: submitValue || "",
           },
-        })
-        sleep(5000).then(() => {
-          queryClient.invalidateQueries({
-            queryKey: [queryKey.answer, questionId],
-          })
-        })
+          {
+            onSuccess: () => {
+              openModal({
+                content: (
+                  <SuccessModalContent message={successMessage.createAnswer} />
+                ),
+                onClose() {
+                  queryClient.invalidateQueries({
+                    queryKey: [queryKey.answer, questionId],
+                  })
+                  setIsAnswerMode(false)
+                },
+              })
+              queryClient.invalidateQueries({
+                queryKey: [queryKey.answer, questionId],
+              })
+              setIsAnswerMode(false)
+            },
+          },
+        )
       }
     } catch (err) {
       console.error("error", err)

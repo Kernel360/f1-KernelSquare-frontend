@@ -4,7 +4,12 @@ import { VoteIcons } from "@/components/icons/Icons"
 import useAnswerVote from "../../hooks/useAnswerVote"
 import SuccessModalContent from "../SuccessModalContent"
 import { successMessage } from "@/constants/message"
-import type { VoteBoxProps } from "./VoteBox.types"
+import type { Answer } from "@/interfaces/answer"
+
+export type VoteBoxProps = {
+  userId?: number
+  answer: Answer
+}
 
 const VoteBox: React.FC<VoteBoxProps> = ({ answer }) => {
   const {

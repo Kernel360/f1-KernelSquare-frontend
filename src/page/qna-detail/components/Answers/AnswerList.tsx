@@ -6,8 +6,16 @@ import ContentLoading from "@/components/shared/animation/ContentLoading"
 import LightBulb from "@/components/shared/animation/LightBulb"
 import { notificationMessage } from "@/constants/message"
 import useQnADetail from "../../hooks/useQnADetail"
-import type { AnswerProps, NoAnswerProps } from "./AnswerList.types"
-import { PropsWithChildren } from "react"
+
+export interface AnswerProps {
+  createdby: string
+  questionId: number
+  isMyAnswer: boolean
+}
+
+export interface NoAnswerProps {
+  isMyAnswer: boolean
+}
 
 const AnswerList: React.FC<AnswerProps> = ({
   createdby,

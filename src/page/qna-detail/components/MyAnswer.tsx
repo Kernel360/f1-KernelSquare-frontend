@@ -10,9 +10,12 @@ import useModal from "@/hooks/useModal"
 import LoginForm from "@/components/form/LoginForm"
 import { buttonMessage, notificationMessage } from "@/constants/message"
 import useQnADetail from "../hooks/useQnADetail"
-import type { MyAnswerProps } from "./MyAnswer.types"
 
-const MdEditor = dynamic(() => import("./Markdown/MdEditor"), {
+export interface MyAnswerProps {
+  questionId: number
+}
+
+const MdEditor = dynamic(() => import("../components/Markdown/MdEditor"), {
   ssr: false,
 })
 

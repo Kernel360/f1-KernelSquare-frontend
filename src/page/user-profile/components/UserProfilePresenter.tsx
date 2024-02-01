@@ -1,6 +1,5 @@
 "use client"
 
-import { Icons } from "@/components/icons/Icons"
 import Spacing from "@/components/shared/Spacing"
 import { UserPayload } from "@/interfaces/dto/member/get-member.dto"
 import Image from "next/image"
@@ -9,8 +8,14 @@ import UserProfileSection from "./UserProfileSection"
 import UserProfileMenu from "./UserProfileMenu"
 import badge_url from "@/assets/images/badges"
 import levelStandard from "@/constants/levelStandard"
+import ProfileImage from "./profileImage/ProfileImage"
+import { basic_profile_background } from "@/assets/images/basic"
 
 interface UserProfilePresenterProps {
+  userPayload: UserPayload
+}
+
+interface ProfileImageWrapperProps {
   userPayload: UserPayload
 }
 
@@ -45,9 +50,7 @@ UserProfilePresenter.BackgroundSection =
     return (
       <div className="relative w-full h-0 pb-36 sm:aspect-video sm:max-h-[400px] sm:h-fit bg-colorsLightGray">
         <Image
-          src={
-            "https://images.unsplash.com/photo-1516727052521-08079c40df80?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-          }
+          src={basic_profile_background}
           alt="bg"
           fill
           style={{ objectFit: "cover" }}
@@ -62,19 +65,22 @@ UserProfilePresenter.UserInfo = function UserProfileInfo({
   userPayload: UserPayload
 }) {
   return (
+    <ProfileImageWrapper userPayload={userPayload}>
+      <ProfileImage
+        user_id={userPayload.id}
+        image_url={userPayload.image_url}
+      />
+    </ProfileImageWrapper>
+  )
+}
+
+function ProfileImageWrapper({
+  children,
+  userPayload,
+}: PropsWithChildren<ProfileImageWrapperProps>) {
+  return (
     <div className="w-full flex flex-col justify-center items-center sticky top-0 [margin-block-start:-60px] sm:[margin-block-start:-88px] sm:h-max sm:min-h-[200px] sm:justify-start sm:top-[calc(var(--height-header))] sm:w-max sm:box-border sm:pt-4 sm:-translate-x-[7px]">
-      <div className="relative w-[120px] h-[120px] rounded-full overflow-hidden [&_svg]:w-[120px] [&>svg]:h-[120px]">
-        {userPayload.image_url ? (
-          <Image
-            src={userPayload.image_url}
-            alt={`profile`}
-            fill
-            style={{ objectFit: "cover", objectPosition: "center" }}
-          />
-        ) : (
-          <Icons.UserProfile className="absolute text-colorsGray bg-white" />
-        )}
-      </div>
+      {children}
       <div className="flex flex-col w-full justify-center items-center">
         <Spacing size={16} />
         <div className="text-4xl text-secondary font-semibold">

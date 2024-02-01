@@ -9,7 +9,7 @@ import "@toast-ui/editor-plugin-code-syntax-highlight/dist/toastui-editor-plugin
 import { ForwardedRef, forwardRef, useEffect, useRef, useState } from "react"
 import Button from "@/components/shared/button/Button"
 import { twMerge } from "tailwind-merge"
-import { contentEditorToolbarItems } from "@/constants/editor"
+import { contentEditorToolbarItemsWithImage } from "@/constants/editor"
 import { useSetRecoilState } from "recoil"
 import { questionEditorLoadedAtomFamily } from "@/recoil/atoms/questionEditor"
 import { throttle } from "lodash-es"
@@ -129,7 +129,7 @@ const ContentEditor = (
       <ToastUiEditor
         ref={ref}
         mdTabVisible={mdTabVisible}
-        toolbarItems={contentEditorToolbarItems}
+        toolbarItems={contentEditorToolbarItemsWithImage}
         placeholder="질문을 작성해주세요"
         initialEditType="markdown"
         previewStyle="tab"

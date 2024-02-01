@@ -325,6 +325,7 @@ function AskQuestionForm({ initialValues, question_id }: AskQustionFormProps) {
     <>
       {!loaded && <Loading />}
       <form
+        id="question-form"
         onSubmit={handleSubmit(onSubmit, onInvalid)}
         className={`transition-opacity duration-1000 ${
           !loaded ? "opacity-0" : "opacity-100"

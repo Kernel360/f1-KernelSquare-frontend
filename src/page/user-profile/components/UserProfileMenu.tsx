@@ -6,6 +6,10 @@ import { useState } from "react"
 import UserProfileSection from "./UserProfileSection"
 import Button from "@/components/shared/button/Button"
 import Spacing from "@/components/shared/Spacing"
+import { useClientSession } from "@/hooks/useClientSession"
+import { Icons } from "@/components/icons/Icons"
+import useIntroduction from "../hooks/useIntroduction"
+import Introduction from "./introduction/Introduction"
 
 interface UserProfileMenuProps {
   userPayload: UserPayload
@@ -14,12 +18,21 @@ interface UserProfileMenuProps {
 type MenuKey = "Introduction"
 
 function UserProfileMenu({ userPayload }: UserProfileMenuProps) {
+  const { user } = useClientSession()
+  const isMyPage = userPayload.id === user?.member_id
   const [menu, setMenu] = useState<MenuKey>("Introduction")
+  const { handleIntroductionEditMode } = useIntroduction()
 
   const MenuContent = () => {
     switch (menu) {
       case "Introduction":
-        return <Introduction introduction={userPayload.introduction} />
+        return (
+          <Introduction
+            introduction={userPayload.introduction}
+            isMyPage={isMyPage}
+            userId={user?.member_id}
+          />
+        )
       default:
         return null
     }
@@ -30,14 +43,24 @@ function UserProfileMenu({ userPayload }: UserProfileMenuProps) {
       <Tab
         classNames={{
           wrapper:
-            "h-[52px] sticky top-[calc(var(--height-header)+66px)] sm:top-[calc(var(--height-header))] -mx-[1px]",
+            "h-[52px] sticky top-[calc(var(--height-header)+66px)] sm:top-[calc(var(--height-header))] -mx-[1px]  overflow-hidden",
           tab: "flex-1 w-auto",
         }}
         onTab={(label) => setMenu(label as MenuKey)}
         tabs={[
           {
             label: "Introduction",
-            content: <Button className="w-full h-full">README.md</Button>,
+            content: (
+              <div className="flex w-full h-full justify-center mt-2">
+                <Button>README.md</Button>
+                {isMyPage && (
+                  <Icons.EditIntro
+                    className="ml-[2px] text-[16px] mt-[6px] hrink-0 cursor-pointer"
+                    onClick={handleIntroductionEditMode}
+                  />
+                )}
+              </div>
+            ),
             active: menu === "Introduction",
           },
         ]}
@@ -64,23 +87,5 @@ UserProfileMenu.MenuContentWrapper = function MenuContentWrapper({
         {children}
       </div>
     </div>
-  )
-}
-
-function Introduction({ introduction }: Pick<UserPayload, "introduction">) {
-  if (!introduction) {
-    return (
-      <UserProfileMenu.MenuContentWrapper>
-        <span className="font-bold text-colorsGray text-center block">
-          작성된 자기소개가 없습니다
-        </span>
-      </UserProfileMenu.MenuContentWrapper>
-    )
-  }
-
-  return (
-    <UserProfileMenu.MenuContentWrapper>
-      <p className="whitespace-pre-wrap">{introduction}</p>
-    </UserProfileMenu.MenuContentWrapper>
   )
 }

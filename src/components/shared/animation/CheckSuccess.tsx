@@ -6,12 +6,14 @@ import { CSSProperties, useLayoutEffect } from "react"
 
 interface CheckSuccessProps {
   style?: CSSProperties
+  className?: string
 }
 
-function CheckSuccess({ style }: CheckSuccessProps) {
+function CheckSuccess({ style, className }: CheckSuccessProps) {
   const { setSpeed, View } = useLottie({
     animationData: checkSuccess,
     style: { ...style },
+    className,
   })
 
   useLayoutEffect(() => {
