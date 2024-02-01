@@ -14,20 +14,12 @@ import {
 } from "react"
 import Button from "@/components/shared/button/Button"
 import { twMerge } from "tailwind-merge"
-import { contentEditorToolbarItems } from "@/constants/editor"
 import {
-  EditorRefObj,
-  HookCallback,
-} from "@/components/shared/toast-ui-editor/editor/EditorWrapper"
-import { toast } from "react-toastify"
-import { AxiosError, HttpStatusCode } from "axios"
-import { revalidatePage } from "@/util/actions/revalidatePage"
-import { useRecoilValue } from "recoil"
-import {
-  fileUploadImageLinksSelector,
-  questionEditorState,
-} from "@/recoil/atoms/questionEditor"
-import { useClientSession } from "@/hooks/useClientSession"
+  contentEditorToolbarItemsWithImage,
+  contentEditorToolbarItemsWithoutImage,
+} from "@/constants/editor"
+import { EditorRefObj } from "@/components/shared/toast-ui-editor/editor/EditorWrapper"
+import { type SetterOrUpdater } from "recoil"
 // 텍스트 색상 변경 지원
 import colorSyntax from "@toast-ui/editor-plugin-color-syntax"
 import "tui-color-picker/dist/tui-color-picker.css"
@@ -36,25 +28,27 @@ import "@toast-ui/editor-plugin-color-syntax/dist/toastui-editor-plugin-color-sy
 import "@toast-ui/editor-plugin-code-syntax-highlight/dist/toastui-editor-plugin-code-syntax-highlight-all.js"
 import codeSyntaxHighlight from "@toast-ui/editor-plugin-code-syntax-highlight/dist/toastui-editor-plugin-code-syntax-highlight-all.js"
 import "@toast-ui/editor-plugin-code-syntax-highlight/dist/toastui-editor-plugin-code-syntax-highlight.css"
-import { errorMessage } from "@/constants/message"
-import { uploadImages } from "@/service/images"
-import { UploadImagesResponse } from "@/interfaces/dto/upload/upload-images.dto"
 // 전체 언어 지원
 
 type MdTabMode = "write" | "preview"
 
+type MarkdownEditorProps = Partial<EditorProps> & {
+  isImage: boolean
+  setLoaded: SetterOrUpdater<boolean>
+}
+
 const MarkdownEditor = (
-  { minHeight = "300px", ...props }: Partial<EditorProps>,
+  {
+    minHeight = "300px",
+    onLoad,
+    hooks,
+    isImage,
+    setLoaded,
+    ...props
+  }: MarkdownEditorProps,
   ref: ForwardedRef<ToastEditor>,
 ) => {
   const editorRef = ref as EditorRefObj
-
-  const { clientSessionLogout } = useClientSession()
-
-  const { getFileUploadImageLinks, addFileUploadImageLinks } = useRecoilValue(
-    fileUploadImageLinksSelector,
-  )
-  const { setQuestionEditorLoaded } = useRecoilValue(questionEditorState)
 
   const [mdTabVisible, setMdTabVisible] = useState(true)
   const [mode, setMode] = useState<MdTabMode>("write")
@@ -101,66 +95,13 @@ const MarkdownEditor = (
 
     window.addEventListener("resize", handleResize)
 
-    await setQuestionEditorLoaded(true)
-  }
+    setLoaded(true)
 
-  async function uploadImageHook(blob: Blob | File, callback: HookCallback) {
-    const fileUploadLinkSnapshot = await getFileUploadImageLinks()
-
-    const exceedingUploadableImagesError = new Error(
-      "exceeding uploadable images",
-    )
-
-    try {
-      if (fileUploadLinkSnapshot.length >= 1) {
-        throw exceedingUploadableImagesError
+    queueMicrotask(() => {
+      if (onLoad) {
+        onLoad(editorRef.current)
       }
-      // 이미지 저장
-      const res = await uploadImages({ category: "answer", file: blob as File })
-
-      callback(res.data.data!.image_url, "uploadedImage")
-
-      await addFileUploadImageLinks(res.data.data!.image_url)
-    } catch (error) {
-      if (error instanceof Error) {
-        if (error.message === exceedingUploadableImagesError.message) {
-          toast.error(errorMessage.imageUploadLimit, {
-            position: "top-center",
-          })
-
-          return
-        }
-      }
-
-      if (error instanceof AxiosError) {
-        const { response } = error as AxiosError<UploadImagesResponse>
-
-        if (response?.status === HttpStatusCode.Unauthorized) {
-          toast.error(errorMessage.unauthorized, {
-            position: "top-center",
-          })
-
-          await clientSessionLogout()
-
-          editorRef.current?.getInstance().eventEmitter.emit("pageOut")
-          await revalidatePage("/question")
-
-          return
-        }
-
-        toast.error(errorMessage.failToUploadImage, {
-          position: "top-center",
-        })
-
-        return
-      }
-
-      toast.error(errorMessage.failToUploadImage, {
-        position: "top-center",
-      })
-
-      return
-    }
+    })
   }
 
   useEffect(() => {
@@ -196,7 +137,11 @@ const MarkdownEditor = (
       <ToastUiEditor
         ref={ref}
         mdTabVisible={mdTabVisible}
-        toolbarItems={contentEditorToolbarItems}
+        toolbarItems={
+          isImage
+            ? contentEditorToolbarItemsWithImage
+            : contentEditorToolbarItemsWithoutImage
+        }
         placeholder="질문을 작성해주세요"
         initialEditType="markdown"
         previewStyle="tab"
@@ -205,9 +150,7 @@ const MarkdownEditor = (
         height="auto"
         minHeight={minHeight}
         onLoad={handleLoad}
-        hooks={{
-          addImageBlobHook: uploadImageHook,
-        }}
+        hooks={hooks}
         /**@ts-ignore*/
         plugins={[colorSyntax, [codeSyntaxHighlight, { highlighter: Prism }]]}
         {...props}

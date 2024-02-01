@@ -9,12 +9,10 @@ import dynamic from "next/dynamic"
 import useQnADetail from "../../hooks/useQnADetail"
 import { toast } from "react-toastify"
 import { errorMessage, successMessage } from "@/constants/message"
-import Regex from "@/constants/regex"
 import { answerQueries } from "@/react-query/answers"
 import { useQueryClient } from "@tanstack/react-query"
 import queryKey from "@/constants/queryKey"
 import type { Answer } from "@/interfaces/answer"
-import type { EditorType } from "@toast-ui/editor"
 import { findImageLinkUrlFromMarkdown } from "@/util/editor"
 import { UpdateAnswerRequest } from "@/interfaces/dto/answer/update-answer.dto"
 import { deleteImages } from "@/service/images"
@@ -61,7 +59,6 @@ const AnswerContentBox: React.FC<EditAnswerProps> = ({ answer }) => {
       return
     }
     const imageUrl = findImageLinkUrlFromMarkdown(submitValue)
-    console.log("prev", previousImage, "img", imageUrl)
     const updateProps: UpdateAnswerRequest = {
       answerId: answer.answer_id,
       content: submitValue,
@@ -108,7 +105,11 @@ const AnswerContentBox: React.FC<EditAnswerProps> = ({ answer }) => {
   return (
     <Wrapper>
       <form onSubmit={handleSubmit(handleSubmitEditedValue)}>
-        <MdEditor previous={answer.content} editorRef={editorRef} />
+        <MdEditor
+          previous={answer.content}
+          editorRef={editorRef}
+          answerId={answer.answer_id}
+        />
         <div className="flex justify-center my-5">
           <Button buttonTheme="primary" className="p-2 w-[100px]" type="submit">
             저장하기

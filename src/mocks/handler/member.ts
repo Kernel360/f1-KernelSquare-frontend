@@ -5,10 +5,6 @@ import {
 import { RouteMap } from "@/service/route-map"
 import { DefaultBodyType, HttpResponse, http } from "msw"
 import { mockUsers } from "../db/user"
-import {
-  UpdateMemberInfoRequest,
-  UpdateMemberInfoResponse,
-} from "@/interfaces/dto/member/update-member-info.dto"
 import { ApiStatus } from "@/constants/response/api"
 import type {
   UpdateMemberIntroductionRequest,
@@ -96,34 +92,6 @@ export const memberHandler = [
       }
     },
   ),
-  // 일반 회원 정보 수정
-  http.put<
-    { id: string },
-    Omit<UpdateMemberInfoRequest, "id">,
-    UpdateMemberInfoResponse
-  >(
-    `${process.env.NEXT_PUBLIC_SERVER}${RouteMap.member.updateMemberInfo()}`,
-    async ({ request, params }) => {
-      // 정보 수정
-      const userId = params.id
-      const { nickname, introduction, image_url } = await request.json()
-
-      const target = mockUsers.find((user) => user.id === Number(userId))!
-
-      if (introduction) target.introduction = introduction
-      if (image_url) target.image_url = image_url
-
-      const { Code, HttpStatus } = ApiStatus.Member.updateMember.Ok
-
-      return HttpResponse.json(
-        {
-          code: Code,
-          msg: "회원 정보 수정 완료",
-        },
-        { status: HttpStatus },
-      )
-    },
-  ),
   // 회원 자기소개 수정
   http.put<
     { id: string },
@@ -163,11 +131,11 @@ export const memberHandler = [
     }${RouteMap.member.updateMemberProfileImage()}`,
     async ({ request, params }) => {
       // 정보 수정
-      console.log("프로필 이미지 수정")
       const userId = params.id
       const { image_url } = await request.json()
 
       const target = mockUsers.find((user) => user.id === Number(userId))!
+      console.log("프로필 이미지 수정", target)
 
       if (typeof image_url !== "undefined") target.image_url = image_url
 

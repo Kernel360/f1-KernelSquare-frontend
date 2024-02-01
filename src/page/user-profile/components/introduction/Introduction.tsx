@@ -2,8 +2,6 @@
 
 import { useForm } from "react-hook-form"
 import useIntroduction from "../../hooks/useIntroduction"
-import type { IntroductionProps } from "./Introduction.types"
-import type { IntroductionValue } from "../../hooks/useIntroduction.types"
 import { useRef } from "react"
 import {
   buttonMessage,
@@ -15,19 +13,30 @@ import UserProfileMenu from "../UserProfileMenu"
 import dynamic from "next/dynamic"
 import { Editor } from "@toast-ui/react-editor"
 import { toast } from "react-toastify"
+import LoginForm from "@/components/form/LoginForm"
 
 const MdEditor = dynamic(() => import("./MdEditor"), {
   ssr: false,
 })
 
-function Introduction({ introduction, isMyPage }: IntroductionProps) {
+const MdViewer = dynamic(() => import("./MdViewer"), {
+  ssr: false,
+})
+
+interface IntroductionProps {
+  introduction?: string
+  isMyPage: boolean
+  userId: number | undefined
+}
+
+function Introduction({ introduction, isMyPage, userId }: IntroductionProps) {
   const editorRef = useRef<Editor>(null)
   const {
     closeIntroductionEditMode,
     handleSubmitIntroduction,
     isIntroductionEditMode,
   } = useIntroduction()
-  const { handleSubmit } = useForm<IntroductionValue>()
+  const { handleSubmit } = useForm<{ introduction: string }>()
 
   const onsubmit = () => {
     const introduction = editorRef.current?.getInstance().getMarkdown()
@@ -46,12 +55,19 @@ function Introduction({ introduction, isMyPage }: IntroductionProps) {
     )
   }
 
-  if (isMyPage && isIntroductionEditMode)
+  if (!userId) return <LoginForm />
+  if (!isMyPage) return null
+
+  if (isIntroductionEditMode)
     return (
       <UserProfileMenu.MenuContentWrapper>
         <div>
           <form className="w-full" onSubmit={handleSubmit(onsubmit)}>
-            <MdEditor previous={introduction} editorRef={editorRef} />
+            <MdEditor
+              previous={introduction}
+              editorRef={editorRef}
+              userId={userId}
+            />
             <div className="flex justify-center mt-[20px]">
               <Button
                 buttonTheme="third"
@@ -71,7 +87,7 @@ function Introduction({ introduction, isMyPage }: IntroductionProps) {
 
   return (
     <UserProfileMenu.MenuContentWrapper>
-      <p className="whitespace-pre-wrap">{introduction}</p>
+      <MdViewer content={introduction} />
     </UserProfileMenu.MenuContentWrapper>
   )
 }
