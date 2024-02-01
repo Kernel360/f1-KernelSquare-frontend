@@ -18,7 +18,7 @@ import { toast } from "react-toastify"
 import { useRecoilState, useSetRecoilState } from "recoil"
 
 export interface EditorProps {
-  answerId: number
+  answerId?: number
   previous?: string
   editorRef: RefObject<Editor>
   onChange?: (editorType: EditorType) => void
@@ -31,10 +31,12 @@ const MdEditor: React.FC<EditorProps> = ({
   onChange,
 }) => {
   const [editorState, setEditorState] = useRecoilState(
-    answerEditorAtomFamily(answerId),
+    answerEditorAtomFamily(answerId ?? -1),
   )
 
-  const setLoaded = useSetRecoilState(answerEditorLoadedAtomFamily(answerId))
+  const setLoaded = useSetRecoilState(
+    answerEditorLoadedAtomFamily(answerId ?? -1),
+  )
 
   const { uploadImageHook, uploadImageStatus } =
     useToastUiEditorImageUploadHook({

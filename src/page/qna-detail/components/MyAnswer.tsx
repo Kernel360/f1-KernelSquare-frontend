@@ -15,12 +15,9 @@ export interface MyAnswerProps {
   questionId: number
 }
 
-const MdEditor = dynamic(
-  () => import("../../user-profile/components/introduction/MdEditor"),
-  {
-    ssr: false,
-  },
-)
+const MdEditor = dynamic(() => import("../components/Markdown/MdEditor"), {
+  ssr: false,
+})
 
 const MyAnswer: React.FC<MyAnswerProps> = ({ questionId }) => {
   const { openModal } = useModal()

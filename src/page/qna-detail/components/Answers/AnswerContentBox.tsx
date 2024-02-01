@@ -108,7 +108,11 @@ const AnswerContentBox: React.FC<EditAnswerProps> = ({ answer }) => {
   return (
     <Wrapper>
       <form onSubmit={handleSubmit(handleSubmitEditedValue)}>
-        <MdEditor previous={answer.content} editorRef={editorRef} />
+        <MdEditor
+          previous={answer.content}
+          editorRef={editorRef}
+          answerId={answer.answer_id}
+        />
         <div className="flex justify-center my-5">
           <Button buttonTheme="primary" className="p-2 w-[100px]" type="submit">
             저장하기

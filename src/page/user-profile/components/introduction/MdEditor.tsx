@@ -1,9 +1,16 @@
 "use client"
 
 import MarkdownEditor from "@/components/shared/markdown/Editor/MarkdownEditor"
-import type { EditorProps } from "./MdEditor.types"
 import { useSetRecoilState } from "recoil"
 import { introductionEditorLoadedAtomFamily } from "@/recoil/atoms/introductionEditor"
+import type { Editor } from "@toast-ui/react-editor"
+import type { RefObject } from "react"
+
+interface EditorProps {
+  previous?: string
+  editorRef: RefObject<Editor>
+  userId: number
+}
 
 const MdEditorContainer: React.FC<EditorProps> = ({
   previous,

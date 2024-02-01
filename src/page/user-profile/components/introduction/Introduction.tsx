@@ -2,7 +2,6 @@
 
 import { useForm } from "react-hook-form"
 import useIntroduction from "../../hooks/useIntroduction"
-import type { IntroductionProps } from "./Introduction.types"
 import type { IntroductionValue } from "../../hooks/useIntroduction.types"
 import { useRef } from "react"
 import {
@@ -20,10 +19,19 @@ const MdEditor = dynamic(() => import("./MdEditor"), {
   ssr: false,
 })
 
+interface IntroductionProps {
+  introduction?: string
+  isMyPage: boolean
+  userId: number | undefined
+}
+
 function Introduction({ introduction, isMyPage, userId }: IntroductionProps) {
   const editorRef = useRef<Editor>(null)
-  const { closeEditMode, handleSubmitIntroduction, isEditMode } =
-    useIntroduction()
+  const {
+    closeIntroductionEditMode,
+    handleSubmitIntroduction,
+    isIntroductionEditMode,
+  } = useIntroduction()
   const { handleSubmit } = useForm<IntroductionValue>()
 
   const onsubmit = () => {
@@ -44,8 +52,7 @@ function Introduction({ introduction, isMyPage, userId }: IntroductionProps) {
   }
 
   if (!userId) return <div></div>
-
-  if (isMyPage && isEditMode)
+  if (isMyPage && isIntroductionEditMode)
     return (
       <UserProfileMenu.MenuContentWrapper>
         <div>
@@ -59,7 +66,7 @@ function Introduction({ introduction, isMyPage, userId }: IntroductionProps) {
               <Button
                 buttonTheme="third"
                 className="w-[70px] mr-[10px]"
-                onClick={closeEditMode}
+                onClick={closeIntroductionEditMode}
               >
                 {buttonMessage.cancle}
               </Button>
