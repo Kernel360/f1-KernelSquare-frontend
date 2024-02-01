@@ -4,14 +4,12 @@ import { useForm } from "react-hook-form"
 import useIntroduction from "../../hooks/useIntroduction"
 import type { IntroductionProps } from "./Introduction.types"
 import type { IntroductionValue } from "../../hooks/useIntroduction.types"
-import { useRef, useState } from "react"
-import { twJoin } from "tailwind-merge"
+import { useRef } from "react"
 import {
   buttonMessage,
   errorMessage,
   notificationMessage,
 } from "@/constants/message"
-import Textarea from "@/components/shared/textarea/Textarea"
 import Button from "@/components/shared/button/Button"
 import UserProfileMenu from "../UserProfileMenu"
 import dynamic from "next/dynamic"
@@ -22,7 +20,7 @@ const MdEditor = dynamic(() => import("./MdEditor"), {
   ssr: false,
 })
 
-function Introduction({ introduction, isMyPage }: IntroductionProps) {
+function Introduction({ introduction, isMyPage, userId }: IntroductionProps) {
   const editorRef = useRef<Editor>(null)
   const { closeEditMode, handleSubmitIntroduction, isEditMode } =
     useIntroduction()
@@ -45,12 +43,18 @@ function Introduction({ introduction, isMyPage }: IntroductionProps) {
     )
   }
 
+  if (!userId) return <div></div>
+
   if (isMyPage && isEditMode)
     return (
       <UserProfileMenu.MenuContentWrapper>
         <div>
           <form className="w-full" onSubmit={handleSubmit(onsubmit)}>
-            <MdEditor previous={introduction} editorRef={editorRef} />
+            <MdEditor
+              previous={introduction}
+              editorRef={editorRef}
+              userId={userId}
+            />
             <div className="flex justify-center mt-[20px]">
               <Button
                 buttonTheme="third"

@@ -6,13 +6,16 @@ import {
   MAXIMUM_UPLOAD_IMAGE_LENGTH,
   useToastUiEditorImageUploadHook,
 } from "@/hooks/useToastUiEditorImageUploadHook"
-import { answerEditorAtomFamily } from "@/recoil/atoms/answerEditor"
+import {
+  answerEditorAtomFamily,
+  answerEditorLoadedAtomFamily,
+} from "@/recoil/atoms/answerEditor"
 import { revalidatePage } from "@/util/actions/revalidatePage"
 import type { EditorType } from "@toast-ui/editor"
 import type { Editor } from "@toast-ui/react-editor"
 import type { RefObject } from "react"
 import { toast } from "react-toastify"
-import { useRecoilState } from "recoil"
+import { useRecoilState, useSetRecoilState } from "recoil"
 
 export interface EditorProps {
   answerId: number
@@ -30,6 +33,8 @@ const MdEditor: React.FC<EditorProps> = ({
   const [editorState, setEditorState] = useRecoilState(
     answerEditorAtomFamily(answerId),
   )
+
+  const setLoaded = useSetRecoilState(answerEditorLoadedAtomFamily(answerId))
 
   const { uploadImageHook, uploadImageStatus } =
     useToastUiEditorImageUploadHook({
@@ -74,10 +79,11 @@ const MdEditor: React.FC<EditorProps> = ({
     <div className="text-[20px] text-left">
       {editorRef && (
         <MarkdownEditor
-          answerId={answerId}
+          isImage
           ref={editorRef}
           initialValue={previous}
           onChange={onChange}
+          setLoaded={setLoaded}
           hooks={{
             addImageBlobHook: uploadImageHook,
           }}

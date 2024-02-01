@@ -30,6 +30,7 @@ function UserProfileMenu({ userPayload }: UserProfileMenuProps) {
           <Introduction
             introduction={userPayload.introduction}
             isMyPage={isMyPage}
+            userId={user?.member_id}
           />
         )
       default:

@@ -14,9 +14,12 @@ import {
 } from "react"
 import Button from "@/components/shared/button/Button"
 import { twMerge } from "tailwind-merge"
-import { contentEditorToolbarItems } from "@/constants/editor"
+import {
+  contentEditorToolbarItemsWithImage,
+  contentEditorToolbarItemsWithoutImage,
+} from "@/constants/editor"
 import { EditorRefObj } from "@/components/shared/toast-ui-editor/editor/EditorWrapper"
-import { useSetRecoilState } from "recoil"
+import { type SetterOrUpdater, useSetRecoilState } from "recoil"
 // 텍스트 색상 변경 지원
 import colorSyntax from "@toast-ui/editor-plugin-color-syntax"
 import "tui-color-picker/dist/tui-color-picker.css"
@@ -31,22 +34,22 @@ import { answerEditorLoadedAtomFamily } from "@/recoil/atoms/answerEditor"
 type MdTabMode = "write" | "preview"
 
 type MarkdownEditorProps = Partial<EditorProps> & {
-  answerId: number
+  isImage: boolean
+  setLoaded: SetterOrUpdater<boolean>
 }
 
 const MarkdownEditor = (
   {
     minHeight = "300px",
-    answerId,
     onLoad,
     hooks,
+    isImage,
+    setLoaded,
     ...props
   }: MarkdownEditorProps,
   ref: ForwardedRef<ToastEditor>,
 ) => {
   const editorRef = ref as EditorRefObj
-
-  const setLoaded = useSetRecoilState(answerEditorLoadedAtomFamily(answerId))
 
   const [mdTabVisible, setMdTabVisible] = useState(true)
   const [mode, setMode] = useState<MdTabMode>("write")
@@ -135,7 +138,11 @@ const MarkdownEditor = (
       <ToastUiEditor
         ref={ref}
         mdTabVisible={mdTabVisible}
-        toolbarItems={contentEditorToolbarItems}
+        toolbarItems={
+          isImage
+            ? contentEditorToolbarItemsWithImage
+            : contentEditorToolbarItemsWithoutImage
+        }
         placeholder="질문을 작성해주세요"
         initialEditType="markdown"
         previewStyle="tab"

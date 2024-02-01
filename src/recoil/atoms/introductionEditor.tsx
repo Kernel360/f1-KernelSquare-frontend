@@ -20,7 +20,7 @@ export const editorRefAtomFamily = atomFamily<Editor | null, any>({
   default: null,
 })
 
-export const introductionEditorLoadedAtomFamily = atomFamily<boolean, string>({
+export const introductionEditorLoadedAtomFamily = atomFamily<boolean, number>({
   key: "introduction-editor-loaded-atom-family",
   default: false,
 })
