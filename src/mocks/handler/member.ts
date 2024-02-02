@@ -58,7 +58,7 @@ export const memberHandler = [
         const { Code, HttpStatus } = ApiStatus.Member.getMember.Ok
 
         const userPayload: UserPayload = {
-          id: existMockUser.id,
+          member_id: existMockUser.id,
           nickname: existMockUser.nickname,
           level: existMockUser.level,
           experience: existMockUser.experience,

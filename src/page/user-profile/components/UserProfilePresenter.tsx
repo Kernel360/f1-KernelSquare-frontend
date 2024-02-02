@@ -67,7 +67,7 @@ UserProfilePresenter.UserInfo = function UserProfileInfo({
   return (
     <ProfileImageWrapper userPayload={userPayload}>
       <ProfileImage
-        user_id={userPayload.id}
+        user_id={userPayload.member_id}
         image_url={userPayload.image_url}
       />
     </ProfileImageWrapper>
