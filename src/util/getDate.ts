@@ -1,4 +1,7 @@
 import dayjs from "dayjs"
+import "dayjs/locale/ko"
+
+dayjs.locale("ko")
 
 interface dateProps {
   date: string
@@ -14,6 +17,10 @@ const getNow = () => {
   return now.format()
 }
 
+const getKorDayjs = (date: Date | dayjs.Dayjs | string) => {
+  return dayjs(date)
+}
+
 const getKorRelativeTime = ({
   now,
   targetDate,
@@ -24,6 +31,7 @@ const getKorRelativeTime = ({
   const IntlFormatter = new Intl.RelativeTimeFormat("ko")
 
   const nowDateFormat = dayjs(now)
+
   const targetDateFormat = dayjs(targetDate)
 
   const diff = targetDateFormat.diff(nowDateFormat)
@@ -152,4 +160,4 @@ const getKorRelativeTime = ({
   return IntlFormatter.format(targetDiff, targetUnit)
 }
 
-export { getDate, getDeadline, getNow, getKorRelativeTime }
+export { getDate, getDeadline, getNow, getKorRelativeTime, getKorDayjs }
