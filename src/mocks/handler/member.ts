@@ -58,7 +58,7 @@ export const memberHandler = [
         const { Code, HttpStatus } = ApiStatus.Member.getMember.Ok
 
         const userPayload: UserPayload = {
-          id: existMockUser.id,
+          member_id: existMockUser.id,
           nickname: existMockUser.nickname,
           level: existMockUser.level,
           experience: existMockUser.experience,
@@ -130,7 +130,6 @@ export const memberHandler = [
       process.env.NEXT_PUBLIC_SERVER
     }${RouteMap.member.updateMemberProfileImage()}`,
     async ({ request, params }) => {
-      // 정보 수정
       const userId = params.id
       const { image_url } = await request.json()
 
