@@ -28,7 +28,10 @@ function CoffeeChatDetailPage({
       <CoffeeChatDetailContent content={coffeeChatDetailPayload.content} />
       <Spacing size={32} />
       <div className="w-full flex justify-center items-center">
-        <EnterCoffeeChat />
+        <EnterCoffeeChat
+          articleTitle={coffeeChatDetailPayload.title}
+          roomId={1}
+        />
       </div>
       <Spacing size={32} />
       <ScheduleMentoringSession />

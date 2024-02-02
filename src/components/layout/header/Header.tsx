@@ -3,14 +3,24 @@
 import Inner from "@/components/shared/Inner"
 import { matchSegmentToLayoutMetaKey } from "@/util/layoutMeta"
 import Link from "next/link"
-import { useSelectedLayoutSegment } from "next/navigation"
+import {
+  usePathname,
+  useSearchParams,
+  useSelectedLayoutSegment,
+} from "next/navigation"
 import SearchArea from "./search/SearchArea"
 import UserArea from "./UserArea"
 
 function Header() {
   const currentSegment = useSelectedLayoutSegment()
+  const pathname = usePathname()
+  const searchParmas = useSearchParams()
 
-  const matchedLayout = matchSegmentToLayoutMetaKey(currentSegment)
+  const matchedLayout = matchSegmentToLayoutMetaKey(
+    currentSegment,
+    pathname,
+    searchParmas,
+  )
 
   const open = matchedLayout ? matchedLayout.containLayout.header : true
 

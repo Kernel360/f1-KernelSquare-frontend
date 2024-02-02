@@ -1,5 +1,13 @@
 import { HttpStatusCode } from "axios"
-import { ApiStatus } from "./api"
+import { ApiStatus, Status } from "./api"
+
+type EnterChatRoomExpandStatusType = {
+  InvalidMessage?: Status
+  UnactiveRoom?: Status
+  NotMentor?: Status
+  NotMenti?: Status
+  ForbiddenRole?: Status
+}
 
 export const CoffeeChatApiStatus = {
   /**
@@ -165,4 +173,37 @@ export const CoffeeChatApiStatus = {
       HttpStatus: HttpStatusCode.InternalServerError,
     },
   },
-} satisfies Record<string, ApiStatus>
+  /**
+   * 채팅방 입장 관련 api status
+   */
+  enterChatRoom: {
+    Ok: {
+      Code: 3241,
+      HttpStatus: HttpStatusCode.Ok,
+    },
+    NotFound: {
+      Code: 3201,
+      HttpStatus: HttpStatusCode.NotFound,
+    },
+    InvalidMessage: {
+      Code: 3200,
+      HttpStatus: HttpStatusCode.BadRequest,
+    },
+    UnactiveRoom: {
+      Code: 3202,
+      HttpStatus: HttpStatusCode.BadRequest,
+    },
+    NotMentor: {
+      Code: 3203,
+      HttpStatus: HttpStatusCode.BadRequest,
+    },
+    NotMenti: {
+      Code: 3204,
+      HttpStatus: HttpStatusCode.BadRequest,
+    },
+    ForbiddenRole: {
+      Code: 3205,
+      HttpStatus: HttpStatusCode.BadRequest,
+    },
+  },
+} satisfies Record<string, ApiStatus & EnterChatRoomExpandStatusType>
