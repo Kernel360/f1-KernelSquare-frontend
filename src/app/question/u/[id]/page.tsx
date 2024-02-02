@@ -85,6 +85,7 @@ export default async function QuestionUpdatePage({
         <div className="box-border px-4 flex-1 order-2 lgDevice:order-1 lgDevice:px-6">
           <Spacing size={32} />
           <AskQuestionForm
+            editMode={"update"}
             initialValues={{
               title: questionPayload.data?.title || "",
               content: questionPayload.data?.content || "",
