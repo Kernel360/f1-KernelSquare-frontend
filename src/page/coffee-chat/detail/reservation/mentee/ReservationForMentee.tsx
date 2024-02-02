@@ -38,6 +38,7 @@ function ReservationForMentee() {
       <CustomCalendar
         start={targetChat.created_date}
         date={date}
+        limit={2}
         setDate={setDate}
       />
       <div className="my-10 text-xl text-secondary font-bold">

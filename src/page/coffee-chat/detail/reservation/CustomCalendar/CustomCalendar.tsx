@@ -15,14 +15,20 @@ type Value = ValuePiece | [ValuePiece, ValuePiece]
 type CustomCalendarProps = {
   start: string
   date: Value
+  limit: number
   setDate: Dispatch<SetStateAction<Value>>
 }
 
-const CustomCalendar = ({ start, date, setDate }: CustomCalendarProps) => {
+const CustomCalendar = ({
+  start,
+  date,
+  limit,
+  setDate,
+}: CustomCalendarProps) => {
   // 시작 날짜
   const startDate = new Date(start)
   // 종료 날짜
-  const calendarValue = new Date(dayjs(startDate).add(2, "day").format())
+  const calendarValue = new Date(dayjs(startDate).add(limit, "day").format())
   // 공휴일 포함 여부
   const isHoliday = (date: Date) =>
     Holidays.some((day) => day.date === dayjs(date).format("YYYY-MM-DD"))

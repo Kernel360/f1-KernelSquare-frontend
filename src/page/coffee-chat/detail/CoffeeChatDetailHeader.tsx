@@ -27,7 +27,9 @@ function CoffeeChatDetailHeader({
     <section>
       <div className="flex gap-1 items-center">
         <div className="flex-1">
-          <h3>{title}</h3>
+          <div className="font-bold text-2xl mb-5 max-w-full md:font-[16px] sm:font-[12px] t text-[#444444]">
+            {title}
+          </div>
           <Spacing size={12} />
           <ul className="w-full flex flex-wrap gap-2">
             {hashtags.map((tag) => (
