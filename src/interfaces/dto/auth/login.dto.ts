@@ -9,7 +9,7 @@ export interface LoginUserPayload {
   nickname: string
   experience: number
   introduction: string
-  image_url: string
+  image_url: string | null
   level: number
   roles: Array<UserRole>
 }

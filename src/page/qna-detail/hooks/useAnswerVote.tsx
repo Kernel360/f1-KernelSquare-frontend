@@ -10,7 +10,16 @@ import { useQueryClient } from "@tanstack/react-query"
 import { toast } from "react-toastify"
 import { useRecoilState } from "recoil"
 import { twJoin } from "tailwind-merge"
-import type { DeleteVoteProps, VoteProps } from "./useAnswerVote.types"
+import type { Answer } from "@/interfaces/answer"
+import type { ModalState } from "@/interfaces/modal"
+
+export interface VoteProps {
+  answer: Answer
+}
+
+export interface DeleteVoteProps {
+  successModal: NonNullable<ModalState["content"]>
+}
 
 const useAnswerVote = ({ answer }: VoteProps) => {
   const [vote, setVote] = useRecoilState(voteAtoms(answer?.created_by))
