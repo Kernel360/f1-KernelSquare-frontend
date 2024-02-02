@@ -8,6 +8,6 @@ export interface GetMemberRequest {
 export type UserPayload = Pick<
   User,
   "nickname" | "experience" | "introduction" | "image_url" | "level"
-> & { id: number }
+> & { member_id: number }
 
 export interface GetMemberResponse extends APIResponse<UserPayload> {}
