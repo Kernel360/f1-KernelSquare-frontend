@@ -39,13 +39,12 @@ function CoffeeChatPageLayout({ children }: CoffeeChatPageLayoutProps) {
     return "커피챗 페이지"
   }
 
-  if (pathname.startsWith("/chat/"))
+  if (pathname.startsWith("/chat/create"))
     return (
       <div>
         <div className="mt-5 w-[calc(100%-12px)] sm:w-[calc(100%-22px)] lg:w-[calc(100%-42px)] mx-auto">
           {children}
         </div>
-        <aside className="bg-transparent min-h-screen hidden lg:block lg:w-32" />
       </div>
     )
 

@@ -181,6 +181,9 @@ const getKorRelativeTime = ({
   return IntlFormatter.format(targetDiff, targetUnit)
 }
 
+const formatDate = ({ date }: dateProps, time: string) =>
+  `${dayjs(date).format("YYYY-MM-DD")}T${time}:00`
+
 export {
   getDate,
   getDay,
@@ -190,4 +193,5 @@ export {
   getNow,
   getKorRelativeTime,
   getKorDayjs,
+  formatDate,
 }
