@@ -14,7 +14,7 @@ const MdViewer: React.FC<ViewerProps> = ({ content }) => {
   return (
     <div>
       {content && (
-        <div className="[&_.toastui-editor-contents]:text-[20px]">
+        <div className="[&_.toastui-editor-contents]:text-[16px]">
           <Viewer
             initialValue={content || " "}
             /*@ts-ignore*/

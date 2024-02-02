@@ -35,7 +35,7 @@ export interface Answer {
   member_image_url: string | null
   created_by: string
   author_level: number
-  answer_image_url: string
+  answer_image_url: string | null
   created_date: string
   modified_date: string
   vote_count: number

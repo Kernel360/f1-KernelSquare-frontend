@@ -31,7 +31,9 @@ export class RouteMap {
    *
    * **getMember**: 특정멤버조회(GET)
    *
-   * **updateMemberInfo**: 회원정보수정(PUT)
+   * **updateMemberIntroduction**: 회원 소개 수정(PUT)
+   *
+   * **updateMemberProfileImage**: 회원 프로필 이미지 수정 (PUT)
    *
    * **updatePassword**: 회원 패스워드 수정(PUT)
    *
@@ -49,10 +51,15 @@ export class RouteMap {
         memberId === undefined ? ":id" : memberId
       }`
     },
-    updateMemberInfo(memberId?: number) {
+    updateMemberIntroduction(memberId?: number) {
       return `${RouteMap.routeGroupBaseURL.member}/${
         memberId === undefined ? ":id" : memberId
-      }`
+      }/introduction`
+    },
+    updateMemberProfileImage(memberId?: number) {
+      return `${RouteMap.routeGroupBaseURL.member}/${
+        memberId === undefined ? ":id" : memberId
+      }/profile`
     },
     updatePassword(memberId?: number) {
       return `${RouteMap.routeGroupBaseURL.member}/${

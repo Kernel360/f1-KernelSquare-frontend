@@ -55,10 +55,6 @@ function AskQuestionPageControl({
   const form = document.querySelector("form")!
   const formLoaded = useRecoilValue(questionEditorLoadedAtomFamily(editMode))
 
-  const onSubmit = () => {
-    form.requestSubmit()
-  }
-
   const onCancel = () => {
     openModal({
       containsHeader: true,
@@ -94,7 +90,12 @@ function AskQuestionPageControl({
           editorRef={editorRef.current}
         />
         <div className="flex gap-2 flex-row justify-center items-center lgDevice:flex-col">
-          <Button buttonTheme="primary" className="w-[68px]" onClick={onSubmit}>
+          <Button
+            type="submit"
+            buttonTheme="primary"
+            className="w-[68px]"
+            form="question-form"
+          >
             {editMode === "create" ? "질문 작성" : "질문 수정"}
           </Button>
           <Button

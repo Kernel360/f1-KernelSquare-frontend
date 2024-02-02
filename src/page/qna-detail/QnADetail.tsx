@@ -9,6 +9,7 @@ import ContentLoading from "@/components/shared/animation/ContentLoading"
 import { answerQueries } from "@/react-query/answers"
 import { useClientSession } from "@/hooks/useClientSession"
 import useQnADetail from "./hooks/useQnADetail"
+import NotFound from "@/app/not-found"
 
 const QnADetail: React.FC<{ id: string }> = ({ id }) => {
   const { data, isPending } = questionQueries.useQuestionData({
@@ -20,13 +21,16 @@ const QnADetail: React.FC<{ id: string }> = ({ id }) => {
 
   const { user } = useClientSession()
 
-  const { data: answers, isPending: isAnswerPending } =
-    answerQueries.useGetAnswers({
-      questionId: Number(id),
-    })
+  const {
+    data: answers,
+    isPending: isAnswerPending,
+    isError,
+  } = answerQueries.useGetAnswers({
+    questionId: Number(id),
+  })
 
   useEffect(() => {
-    const fetchData = async () => {
+    const fetchData = () => {
       if (
         answers?.data &&
         user?.nickname &&
@@ -45,6 +49,8 @@ const QnADetail: React.FC<{ id: string }> = ({ id }) => {
     setIsAnswerMode,
     user?.nickname,
   ])
+
+  if (isError) return <NotFound />
 
   if (isPending || isAnswerPending || !data) return <Loading />
 

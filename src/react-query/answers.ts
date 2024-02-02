@@ -19,47 +19,106 @@ const useGetAnswers = ({ questionId }: GetAnswerRequest) =>
     queryFn: () => getAnswer({ questionId }),
     placeholderData: keepPreviousData,
     staleTime: 1000 * 60 * 5,
+    retry: 0,
     select(payload) {
       return payload.data
     },
   })
 
-const useCreateAnswer = ({
-  questionId,
-  member_id,
-  content,
-  image_url,
-}: CreateAnswerRequest) =>
-  useMutation({
+const useCreateAnswer = () => {
+  const {
+    mutate: createAnswerMutate,
+    isPending: isCreateAnswer,
+    isError: isCreateAnswerError,
+    isSuccess: isCreateAnswerSuccess,
+  } = useMutation({
     mutationKey: [queryKey.answer],
-    mutationFn: () =>
+    mutationFn: ({
+      questionId,
+      member_id,
+      content,
+      image_url,
+    }: CreateAnswerRequest) =>
       createAnswer({ questionId, member_id, content, image_url }),
   })
 
-const useUpdateAnswer = ({
-  answerId,
-  content,
-  image_url,
-}: UpdateAnswerRequest) =>
-  useMutation({
+  return {
+    createAnswer: createAnswerMutate,
+    createAnswerStatus: {
+      isCreateAnswer,
+      isCreateAnswerError,
+      isCreateAnswerSuccess,
+    },
+  }
+}
+
+const useUpdateAnswer = () => {
+  const {
+    mutate: updateAnswerMutate,
+    isPending: isUpdateAnswer,
+    isError: isUpdateAnswerError,
+    isSuccess: isUpdateAnswerSuccess,
+  } = useMutation({
     mutationKey: [queryKey.answer],
-    mutationFn: () => updateAnswer({ answerId, content, image_url }),
+    mutationFn: ({ answerId, content, image_url }: UpdateAnswerRequest) =>
+      updateAnswer({ answerId, content, image_url }),
   })
 
-const useDeleteAnswer = ({ answerId }: DeleteAnswerRequest) =>
-  useMutation({
+  return {
+    updateAnswer: updateAnswerMutate,
+    updateAnswerStatus: {
+      isUpdateAnswer,
+      isUpdateAnswerError,
+      isUpdateAnswerSuccess,
+    },
+  }
+}
+
+const useDeleteAnswer = () => {
+  const {
+    mutate: deleteAnswerMutate,
+    isPending: isDeleteAnswer,
+    isError: isDeleteAnswerError,
+    isSuccess: isDeleteAnswerSuccess,
+  } = useMutation({
     mutationKey: [queryKey.answer],
-    mutationFn: () => deleteAnswer({ answerId }),
+    mutationFn: ({ answerId }: DeleteAnswerRequest) =>
+      deleteAnswer({ answerId }),
   })
 
-const useVoteAnswer = () =>
-  useMutation({
-    mutationKey: ["ans"],
+  return {
+    deleteAnswer: deleteAnswerMutate,
+    deleteAnswerStatus: {
+      isDeleteAnswer,
+      isDeleteAnswerError,
+      isDeleteAnswerSuccess,
+    },
+  }
+}
+
+const useVoteAnswer = () => {
+  const {
+    mutate: voteAnswerMutate,
+    isPending: isVoteAnswer,
+    isError: isVoteAnswerError,
+    isSuccess: isVoteAnswerSuccess,
+  } = useMutation({
+    mutationKey: [queryKey.answer],
     mutationFn: ({ answerId, member_id, status }: CreateVoteRequest) =>
       voteAnswer({ answerId, member_id, status }),
     onSuccess: () => console.log("투표 성공"),
     onError: (error) => console.log("error", error.message),
   })
+
+  return {
+    voteAnswer: voteAnswerMutate,
+    voteAnswerStatus: {
+      isVoteAnswer,
+      isVoteAnswerError,
+      isVoteAnswerSuccess,
+    },
+  }
+}
 
 export const answerQueries = {
   useGetAnswers,
