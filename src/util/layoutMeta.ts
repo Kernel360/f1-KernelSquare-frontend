@@ -17,7 +17,7 @@ export function matchSegmentToLayoutMetaKey(
     }
   }
 
-  if (currentSegment === "code") {
+  if (currentSegment === "test") {
     return layoutMeta["/"]
   }
 

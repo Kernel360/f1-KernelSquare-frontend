@@ -46,7 +46,9 @@ function NavigationTab({ hasHeader }: NavigationTabProps) {
     ? profileRoute.map(({ label, to }) => {
         return {
           label,
-          content: <NavigationTabItem label={label} to={to} />,
+          content: (
+            <NavigationTabItem label={label} to={to + `/${user.member_id}`} />
+          ),
           active: activeNavItem ? activeNavItem.label === label : false,
         }
       })
