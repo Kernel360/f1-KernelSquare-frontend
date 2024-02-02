@@ -52,7 +52,6 @@ function AskQuestionPageControl({
     questionEditorAtomFamily(editMode),
   )
 
-  const form = document.querySelector("form")!
   const formLoaded = useRecoilValue(questionEditorLoadedAtomFamily(editMode))
 
   const onCancel = () => {

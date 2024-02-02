@@ -8,6 +8,10 @@ import type {
   GetCoffeeChatReservationListResponse,
 } from "@/interfaces/dto/coffee-chat/get-all-coffeechat-reservation.dto"
 import type { GetCoffeeChatReservationDetailResponse } from "@/interfaces/dto/coffee-chat/coffeechat-reservation-detail.dto"
+import type {
+  EnterChatRoomRequest,
+  EnterChatRoomResponse,
+} from "@/interfaces/dto/coffee-chat/enter-chat-room"
 
 export const coffeeChatHandler = [
   http.get<PathParams, DefaultBodyType, GetCoffeeChatReservationListResponse>(
@@ -159,6 +163,29 @@ export const coffeeChatHandler = [
           { status: HttpStatus },
         )
       }
+    },
+  ),
+  http.post<PathParams, EnterChatRoomRequest, EnterChatRoomResponse>(
+    `${process.env.NEXT_PUBLIC_SERVER}${RouteMap.coffeeChat.enterCoffeeChatRoom}`,
+    async ({ request }) => {
+      const { member_id, room_id, article_title } = await request.json()
+
+      const { Code, HttpStatus } = ApiStatus.CoffeeChat.enterChatRoom.Ok
+
+      return HttpResponse.json(
+        {
+          code: Code,
+          msg: "채팅방 입장 성공",
+          data: {
+            article_title,
+            room_key: "test_room_key",
+            active: true,
+          },
+        },
+        {
+          status: HttpStatus,
+        },
+      )
     },
   ),
 ]

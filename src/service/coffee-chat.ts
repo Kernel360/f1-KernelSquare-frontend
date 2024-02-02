@@ -13,6 +13,11 @@ import type {
   CreateCoffeeChatReservationResponse,
 } from "@/interfaces/dto/coffee-chat/create-coffeechat-reservation.dto"
 import type { AxiosResponse } from "axios"
+import {
+  EnterChatRoomRequest,
+  EnterChatRoomResponse,
+} from "@/interfaces/dto/coffee-chat/enter-chat-room"
+import axios from "axios"
 
 export async function getCoffeeChatReservationList(
   { page = 0, size = 5 }: GetCoffeeChatReservationListRequest = {
@@ -58,6 +63,24 @@ export async function createCoffeeChatReservation({
     content,
     hash_tags,
     date_times,
+  })
+
+  return res
+}
+
+export async function enterChatRoom({
+  article_title,
+  member_id,
+  room_id,
+}: EnterChatRoomRequest) {
+  const res = await apiInstance.post<
+    any,
+    AxiosResponse<EnterChatRoomResponse>,
+    EnterChatRoomRequest
+  >(RouteMap.coffeeChat.enterCoffeeChatRoom, {
+    article_title,
+    room_id,
+    member_id,
   })
 
   return res
