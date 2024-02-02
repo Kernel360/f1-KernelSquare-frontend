@@ -130,7 +130,6 @@ export const memberHandler = [
       process.env.NEXT_PUBLIC_SERVER
     }${RouteMap.member.updateMemberProfileImage()}`,
     async ({ request, params }) => {
-      // 정보 수정
       const userId = params.id
       const { image_url } = await request.json()
 
