@@ -1,7 +1,7 @@
 import type { APIResponse } from "../api-response"
 
 /**
-  `hash_tag`는 최대 10자, 최대 가능 개수는 5개
+  `hash_tag`는 최대 10자, 최대 가능 개수는 10개
 */
 export interface CreateCoffeeChatReservationRequest {
   member_id: number

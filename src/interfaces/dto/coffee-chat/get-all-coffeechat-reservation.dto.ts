@@ -1,5 +1,4 @@
 import type { APIPagenationResponse, PaginationParams } from "../api-response"
-import type { CoffeeChatReservationTime } from "./coffeechat-reservation-detail.dto"
 
 /**
  full_check
@@ -28,10 +27,11 @@ export interface CoffeeChatReservation {
   level_image_url: string
   title: string
   content: string
-  hashtags: CoffeeChatReservationHashTag[]
+  hashtags: string[]
   created_date: string
   modified_date: string
-  date_times: CoffeeChatReservationTime[]
+  article_status: boolean
+  full_check: number
 }
 
 export interface CoffeeChatReservationListPayload {
