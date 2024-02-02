@@ -34,6 +34,7 @@ export const answerHandler = [
   http.get<{ id: string }, GetAnswerRequest, GetAnswerResponse>(
     `${process.env.NEXT_PUBLIC_SERVER}${RouteMap.answer.getAnswer()}`,
     ({ params }) => {
+      // Todo: 에러 상황 발생하게 해서 확인해보기
       const questionId = Number(params.id)
 
       const targetAnswers = mockAnswers.filter(

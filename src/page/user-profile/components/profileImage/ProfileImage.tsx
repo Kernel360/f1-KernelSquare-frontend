@@ -15,7 +15,7 @@ interface ProfileImageProps {
 
 const ProfileImage = ({ user_id, image_url }: ProfileImageProps) => {
   const { user } = useClientSession()
-  const isMyPage = user?.member_id === user_id
+  const isMyPage = user?.member_id == user_id
   const { handleImageChange, handleUpload, handleResetImage } =
     useProfileImage(image_url)
   const imageUploadRef = useRef<HTMLInputElement>(null)
