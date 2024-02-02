@@ -5,6 +5,7 @@ export type LayoutMetaKey =
   | "signup"
   | "notice"
   | "chat"
+  | "chat/popup"
   | "faq"
   | "profile"
   | "userProfile"
@@ -65,6 +66,15 @@ export const layoutMeta = {
     containLayout: {
       header: true,
       navigation: true,
+      footer: false,
+    },
+  },
+  "chat/popup": {
+    title: "커피챗:채팅",
+    description: "커피챗:채팅",
+    containLayout: {
+      header: false,
+      navigation: false,
       footer: false,
     },
   },

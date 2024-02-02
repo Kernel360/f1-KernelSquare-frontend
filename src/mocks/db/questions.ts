@@ -1,7 +1,7 @@
 import badge_url from "@/assets/images/badges"
 import { Question } from "@/interfaces/question"
 import { mockUsers } from "./user"
-
+// 2023-12-16T23:10:12
 export const mockQuestions: Array<Question> = [
   {
     id: 1,

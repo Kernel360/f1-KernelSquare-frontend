@@ -1,19 +1,39 @@
+import { usePathname } from "next/navigation"
 import { useEffect, useRef, useState, cloneElement } from "react"
 import { twMerge } from "tailwind-merge"
 
-const noticeList = [
+const chatNoticeList = [
+  <div key={0} className="line-clamp-1">
+    커피챗 채팅 페이지에 오신것을 환영합니다
+  </div>,
   <div key={1} className="line-clamp-1">
-    커피챗 메인 페이지에 오신것을 환영합니다
+    최대 30분까지 멘토와 채팅이 가능합니다
   </div>,
   <div key={2} className="line-clamp-1">
     지속가능한 성장을 위한 커피챗!
   </div>,
 ]
 
-function CoffeeChatWelcome() {
-  const wrapperRef = useRef<HTMLDivElement>(null)
+const noticeList = [
+  <div key={0} className="line-clamp-1">
+    커피챗 메인 페이지에 오신것을 환영합니다
+  </div>,
+  <div key={1} className="line-clamp-1">
+    지속가능한 성장을 위한 커피챗!
+  </div>,
+]
 
-  const length = noticeList.length
+function CoffeeChatWelcome() {
+  const pathname = usePathname()
+
+  const targetNoticeList = (() => {
+    if (pathname.startsWith("/chat/room/")) return chatNoticeList
+
+    return noticeList
+  })()
+  const length = targetNoticeList.length
+
+  const wrapperRef = useRef<HTMLDivElement>(null)
 
   const [top, setTop] = useState(0)
   const [index, setIndex] = useState(0)
@@ -36,7 +56,7 @@ function CoffeeChatWelcome() {
     return () => {
       clearInterval(intervalId)
     }
-  }, []) /* eslint-disable-line */
+  }, [pathname]) /* eslint-disable-line */
 
   useEffect(() => {
     if (!wrapperRef?.current) return
@@ -58,8 +78,8 @@ function CoffeeChatWelcome() {
 
   return (
     <div ref={wrapperRef} className={classNames} style={{ top: `${top}px` }}>
-      {noticeList}
-      {cloneElement(noticeList[0], {
+      {targetNoticeList}
+      {cloneElement(targetNoticeList[0], {
         key: length,
       })}
     </div>

@@ -56,6 +56,7 @@ function Profile({ profileImage, className, ...props }: ProfileProps) {
           className="z-[1]"
           src={profileImage!}
           alt={"profileImage"}
+          priority={true}
           onLoad={(e) => {
             setImageLoaded(true)
           }}

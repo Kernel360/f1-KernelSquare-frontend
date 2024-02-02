@@ -1,5 +1,6 @@
 import type { EditorProps } from "@toast-ui/react-editor"
 import type { TechTag } from "@/interfaces/tech-tag"
+import { SyntaxHighlightCodeLanguage } from "@/socket/client/code/CodeLanguageSelect"
 
 export const TOAST_UI_EDITOR_TOOLBAR_NAME = {
   HEADING: "heading",
@@ -59,3 +60,34 @@ export const MAXIMUM_SELECT_TAG_LENGTH = 5
 export const USER_LOCAL_STORAGE_KEY = "user"
 
 export const DELETE_IMAGE_LOCAL_STORAGE_KEY = "delete_list"
+
+export const SYNTAX_HIGHLIGHT_LANGUAGES: Array<SyntaxHighlightCodeLanguage> = [
+  "bash",
+  "c",
+  "cpp",
+  "dart",
+  "docker",
+  "go",
+  "graphql",
+  "java",
+  "javascript",
+  "json",
+  "jsonp",
+  "jsx",
+  "kotlin",
+  "markdown",
+  "markup",
+  "nginx",
+  "php",
+  "python",
+  "r",
+  "rust",
+  "sass",
+  "scss",
+  "sql",
+  "swift",
+  "toml",
+  "tsx",
+  "typescript",
+  "yaml",
+]

@@ -70,13 +70,16 @@ export type SubmitUpdateQuestionData = Omit<
 > & { question_id: number }
 
 interface AskQustionFormProps {
+  editMode: EditMode
   initialValues?: QuestionEditorInitialValues
   question_id?: number
 }
 
-function AskQuestionForm({ initialValues, question_id }: AskQustionFormProps) {
-  const editMode: EditMode = initialValues && question_id ? "update" : "create"
-
+function AskQuestionForm({
+  initialValues,
+  question_id,
+  editMode,
+}: AskQustionFormProps) {
   const { user } = useClientSession()
 
   const { register, setValue, setFocus, handleSubmit } =
@@ -325,6 +328,7 @@ function AskQuestionForm({ initialValues, question_id }: AskQustionFormProps) {
     <>
       {!loaded && <Loading />}
       <form
+        id="question-form"
         onSubmit={handleSubmit(onSubmit, onInvalid)}
         className={`transition-opacity duration-1000 ${
           !loaded ? "opacity-0" : "opacity-100"

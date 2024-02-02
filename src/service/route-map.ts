@@ -203,6 +203,8 @@ export class RouteMap {
    * **coffeeChatReservation** 커피챗 예약(POST)
    *
    * **reviewCoffeeChat** 커피챗 리뷰(POST)
+   *
+   * **enterCoffeeChatRoom** 채팅방 입장(POST)
    */
   static coffeeChat = {
     getCoffeeChatList: `${RouteMap.routeGroupBaseURL.coffeeChat}/posts`,
@@ -225,6 +227,7 @@ export class RouteMap {
     reviewCoffeeChat(postId: number) {
       return `${RouteMap.routeGroupBaseURL.coffeeChat}/posts/${postId}/review`
     },
+    enterCoffeeChatRoom: `${RouteMap.routeGroupBaseURL.coffeeChat}/rooms/enter`,
   }
 
   /**
