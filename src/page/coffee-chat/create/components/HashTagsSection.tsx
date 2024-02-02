@@ -83,7 +83,7 @@ const HashTagsSection = () => {
             key={tag}
             className="px-3 mr-3 flex border-[1px] border-primary rounded items-center"
           >
-            <div className="mr-1">{tag}</div>
+            <div className="mr-1"># {tag}</div>
             <div
               className="transition-colors w-5 h-5 p-1 rounded-full border flex justify-center items-center bg-white hover:bg-secondary hover:text-white"
               onClick={() => handleDeleteHashTags(tag)}

@@ -37,4 +37,4 @@ export interface CoffeeChatSectionProps extends NonNullable<PropsWithChildren> {
 export interface CoffeeChatSectionLabelProps
   extends LabelHTMLAttributes<HTMLLabelElement> {}
 
-export type TimeOptionsProps = { date: string[] }
+export type TimeOptionsProps = { selectedDay: string; date: string[] }

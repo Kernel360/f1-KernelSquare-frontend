@@ -18,6 +18,7 @@ export const errorMessage = {
   duplicatedVote: "답변에 대한 투표는 한 번만 진행할 수 있습니다.",
   failToReserve: "커피챗 예약 중 오류가 발생하였습니다. 다시 시도해주세요.",
   alreadyReserved: "이미 예약된 시간대입니다.",
+  alreadySelected: "이미 선택된 시간대입니다.",
   noValue: "값이 비어있습니다. 정확한 값을 입력해주세요.",
   overHashtagCntLimit: `해시태그는 최대 ${Limitation.hashtags_cnt}개까지 입력 가능합니다.`,
   overHashtagWordLimit: `해시태그는 최대 ${Limitation.hashtags_word}자까지 입력 가능합니다.`,

@@ -2,7 +2,7 @@ import { IconBaseProps } from "react-icons"
 import { IoSearchOutline } from "react-icons/io5"
 import { IoIosNotifications } from "react-icons/io"
 import { FaCircle, FaRegCircle, FaUserCircle } from "react-icons/fa"
-import { LuCode2, LuSearchCode } from "react-icons/lu"
+import { LuCode2, LuInfo, LuSearchCode } from "react-icons/lu"
 import { AiOutlineNotification } from "react-icons/ai"
 import { HiOutlineChatBubbleLeftRight } from "react-icons/hi2"
 import { TbMessage2Question } from "react-icons/tb"
@@ -27,6 +27,7 @@ type IconsKey =
   | "ScrollToTop"
   | "Search"
   | "Close"
+  | "Info"
 type NavigationIconsKey = "QnA" | "Chat" | "Notice" | "FaQ" | "MyPage"
 type DirectionIconsKey = "Up" | "Down" | "Left" | "Right"
 type CircleIconsKey = "Line" | "Fill"
@@ -56,6 +57,9 @@ export const Icons: Record<IconsKey, Icon> = {
   },
   Close(props) {
     return <MdClose {...props} />
+  },
+  Info(props) {
+    return <LuInfo {...props} />
   },
 }
 
