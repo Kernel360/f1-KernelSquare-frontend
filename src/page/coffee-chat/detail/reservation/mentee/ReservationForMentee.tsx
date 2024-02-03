@@ -7,7 +7,10 @@ import { toast } from "react-toastify"
 import { errorMessage, notificationMessage } from "@/constants/message"
 import { useProgressModal } from "@/hooks/useProgressModal"
 import { useParams } from "next/navigation"
-import { mockCoffeeChatReservations } from "@/mocks/db/coffee-chat"
+import {
+  MockReservations,
+  mockCoffeeChatReservations,
+} from "@/mocks/db/coffee-chat"
 import CustomCalendar from "../CustomCalendar/CustomCalendar"
 import { useState } from "react"
 import type { Value } from "../CustomCalendar/Calendar.types"
@@ -38,8 +41,7 @@ function ReservationForMentee({ reservation, created }: MenteeProps) {
   const params = useParams<{ id: string }>()
   // 데이터 받아오면 시작 날짜로 수정 필요
   const [date, setDate] = useState<Value>(new Date(reservation[0].start_time))
-  console.log("start", getDate({ date: reservation[0].start_time }))
-
+  console.log("mock", MockReservations)
   const [selectedDay, setSelectedDay] = useState<string>(
     getDate({ date: reservation[0].start_time }),
   )

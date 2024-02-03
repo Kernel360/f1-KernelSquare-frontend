@@ -17,7 +17,22 @@ import {
   EnterChatRoomRequest,
   EnterChatRoomResponse,
 } from "@/interfaces/dto/coffee-chat/enter-chat-room"
-import axios from "axios"
+import axios, { AxiosError } from "axios"
+import {
+  DeleteCoffeeChatRequest,
+  DeleteCoffeeChatResponse,
+} from "@/interfaces/dto/coffee-chat/delete-coffeechat.dto"
+import { DefaultBodyType } from "msw"
+import { APIResponse } from "@/interfaces/dto/api-response"
+import {
+  MakeReservationRequest,
+  MakeReservationResponse,
+} from "@/interfaces/dto/coffee-chat/make-reservation.dto"
+import { DeleteReservationRequest } from "@/interfaces/dto/coffee-chat/delete-reservation.dto"
+import {
+  GetMyCoffeeChatReservationListResponse,
+  GetMyCoffeeChatReservationRequest,
+} from "@/interfaces/dto/coffee-chat/get-my-coffeechat-reservation"
 
 export async function getCoffeeChatReservationList(
   { page = 0, size = 5 }: GetCoffeeChatReservationListRequest = {
@@ -86,6 +101,7 @@ export async function enterChatRoom({
   return res
 }
 
+// 커피챗 등록글 생성
 export async function createCoffeeChatPost({
   member_id,
   title,
@@ -104,6 +120,89 @@ export async function createCoffeeChatPost({
     hash_tags,
     date_times,
   })
+
+  return res
+}
+
+// 커피챗 등록글 삭제
+export async function deleteCoffeeChatPost({
+  postId,
+}: DeleteCoffeeChatRequest) {
+  const res = await apiInstance
+    .delete<any, AxiosResponse<DeleteCoffeeChatResponse>, DefaultBodyType>(
+      RouteMap.coffeeChat.deleteCoffeeChatPost(postId),
+    )
+    .catch((err) => {
+      if (err instanceof AxiosError) {
+        const { response } = err as AxiosError<APIResponse>
+
+        console.log({ response: response?.data })
+      }
+      console.log("err", err)
+      throw err
+    })
+
+  return res
+}
+
+// 커피챗 예약
+export async function makeReservation({
+  reservation_article_id,
+  reservation_id,
+  member_id,
+  start_time,
+  room_key,
+}: MakeReservationRequest) {
+  const res = await apiInstance
+    .put<any, AxiosResponse<MakeReservationResponse>, MakeReservationRequest>(
+      RouteMap.coffeeChat.coffeeChatReservation,
+      {
+        reservation_article_id,
+        reservation_id,
+        member_id,
+        start_time,
+        room_key,
+      },
+    )
+    .catch((err) => {
+      if (err instanceof AxiosError) {
+        const { response } = err as AxiosError<APIResponse>
+
+        console.log({ response: response?.data })
+      }
+      console.log("err", err)
+      throw err
+    })
+
+  return res
+}
+
+// 커피챗 예약 삭제
+export async function deleteCoffeeChatReservation({
+  reservationId,
+}: DeleteReservationRequest) {
+  const res = await apiInstance
+    .delete<any, AxiosResponse<DeleteCoffeeChatResponse>, DefaultBodyType>(
+      RouteMap.coffeeChat.deleteCoffeeChatReservation(reservationId),
+    )
+    .catch((err) => {
+      if (err instanceof AxiosError) {
+        const { response } = err as AxiosError<APIResponse>
+
+        console.log({ response: response?.data })
+      }
+      console.log("err", err)
+      throw err
+    })
+
+  return res
+}
+
+// 내가 한 커피챗 예약 조회
+export async function getMyCoffeeChatReservation() {
+  const res = await apiInstance.get<GetMyCoffeeChatReservationListResponse>(
+    `${RouteMap.coffeeChat.getMyCoffeeChatReservation}`,
+  )
 
   return res
 }

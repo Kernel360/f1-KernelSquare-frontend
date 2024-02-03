@@ -1,7 +1,11 @@
 import { RouteMap } from "@/service/route-map"
 import { generatePagination } from "@/util/paginate"
 import { DefaultBodyType, HttpResponse, PathParams, http } from "msw"
-import { MockCoffeechat, mockCoffeeChatReservations } from "../db/coffee-chat"
+import {
+  MockCoffeechat,
+  MockReservations,
+  mockCoffeeChatReservations,
+} from "../db/coffee-chat"
 import { ApiStatus } from "@/constants/response/api"
 import type {
   CoffeeChatReservation,
@@ -21,6 +25,17 @@ import { HttpStatusCode } from "axios"
 import dayjs from "dayjs"
 import badge_url from "@/assets/images/badges"
 import { User } from "@/interfaces/user"
+import { DeleteCoffeeChatResponse } from "@/interfaces/dto/coffee-chat/delete-coffeechat.dto"
+import { GetMyCoffeeChatReservationListResponse } from "@/interfaces/dto/coffee-chat/get-my-coffeechat-reservation"
+import { useClientSession } from "@/hooks/useClientSession"
+import {
+  MakeReservationRequest,
+  MakeReservationResponse,
+} from "@/interfaces/dto/coffee-chat/make-reservation.dto"
+import {
+  DeleteReservationRequest,
+  DeleteReservationResponse,
+} from "@/interfaces/dto/coffee-chat/delete-reservation.dto"
 
 export const coffeeChatHandler = [
   http.get<PathParams, DefaultBodyType, GetCoffeeChatReservationListResponse>(
@@ -261,6 +276,217 @@ export const coffeeChatHandler = [
           status: HttpStatusCode.Ok,
         },
       )
+    },
+  ),
+  // 커피챗 등록글 삭제
+  http.delete<{ id: string }, DefaultBodyType, DeleteCoffeeChatResponse>(
+    `${
+      process.env.NEXT_PUBLIC_SERVER
+    }${RouteMap.coffeeChat.deleteCoffeeChatPost()}`,
+    async ({ params }) => {
+      const postId = Number(params.id)
+
+      const targetPost = mockCoffeeChatReservations.findIndex(
+        (post) => post.article_id === postId,
+      )
+
+      mockCoffeeChatReservations.splice(targetPost, 1)
+
+      return HttpResponse.json(
+        {
+          code: 3143,
+          msg: "예약창이 삭제되었습니다.",
+        },
+        {
+          status: HttpStatusCode.Ok,
+        },
+      )
+    },
+  ),
+  // 커피챗 예약
+  http.put<PathParams, MakeReservationRequest, MakeReservationResponse>(
+    `${process.env.NEXT_PUBLIC_SERVER}${RouteMap.coffeeChat.coffeeChatReservation}`,
+    async ({ request }) => {
+      const {
+        reservation_article_id,
+        reservation_id,
+        member_id,
+        start_time,
+        room_key,
+      } = await request.json()
+
+      const targetMember = mockUsers.find((member) => member.id === member_id)
+
+      if (!targetMember) {
+        return HttpResponse.json(
+          {
+            code: 3404,
+            msg: "회원이 존재하지 않습니다.",
+          },
+          {
+            status: HttpStatusCode.Forbidden,
+          },
+        )
+      }
+
+      const targetArticle = mockCoffeeChatReservations.find(
+        (article) => article.article_id === reservation_article_id,
+      )
+
+      if (!targetArticle) {
+        return HttpResponse.json(
+          {
+            code: 3401,
+            msg: "존재하지 않는 예약입니다.",
+          },
+          {
+            status: HttpStatusCode.Forbidden,
+          },
+        )
+      }
+
+      const targetTime = targetArticle.date_times.find(
+        (time) => time.start_time === start_time,
+      )
+
+      if (!targetTime) {
+        return HttpResponse.json(
+          {
+            code: 3408,
+            msg: "예약 가능한 시간이 아닙니다.",
+          },
+          {
+            status: HttpStatusCode.Forbidden,
+          },
+        )
+      }
+
+      return HttpResponse.json(
+        {
+          code: 3442,
+          msg: "예약이 확정되었습니다.",
+          data: {
+            reservation_id: reservation_article_id * Math.random() * 1000,
+          },
+        },
+        {
+          status: HttpStatusCode.Ok,
+        },
+      )
+    },
+  ),
+  // 커피챗 예약 삭제
+  http.delete<
+    { id: string },
+    Omit<DeleteReservationRequest, "reservationId">,
+    DeleteReservationResponse
+  >(
+    `${
+      process.env.NEXT_PUBLIC_SERVER
+    }${RouteMap.coffeeChat.deleteCoffeeChatReservation()}`,
+    async ({ params }) => {
+      const reservationId = Number(params.id)
+
+      const targetReservation = MockReservations.find(
+        (res) => res.reservation_id === reservationId,
+      )
+
+      if (!targetReservation) {
+        return HttpResponse.json(
+          {
+            code: 3401,
+            msg: "존재하지 않는 예약입니다.",
+          },
+          {
+            status: HttpStatusCode.Forbidden,
+          },
+        )
+      }
+
+      if (dayjs(targetReservation.start_time).diff(dayjs(), "hour") <= 24) {
+        return HttpResponse.json(
+          {
+            code: 3402,
+            msg: "예약 취소 가능 시간이 지났습니다.",
+          },
+          {
+            status: HttpStatusCode.Forbidden,
+          },
+        )
+      }
+
+      return HttpResponse.json(
+        {
+          code: 3441,
+          msg: "예약 삭제 성공",
+        },
+        {
+          status: HttpStatusCode.Ok,
+        },
+      )
+    },
+  ),
+  // 내가 한 커피챗 예약 조회
+  http.get<PathParams, DefaultBodyType, GetMyCoffeeChatReservationListResponse>(
+    `${process.env.NEXT_PUBLIC_SERVER}${RouteMap.coffeeChat.getMyCoffeeChatReservation}`,
+    async ({ params }) => {
+      try {
+        const { user } = useClientSession()
+        if (!user) {
+          const { Code, HttpStatus } =
+            ApiStatus.CoffeeChat.getCoffeeChatPostDetail.Unauthorized
+
+          return HttpResponse.json(
+            {
+              code: Code,
+              msg: "권한이 없는 사용자입니다.",
+            },
+            { status: HttpStatus },
+          )
+        }
+
+        const reservation = mockCoffeeChatReservations.filter((post) =>
+          post.date_times.some((time) => time.menti_nickname === user.nickname),
+        )
+
+        if (!reservation) {
+          const { Code, HttpStatus } =
+            ApiStatus.CoffeeChat.getCoffeeChatPostDetail.NotFound
+
+          return HttpResponse.json(
+            {
+              code: Code,
+              msg: "존재하지 않는 예약입니다",
+            },
+            { status: HttpStatus },
+          )
+        }
+
+        const { Code, HttpStatus } =
+          ApiStatus.CoffeeChat.getCoffeeChatPostDetail.Ok
+
+        return HttpResponse.json(
+          {
+            code: Code,
+            msg: "예약창을 조회했습니다.",
+            data: {
+              ...reservation,
+            },
+          },
+          { status: HttpStatus },
+        )
+      } catch (error) {
+        const { Code, HttpStatus } =
+          ApiStatus.CoffeeChat.getCoffeeChatPostDetail.InternalServerError
+
+        return HttpResponse.json(
+          {
+            code: Code,
+            msg: "서버 오류",
+          },
+          { status: HttpStatus },
+        )
+      }
     },
   ),
 ]

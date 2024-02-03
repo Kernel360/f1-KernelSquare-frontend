@@ -1,17 +1,28 @@
 import queryKey from "@/constants/queryKey"
 import { CreateCoffeeChatReservationRequest } from "@/interfaces/dto/coffee-chat/create-coffeechat-reservation.dto"
-import { createCoffeeChatPost } from "@/service/coffee-chat"
-import { useMutation } from "@tanstack/react-query"
+import { DeleteCoffeeChatRequest } from "@/interfaces/dto/coffee-chat/delete-coffeechat.dto"
+import { DeleteReservationRequest } from "@/interfaces/dto/coffee-chat/delete-reservation.dto"
+import { GetMyCoffeeChatReservationListResponse } from "@/interfaces/dto/coffee-chat/get-my-coffeechat-reservation"
+import { MakeReservationRequest } from "@/interfaces/dto/coffee-chat/make-reservation.dto"
+import {
+  createCoffeeChatPost,
+  deleteCoffeeChatPost,
+  deleteCoffeeChatReservation,
+  getMyCoffeeChatReservation,
+  makeReservation,
+} from "@/service/coffee-chat"
+import { keepPreviousData, useMutation, useQuery } from "@tanstack/react-query"
 
+// 커피챗 등록글 생성
 const useCreateCoffeeChatPost = () => {
   const {
     data,
     mutate: createCoffeeChatPostMutate,
     isPending: isCoffeeChatPost,
-    isError: isCoffeeChatPostrError,
+    isError: isCoffeeChatPostError,
     isSuccess: isCoffeeChatPostSuccess,
   } = useMutation({
-    mutationKey: [queryKey.answer],
+    mutationKey: [queryKey.chat],
     mutationFn: ({
       member_id,
       title,
@@ -33,12 +44,113 @@ const useCreateCoffeeChatPost = () => {
     createCoffeeChatPost: createCoffeeChatPostMutate,
     createCoffeeChatPostStatus: {
       isCoffeeChatPost,
-      isCoffeeChatPostrError,
+      isCoffeeChatPostError,
       isCoffeeChatPostSuccess,
     },
   }
 }
 
+// 커피챗 등록글 삭제
+const useDeleteCoffeeChatPost = () => {
+  const {
+    mutate: deleteCoffeeChatMutate,
+    isPending: isdeleteCoffeeChat,
+    isError: isdeleteCoffeeChatError,
+    isSuccess: isdeleteCoffeeChatSuccess,
+  } = useMutation({
+    mutationKey: [queryKey.chat],
+    mutationFn: ({ postId }: DeleteCoffeeChatRequest) =>
+      deleteCoffeeChatPost({
+        postId,
+      }),
+  })
+
+  return {
+    deleteCoffeeChatPost: deleteCoffeeChatMutate,
+    deleteCoffeeChatPostStatus: {
+      isdeleteCoffeeChat,
+      isdeleteCoffeeChatError,
+      isdeleteCoffeeChatSuccess,
+    },
+  }
+}
+
+// 내가 한 커피챗 예약 조회
+const useGetMyCoffeeChatReservation = () =>
+  useQuery({
+    queryKey: [queryKey.chat],
+    queryFn: () => getMyCoffeeChatReservation(),
+    placeholderData: keepPreviousData,
+    staleTime: 1000 * 60 * 2,
+    retry: 0,
+    select(payload) {
+      return payload.data
+    },
+  })
+
+// 커피챗 예약
+const useCreateCoffeeChatReservation = () => {
+  const {
+    mutate: createCoffeeChatReservationMutate,
+    isPending: isCoffeeChatReservation,
+    isError: isCoffeeChatReservationError,
+    isSuccess: isCoffeeChatReservationSuccess,
+  } = useMutation({
+    mutationKey: [queryKey.chat],
+    mutationFn: ({
+      reservation_article_id,
+      reservation_id,
+      member_id,
+      start_time,
+      room_key,
+    }: MakeReservationRequest) =>
+      makeReservation({
+        reservation_article_id,
+        reservation_id,
+        member_id,
+        start_time,
+        room_key,
+      }),
+  })
+
+  return {
+    createCoffeeChatReservation: createCoffeeChatReservationMutate,
+    createCoffeeChatReservationStatus: {
+      isCoffeeChatReservation,
+      isCoffeeChatReservationError,
+      isCoffeeChatReservationSuccess,
+    },
+  }
+}
+
+// 커피챗 예약 삭제
+const useDeleteCoffeeChatReservation = () => {
+  const {
+    mutate: deleteCoffeeChatReservationMutate,
+    isPending: isdeleteCoffeeChatReservation,
+    isError: isdeleteCoffeeChatReservationError,
+    isSuccess: isdeleteCoffeeChatReservationSuccess,
+  } = useMutation({
+    mutationKey: [queryKey.chat],
+    mutationFn: ({ reservationId }: DeleteReservationRequest) =>
+      deleteCoffeeChatReservation({
+        reservationId,
+      }),
+  })
+
+  return {
+    deleteCoffeeChatReservation: deleteCoffeeChatReservationMutate,
+    deleteCoffeeChatReservationStatus: {
+      isdeleteCoffeeChatReservation,
+      isdeleteCoffeeChatReservationError,
+      isdeleteCoffeeChatReservationSuccess,
+    },
+  }
+}
 export const CoffeeChatQueries = {
   useCreateCoffeeChatPost,
+  useDeleteCoffeeChatPost,
+  useGetMyCoffeeChatReservation,
+  useCreateCoffeeChatReservation,
+  useDeleteCoffeeChatReservation,
 }

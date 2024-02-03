@@ -272,3 +272,7 @@ export const mockCoffeeChatReservations: Array<MockCoffeechat> = [
     full_check: 0,
   },
 ]
+
+export const MockReservations = mockCoffeeChatReservations.flatMap(
+  (res) => res.date_times,
+)
