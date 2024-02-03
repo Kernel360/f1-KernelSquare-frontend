@@ -15,7 +15,7 @@ function CoffeeChatDetailPage({
   coffeeChatDetailPayload,
 }: CoffeeChatDetailPageProps) {
   return (
-    <div className="">
+    <div className="w-[80%] m-auto mt-5">
       <CoffeeChatDetailHeader
         title={coffeeChatDetailPayload.title}
         nickname={coffeeChatDetailPayload.nickname}
@@ -34,7 +34,11 @@ function CoffeeChatDetailPage({
         />
       </div>
       <Spacing size={32} />
-      <ScheduleMentoringSession mentor={coffeeChatDetailPayload.member_id} />
+      <ScheduleMentoringSession
+        mentor={coffeeChatDetailPayload.member_id}
+        reservation={coffeeChatDetailPayload.date_times}
+        created={coffeeChatDetailPayload.created_date}
+      />
     </div>
   )
 }

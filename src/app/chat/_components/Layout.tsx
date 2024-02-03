@@ -39,7 +39,7 @@ function CoffeeChatPageLayout({ children }: CoffeeChatPageLayoutProps) {
     return "커피챗 페이지"
   }
 
-  if (pathname.startsWith("/chat/create"))
+  if (pathname.startsWith("/chat/") && !pathname.includes("room"))
     return (
       <div>
         <div className="mt-5 w-[calc(100%-12px)] sm:w-[calc(100%-22px)] lg:w-[calc(100%-42px)] mx-auto">

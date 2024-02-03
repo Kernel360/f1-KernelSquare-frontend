@@ -134,7 +134,6 @@ export const coffeeChatHandler = [
         const reservation = mockCoffeeChatReservations.find(
           (reservation) => reservation.article_id === Number(reservationId),
         )
-        console.log("target", reservation)
 
         if (!reservation) {
           const { Code, HttpStatus } =

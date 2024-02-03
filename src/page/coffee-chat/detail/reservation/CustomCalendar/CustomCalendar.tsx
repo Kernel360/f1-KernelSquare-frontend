@@ -3,32 +3,29 @@
 import Calendar, { TileArgs } from "react-calendar"
 import "react-calendar/dist/Calendar.css"
 import "./Calendar.css"
-import { type Dispatch, type SetStateAction } from "react"
 import { getDay } from "@/util/getDate"
 import dayjs from "dayjs"
 import Holidays from "@/constants/holidays"
-
-type ValuePiece = Date | null
-
-type Value = ValuePiece | [ValuePiece, ValuePiece]
+import { useRecoilState } from "recoil"
+import { CoffeeChatStartDate } from "@/recoil/atoms/coffee-chat/schedule"
+import { Value } from "./Calendar.types"
+import { Dispatch, SetStateAction } from "react"
 
 type CustomCalendarProps = {
   start: string
-  date: Value
   limit: number
+  date: Value
   setDate: Dispatch<SetStateAction<Value>>
 }
 
 const CustomCalendar = ({
   start,
-  date,
   limit,
+  date,
   setDate,
 }: CustomCalendarProps) => {
-  // 시작 날짜
-  const startDate = new Date(start)
   // 종료 날짜
-  const calendarValue = new Date(dayjs(startDate).add(limit, "day").format())
+  const calendarValue = new Date(dayjs(start).add(limit, "day").format())
   // 공휴일 포함 여부
   const isHoliday = (date: Date) =>
     Holidays.some((day) => day.date === dayjs(date).format("YYYY-MM-DD"))
@@ -67,7 +64,7 @@ const CustomCalendar = ({
         allowPartialRange
         next2Label={null}
         prev2Label={null}
-        minDate={startDate}
+        minDate={new Date(start)}
         maxDate={calendarValue}
         // 날짜 타일에 추가할 컨텐츠
         tileContent={showSpecificDays}

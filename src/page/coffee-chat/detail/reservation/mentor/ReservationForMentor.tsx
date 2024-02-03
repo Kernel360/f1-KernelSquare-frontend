@@ -9,28 +9,27 @@ import { useParams, useRouter } from "next/navigation"
 import CustomCalendar from "../CustomCalendar/CustomCalendar"
 import { useState } from "react"
 import type { Value } from "../CustomCalendar/Calendar.types"
-import { CoffeeChatReservationTime } from "@/interfaces/dto/coffee-chat/coffeechat-reservation-detail.dto"
+import type { CoffeeChatReservationTime } from "@/interfaces/dto/coffee-chat/coffeechat-reservation-detail.dto"
 
-function ReservationForMentor() {
+interface MentorProps {
+  reservation: CoffeeChatReservationTime[]
+  created: string
+}
+
+function ReservationForMentor({ reservation, created }: MentorProps) {
   const [date, setDate] = useState<Value>(new Date())
   const params = useParams<{ id: string }>()
   // 실제 데이터 반영 시 삭제 예정
-  const targetChat = mockCoffeeChatReservations[Number(params.id) - 1]
   return (
     <section className="text-center mb-20">
       <div className="font-bold text-primary text-[28px] mb-5">SCHEDULE</div>
-      <CustomCalendar
-        limit={2}
-        start={targetChat.created_date}
-        date={date}
-        setDate={setDate}
-      />
+      <CustomCalendar limit={2} start={created} date={date} setDate={setDate} />
       <div className="my-10 text-xl text-secondary font-bold">
         {getDate({ date: date + "" })}
       </div>
       <div className="w-[50%] m-auto max-h-[300px] overflow-scroll px-4 py-3 border-[1px] border-primary flex justify-center gap-10">
         <div>
-          {targetChat.date_times.map((time) => (
+          {reservation.map((time) => (
             <div
               key={time.reservation_id}
               className="flex justify-around w-full flex-wrap min-h-[50px] my-5"
@@ -45,7 +44,7 @@ function ReservationForMentor() {
           ))}
         </div>
         <div>
-          {targetChat.date_times.map((time) => (
+          {reservation.map((time) => (
             <ReservedTime time={time} key={time.reservation_id} />
           ))}
         </div>

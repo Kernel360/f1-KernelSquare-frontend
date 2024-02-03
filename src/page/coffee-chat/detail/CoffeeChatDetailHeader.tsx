@@ -27,7 +27,7 @@ function CoffeeChatDetailHeader({
     <section>
       <div className="flex gap-1 items-center">
         <div className="flex-1">
-          <div className="font-bold text-2xl mb-5 max-w-full md:font-[16px] sm:font-[12px] t text-[#444444]">
+          <div className="font-bold mb-5 max-w-full text-[24px] mt-5 text-[#444444]">
             {title}
           </div>
           <Spacing size={12} />
