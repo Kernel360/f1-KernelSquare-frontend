@@ -8,7 +8,7 @@ import { Editor } from "@toast-ui/react-editor"
 import { toast } from "react-toastify"
 import { techTagList } from "@/constants/editor"
 import { useRouter } from "next/navigation"
-import { useQueryClient } from "@tanstack/react-query"
+import { useQuery, useQueryClient } from "@tanstack/react-query"
 import { useClientSession } from "@/hooks/useClientSession"
 import { useSelectTagList } from "@/hooks/useSelectTagList"
 import type { FieldErrors } from "react-hook-form"
@@ -23,13 +23,24 @@ import CoffeeChatSection from "./components/CoffeeChatSection"
 import HashTagsSection from "./components/HashTagsSection"
 import ScheduleSection from "./components/ScheduleSection"
 import IntroductionSection from "./components/IntroductionSection"
-import SkillsSection from "./components/SkillsSection"
+import { CoffeeChatQueries } from "@/react-query/coffee-chat"
+import { useRecoilState } from "recoil"
+import { HashTagList } from "@/recoil/atoms/coffee-chat/hashtags"
+import { errorMessage } from "@/constants/message"
+import dynamic from "next/dynamic"
+
+const MdEditor = dynamic(() => import("./components/MdEditor"), {
+  ssr: false,
+})
 
 function CreateCoffeeChatReservationPage({
   initialValues,
   post_id,
 }: CoffeeChatFormProps) {
   const editMode: EditMode = initialValues && post_id ? "update" : "create"
+  const [hash_tags, setHash_tags] = useRecoilState(HashTagList)
+  const queryClient = useQueryClient()
+  const { replace } = useRouter()
 
   const { user } = useClientSession()
 
@@ -38,7 +49,6 @@ function CreateCoffeeChatReservationPage({
       ? {
           defaultValues: {
             title: initialValues.title,
-            content: initialValues.content,
           },
         }
       : {},
@@ -46,8 +56,37 @@ function CreateCoffeeChatReservationPage({
 
   const editorRef = useRef<Editor>(null)
 
+  const { createCoffeeChatPost } = CoffeeChatQueries.useCreateCoffeeChatPost()
+
   const onSubmit = async (data: CoffeeChatFormData) => {
-    if (!user) return
+    if (!user)
+      return toast.error(errorMessage.unauthorized, { position: "top-center" })
+    if (!data.title)
+      return toast.error(errorMessage.notitle, { position: "top-center" })
+    if (!editorRef.current)
+      return toast.error(errorMessage.noContent, { position: "top-center" })
+    createCoffeeChatPost(
+      {
+        member_id: user.member_id,
+        title: data.title,
+        content: editorRef.current?.getInstance().getMarkdown(),
+        hash_tags,
+        date_times: [],
+      },
+      {
+        onSuccess: (res) => {
+          queryClient.invalidateQueries({
+            queryKey: ["chat"],
+          })
+          console.log("id", res.data.data?.reservation_article_id)
+          setTimeout(() => {
+            replace(`/chat/${res.data.data?.reservation_article_id}`)
+
+            setHash_tags([])
+          }, 0)
+        },
+      },
+    )
   }
 
   const onInvalid = async (errors: FieldErrors<CoffeeChatFormData>) => {
@@ -61,16 +100,6 @@ function CreateCoffeeChatReservationPage({
 
       setTimeout(() => {
         setFocus("title")
-      }, 0)
-
-      return
-    }
-
-    if (errors.content?.type === "required") {
-      toast.error("질문을 입력해주세요", { position: "top-center" })
-
-      setTimeout(() => {
-        editorRef.current?.getInstance().focus()
       }, 0)
 
       return
@@ -100,15 +129,28 @@ function CreateCoffeeChatReservationPage({
           />
         </CoffeeChatSection>
         <Spacing size={20} />
-        <IntroductionSection />
+        <CoffeeChatSection>
+          <CoffeeChatSection.Label htmlFor="content">
+            소개글
+          </CoffeeChatSection.Label>
+          <div className="relative mt-3">
+            <MdEditor
+              previous=""
+              editorRef={editorRef}
+              userId={user?.member_id}
+            />
+          </div>
+        </CoffeeChatSection>
         <Spacing size={20} />
         <HashTagsSection />
-        <Spacing size={20} />
-        <SkillsSection initialValues={initialValues} post_id={post_id} />
-        <Spacing size={20} />
-        <ScheduleSection />
+        {/* <Spacing size={20} />
+        <ScheduleSection /> */}
         <div className="flex justify-center">
-          <Button buttonTheme="primary" className="p-5 py-3 my-10">
+          <Button
+            buttonTheme="primary"
+            className="p-5 py-3 my-10"
+            type="submit"
+          >
             멘토링 개설하기
           </Button>
         </div>

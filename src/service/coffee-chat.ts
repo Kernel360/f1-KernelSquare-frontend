@@ -85,3 +85,25 @@ export async function enterChatRoom({
 
   return res
 }
+
+export async function createCoffeeChatPost({
+  member_id,
+  title,
+  content,
+  hash_tags,
+  date_times,
+}: CreateCoffeeChatReservationRequest) {
+  const res = await apiInstance.post<
+    any,
+    AxiosResponse<CreateCoffeeChatReservationResponse>,
+    CreateCoffeeChatReservationRequest
+  >(RouteMap.coffeeChat.createCoffeeChatPost, {
+    member_id,
+    content,
+    title,
+    hash_tags,
+    date_times,
+  })
+
+  return res
+}

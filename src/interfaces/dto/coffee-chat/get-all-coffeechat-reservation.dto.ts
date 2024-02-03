@@ -22,7 +22,7 @@ export interface CoffeeChatReservation {
   article_id: number
   member_id: number
   nickname: string
-  member_image_url: string
+  member_image_url: string | null
   level: number
   level_image_url: string
   title: string

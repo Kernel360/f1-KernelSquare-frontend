@@ -88,7 +88,7 @@ function CoffeeChatList({ coffeeChatList }: CoffeeChatListProps) {
                     key={`hash-${tag}`}
                     className="flex shrink-0 items-center"
                   >
-                    <HashTag>{tag.content}</HashTag>
+                    <HashTag>{tag}</HashTag>
                     {/* <Tag className="!w-fit !inline-flex !align-top !items-center">
                       <FaHashtag className="shrink-0 self-start mt-1" />
                       {tag}

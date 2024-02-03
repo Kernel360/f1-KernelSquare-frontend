@@ -20,6 +20,7 @@ function ReservationForMentor() {
     <section className="text-center mb-20">
       <div className="font-bold text-primary text-[28px] mb-5">SCHEDULE</div>
       <CustomCalendar
+        limit={2}
         start={targetChat.created_date}
         date={date}
         setDate={setDate}

@@ -1,8 +1,13 @@
 import { type CoffeeChatReservation } from "@/interfaces/dto/coffee-chat/get-all-coffeechat-reservation.dto"
 import { mockUsers } from "./user"
 import badge_url from "@/assets/images/badges"
+import { CoffeeChatReservationTime } from "@/interfaces/dto/coffee-chat/coffeechat-reservation-detail.dto"
 
-export const mockCoffeeChatReservations: Array<CoffeeChatReservation> = [
+export interface MockCoffeechat extends CoffeeChatReservation {
+  date_times: CoffeeChatReservationTime[]
+}
+
+export const mockCoffeeChatReservations: Array<MockCoffeechat> = [
   {
     article_id: 1,
     title: "홍주광의 알고리즘 특강",
@@ -12,10 +17,7 @@ export const mockCoffeeChatReservations: Array<CoffeeChatReservation> = [
     nickname: mockUsers[1].nickname,
     level: mockUsers[1].level,
     level_image_url: badge_url[mockUsers[1].level],
-    hashtags: [
-      { hashtag_id: 1, content: "홍주광" },
-      { hashtag_id: 2, content: "알고리즘" },
-    ],
+    hashtags: ["홍주광", "알고리즘"],
     date_times: [
       {
         reservation_id: 1,
@@ -62,6 +64,8 @@ export const mockCoffeeChatReservations: Array<CoffeeChatReservation> = [
     ],
     created_date: "2024-01-22T18:09:02",
     modified_date: "2024-01-22T18:09:02",
+    article_status: true,
+    full_check: 0,
   },
   {
     article_id: 2,
@@ -72,10 +76,7 @@ export const mockCoffeeChatReservations: Array<CoffeeChatReservation> = [
     nickname: mockUsers[2].nickname,
     level: mockUsers[2].level,
     level_image_url: badge_url[mockUsers[2].level],
-    hashtags: [
-      { hashtag_id: 3, content: "CI/CD" },
-      { hashtag_id: 4, content: "devops" },
-    ],
+    hashtags: ["홍주광", "알고리즘"],
     date_times: [
       {
         reservation_id: 3,
@@ -94,6 +95,8 @@ export const mockCoffeeChatReservations: Array<CoffeeChatReservation> = [
     ],
     created_date: "2024-01-31T18:40:02",
     modified_date: "2024-01-31T18:40:02",
+    article_status: true,
+    full_check: 0,
   },
   {
     article_id: 3,
@@ -104,10 +107,7 @@ export const mockCoffeeChatReservations: Array<CoffeeChatReservation> = [
     nickname: mockUsers[1].nickname,
     level: mockUsers[1].level,
     level_image_url: badge_url[mockUsers[1].level],
-    hashtags: [
-      { hashtag_id: 1, content: "홍주광" },
-      { hashtag_id: 2, content: "알고리즘" },
-    ],
+    hashtags: ["홍주광", "알고리즘"],
     date_times: [
       {
         reservation_id: 5,
@@ -126,6 +126,8 @@ export const mockCoffeeChatReservations: Array<CoffeeChatReservation> = [
     ],
     created_date: "2024-01-22T18:09:02",
     modified_date: "2024-01-22T18:09:02",
+    article_status: true,
+    full_check: 0,
   },
   {
     article_id: 4,
@@ -136,10 +138,7 @@ export const mockCoffeeChatReservations: Array<CoffeeChatReservation> = [
     nickname: mockUsers[2].nickname,
     level: mockUsers[2].level,
     level_image_url: badge_url[mockUsers[2].level],
-    hashtags: [
-      { hashtag_id: 3, content: "CI/CD" },
-      { hashtag_id: 4, content: "devops" },
-    ],
+    hashtags: ["홍주광", "알고리즘"],
     date_times: [
       {
         reservation_id: 7,
@@ -158,6 +157,8 @@ export const mockCoffeeChatReservations: Array<CoffeeChatReservation> = [
     ],
     created_date: "2024-01-21T18:40:02",
     modified_date: "2024-01-21T18:40:02",
+    article_status: true,
+    full_check: 0,
   },
   {
     article_id: 5,
@@ -168,10 +169,7 @@ export const mockCoffeeChatReservations: Array<CoffeeChatReservation> = [
     nickname: mockUsers[1].nickname,
     level: mockUsers[1].level,
     level_image_url: badge_url[mockUsers[1].level],
-    hashtags: [
-      { hashtag_id: 1, content: "홍주광" },
-      { hashtag_id: 2, content: "알고리즘" },
-    ],
+    hashtags: ["홍주광", "알고리즘"],
     date_times: [
       {
         reservation_id: 9,
@@ -190,6 +188,8 @@ export const mockCoffeeChatReservations: Array<CoffeeChatReservation> = [
     ],
     created_date: "2024-01-22T18:09:02",
     modified_date: "2024-01-22T18:09:02",
+    article_status: true,
+    full_check: 0,
   },
   {
     article_id: 6,
@@ -200,10 +200,7 @@ export const mockCoffeeChatReservations: Array<CoffeeChatReservation> = [
     nickname: mockUsers[2].nickname,
     level: mockUsers[2].level,
     level_image_url: badge_url[mockUsers[2].level],
-    hashtags: [
-      { hashtag_id: 3, content: "CI/CD" },
-      { hashtag_id: 4, content: "devops" },
-    ],
+    hashtags: ["홍주광", "알고리즘"],
     date_times: [
       {
         reservation_id: 11,
@@ -222,5 +219,7 @@ export const mockCoffeeChatReservations: Array<CoffeeChatReservation> = [
     ],
     created_date: "2024-01-21T18:40:02",
     modified_date: "2024-01-21T18:40:02",
+    article_status: true,
+    full_check: 0,
   },
 ]

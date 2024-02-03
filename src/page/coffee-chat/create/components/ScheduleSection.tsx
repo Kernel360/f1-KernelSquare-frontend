@@ -11,7 +11,10 @@ import type { Value } from "../../detail/reservation/CustomCalendar/Calendar.typ
 import { TimeZone } from "../CreateCoffeeChatReservationPage.types"
 import { twJoin } from "tailwind-merge"
 import { useRecoilState } from "recoil"
-import { ScheduleList } from "@/recoil/atoms/coffee-chat/schedule"
+import {
+  CoffeeChatStartDate,
+  ScheduleList,
+} from "@/recoil/atoms/coffee-chat/schedule"
 import CustomCalendar from "./CustomCalendar/CustomCalendar"
 import {
   HoverCard,
@@ -30,25 +33,9 @@ const ScheduleSection = () => {
   // 캘린더에서 선택된 날짜
   const today = new Date()
   const startDate = new Date(dayjs(today).add(7, "day").format("YYYY-MM-DD"))
-  const [date, setDate] = useState<Value>()
+  const [date, setDate] = useRecoilState(CoffeeChatStartDate)
   const [selectedDay, setSelectedDay] = useState<string>("")
-  const selectDateMap = useRef<string[]>([])
 
-  useEffect(() => {
-    selectDateMap.current = [
-      getDate({ date: date + "" }),
-      getDate({
-        date: dayjs(date + "")
-          .add(1, "day")
-          .format(),
-      }),
-      getDate({
-        date: dayjs(date + "")
-          .add(2, "day")
-          .format(),
-      }),
-    ]
-  }, [date])
   // 오전 or 오후
   const [timeZone, setTimeZone] = useState<TimeZone>(TimeZone.AM)
   // 선택된 시간대
@@ -102,12 +89,7 @@ const ScheduleSection = () => {
         </CoffeeChatSection.Label>
         <div className="flex justify-around">
           <div>
-            <CustomCalendar
-              start={startDate}
-              date={date}
-              limit={29}
-              setDate={setDate}
-            />
+            <CustomCalendar start={startDate} limit={29} />
             {!date && (
               <div className="font-bold text-primary mt-3">
                 원하는 시작 일자를 클릭하면 시간대를 설정할 수 있습니다.

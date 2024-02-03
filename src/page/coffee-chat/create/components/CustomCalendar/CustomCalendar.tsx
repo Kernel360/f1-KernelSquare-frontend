@@ -3,28 +3,19 @@
 import Calendar, { TileArgs } from "react-calendar"
 import "react-calendar/dist/Calendar.css"
 import "./Calendar.css"
-import { type Dispatch, type SetStateAction } from "react"
 import { getDay } from "@/util/getDate"
 import dayjs from "dayjs"
 import Holidays from "@/constants/holidays"
-
-type ValuePiece = Date | null
-
-type Value = ValuePiece | [ValuePiece, ValuePiece]
+import { useRecoilState } from "recoil"
+import { CoffeeChatStartDate } from "@/recoil/atoms/coffee-chat/schedule"
 
 type CustomCalendarProps = {
   start: Date
-  date: Value | undefined
   limit: number
-  setDate: Dispatch<SetStateAction<Value | undefined>>
 }
 
-const CustomCalendar = ({
-  start,
-  date,
-  limit,
-  setDate,
-}: CustomCalendarProps) => {
+const CustomCalendar = ({ start, limit }: CustomCalendarProps) => {
+  const [date, setDate] = useRecoilState(CoffeeChatStartDate)
   // 종료 날짜
   const calendarValue = new Date(dayjs(start).add(limit, "day").format())
   // 공휴일 포함 여부

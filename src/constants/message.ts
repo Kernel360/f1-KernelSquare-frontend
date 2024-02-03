@@ -1,6 +1,7 @@
 import Limitation from "./limitation"
 
 export const errorMessage = {
+  notitle: "제목을 작성해주세요",
   noContent: "본문 내용을 작성해주세요",
   introductionLimit: "최대 300자까지 입력 가능합니다.",
   imageUploadLimit: "이미지 파일 업로드는 1장만 가능합니다",
@@ -36,6 +37,7 @@ export const successMessage = {
   deleteQuestion: "질문이 삭제되었습니다.",
   cancleVote: "투표 기록이 삭제되었습니다.",
   reserveCoffeeChat: "커피챗 예약에 성공했습니다.",
+  createCoffeeChatPost: "커피챗 등록글 생성에 성공했습니다.",
 } as const
 
 export const notificationMessage = {
