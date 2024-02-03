@@ -143,8 +143,8 @@ function CreateCoffeeChatReservationPage({
         </CoffeeChatSection>
         <Spacing size={20} />
         <HashTagsSection />
-        {/* <Spacing size={20} />
-        <ScheduleSection /> */}
+        <Spacing size={20} />
+        <ScheduleSection />
         <div className="flex justify-center">
           <Button
             buttonTheme="primary"

@@ -36,10 +36,10 @@ const ScheduleSection = () => {
   const [date, setDate] = useRecoilState(CoffeeChatStartDate)
   const [selectedDay, setSelectedDay] = useState<string>("")
 
-  // 오전 or 오후
+  // // 오전 or 오후
   const [timeZone, setTimeZone] = useState<TimeZone>(TimeZone.AM)
-  // 선택된 시간대
-  const [schedule, setSchedule] = useRecoilState(ScheduleList)
+  // // 선택된 시간대
+  // const [schedule, setSchedule] = useRecoilState(ScheduleList)
 
   // 오전, 오후 선택 화살표 스타일
   const ArrowClassName = (disabled: boolean) =>
@@ -50,42 +50,7 @@ const ScheduleSection = () => {
       <div className="w-full align-top max-w-full flex-col md:flex-row md:justify-start md:items-center">
         <CoffeeChatSection.Label className="block w-max flex items-center">
           <div>멘토링 가능 일시</div>
-          <HoverCard>
-            <HoverCardTrigger className="flex items-center ml-3 cursor-pointer text-slate-300 hover:text-primary">
-              <Icons.Info />
-              <div className="font-bold text-[12px] ml-2">
-                달력에 표시되는 각 기간은 무엇을 의미하나요?
-              </div>
-            </HoverCardTrigger>
-            <HoverCardContent>
-              <div className="text-sm">
-                <div className="font-bold">
-                  🤔 달력에 표시되는 각 기간은 무엇을 의미하나요?
-                </div>
-                <div className="font-normal mt-3 flex items-center">
-                  <div className="w-[10px] h-[10px] rounded-full bg-[#00c47133] border-[1px] border-primary mr-1"></div>{" "}
-                  당일로부터 <span className="text-primary mx-1">일주일</span>{" "}
-                  뒤부터 멘토링 시작 날짜로 선택할 수 있습니다.{" "}
-                </div>
-                <div className="font-normal mt-3 flex items-center">
-                  <div className="w-[10px] h-[10px] rounded-full bg-[#fbf8ce] border-[1px] border-[orange] mr-1"></div>{" "}
-                  선택한 멘토링 날짜가 되기 전까지{" "}
-                  <span className="text-primary mx-1">6일</span> 동안 예약이
-                  진행됩니다.
-                </div>
-                <div className="font-normal mt-3 flex items-center">
-                  <div className="w-[10px] h-[10px] rounded-full bg-[lightgray] mr-1"></div>{" "}
-                  이후 예약 확정을 위해{" "}
-                  <span className="text-primary mx-1">1일</span> 이 소요됩니다.
-                </div>
-                <div className="font-normal mt-3 flex items-center">
-                  <div className="w-[10px] h-[10px] rounded-full bg-primary mr-1"></div>{" "}
-                  멘토링은 선택한 일자로부터 총{" "}
-                  <span className="text-primary mx-1">3일</span> 간 진행됩니다.
-                </div>
-              </div>
-            </HoverCardContent>
-          </HoverCard>
+          <HoverBox />
         </CoffeeChatSection.Label>
         <div className="flex justify-around">
           <div>
@@ -112,7 +77,6 @@ const ScheduleSection = () => {
               </div>
             )}
           </div>
-
           {date && (
             <div>
               <div className="flex justify-center mb-5 text-xl text-secondary font-bold text-center">
@@ -187,5 +151,46 @@ function SelectedDate({ date, addNum }: SelectedDateProps) {
           .format(),
       })}
     </SelectItem>
+  )
+}
+
+function HoverBox() {
+  return (
+    <HoverCard>
+      <HoverCardTrigger className="flex items-center ml-3 cursor-pointer text-slate-300 hover:text-primary">
+        <Icons.Info />
+        <div className="font-bold text-[12px] ml-2">
+          달력에 표시되는 각 기간은 무엇을 의미하나요?
+        </div>
+      </HoverCardTrigger>
+      <HoverCardContent>
+        <div className="text-sm">
+          <div className="font-bold">
+            🤔 달력에 표시되는 각 기간은 무엇을 의미하나요?
+          </div>
+          <div className="font-normal mt-3 flex items-center">
+            <div className="w-[10px] h-[10px] rounded-full bg-[#00c47133] border-[1px] border-primary mr-1"></div>{" "}
+            당일로부터 <span className="text-primary mx-1">일주일</span> 뒤부터
+            멘토링 시작 날짜로 선택할 수 있습니다.{" "}
+          </div>
+          <div className="font-normal mt-3 flex items-center">
+            <div className="w-[10px] h-[10px] rounded-full bg-[#fbf8ce] border-[1px] border-[orange] mr-1"></div>{" "}
+            선택한 멘토링 날짜가 되기 전까지{" "}
+            <span className="text-primary mx-1">6일</span> 동안 예약이
+            진행됩니다.
+          </div>
+          <div className="font-normal mt-3 flex items-center">
+            <div className="w-[10px] h-[10px] rounded-full bg-[lightgray] mr-1"></div>{" "}
+            이후 예약 확정을 위해 <span className="text-primary mx-1">1일</span>{" "}
+            이 소요됩니다.
+          </div>
+          <div className="font-normal mt-3 flex items-center">
+            <div className="w-[10px] h-[10px] rounded-full bg-primary mr-1"></div>{" "}
+            멘토링은 선택한 일자로부터 총{" "}
+            <span className="text-primary mx-1">3일</span> 간 진행됩니다.
+          </div>
+        </div>
+      </HoverCardContent>
+    </HoverCard>
   )
 }
