@@ -17,6 +17,7 @@ function CoffeeChatDetailPage({
   return (
     <div className="w-[80%] m-auto mt-5">
       <CoffeeChatDetailHeader
+        article_id={coffeeChatDetailPayload.article_id}
         title={coffeeChatDetailPayload.title}
         nickname={coffeeChatDetailPayload.nickname}
         member_image_url={coffeeChatDetailPayload.member_image_url}
@@ -24,7 +25,7 @@ function CoffeeChatDetailPage({
         level_image_url={coffeeChatDetailPayload.level_image_url}
         hashtags={coffeeChatDetailPayload.hashtags}
       />
-      <Spacing size={16} />
+      <Spacing size={35} />
       <CoffeeChatDetailContent content={coffeeChatDetailPayload.content} />
       <Spacing size={32} />
       <div className="w-full flex justify-center items-center">

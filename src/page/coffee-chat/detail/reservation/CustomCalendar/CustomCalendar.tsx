@@ -16,6 +16,7 @@ type CustomCalendarProps = {
   limit: number
   date: Value
   setDate: Dispatch<SetStateAction<Value>>
+  isClass: boolean
 }
 
 const CustomCalendar = ({
@@ -23,6 +24,7 @@ const CustomCalendar = ({
   limit,
   date,
   setDate,
+  isClass,
 }: CustomCalendarProps) => {
   // 종료 날짜
   const calendarValue = new Date(dayjs(start).add(limit, "day").format())
@@ -49,6 +51,39 @@ const CustomCalendar = ({
     }
   }
 
+  // 예약 가능 기간
+  const isReservationPossiblePeriod = (target: Date) => {
+    const date1 = dayjs(start, "YYYY-MM-DD")
+    const date2 = dayjs(target, "YYYY-MM-DD")
+    if (date2.diff(date1, "day") >= -7 && date2.diff(date1, "day") <= -2)
+      return true
+    return false
+  }
+
+  // 예약 확정 기간
+  const isReservationConfirmPeriod = (target: Date) => {
+    const date1 = dayjs(start, "YYYY-MM-DD")
+    const date2 = dayjs(target, "YYYY-MM-DD")
+    if (date2.diff(date1, "day") === -1) return true
+    return false
+  }
+
+  // 멘토링 기간
+  const isMentoringPeriod = (target: Date) => {
+    const date1 = dayjs(start, "YYYY-MM-DD")
+    const date2 = dayjs(target, "YYYY-MM-DD")
+    if (date2.diff(date1, "day") >= 0 && date2.diff(date1, "day") < 2)
+      return true
+    return false
+  }
+
+  const dateRangeClassName = ({ date }: TileArgs) => {
+    if (!isClass) return
+    if (isReservationPossiblePeriod(date)) return "reservation-possible"
+    if (isReservationConfirmPeriod(date)) return "reservation-confirm"
+    if (isMentoringPeriod(date)) return "mentoring"
+  }
+
   return (
     <div className="react-calendar">
       <Calendar
@@ -68,6 +103,7 @@ const CustomCalendar = ({
         maxDate={calendarValue}
         // 날짜 타일에 추가할 컨텐츠
         tileContent={showSpecificDays}
+        tileClassName={dateRangeClassName}
       />
     </div>
   )

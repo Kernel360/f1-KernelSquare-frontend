@@ -75,6 +75,7 @@ function ReservationForMentee({ reservation, created }: MenteeProps) {
           limit={2}
           date={date}
           setDate={setDate}
+          isClass={false}
         />
         <div>
           <div className="mt-3 text-xl text-secondary font-bold">

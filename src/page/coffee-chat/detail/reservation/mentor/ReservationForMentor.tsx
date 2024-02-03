@@ -32,12 +32,29 @@ function ReservationForMentor({ reservation, created }: MentorProps) {
     <section className="text-center mb-20">
       <div className="font-bold text-primary text-[28px] mb-5">SCHEDULE</div>
       <div className="flex justify-around flex-wrap">
-        <CustomCalendar
-          limit={2}
-          start={reservation[0].start_time}
-          date={date}
-          setDate={setDate}
-        />
+        <div>
+          <CustomCalendar
+            limit={2}
+            start={reservation[0].start_time}
+            date={date}
+            setDate={setDate}
+            isClass
+          />{" "}
+          <div className="flex justify-between">
+            <div className="font-normal mt-3 flex items-center">
+              <div className="w-[10px] h-[10px] rounded-full bg-[#fbf8ce] border-[1px] border-[orange] mr-1"></div>{" "}
+              <div>멘티 모집 기간</div>
+            </div>
+            <div className="font-normal mt-3 flex items-center">
+              <div className="w-[10px] h-[10px] rounded-full bg-[lightgray] mr-1"></div>{" "}
+              <div>예약 확정 기간</div>
+            </div>
+            <div className="font-normal mt-3 flex items-center">
+              <div className="w-[10px] h-[10px] rounded-full bg-primary mr-1"></div>{" "}
+              <div>멘토링 진행 기간</div>
+            </div>
+          </div>
+        </div>
         <div>
           <div className="my-3 text-xl text-secondary font-bold">
             {getDate({ date: date + "" })}
