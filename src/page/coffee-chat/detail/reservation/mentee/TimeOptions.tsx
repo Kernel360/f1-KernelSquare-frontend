@@ -55,6 +55,10 @@ const TimeOptions = ({
   }
 
   const handleRegister = (time: string, nickname: string | null) => {
+    if (!user)
+      return toast.error(errorMessage.unauthorized, {
+        position: "top-center",
+      })
     if (nickname)
       return toast.error(errorMessage.alreadyReserved, {
         position: "top-center",
@@ -84,8 +88,16 @@ const TimeOptions = ({
       [
         "flex py-2 rounded justify-center transition-colors break-all text-sm text-secondary font-semibold shadow-sm",
       ],
-      [menti_nickname && "cursor-default bg-slate-300 px-3"],
-      [!user && "cursor-default"],
+      [
+        menti_nickname === user?.nickname &&
+          "cursor-default bg-primary text-white px-2 ",
+      ],
+      [
+        menti_nickname &&
+          menti_nickname !== user?.nickname &&
+          "cursor-default bg-slate-300 px-2",
+      ],
+      [!user && "cursor-default border-[1px] border-slate-200 px-6"],
       [
         user &&
           !menti_nickname &&

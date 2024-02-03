@@ -10,6 +10,8 @@ import CustomCalendar from "../CustomCalendar/CustomCalendar"
 import { useState } from "react"
 import type { Value } from "../CustomCalendar/Calendar.types"
 import type { CoffeeChatReservationTime } from "@/interfaces/dto/coffee-chat/coffeechat-reservation-detail.dto"
+import { twJoin } from "tailwind-merge"
+import CoffeeChat from "@/components/shared/animation/CoffeeChat"
 
 interface MentorProps {
   reservation: CoffeeChatReservationTime[]
@@ -17,36 +19,64 @@ interface MentorProps {
 }
 
 function ReservationForMentor({ reservation, created }: MentorProps) {
-  const [date, setDate] = useState<Value>(new Date())
-  const params = useParams<{ id: string }>()
-  // 실제 데이터 반영 시 삭제 예정
+  const [date, setDate] = useState<Value>(new Date(reservation[0].start_time))
+  const isReserved = (nickname: string | null) =>
+    twJoin(["ml-2 text-[20px]"], [nickname && "text-primary font-bold"])
+  const target = reservation.filter(
+    ({ start_time }) =>
+      getDate({ date: date + "" }) === getDate({ date: start_time }),
+  )
+  console.log("res", reservation)
+
   return (
     <section className="text-center mb-20">
       <div className="font-bold text-primary text-[28px] mb-5">SCHEDULE</div>
-      <CustomCalendar limit={2} start={created} date={date} setDate={setDate} />
-      <div className="my-10 text-xl text-secondary font-bold">
-        {getDate({ date: date + "" })}
-      </div>
-      <div className="w-[50%] m-auto max-h-[300px] overflow-scroll px-4 py-3 border-[1px] border-primary flex justify-center gap-10">
+      <div className="flex justify-around flex-wrap">
+        <CustomCalendar
+          limit={2}
+          start={reservation[0].start_time}
+          date={date}
+          setDate={setDate}
+        />
         <div>
-          {reservation.map((time) => (
-            <div
-              key={time.reservation_id}
-              className="flex justify-around w-full flex-wrap min-h-[50px] my-5"
-            >
-              <div className="flex items-center">
-                <CircleIcons.Line />
-                <div className="ml-2 text-[20px]">
-                  {getTime(time.start_time)}
+          <div className="my-3 text-xl text-secondary font-bold">
+            {getDate({ date: date + "" })}
+          </div>
+          <div className="m-auto max-h-[300px] min-w-[456px] overflow-scroll px-4 py-3 border-[1px] border-primary flex justify-center gap-10">
+            {!target.length && (
+              <div className="w-full m-auto text-center">
+                <div className="flex justify-center mb-5">
+                  <CoffeeChat className="w-[250px]" />
                 </div>
+                <div>예약된 커피챗이</div>
+                <div>존재하지 않습니다.</div>
               </div>
-            </div>
-          ))}
-        </div>
-        <div>
-          {reservation.map((time) => (
-            <ReservedTime time={time} key={time.reservation_id} />
-          ))}
+            )}
+            {!!target.length && (
+              <div>
+                {target.map((time) => (
+                  <div
+                    key={time.reservation_id}
+                    className="flex justify-around w-full flex-wrap min-h-[50px] my-5"
+                  >
+                    <div className="flex items-center">
+                      <CircleIcons.Line />
+                      <div className={isReserved(time.menti_nickname)}>
+                        {getTime(time.start_time)}
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+            {!!target.length && (
+              <div>
+                {target.map((time) => (
+                  <ReservedTime time={time} key={time.reservation_id} />
+                ))}
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </section>
