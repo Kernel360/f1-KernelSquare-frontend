@@ -5,7 +5,6 @@
   "scripts": {
     "dev": "next dev",
     "dev:turbo": "next dev --turbo",
-    "dev:sock": "node ./src/socket/server/sockjsServer.js",
     "build": "next build",
     "start": "next start",
     "lint": "next lint"

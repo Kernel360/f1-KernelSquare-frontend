@@ -1,6 +1,6 @@
 "use client"
 
-import { ForwardedRef, HTMLAttributes, HTMLProps, forwardRef } from "react"
+import { ForwardedRef, HTMLProps, forwardRef } from "react"
 import { twJoin, twMerge } from "tailwind-merge"
 
 interface RadioProps extends HTMLProps<HTMLInputElement> {

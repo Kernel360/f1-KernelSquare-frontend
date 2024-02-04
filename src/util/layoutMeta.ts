@@ -17,9 +17,5 @@ export function matchSegmentToLayoutMetaKey(
     }
   }
 
-  if (currentSegment === "test") {
-    return layoutMeta["/"]
-  }
-
   return (layoutMeta as LayoutMetaIndexSignature)[currentSegment ?? "/"]
 }

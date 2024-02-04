@@ -9,51 +9,63 @@ import {
   useFormContext,
 } from "react-hook-form"
 
-interface UseStepFormContext<T extends FieldValues = FieldValues>
+export interface UseStepFormContext<T extends FieldValues = FieldValues>
   extends FormProviderProps<T> {
   step: string
-  steps: FunnelProps["steps"]
+  steps: Array<string>
   setStep: Dispatch<SetStateAction<string>>
 }
 
-export type FunnelStepFunctionComponentProps = UseStepFormContext
+export type FunnelStepFunctionComponentProps<
+  T extends FieldValues = FieldValues,
+> = UseStepFormContext<T>
 
 interface FunnelProps {
   steps: Array<string>
   use?: "progress-bar" | "progress-step"
+  onStepChange?: (step: string) => void
   children: Array<JSX.Element>
 }
 
-interface FunnelStepProps {
+interface FunnelStepProps<T extends FieldValues = FieldValues> {
   stepName: string
-  children: React.FC<UseStepFormContext>
+  children: (props: FunnelStepFunctionComponentProps<T>) => JSX.Element
 }
 
-function Funnel({ steps, use, children }: FunnelProps) {
+function Funnel({ steps, use, onStepChange, children }: FunnelProps) {
   const methods = useForm({ resetOptions: { keepValues: true } })
-  const [step, setStep] = useState(steps[0])
+  const [step, setFunnelStep] = useState<(typeof steps)[number]>(steps[0])
 
-  const Step = children.find((funnelStep) => step === funnelStep.props.stepName)
+  const setStep = (step: string) => {
+    setFunnelStep(step)
+
+    onStepChange && onStepChange(step)
+  }
 
   const provider = { ...methods, steps, step, setStep }
 
   return (
     <FormProvider {...provider}>
-      {use === "progress-bar" ? <Funnel.Progress /> : null}
-      {Step}
+      {use === "progress-bar" ? <Funnel.Progressbar /> : null}
+      {children}
     </FormProvider>
   )
 }
 
 export default Funnel
 
-Funnel.Step = function FunnelStep({ children }: FunnelStepProps) {
+Funnel.Step = function FunnelStep({
+  stepName,
+  children,
+}: FunnelStepProps<any>) {
   const formContext = useFormContext() as UseStepFormContext
+
+  if (formContext.step !== stepName) return null
 
   return children({ ...formContext })
 }
 
-Funnel.Progress = function FunnelProgress() {
+Funnel.Progressbar = function FunnelProgressBar() {
   const { steps, step } = useFormContext() as UseStepFormContext
 
   const stepIndex = steps.findIndex((stepName) => stepName === step) + 1
