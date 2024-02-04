@@ -79,7 +79,8 @@ export function getActiveNavigationItem({
 
   // Profile Path (/profile/**)
   if (segment === "profile") {
-    if (pathname === "/profile") return profileRoute[ProfileRouteIndex.Mypage]
+    if (pathname.startsWith("/profile"))
+      return profileRoute[ProfileRouteIndex.Mypage]
 
     return null
   }

@@ -11,6 +11,7 @@ type ErrorType =
   | "NotMatch"
   | "NotFound"
   | "Unauthorization"
+  | "InternalServer"
 
 interface ChatErrorProps {
   errorType: ErrorType
@@ -33,6 +34,21 @@ function ChatError({ errorType }: ChatErrorProps) {
         return <div>알 수 없는 에러가 발생했습니다</div>
     }
   }
+
+  useEffect(() => {
+    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+      ;(window.opener.postMessage as typeof window.postMessage)(
+        { type: "leave" } as PopupMessage,
+        window.location.origin,
+      )
+    }
+
+    window.addEventListener("beforeunload", handleBeforeUnload)
+
+    return () => {
+      window.removeEventListener("beforeunload", handleBeforeUnload)
+    }
+  }, [])
 
   return (
     <div className="flex w-full justify-center items-center">
