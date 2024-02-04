@@ -21,8 +21,7 @@ type MenuKey = "Introduction"
 
 function UserProfileMenu({ userPayload }: UserProfileMenuProps) {
   const { user } = useClientSession()
-  const isMyPage = userPayload.id == user?.member_id
-  console.log(userPayload.id, typeof userPayload.id, isMyPage)
+  const isMyPage = userPayload.member_id == user?.member_id
   const [menu, setMenu] = useState<MenuKey>("Introduction")
   const { handleIntroductionEditMode } = useIntroduction()
 
