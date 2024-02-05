@@ -11,6 +11,7 @@ type ErrorType =
   | "NotMatch"
   | "NotFound"
   | "Unauthorization"
+  | "InternalServer"
 
 interface ChatErrorProps {
   errorType: ErrorType
@@ -34,6 +35,21 @@ function ChatError({ errorType }: ChatErrorProps) {
     }
   }
 
+  useEffect(() => {
+    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+      ;(window.opener.postMessage as typeof window.postMessage)(
+        { type: "leave" } as PopupMessage,
+        process.env.NEXT_PUBLIC_SITE_URL!,
+      )
+    }
+
+    window.addEventListener("beforeunload", handleBeforeUnload)
+
+    return () => {
+      window.removeEventListener("beforeunload", handleBeforeUnload)
+    }
+  }, [])
+
   return (
     <div className="flex w-full justify-center items-center">
       <ChatErrorComponent />
@@ -53,7 +69,7 @@ ChatError.LoginRequired = function ChatLoginRequired() {
     if (isPopup) {
       ;(window.opener.postMessage as typeof window.postMessage)(
         { type: "loginRequired" } as PopupMessage,
-        window.location.origin,
+        process.env.NEXT_PUBLIC_SITE_URL!,
       )
 
       return

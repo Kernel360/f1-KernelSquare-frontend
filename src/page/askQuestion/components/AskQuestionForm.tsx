@@ -109,7 +109,6 @@ function AskQuestionForm({
 
   const { clearSelectedTagList } = useSelectTagList({
     uniqueKey: editMode,
-    initialTagList: techTagList,
     initialSelectedTagList: initialValues?.skills?.length
       ? initialValues.skills
       : undefined,
@@ -363,7 +362,6 @@ function AskQuestionForm({
             </AskQuestionSection.Label>
             <SelectableTagList.SummarizedSelectedTagList
               uniqueKey={editMode}
-              initialTagList={techTagList}
               {...(initialValues?.skills && {
                 initialSelectedTagList: [...initialValues.skills],
               })}

@@ -5,6 +5,7 @@ const queryKey = {
   answer: "answer",
   user: "user",
   profile: "profile",
+  chat: "chat",
 }
 
 export default queryKey

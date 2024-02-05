@@ -1,13 +1,12 @@
 "use client"
 
 import { selectedTagListAtomFamily } from "@/recoil/atoms/tag"
-import { useCallback } from "react"
+import { useCallback, useEffect } from "react"
 import { useRecoilState } from "recoil"
 import type { TechTag } from "@/interfaces/tech-tag"
 
 export interface TagListAtomParam {
   uniqueKey: string
-  initialTagList?: Array<TechTag>
   initialSelectedTagList?: Array<TechTag>
 }
 
@@ -21,93 +20,52 @@ export type UseSelectTagListOption = TagListAtomParam & SelectCallback
 
 export function useSelectTagList({
   uniqueKey,
-  initialTagList,
   initialSelectedTagList,
   callback,
 }: UseSelectTagListOption) {
-  const [tagList, setTagList] = useRecoilState(
+  const [selectedTagList, setSelectedTagList] = useRecoilState(
     selectedTagListAtomFamily({
       uniqueKey,
-      initialTagList,
       initialSelectedTagList,
     }),
   )
 
   const select = useCallback(
     (tag: TechTag) => {
-      setTagList((prev) => {
+      setSelectedTagList((prev) => {
         if (callback) {
-          setTimeout(() => callback([...prev.selectedTagList, tag]), 0)
+          setTimeout(() => callback([...prev, tag]), 0)
         }
 
-        return {
-          ...prev,
-          selectedTagList: [...prev.selectedTagList, tag],
-        }
+        return [...prev, tag]
       })
     },
-    [setTagList, callback],
+    [setSelectedTagList, callback],
   )
 
   const unselect = useCallback(
     (tag: TechTag) => {
-      setTagList((prev) => {
+      setSelectedTagList((prev) => {
         if (callback) {
           setTimeout(() => {
-            callback(
-              prev.selectedTagList.filter((selectedTag) => selectedTag !== tag),
-            )
+            callback(prev.filter((selectedTag) => selectedTag !== tag))
           }, 0)
         }
 
-        return {
-          ...prev,
-          selectedTagList: prev.selectedTagList.filter(
-            (selectedTag) => selectedTag !== tag,
-          ),
-        }
+        return prev.filter((selectedTag) => selectedTag !== tag)
       })
     },
-    [setTagList, callback],
-  )
-
-  const searchTagList = useCallback(
-    (keyword: string) => {
-      if (!keyword) {
-        setTagList((prev) => ({
-          ...prev,
-          tagList: initialTagList ?? [],
-        }))
-
-        return
-      }
-
-      const result = initialTagList?.filter((tag) => {
-        const regExp = new RegExp(`${keyword}`, "gi")
-
-        return regExp.test(tag)
-      })
-
-      setTagList((prev) => ({
-        ...prev,
-        tagList: result ?? [],
-      }))
-    },
-    [initialTagList, setTagList],
+    [setSelectedTagList, callback],
   )
 
   const clearSelectedTagList = useCallback(() => {
-    setTagList((prev) => ({
-      ...prev,
-      selectedTagList: [],
-    }))
-  }, [setTagList])
+    setSelectedTagList((prev) => [])
+  }, [setSelectedTagList])
 
   return {
-    tagList,
+    selectedTagList,
     select,
     unselect,
-    searchTagList,
     clearSelectedTagList,
   }
 }

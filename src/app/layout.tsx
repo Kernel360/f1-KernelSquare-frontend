@@ -1,4 +1,5 @@
 import type { Metadata } from "next"
+import dynamicComponent from "next/dynamic"
 import "./globals.css"
 import "rc-dropdown/assets/index.css"
 import "react-loading-skeleton/dist/skeleton.css"
@@ -21,6 +22,11 @@ export const metadata: Metadata = {
   },
 }
 
+const PopupEventListener = dynamicComponent(
+  () => import("@/components/layout/PopupEventListener"),
+  { ssr: false },
+)
+
 export default function RootLayout({
   children,
 }: {
@@ -32,6 +38,7 @@ export default function RootLayout({
         <RecoilProvider>
           <ReactQueryProvider>
             <MSW />
+            <PopupEventListener />
             <ScrollTop />
             <Layout>{children}</Layout>
             <Modal />

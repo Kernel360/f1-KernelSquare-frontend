@@ -18,9 +18,10 @@ import Button from "@/components/shared/button/Button"
 import { IoIosArrowDown } from "react-icons/io"
 import { IoClose } from "react-icons/io5"
 import { debounce, throttle } from "lodash-es"
-import type { SessionPayload } from "@/recoil/atoms/user"
 import { useRouter, useSearchParams } from "next/navigation"
 import { PopupMessage } from "@/page/coffee-chat/chat/ChatRoomHeader"
+import { getKorDayjs } from "@/util/getDate"
+import type { SessionPayload } from "@/recoil/atoms/user"
 
 interface MessagesProps {
   roomKey: string
@@ -29,6 +30,8 @@ interface MessagesProps {
 
 function Messages({ roomKey, user }: MessagesProps) {
   const { messages } = useRecoilValue(RoomAtomFamily({ roomKey }))
+
+  console.log({ messages })
 
   useEffect(() => {
     const scrollingElement = document.scrollingElement
@@ -74,6 +77,7 @@ Messages.Message = function Message({
   message,
   sender,
   user,
+  send_time,
 }: MessagePayload & { user: MessagesProps["user"] }) {
   const { replace } = useRouter()
 
@@ -87,11 +91,14 @@ Messages.Message = function Message({
     me ? "justify-end" : "justify-start",
   ])
 
-  const messageWrapperClassNames = twMerge(["flex gap-2 max-w-[70%]"])
+  const messageWrapperClassNames = twMerge([
+    "flex gap-2 max-w-[70%]",
+    me ? "flex-row-reverse" : "flex-row",
+  ])
 
   const profileClassNames = twMerge([
     "w-8 h-8 self-start shrink-0",
-    me ? "order-2" : "order-1",
+    // me ? "order-2" : "order-1",
   ])
 
   const messageClassNames = twMerge([
@@ -155,7 +162,7 @@ Messages.Message = function Message({
           className={profileClassNames}
           profileImage={me ? user.image_url : null}
         />
-        <div className={`flex flex-col ${me ? "order-1" : "order-2"}`}>
+        <div className={`flex flex-col`}>
           <div
             className={`flex items-center gap-1 mb-1 text-secondary ${
               me ? "justify-end" : "justify-start"
@@ -171,7 +178,18 @@ Messages.Message = function Message({
           </div>
           <MessageContent />
         </div>
+        {send_time ? <Messages.Time formatTime={send_time} /> : ""}
       </div>
+    </div>
+  )
+}
+
+Messages.Time = function MessageTime({ formatTime }: { formatTime: string }) {
+  return (
+    <div className="flex shrink-0 self-end">
+      <span className="text-secondary text-[10px] font-bold">
+        {getKorDayjs(formatTime).format("Ahh:mm")}
+      </span>
     </div>
   )
 }

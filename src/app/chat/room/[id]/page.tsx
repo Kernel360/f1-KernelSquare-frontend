@@ -5,8 +5,8 @@ import dynamic from "next/dynamic"
 import { getServerSession } from "@/util/auth"
 import { enterChatRoom } from "@/service/coffee-chat"
 import ChatError from "../../_components/ChatError"
-import type { APIResponse } from "@/interfaces/dto/api-response"
 import { ApiStatus } from "@/constants/response/api"
+import type { APIResponse } from "@/interfaces/dto/api-response"
 
 interface EnterRoomErrorCause {
   type: "nonAcitve" | "notMatch"
@@ -84,7 +84,8 @@ export default async function CoffeeChatRoomPage({
       room_id: roomId,
     })
 
-    const { active, room_key, article_title } = enterChatRoomResponse.data.data!
+    const { active, room_key, article_title, expiration_time } =
+      enterChatRoomResponse.data.data!
 
     if (!active) {
       throw new EnterRoomError({ type: "nonAcitve" })
@@ -94,16 +95,16 @@ export default async function CoffeeChatRoomPage({
       throw new EnterRoomError({ type: "notMatch" })
     }
 
-    console.log({ active, room_key, article_title })
+    console.log({ active, room_key, article_title, expiration_time })
 
     return (
       <ChatRoom
         serverUrl={`${process.env.NEXT_PUBLIC_WS}`}
-        // serverUrl={`http://localhost:8080`}
         roomId={roomId}
         roomKey={room_key}
         articleTitle={articleTitle}
         user={user}
+        expiration_time={expiration_time}
       />
     )
   } catch (error) {
@@ -128,7 +129,7 @@ export default async function CoffeeChatRoomPage({
         return <ChatError errorType="Unauthorization" />
       }
 
-      return <>에러</>
+      return <ChatError errorType="InternalServer" />
     }
 
     if (error instanceof EnterRoomError) {
@@ -138,6 +139,6 @@ export default async function CoffeeChatRoomPage({
       if (type === "notMatch") return <ChatError errorType="NotMatch" />
     }
 
-    return <>에러</>
+    return <ChatError errorType="InternalServer" />
   }
 }

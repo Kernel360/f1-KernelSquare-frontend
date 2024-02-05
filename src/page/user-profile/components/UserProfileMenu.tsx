@@ -10,6 +10,8 @@ import { useClientSession } from "@/hooks/useClientSession"
 import { Icons } from "@/components/icons/Icons"
 import useIntroduction from "../hooks/useIntroduction"
 import Introduction from "./introduction/Introduction"
+import { useParams } from "next/navigation"
+import { twMerge } from "tailwind-merge"
 
 interface UserProfileMenuProps {
   userPayload: UserPayload
@@ -81,8 +83,20 @@ UserProfileMenu.MenuContentWrapper = function MenuContentWrapper({
 }: {
   children: React.ReactNode
 }) {
+  const { user } = useClientSession()
+  const params = useParams()
+
+  const isMypage = Number(params.id) === user?.member_id
+
+  const classNames = twMerge([
+    "sm:min-h-[calc(584px+(100dvh-732px))]",
+    isMypage
+      ? "min-h-[calc(581px+(100dvh-796px))]"
+      : "min-h-[calc(581px+(100dvh-806px))]",
+  ])
+
   return (
-    <div className="min-h-[calc(581px+(100dvh-806px))] sm:min-h-[calc(584px+(100dvh-732px))]">
+    <div className={classNames}>
       <div className="bg-white rounded-lg border border-colorsGray h-max p-4">
         {children}
       </div>

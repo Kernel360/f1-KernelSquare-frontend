@@ -1,3 +1,5 @@
+import Mentee from "@/components/shared/animation/Mentee"
+import { errorMessage } from "@/constants/message"
 import CreateCoffeeChatReservationPage from "@/page/coffee-chat/create/CreateCoffeeChatReservationPage"
 import { getServerSession } from "@/util/auth"
 import { Metadata } from "next"
@@ -14,11 +16,25 @@ export default async function CreateCoffeeChatPage() {
   // [TODO]
   try {
     if (!user) {
-      return <div>로그인 필요</div>
+      return (
+        <div className="text-center">
+          <div className="w-[400px] m-auto mt-[100px]">
+            <Mentee />
+          </div>
+          <div className="text-xl">{errorMessage.unauthorized}.</div>
+        </div>
+      )
     }
 
     if (!user.roles.includes("ROLE_MENTOR")) {
-      return <div>멘토 권한 없음</div>
+      return (
+        <div className="text-center">
+          <div className="w-[400px] m-auto mt-[100px]">
+            <Mentee />
+          </div>
+          <div className="text-xl">멘토에게만 허용된 기능입니다.</div>
+        </div>
+      )
     }
 
     return <CreateCoffeeChatReservationPage />

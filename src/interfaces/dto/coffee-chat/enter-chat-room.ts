@@ -10,6 +10,7 @@ export interface EnterChatRoomPayload {
   article_title: string
   room_key: string
   active: boolean
+  expiration_time: string
 }
 
 export interface EnterChatRoomResponse

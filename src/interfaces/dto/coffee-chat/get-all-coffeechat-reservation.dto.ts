@@ -11,21 +11,27 @@ export const enum CoffeeChatReservationStatus {
   UnAvailable = 1,
 }
 
+export interface CoffeeChatReservationHashTag {
+  hashtag_id: number
+  content: string
+}
+
 export interface GetCoffeeChatReservationListRequest extends PaginationParams {}
 
 export interface CoffeeChatReservation {
   article_id: number
   member_id: number
   nickname: string
-  member_image_url: string
+  member_image_url: string | null
   level: number
   level_image_url: string
   title: string
   content: string
-  hash_tag_list: Array<string>
+  hash_tag_list: string[]
   created_date: string
   modified_date: string
-  full_check: CoffeeChatReservationStatus
+  article_status: boolean
+  full_check: number
 }
 
 export interface CoffeeChatReservationListPayload {

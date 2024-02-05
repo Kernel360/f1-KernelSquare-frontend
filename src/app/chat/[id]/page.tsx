@@ -5,6 +5,7 @@ import { AxiosError } from "axios"
 import { Metadata } from "next"
 import { notFound } from "next/navigation"
 import type { APIResponse } from "@/interfaces/dto/api-response"
+import NotFound from "@/app/not-found"
 
 interface CoffeeChatDetailPageProps {
   params: {
@@ -60,9 +61,11 @@ export default async function CoffeeChatDetailPage({
   try {
     const res = await getCoffeeChatReservationDetail({ postId: id })
 
+    if (!res.data.data) return <NotFound />
+
     return (
       <div className="break-all">
-        <ChatDetailPage coffeeChatDetailPayload={res.data.data!} />
+        <ChatDetailPage coffeeChatDetailPayload={res.data.data} />
       </div>
     )
   } catch (error) {

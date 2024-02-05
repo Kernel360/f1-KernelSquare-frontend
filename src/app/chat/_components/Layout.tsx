@@ -1,10 +1,14 @@
 "use client"
 
+import { Icons } from "@/components/icons/Icons"
 import CupRunning from "@/components/shared/animation/CupRunning"
+import Button from "@/components/shared/button/Button"
 import LabelDivider from "@/components/shared/divider/LabelDivider"
+import { useClientSession } from "@/hooks/useClientSession"
 import CoffeeChatWelcome from "@/page/coffee-chat/main/CoffeeChatWelcome"
 import { keyframes } from "@emotion/react"
 import styled from "@emotion/styled"
+import Link from "next/link"
 import { usePathname, useSearchParams } from "next/navigation"
 import { twMerge } from "tailwind-merge"
 
@@ -13,6 +17,8 @@ interface CoffeeChatPageLayoutProps {
 }
 
 function CoffeeChatPageLayout({ children }: CoffeeChatPageLayoutProps) {
+  const { user } = useClientSession()
+
   const pathname = usePathname()
   const searchParmas = useSearchParams()
 
@@ -39,6 +45,15 @@ function CoffeeChatPageLayout({ children }: CoffeeChatPageLayoutProps) {
     return "커피챗 페이지"
   }
 
+  if (pathname.startsWith("/chat/") && !pathname.includes("room"))
+    return (
+      <div>
+        <div className="mt-5 w-[calc(100%-12px)] sm:w-[calc(100%-22px)] lg:w-[calc(100%-42px)] mx-auto">
+          {children}
+        </div>
+      </div>
+    )
+
   return (
     <div className="flex">
       <div className="relative box-border flex-1">
@@ -58,6 +73,11 @@ function CoffeeChatPageLayout({ children }: CoffeeChatPageLayoutProps) {
               <CoffeeChatWelcome />
             </div>
           </div>
+          {user?.roles.includes("ROLE_MENTOR") ? (
+            <div className="flex w-full justify-center items-center">
+              <ChatCreateButton />
+            </div>
+          ) : null}
           <LabelDivider label={label()} />
           <div id="chat-room-header"></div>
           <div id="chat-pagination"></div>
@@ -73,6 +93,17 @@ function CoffeeChatPageLayout({ children }: CoffeeChatPageLayoutProps) {
 }
 
 export default CoffeeChatPageLayout
+
+function ChatCreateButton() {
+  return (
+    <Link href={"/chat/create"}>
+      <Button buttonTheme="secondary" className="gap-2.5">
+        <Icons.PostQuestion className="text-xl" />
+        커피챗 생성하기
+      </Button>
+    </Link>
+  )
+}
 
 const cupMoving = keyframes`
   from {

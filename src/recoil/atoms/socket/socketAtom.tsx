@@ -5,7 +5,7 @@ export interface MessagePayload {
   room_key: string
   sender: string
   message: string
-  sendTime?: string
+  send_time?: string
 }
 
 interface Room {
