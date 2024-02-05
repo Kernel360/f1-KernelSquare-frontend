@@ -21,16 +21,16 @@ import CoffeeChatSection from "./components/CoffeeChatSection"
 import HashTagsSection from "./components/HashTagsSection"
 import ScheduleSection from "./components/ScheduleSection"
 import { CoffeeChatQueries } from "@/react-query/coffee-chat"
-import { useRecoilState, useRecoilValue } from "recoil"
+import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil"
 import { HashTagList } from "@/recoil/atoms/coffee-chat/hashtags"
 import { errorMessage } from "@/constants/message"
 import dynamic from "next/dynamic"
 import {
   CoffeeChatStartDate,
   ScheduleListAtomFamily,
+  TimeCount,
 } from "@/recoil/atoms/coffee-chat/schedule"
 import dayjs from "dayjs"
-import { getDate } from "@/util/getDate"
 
 const MdEditor = dynamic(() => import("./components/MdEditor"), {
   ssr: false,
@@ -44,6 +44,7 @@ function CreateCoffeeChatReservationPage({
   const [hash_tags, setHash_tags] = useRecoilState(HashTagList)
   const queryClient = useQueryClient()
   const { replace } = useRouter()
+  const setTimeCount = useSetRecoilState(TimeCount)
 
   const { user } = useClientSession()
 
@@ -63,11 +64,9 @@ function CreateCoffeeChatReservationPage({
 
   const date = useRecoilValue(CoffeeChatStartDate)
   const useGetScheduleList = (addNum: number) => {
-    const targetDay = getDate({
-      date: dayjs(date + "")
-        .add(addNum, "day")
-        .format(),
-    })
+    const targetDay = dayjs(date + "")
+      .add(addNum, "day")
+      .format("YYYY년MM월DD일")
     const targetList = useRecoilValue(ScheduleListAtomFamily(targetDay))
     return targetList.schedule.map(
       (time) =>
@@ -76,10 +75,10 @@ function CreateCoffeeChatReservationPage({
           .format("YYYY-MM-DD")}T${time}:00`,
     )
   }
-  const first = useGetScheduleList(0)
-  const twice = useGetScheduleList(1)
-  const third = useGetScheduleList(2)
-  console.log(first.concat(twice).concat(third))
+  const first: string[] = useGetScheduleList(0)
+  const twice: string[] = useGetScheduleList(1)
+  const third: string[] = useGetScheduleList(2)
+  setTimeCount(first.concat(twice).concat(third).length)
 
   const onSubmit = async (data: CoffeeChatFormData) => {
     if (!user)

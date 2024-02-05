@@ -6,8 +6,6 @@ import "./Calendar.css"
 import { getDay } from "@/util/getDate"
 import dayjs from "dayjs"
 import Holidays from "@/constants/holidays"
-import { useRecoilState } from "recoil"
-import { CoffeeChatStartDate } from "@/recoil/atoms/coffee-chat/schedule"
 import { Value } from "./Calendar.types"
 import { Dispatch, SetStateAction } from "react"
 

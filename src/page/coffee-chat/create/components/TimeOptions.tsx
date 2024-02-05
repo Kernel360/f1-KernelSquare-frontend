@@ -1,22 +1,34 @@
 "use client"
 
 import type { TimeOptionsProps } from "../CreateCoffeeChatReservationPage.types"
-import { useRecoilState } from "recoil"
-import { ScheduleListAtomFamily } from "@/recoil/atoms/coffee-chat/schedule"
+import { useRecoilState, useRecoilValue } from "recoil"
+import {
+  ScheduleListAtomFamily,
+  SelectedDate,
+  TimeCount,
+} from "@/recoil/atoms/coffee-chat/schedule"
 import { twJoin } from "tailwind-merge"
 import Button from "@/components/shared/button/Button"
+import { toast } from "react-toastify"
+import { errorMessage } from "@/constants/message"
+import Limitation from "@/constants/limitation"
 
-const TimeOptions = ({ date, selectedDay }: TimeOptionsProps) => {
+const TimeOptions = ({ date }: TimeOptionsProps) => {
+  const selectedDate = useRecoilValue(SelectedDate)
   const [schedulelist, setSchedulelist] = useRecoilState(
-    ScheduleListAtomFamily(selectedDay),
+    ScheduleListAtomFamily(selectedDate),
   )
-
+  const timeCount = useRecoilValue(TimeCount)
   const handleRegister = (time: string) => {
     if (schedulelist.schedule.includes(time)) {
       setSchedulelist({
         schedule: schedulelist.schedule.filter((el) => el !== time),
       })
     } else {
+      if (timeCount === Limitation.mentoring_time)
+        return toast.error(errorMessage.overtimeCntLimit, {
+          position: "top-center",
+        })
       setSchedulelist({ schedule: [...schedulelist.schedule, time] })
     }
   }

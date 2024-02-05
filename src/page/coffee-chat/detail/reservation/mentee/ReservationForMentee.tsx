@@ -5,7 +5,7 @@ import { useProgressModal } from "@/hooks/useProgressModal"
 import { useParams } from "next/navigation"
 import { MockReservations } from "@/mocks/db/coffee-chat"
 import CustomCalendar from "../CustomCalendar/CustomCalendar"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import type { Value } from "../CustomCalendar/Calendar.types"
 import {
   CoffeeChatReservationDetailPayload,
@@ -19,6 +19,7 @@ import { TimeZone } from "@/page/coffee-chat/create/CreateCoffeeChatReservationP
 import TimeOptions from "./TimeOptions"
 import { FaCalendarAlt } from "react-icons/fa"
 import useReservationForMentee from "./hooks/useReservationForMentee"
+import { revalidatePage } from "@/util/actions/revalidatePage"
 
 interface MenteeProps {
   reservation: CoffeeChatReservationTime[]
@@ -44,6 +45,12 @@ function ReservationForMentee({ reservation, created }: MenteeProps) {
     twJoin([disabled && "text-slate-200"], [!disabled && "cursor-pointer"])
 
   const { ProgressModalView } = useProgressModal()
+
+  useEffect(() => {
+    return () => {
+      revalidatePage("/chat", "page")
+    }
+  }, [])
 
   return (
     <section className="my-20 text-center">

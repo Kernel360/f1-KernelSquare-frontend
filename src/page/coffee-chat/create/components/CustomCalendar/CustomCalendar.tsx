@@ -3,13 +3,15 @@
 import Calendar, { TileArgs } from "react-calendar"
 import "react-calendar/dist/Calendar.css"
 import "./Calendar.css"
-import { getDay } from "@/util/getDate"
+import { getDate, getDay } from "@/util/getDate"
 import dayjs from "dayjs"
 import Holidays from "@/constants/holidays"
 import { useRecoilState } from "recoil"
-import { CoffeeChatStartDate } from "@/recoil/atoms/coffee-chat/schedule"
+import {
+  CoffeeChatStartDate,
+  SelectedDate,
+} from "@/recoil/atoms/coffee-chat/schedule"
 import { Value } from "./Calendar.types"
-import { MouseEvent } from "react"
 
 type CustomCalendarProps = {
   start: Date
@@ -18,6 +20,7 @@ type CustomCalendarProps = {
 
 const CustomCalendar = ({ start, limit }: CustomCalendarProps) => {
   const [date, setDate] = useRecoilState(CoffeeChatStartDate)
+  const [selectedDate, setSelectedDate] = useRecoilState(SelectedDate)
   // 종료 날짜
   const calendarValue = new Date(dayjs(start).add(limit, "day").format())
   // 공휴일 포함 여부
@@ -77,9 +80,13 @@ const CustomCalendar = ({ start, limit }: CustomCalendarProps) => {
 
   // onChange 함수
   const handleDateChange = (value: Value) => {
-    console.log(date, value)
-    if (date === value) setDate(undefined)
+    if (getDate({ date: date + "" }) === getDate({ date: value + "" })) {
+      setDate(undefined)
+
+      return
+    }
     setDate(value)
+    setSelectedDate(dayjs(value + "").format("YYYY년MM월DD일"))
   }
 
   return (

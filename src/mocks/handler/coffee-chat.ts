@@ -163,6 +163,14 @@ export const coffeeChatHandler = [
           )
         }
 
+        const payload = {
+          ...reservation,
+          hashtags: reservation.hashtags.map((hashTag, index) => ({
+            hashtag_id: index + 1,
+            content: hashTag,
+          })),
+        } as NonNullable<GetCoffeeChatReservationDetailResponse["data"]>
+
         const { Code, HttpStatus } =
           ApiStatus.CoffeeChat.getCoffeeChatPostDetail.Ok
 
@@ -171,7 +179,7 @@ export const coffeeChatHandler = [
             code: Code,
             msg: "예약창을 조회했습니다.",
             data: {
-              ...reservation,
+              ...payload,
             },
           },
           { status: HttpStatus },

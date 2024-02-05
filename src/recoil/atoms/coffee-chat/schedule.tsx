@@ -1,5 +1,4 @@
 import { Value } from "@/page/coffee-chat/create/components/CustomCalendar/Calendar.types"
-import dayjs from "dayjs"
 import { atom, atomFamily } from "recoil"
 
 export const ScheduleList = atom<string[]>({
@@ -26,4 +25,9 @@ export const CoffeeChatStartDate = atom<Value | undefined>({
 export const SelectedDate = atom<string>({
   key: "selected-date-atom",
   default: "",
+})
+
+export const TimeCount = atom<number>({
+  key: "selected-time-count",
+  default: 0,
 })

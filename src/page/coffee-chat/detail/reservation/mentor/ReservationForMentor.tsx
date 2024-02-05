@@ -7,11 +7,12 @@ import Image from "next/image"
 import { mockCoffeeChatReservations } from "@/mocks/db/coffee-chat"
 import { useParams, useRouter } from "next/navigation"
 import CustomCalendar from "../CustomCalendar/CustomCalendar"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import type { Value } from "../CustomCalendar/Calendar.types"
 import type { CoffeeChatReservationTime } from "@/interfaces/dto/coffee-chat/coffeechat-reservation-detail.dto"
 import { twJoin } from "tailwind-merge"
 import CoffeeChat from "@/components/shared/animation/CoffeeChat"
+import { revalidatePage } from "@/util/actions/revalidatePage"
 
 interface MentorProps {
   reservation: CoffeeChatReservationTime[]
@@ -27,6 +28,12 @@ function ReservationForMentor({ reservation, created }: MentorProps) {
       getDate({ date: date + "" }) === getDate({ date: start_time }),
   )
   console.log("res", reservation)
+
+  useEffect(() => {
+    return () => {
+      revalidatePage("/chat", "page")
+    }
+  }, [])
 
   return (
     <section className="text-center mb-20">

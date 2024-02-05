@@ -2,19 +2,17 @@
 
 import dayjs from "dayjs"
 import CoffeeChatSection from "./CoffeeChatSection"
-import { getDate } from "@/util/getDate"
 import { DirectionIcons, Icons } from "@/components/icons/Icons"
 import TimeOptions from "./TimeOptions"
 import { AM, PM } from "@/constants/timeOptions"
-import { useEffect, useRef, useState } from "react"
-import type { Value } from "../../detail/reservation/CustomCalendar/Calendar.types"
+import { useState } from "react"
 import { TimeZone } from "../CreateCoffeeChatReservationPage.types"
 import { twJoin } from "tailwind-merge"
-import { useRecoilState, useSetRecoilState } from "recoil"
+import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil"
 import {
   CoffeeChatStartDate,
-  ScheduleList,
-  ScheduleListAtomFamily,
+  SelectedDate,
+  TimeCount,
 } from "@/recoil/atoms/coffee-chat/schedule"
 import CustomCalendar from "./CustomCalendar/CustomCalendar"
 import {
@@ -34,13 +32,12 @@ const ScheduleSection = () => {
   // 캘린더에서 선택된 날짜
   const today = new Date()
   const startDate = new Date(dayjs(today).add(7, "day").format("YYYY-MM-DD"))
-  const [date, setDate] = useRecoilState(CoffeeChatStartDate)
-  const [selectedDay, setSelectedDay] = useState<string>("")
+  const date = useRecoilValue(CoffeeChatStartDate)
+  const setSelectedDay = useSetRecoilState(SelectedDate)
+  const timeCount = useRecoilValue(TimeCount)
 
   // // 오전 or 오후
   const [timeZone, setTimeZone] = useState<TimeZone>(TimeZone.AM)
-  // // 선택된 시간대
-  // const [schedule, setSchedule] = useRecoilState(ScheduleList)
 
   // 오전, 오후 선택 화살표 스타일
   const ArrowClassName = (disabled: boolean) =>
@@ -62,7 +59,7 @@ const ScheduleSection = () => {
               </div>
             )}
             {date && (
-              <div>
+              <div className="flex justify-between">
                 <div className="font-normal mt-3 flex items-center">
                   <div className="w-[10px] h-[10px] rounded-full bg-[#fbf8ce] border-[1px] border-[orange] mr-1"></div>{" "}
                   <div>멘티 모집 기간</div>
@@ -81,18 +78,42 @@ const ScheduleSection = () => {
           {date && (
             <div>
               <div className="flex justify-center mb-5 text-xl text-secondary font-bold text-center">
-                <Select onValueChange={(day: string) => setSelectedDay(day)}>
-                  <SelectTrigger className="w-[180px]">
-                    <SelectValue placeholder="날짜 선택" />
+                <Select
+                  onValueChange={(day: string) => {
+                    setSelectedDay(day)
+                  }}
+                  defaultValue={dayjs(date + "").format("YYYY년MM월DD일")}
+                >
+                  <SelectTrigger className="w-[180px] text-center">
+                    <SelectValue
+                      className="flex flex-1"
+                      placeholder={dayjs(date + "").format("YYYY년MM월DD일")}
+                    />
                   </SelectTrigger>
                   <SelectContent>
-                    {Array.from({ length: 3 }).map((_, i) => (
-                      <SelectedDate
-                        key={Math.random() * 1000}
-                        date={date}
-                        addNum={i}
-                      />
-                    ))}
+                    <SelectItem
+                      value={dayjs(date + "").format("YYYY년MM월DD일")}
+                    >
+                      {dayjs(date + "").format("YYYY년MM월DD일")}
+                    </SelectItem>
+                    <SelectItem
+                      value={dayjs(date + "")
+                        .add(1, "day")
+                        .format("YYYY년MM월DD일")}
+                    >
+                      {dayjs(date + "")
+                        .add(1, "day")
+                        .format("YYYY년MM월DD일")}
+                    </SelectItem>
+                    <SelectItem
+                      value={dayjs(date + "")
+                        .add(2, "day")
+                        .format("YYYY년MM월DD일")}
+                    >
+                      {dayjs(date + "")
+                        .add(2, "day")
+                        .format("YYYY년MM월DD일")}
+                    </SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -101,22 +122,29 @@ const ScheduleSection = () => {
                   className={ArrowClassName(timeZone === TimeZone.AM)}
                   onClick={() => setTimeZone(TimeZone.AM)}
                 />
-                {timeZone === "AM" && (
-                  <div className="text-center">
-                    <div className="font-bold text-primary text-lg mb-5">
-                      오전
+                <div>
+                  {timeZone === "AM" && (
+                    <div className="text-center">
+                      <div className="font-bold text-primary text-lg mb-5">
+                        오전
+                      </div>
+                      <TimeOptions date={AM} />
                     </div>
-                    <TimeOptions date={AM} selectedDay={selectedDay} />
-                  </div>
-                )}
-                {timeZone === "PM" && (
-                  <div className="text-center">
-                    <div className="font-bold text-primary text-lg mb-5">
-                      오후
+                  )}
+                  {timeZone === "PM" && (
+                    <div className="text-center">
+                      <div className="font-bold text-primary text-lg mb-5">
+                        오후
+                      </div>
+                      <TimeOptions date={PM} />
                     </div>
-                    <TimeOptions date={PM} selectedDay={selectedDay} />
+                  )}
+                  <div className="mt-3 text-right">
+                    선택한 멘토링 시간:{" "}
+                    <span className="font-bold text-primary">{timeCount}</span>
+                    /10개
                   </div>
-                )}
+                </div>
                 <DirectionIcons.Right
                   className={ArrowClassName(timeZone === TimeZone.PM)}
                   onClick={() => setTimeZone(TimeZone.PM)}
@@ -132,36 +160,13 @@ const ScheduleSection = () => {
 
 export default ScheduleSection
 
-interface SelectedDateProps {
-  date: Value
-  addNum: number
-}
-
-function SelectedDate({ date, addNum }: SelectedDateProps) {
-  return (
-    <SelectItem
-      value={getDate({
-        date: dayjs(date + "")
-          .add(addNum, "day")
-          .format(),
-      })}
-    >
-      {getDate({
-        date: dayjs(date + "")
-          .add(addNum, "day")
-          .format(),
-      })}
-    </SelectItem>
-  )
-}
-
 function HoverBox() {
   return (
     <HoverCard>
       <HoverCardTrigger className="flex items-center ml-3 cursor-pointer text-slate-300 hover:text-primary">
         <Icons.Info />
         <div className="font-bold text-[12px] ml-2">
-          달력에 표시되는 각 기간은 무엇을 의미하나요?
+          커서를 올려 각 기간이 무엇을 의미하는지 확인해보세요
         </div>
       </HoverCardTrigger>
       <HoverCardContent>
