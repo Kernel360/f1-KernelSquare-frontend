@@ -16,6 +16,7 @@ import { Editor } from "@toast-ui/react-editor"
 import type { RefObject } from "react"
 import { toast } from "react-toastify"
 import { useRecoilState, useSetRecoilState } from "recoil"
+import { useAnswerToastUiEditorImageUploadHook } from "../../hooks/useToastUiEditorImageUploadHook"
 
 export interface EditorProps {
   answerId?: number
@@ -38,8 +39,8 @@ const MdEditor: React.FC<EditorProps> = ({
     answerEditorLoadedAtomFamily(answerId ?? -1),
   )
 
-  const { uploadImageHook } = useToastUiEditorImageUploadHook({
-    atomKey: answerId + "",
+  const { uploadImageHook } = useAnswerToastUiEditorImageUploadHook({
+    atomKey: answerId,
     category: "answer",
     onUploadSuccess({ linkUrl }) {
       setEditorState((prev) => ({
