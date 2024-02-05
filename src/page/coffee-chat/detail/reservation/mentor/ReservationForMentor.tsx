@@ -85,7 +85,7 @@ function ReservationForMentor({ reservation, created }: MentorProps) {
                   >
                     <div className="flex items-center">
                       <CircleIcons.Line />
-                      <div className={isReserved(time.menti_nickname)}>
+                      <div className={isReserved(time.mentee_nickname)}>
                         {getTime(time.start_time)}
                       </div>
                     </div>
@@ -112,12 +112,12 @@ type ReservedTimeProps = {
 }
 
 function ReservedTime({ time }: ReservedTimeProps) {
-  if (time.menti_nickname)
+  if (time.mentee_nickname)
     return (
       <div className="flex justify-around w-full flex-wrap min-h-[50px] my-5">
         <div className="relative w-[50px] h-[50px] rounded-full mr-3 shrink-0 translate-x-0 translate-y-0">
           <Image
-            src={time.menti_image_url || basic_profile}
+            src={time.mentee_image_url || basic_profile}
             alt="예약자 프로필 사진"
             fill
             sizes="auto"
@@ -125,7 +125,7 @@ function ReservedTime({ time }: ReservedTimeProps) {
           />
         </div>
         <div>
-          <div className="font-bold text-left">{time.menti_nickname} 님</div>
+          <div className="font-bold text-left">{time.mentee_nickname} 님</div>
           <div>과(와)의 멘토링이 예정되어 있습니다.</div>
         </div>
       </div>

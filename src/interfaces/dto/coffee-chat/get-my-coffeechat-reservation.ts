@@ -6,8 +6,8 @@ export interface MyCoffeeChatReservation {
   reservatoin_id: number
   room_id: number
   start_time: string
-  mentiNickname: string
-  menti_image_url: string
+  menteeNickname: string
+  mentee_image_url: string
 }
 
 export interface MyCoffeeChatReservationListPayload {

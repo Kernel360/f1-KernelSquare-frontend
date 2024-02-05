@@ -101,14 +101,12 @@ const useCreateCoffeeChatReservation = () => {
       reservation_id,
       member_id,
       start_time,
-      room_key,
     }: MakeReservationRequest) =>
       makeReservation({
         reservation_article_id,
         reservation_id,
         member_id,
         start_time,
-        room_key,
       }),
   })
 

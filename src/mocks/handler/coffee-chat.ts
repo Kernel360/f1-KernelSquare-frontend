@@ -24,7 +24,6 @@ import { mockUsers } from "../db/user"
 import { HttpStatusCode } from "axios"
 import dayjs from "dayjs"
 import badge_url from "@/assets/images/badges"
-import { User } from "@/interfaces/user"
 import { DeleteCoffeeChatResponse } from "@/interfaces/dto/coffee-chat/delete-coffeechat.dto"
 import { GetMyCoffeeChatReservationListResponse } from "@/interfaces/dto/coffee-chat/get-my-coffeechat-reservation"
 import { useClientSession } from "@/hooks/useClientSession"
@@ -165,7 +164,7 @@ export const coffeeChatHandler = [
 
         const payload = {
           ...reservation,
-          hashtags: reservation.hashtags.map((hashTag, index) => ({
+          hashtags: reservation.hash_tag_list.map((hashTag, index) => ({
             hashtag_id: index + 1,
             content: hashTag,
           })),
@@ -252,13 +251,13 @@ export const coffeeChatHandler = [
         article_id,
         title,
         content,
-        hashtags: hash_tags,
+        hash_tag_list: hash_tags,
         date_times: date_times.map((date, i) => ({
           reservation_id: Math.random() * 10000,
           room_id: Math.random() * 10000,
           start_time: date,
-          menti_nickname: null,
-          menti_image_url: null,
+          mentee_nickname: null,
+          mentee_image_url: null,
         })),
         created_date: dayjs().format(),
         modified_date: dayjs().format(),
@@ -315,14 +314,8 @@ export const coffeeChatHandler = [
   http.put<PathParams, MakeReservationRequest, MakeReservationResponse>(
     `${process.env.NEXT_PUBLIC_SERVER}${RouteMap.coffeeChat.coffeeChatReservation}`,
     async ({ request }) => {
-      const {
-        reservation_article_id,
-        reservation_id,
-        member_id,
-        start_time,
-        room_key,
-      } = await request.json()
-
+      const { reservation_article_id, reservation_id, member_id, start_time } =
+        await request.json()
       const targetMember = mockUsers.find((member) => member.id === member_id)
 
       if (!targetMember) {
@@ -353,6 +346,22 @@ export const coffeeChatHandler = [
         )
       }
 
+      const targetReservation = MockReservations.find(
+        (res) => res.reservation_id === reservation_id,
+      )
+
+      if (!targetReservation) {
+        return HttpResponse.json(
+          {
+            code: 3406,
+            msg: "예약하신 예약 창을 찾을 수 없습니다.",
+          },
+          {
+            status: HttpStatusCode.Forbidden,
+          },
+        )
+      }
+
       const targetTime = targetArticle.date_times.find(
         (time) => time.start_time === start_time,
       )
@@ -362,6 +371,60 @@ export const coffeeChatHandler = [
           {
             code: 3408,
             msg: "예약 가능한 시간이 아닙니다.",
+          },
+          {
+            status: HttpStatusCode.Forbidden,
+          },
+        )
+      }
+
+      const myReservation = MockReservations.filter(
+        (res) => res.mentee_nickname === targetMember.nickname,
+      )
+
+      if (myReservation.length > 10) {
+        return HttpResponse.json(
+          {
+            code: 3403,
+            msg: "예약 가능한 게시글 제한 개수를 넘었습니다.",
+          },
+          {
+            status: HttpStatusCode.Forbidden,
+          },
+        )
+      }
+
+      const hasSameMentoring = targetArticle.date_times.some(
+        (res) =>
+          res.mentee_nickname === targetMember.nickname &&
+          res.reservation_id !== reservation_id,
+      )
+
+      if (hasSameMentoring) {
+        return HttpResponse.json(
+          {
+            code: 3407,
+            msg: "이미 동일한 멘토링을 예약하셨습니다.",
+          },
+          {
+            status: HttpStatusCode.Forbidden,
+          },
+        )
+      }
+
+      const hasDuplicateMentoringTime = MockReservations.find(
+        (res) =>
+          res.start_time === start_time &&
+          res.reservation_id !== reservation_id &&
+          res.mentee_nickname === targetMember.nickname,
+      )
+
+      if (hasDuplicateMentoringTime) {
+        console.log("hasDuplicateMentoringTime", hasDuplicateMentoringTime)
+        return HttpResponse.json(
+          {
+            code: 3409,
+            msg: "해당 시간에 이미 다른 멘토링 예약이 존재합니다.",
           },
           {
             status: HttpStatusCode.Forbidden,
@@ -454,7 +517,7 @@ export const coffeeChatHandler = [
         }
 
         const reservation = MockReservations.filter(
-          (post) => post.menti_nickname === user.nickname,
+          (post) => post.mentee_nickname === user.nickname,
         )
 
         if (!reservation) {

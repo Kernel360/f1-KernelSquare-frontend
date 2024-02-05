@@ -66,4 +66,16 @@ export const mockUsers = [
     image_url: null,
     introduction: "console.log('hello world')",
   },
+  {
+    id: 6,
+    email: "coffeechat@email.com",
+    password: "ChatChat!",
+    nickname: "chatchat",
+    experience: 2000,
+    level: 5,
+    authorities: ["ROLE_MENTOR", "ROLE_USER"],
+    account_status: ACCOUNT_STATUS.TRUE,
+    image_url: null,
+    introduction: "console.log('hello world')",
+  },
 ] as Array<User & { id: number; password: string }>

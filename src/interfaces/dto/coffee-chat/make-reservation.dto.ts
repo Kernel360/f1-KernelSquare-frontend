@@ -5,7 +5,6 @@ export interface MakeReservationRequest {
   reservation_id: number
   member_id: number
   start_time: string
-  room_key: string
 }
 
 export interface MakeReservationPayload {

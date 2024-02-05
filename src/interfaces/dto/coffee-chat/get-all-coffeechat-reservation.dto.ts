@@ -27,7 +27,7 @@ export interface CoffeeChatReservation {
   level_image_url: string
   title: string
   content: string
-  hashtags: string[]
+  hash_tag_list: string[]
   created_date: string
   modified_date: string
   article_status: boolean

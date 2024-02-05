@@ -34,7 +34,7 @@ function CoffeeChatList({ coffeeChatList }: CoffeeChatListProps) {
           member_image_url,
           level,
           level_image_url,
-          hashtags,
+          hash_tag_list,
           created_date,
           modified_date,
         }) => {
@@ -83,7 +83,7 @@ function CoffeeChatList({ coffeeChatList }: CoffeeChatListProps) {
               </div>
               <Spacing size={12} />
               <ul className="w-full flex flex-wrap gap-2">
-                {hashtags.map((tag) => (
+                {hash_tag_list.map((tag) => (
                   <li
                     key={`hash-${tag}`}
                     className="flex shrink-0 items-center"

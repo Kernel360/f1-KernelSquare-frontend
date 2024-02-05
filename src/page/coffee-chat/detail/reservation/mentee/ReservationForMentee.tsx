@@ -33,7 +33,6 @@ function ReservationForMentee({ reservation, created }: MenteeProps) {
   const [selectedDay, setSelectedDay] = useState<string>(
     getDate({ date: reservation[0].start_time }),
   )
-  const { MyReservations } = useReservationForMentee()
 
   // // 오전 or 오후
   const [timeZone, setTimeZone] = useState<TimeZone>(TimeZone.AM)
@@ -85,7 +84,7 @@ function ReservationForMentee({ reservation, created }: MenteeProps) {
                 <TimeOptions
                   reservation={reservation}
                   cate="AM"
-                  selectedDay={selectedDay}
+                  selectedDay={getDate({ date: reservation[0].start_time })}
                   date={date}
                 />
               </div>
@@ -96,7 +95,7 @@ function ReservationForMentee({ reservation, created }: MenteeProps) {
                 <TimeOptions
                   reservation={reservation}
                   cate="PM"
-                  selectedDay={selectedDay}
+                  selectedDay={getDate({ date: reservation[0].start_time })}
                   date={date}
                 />
               </div>

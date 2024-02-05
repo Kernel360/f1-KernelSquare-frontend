@@ -33,12 +33,7 @@ type TimeOptionsProps = {
   date: Value
 }
 
-const TimeOptions = ({
-  reservation,
-  selectedDay,
-  cate,
-  date,
-}: TimeOptionsProps) => {
+const TimeOptions = ({ reservation, cate, date }: TimeOptionsProps) => {
   const { user } = useClientSession()
   const { openModal } = useModal()
   const { createCoffeeChatReservation } =
@@ -73,7 +68,7 @@ const TimeOptions = ({
 
   // 목록에 이미 내가 예약한 커피챗이 있는지 검사
   const isAlreadyReservedByMe = reservation.some(
-    (res) => res.menti_nickname === user?.nickname,
+    (res) => res.mentee_nickname === user?.nickname,
   )
 
   const handleRegister = (
@@ -85,7 +80,7 @@ const TimeOptions = ({
         position: "top-center",
       })
     if (isAlreadyReservedByMe && nickname === user.nickname) {
-      const onSuccess = () => {
+      const confirmToDelete = () => {
         deleteCoffeeChatReservation(
           { reservationId: time.reservation_id },
           {
@@ -102,7 +97,7 @@ const TimeOptions = ({
         )
       }
 
-      const onCancel = () => {
+      const cancleToDelete = () => {
         toast.error(notificationMessage.cancleReservation, {
           position: "top-center",
         })
@@ -111,8 +106,8 @@ const TimeOptions = ({
         containsHeader: false,
         content: (
           <ConfirmModal.ModalContent
-            onSuccess={onSuccess}
-            onCancel={onCancel}
+            onSuccess={confirmToDelete}
+            onCancel={cancleToDelete}
             situation="deleteCoffeeChat"
           />
         ),
@@ -129,17 +124,29 @@ const TimeOptions = ({
         position: "top-center",
       })
     else {
-      const onSuccess = () => {
-        // createCoffeeChatReservation({
-        //   reservation_article_id: Number(params.id),
-        //   reservation_id: time.reservation_id,
-        //   member_id: user.member_id,
-        //   start_time: time.start_time,
-        //   room_key: time.room_id, // room_key? ㅠ-ㅠ
-        // })
+      const confirmToCreate = () => {
+        createCoffeeChatReservation(
+          {
+            reservation_article_id: Number(params.id),
+            reservation_id: time.reservation_id,
+            member_id: user.member_id,
+            start_time: time.start_time,
+          },
+          {
+            onSuccess: () => {
+              toast.success(successMessage.reserveCoffeeChat, {
+                position: "top-center",
+                autoClose: 1000,
+              })
+              queryClient.invalidateQueries({
+                queryKey: [queryKey.chat],
+              })
+            },
+          },
+        )
       }
 
-      const onCancel = () => {
+      const cancleToCreate = () => {
         toast.error(notificationMessage.cancleReservation, {
           position: "top-center",
         })
@@ -148,8 +155,8 @@ const TimeOptions = ({
         containsHeader: false,
         content: (
           <ConfirmModal.ModalContent
-            onSuccess={onSuccess}
-            onCancel={onCancel}
+            onSuccess={confirmToCreate}
+            onCancel={cancleToCreate}
             situation="reserveCoffeeChat"
           />
         ),
@@ -157,13 +164,13 @@ const TimeOptions = ({
     }
   }
 
-  const isReserved = (menti_nickname: string | null) =>
+  const isReserved = (mentee_nickname: string | null) =>
     twJoin(
       [
         "flex py-2 rounded justify-center transition-colors break-all text-sm text-secondary font-semibold shadow-sm",
       ],
       [
-        menti_nickname === user?.nickname &&
+        mentee_nickname === user?.nickname &&
           "cursor-default bg-primary text-white px-2 ",
       ],
       [
@@ -172,14 +179,14 @@ const TimeOptions = ({
           "cursor-default px-2 border-[1px] border-slate-200",
       ],
       [
-        menti_nickname &&
-          menti_nickname !== user?.nickname &&
+        mentee_nickname &&
+          mentee_nickname !== user?.nickname &&
           "cursor-default bg-slate-300 px-2",
       ],
       [!user && "cursor-default border-[1px] border-slate-200 px-6"],
       [
         user &&
-          !menti_nickname &&
+          !mentee_nickname &&
           !isAlreadyReservedByMe &&
           "border-[1px] border-slate-200 bg-white cursor-pointer bg-colorsLightGray hover:bg-colorsGray px-6 ",
       ],
@@ -198,13 +205,13 @@ const TimeOptions = ({
         <Button
           className={"inline text-left leading-[30px] p-0"}
           key={time.room_id + i}
-          onClick={() => handleRegister(time, time.menti_nickname)}
+          onClick={() => handleRegister(time, time.mentee_nickname)}
         >
-          <span className={isReserved(time.menti_nickname)}>
-            {time.menti_image_url && (
-              <ProfileImage image_url={time.menti_image_url} />
+          <span className={isReserved(time.mentee_nickname)}>
+            {time.mentee_image_url && (
+              <ProfileImage image_url={time.mentee_image_url} />
             )}
-            {time.menti_nickname && !time.menti_image_url && (
+            {time.mentee_nickname && !time.mentee_image_url && (
               <Icons.UserProfile />
             )}
             <div>{getTime(time.start_time)}</div>
