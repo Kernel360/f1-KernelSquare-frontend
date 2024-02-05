@@ -35,7 +35,6 @@ const TimeOptions = ({ date, selectedDay }: TimeOptionsProps) => {
           "flex cursor-default bg-slate-300",
       ],
     )
-  console.log("s", schedulelist.schedule)
   return (
     <div className="grid grid-cols-1 sm:grid-rows-4 sm:grid-cols-4 gap-4 shrink-0 m-auto">
       {date.map((time, i) => (

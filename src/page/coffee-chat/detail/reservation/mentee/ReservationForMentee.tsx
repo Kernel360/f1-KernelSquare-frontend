@@ -1,31 +1,18 @@
 "use client"
 
-import { getDate, getHour, getTime } from "@/util/getDate"
-import useModal from "@/hooks/useModal"
-import ConfirmModal from "@/components/shared/confirm-modal/ConfirmModal"
-import { toast } from "react-toastify"
-import { errorMessage, notificationMessage } from "@/constants/message"
+import { getDate } from "@/util/getDate"
 import { useProgressModal } from "@/hooks/useProgressModal"
 import { useParams } from "next/navigation"
-import {
-  MockReservations,
-  mockCoffeeChatReservations,
-} from "@/mocks/db/coffee-chat"
+import { MockReservations } from "@/mocks/db/coffee-chat"
 import CustomCalendar from "../CustomCalendar/CustomCalendar"
 import { useState } from "react"
 import type { Value } from "../CustomCalendar/Calendar.types"
-import Image from "next/image"
-import { basic_profile } from "@/assets/images/basic"
-import { CoffeeChatReservationTime } from "@/interfaces/dto/coffee-chat/coffeechat-reservation-detail.dto"
-import { twJoin } from "tailwind-merge"
-import { useClientSession } from "@/hooks/useClientSession"
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/Select"
+  CoffeeChatReservationDetailPayload,
+  CoffeeChatReservationTime,
+} from "@/interfaces/dto/coffee-chat/coffeechat-reservation-detail.dto"
+import { twJoin } from "tailwind-merge"
+import { SelectItem } from "@/components/ui/Select"
 import dayjs from "dayjs"
 import { DirectionIcons } from "@/components/icons/Icons"
 import { TimeZone } from "@/page/coffee-chat/create/CreateCoffeeChatReservationPage.types"
@@ -41,7 +28,6 @@ function ReservationForMentee({ reservation, created }: MenteeProps) {
   const params = useParams<{ id: string }>()
   // 데이터 받아오면 시작 날짜로 수정 필요
   const [date, setDate] = useState<Value>(new Date(reservation[0].start_time))
-  console.log("mock", MockReservations)
   const [selectedDay, setSelectedDay] = useState<string>(
     getDate({ date: reservation[0].start_time }),
   )
@@ -54,8 +40,6 @@ function ReservationForMentee({ reservation, created }: MenteeProps) {
   // 오전, 오후 선택 화살표 스타일
   const ArrowClassName = (disabled: boolean) =>
     twJoin([disabled && "text-slate-200"], [!disabled && "cursor-pointer"])
-
-  // 데이터 받아오면 실제 일정으로 수정 필요
 
   const { ProgressModalView } = useProgressModal()
 
@@ -81,7 +65,7 @@ function ReservationForMentee({ reservation, created }: MenteeProps) {
           <div className="mt-3 text-xl text-secondary font-bold">
             {getDate({ date: date + "" })}
           </div>
-          <div className="flex sm:min-w-[470px]">
+          <div className="flex sm:min-w-[500px] justify-between">
             <DirectionIcons.Left
               className={ArrowClassName(timeZone === TimeZone.AM)}
               onClick={() => setTimeZone(TimeZone.AM)}

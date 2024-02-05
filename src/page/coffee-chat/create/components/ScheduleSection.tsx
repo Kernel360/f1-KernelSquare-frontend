@@ -10,10 +10,11 @@ import { useEffect, useRef, useState } from "react"
 import type { Value } from "../../detail/reservation/CustomCalendar/Calendar.types"
 import { TimeZone } from "../CreateCoffeeChatReservationPage.types"
 import { twJoin } from "tailwind-merge"
-import { useRecoilState } from "recoil"
+import { useRecoilState, useSetRecoilState } from "recoil"
 import {
   CoffeeChatStartDate,
   ScheduleList,
+  ScheduleListAtomFamily,
 } from "@/recoil/atoms/coffee-chat/schedule"
 import CustomCalendar from "./CustomCalendar/CustomCalendar"
 import {

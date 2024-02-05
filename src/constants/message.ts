@@ -20,6 +20,7 @@ export const errorMessage = {
   failToReserve: "커피챗 예약 중 오류가 발생하였습니다. 다시 시도해주세요.",
   alreadyReserved: "이미 예약된 시간대입니다.",
   alreadySelected: "이미 선택된 시간대입니다.",
+  youAlreadyReserved: "이미 동일한 멘토링을 예약하셨습니다.",
   noValue: "값이 비어있습니다. 정확한 값을 입력해주세요.",
   overHashtagCntLimit: `해시태그는 최대 ${Limitation.hashtags_cnt}개까지 입력 가능합니다.`,
   overHashtagWordLimit: `해시태그는 최대 ${Limitation.hashtags_word}자까지 입력 가능합니다.`,
@@ -65,6 +66,7 @@ export const confirmMessage = {
   deleteContent: "정말 삭제하시겠습니까?",
   cancleVote: "투표 기록을 삭제하시겠습니까?",
   reserveCoffeeChat: "해당 일정으로 예약하시겠습니까?",
+  deleteCoffeeChat: "해당 일정을 삭제하시겠습니까?",
 } as const
 
 export const loadingMessage = {

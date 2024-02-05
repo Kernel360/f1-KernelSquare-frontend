@@ -24,10 +24,16 @@ import HashTagsSection from "./components/HashTagsSection"
 import ScheduleSection from "./components/ScheduleSection"
 import IntroductionSection from "./components/IntroductionSection"
 import { CoffeeChatQueries } from "@/react-query/coffee-chat"
-import { useRecoilState } from "recoil"
+import { useRecoilState, useRecoilValue } from "recoil"
 import { HashTagList } from "@/recoil/atoms/coffee-chat/hashtags"
 import { errorMessage } from "@/constants/message"
 import dynamic from "next/dynamic"
+import {
+  CoffeeChatStartDate,
+  ScheduleListAtomFamily,
+} from "@/recoil/atoms/coffee-chat/schedule"
+import dayjs from "dayjs"
+import { getDate } from "@/util/getDate"
 
 const MdEditor = dynamic(() => import("./components/MdEditor"), {
   ssr: false,
@@ -58,6 +64,26 @@ function CreateCoffeeChatReservationPage({
 
   const { createCoffeeChatPost } = CoffeeChatQueries.useCreateCoffeeChatPost()
 
+  const date = useRecoilValue(CoffeeChatStartDate)
+  const useGetScheduleList = (addNum: number) => {
+    const targetDay = getDate({
+      date: dayjs(date + "")
+        .add(addNum, "day")
+        .format(),
+    })
+    const targetList = useRecoilValue(ScheduleListAtomFamily(targetDay))
+    return targetList.schedule.map(
+      (time) =>
+        `${dayjs(date + "")
+          .add(addNum, "day")
+          .format("YYYY-MM-DD")}T${time}:00`,
+    )
+  }
+  const first = useGetScheduleList(0)
+  const twice = useGetScheduleList(1)
+  const third = useGetScheduleList(2)
+  console.log(first.concat(twice).concat(third))
+
   const onSubmit = async (data: CoffeeChatFormData) => {
     if (!user)
       return toast.error(errorMessage.unauthorized, { position: "top-center" })
@@ -71,7 +97,7 @@ function CreateCoffeeChatReservationPage({
         title: data.title,
         content: editorRef.current?.getInstance().getMarkdown(),
         hash_tags,
-        date_times: [],
+        date_times: first.concat(twice).concat(third),
       },
       {
         onSuccess: (res) => {
