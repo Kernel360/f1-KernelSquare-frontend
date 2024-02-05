@@ -1,12 +1,14 @@
 "use client"
 
 import { AxiosError, HttpStatusCode } from "axios"
-import { useUploadImage } from "./image/useUploadImage"
+
 import { useRecoilCallback } from "recoil"
 import { questionEditorAtomFamily } from "@/recoil/atoms/questionEditor"
 import type { HookCallback } from "@/components/shared/toast-ui-editor/editor/EditorWrapper"
 import type { APIResponse } from "@/interfaces/dto/api-response"
 import type { UploadImagesCategory } from "@/interfaces/dto/upload/upload-images.dto"
+import { useUploadImage } from "@/hooks/image/useUploadImage"
+import { answerEditorAtomFamily } from "@/recoil/atoms/answerEditor"
 
 type SuccessCallbackArg = {
   file: File
@@ -34,7 +36,7 @@ type ErrorCallback =
   | ((arg: ErrorCallbackArg) => Promise<void>)
 
 interface UseToastUiEditorImageUploadHookOption {
-  atomKey?: string
+  atomKey?: number
   category: UploadImagesCategory
   action?: "create" | "update"
   maximumUploadImageLength?: number
@@ -50,7 +52,7 @@ export const exceedingUploadableImagesError = new Error(
 
 export const MAXIMUM_UPLOAD_IMAGE_LENGTH = 1
 
-export function useToastUiEditorImageUploadHook({
+export function useAnswerToastUiEditorImageUploadHook({
   atomKey,
   category,
   action,
@@ -63,7 +65,7 @@ export function useToastUiEditorImageUploadHook({
     ({ snapshot }) =>
       async () => {
         const editorSnapshot = await snapshot.getPromise(
-          questionEditorAtomFamily(atomKey ?? action ?? "create"),
+          answerEditorAtomFamily(atomKey ?? -1),
         )
 
         return editorSnapshot
@@ -107,7 +109,6 @@ export function useToastUiEditorImageUploadHook({
   const uploadImageHook = async (blob: File | Blob, callback: HookCallback) => {
     try {
       const { fileUploadImageLinks } = await editorSnapshot()
-      console.log("file_hook", fileUploadImageLinks)
       if (fileUploadImageLinks.length >= maximumUploadImageLength) {
         throw exceedingUploadableImagesError
       }
