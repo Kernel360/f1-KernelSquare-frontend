@@ -7,6 +7,8 @@ const ConfirmModalMessage = {
   resetProfileImage: confirmMessage.resetProfileImage,
   deleteContent: confirmMessage.deleteContent,
   cancleVote: confirmMessage.cancleVote,
+  reserveCoffeeChat: confirmMessage.reserveCoffeeChat,
+  deleteCoffeeChat: confirmMessage.deleteCoffeeChat,
 } as const
 
 export default ConfirmModalMessage

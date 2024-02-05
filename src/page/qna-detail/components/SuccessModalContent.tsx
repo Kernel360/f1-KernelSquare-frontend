@@ -37,6 +37,8 @@ const Icon: React.FC<IconProps> = ({ message, style, className }) => {
       return <DeleteSuccess style={style} className={IconClassName} />
     case successMessage.deleteQuestion:
       return <DeleteSuccess style={style} className={IconClassName} />
+    case successMessage.deleteCoffeeChatPost:
+      return <DeleteSuccess style={style} className={IconClassName} />
     default:
       return null
   }
