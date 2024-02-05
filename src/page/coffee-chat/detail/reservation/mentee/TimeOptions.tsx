@@ -10,7 +10,11 @@ import {
   CoffeeChatReservationTime,
 } from "@/interfaces/dto/coffee-chat/coffeechat-reservation-detail.dto"
 import { toast } from "react-toastify"
-import { errorMessage, notificationMessage } from "@/constants/message"
+import {
+  errorMessage,
+  notificationMessage,
+  successMessage,
+} from "@/constants/message"
 import useModal from "@/hooks/useModal"
 import ConfirmModal from "@/components/shared/confirm-modal/ConfirmModal"
 import { useClientSession } from "@/hooks/useClientSession"
@@ -19,6 +23,8 @@ import { Icons } from "@/components/icons/Icons"
 import { Value } from "../CustomCalendar/Calendar.types"
 import { CoffeeChatQueries } from "@/react-query/coffee-chat"
 import { useParams } from "next/navigation"
+import { useQueryClient } from "@tanstack/react-query"
+import queryKey from "@/constants/queryKey"
 
 type TimeOptionsProps = {
   selectedDay: string
@@ -40,6 +46,7 @@ const TimeOptions = ({
   const { deleteCoffeeChatReservation } =
     CoffeeChatQueries.useDeleteCoffeeChatReservation()
   const params = useParams<{ id: string }>()
+  const queryClient = useQueryClient()
 
   const AM = reservation.filter(
     ({ start_time }) =>
@@ -79,7 +86,20 @@ const TimeOptions = ({
       })
     if (isAlreadyReservedByMe && nickname === user.nickname) {
       const onSuccess = () => {
-        deleteCoffeeChatReservation({ reservationId: time.reservation_id })
+        deleteCoffeeChatReservation(
+          { reservationId: time.reservation_id },
+          {
+            onSuccess: () => {
+              toast.success(successMessage.deleteCoffeeChatReservation, {
+                position: "top-center",
+                autoClose: 1000,
+              })
+              queryClient.invalidateQueries({
+                queryKey: [queryKey.chat],
+              })
+            },
+          },
+        )
       }
 
       const onCancel = () => {

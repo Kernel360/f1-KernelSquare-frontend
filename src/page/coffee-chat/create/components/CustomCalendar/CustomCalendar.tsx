@@ -8,6 +8,8 @@ import dayjs from "dayjs"
 import Holidays from "@/constants/holidays"
 import { useRecoilState } from "recoil"
 import { CoffeeChatStartDate } from "@/recoil/atoms/coffee-chat/schedule"
+import { Value } from "./Calendar.types"
+import { MouseEvent } from "react"
 
 type CustomCalendarProps = {
   start: Date
@@ -45,7 +47,7 @@ const CustomCalendar = ({ start, limit }: CustomCalendarProps) => {
   const isReservationPossiblePeriod = (target: Date) => {
     const date1 = dayjs(date + "", "YYYY-MM-DD")
     const date2 = dayjs(target, "YYYY-MM-DD")
-    if (date2.diff(date1, "day") >= -7 && date2.diff(date1, "day") <= -2)
+    if (date2.diff(date1, "day") >= -6 && date2.diff(date1, "day") <= -2)
       return true
     return false
   }
@@ -73,11 +75,18 @@ const CustomCalendar = ({ start, limit }: CustomCalendarProps) => {
     if (isMentoringPeriod(date)) return "mentoring"
   }
 
+  // onChange 함수
+  const handleDateChange = (value: Value) => {
+    console.log(date, value)
+    if (date === value) setDate(undefined)
+    setDate(value)
+  }
+
   return (
     <div className="react-calendar">
       <Calendar
         locale="ko"
-        onChange={setDate}
+        onChange={(val) => handleDateChange(val)}
         value={date}
         // 숫자만 보이게 설정
         formatDay={(_, date) => getDay(date)}

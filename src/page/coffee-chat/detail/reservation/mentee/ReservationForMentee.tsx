@@ -18,6 +18,7 @@ import { DirectionIcons } from "@/components/icons/Icons"
 import { TimeZone } from "@/page/coffee-chat/create/CreateCoffeeChatReservationPage.types"
 import TimeOptions from "./TimeOptions"
 import { FaCalendarAlt } from "react-icons/fa"
+import useReservationForMentee from "./hooks/useReservationForMentee"
 
 interface MenteeProps {
   reservation: CoffeeChatReservationTime[]
@@ -31,6 +32,7 @@ function ReservationForMentee({ reservation, created }: MenteeProps) {
   const [selectedDay, setSelectedDay] = useState<string>(
     getDate({ date: reservation[0].start_time }),
   )
+  const { MyReservations } = useReservationForMentee()
 
   // // 오전 or 오후
   const [timeZone, setTimeZone] = useState<TimeZone>(TimeZone.AM)
@@ -104,26 +106,3 @@ function ReservationForMentee({ reservation, created }: MenteeProps) {
 }
 
 export default ReservationForMentee
-
-interface SelectedDateProps {
-  date: Value
-  addNum: number
-}
-
-function SelectedDate({ date, addNum }: SelectedDateProps) {
-  return (
-    <SelectItem
-      value={getDate({
-        date: dayjs(date + "")
-          .add(addNum, "day")
-          .format(),
-      })}
-    >
-      {getDate({
-        date: dayjs(date + "")
-          .add(addNum, "day")
-          .format(),
-      })}
-    </SelectItem>
-  )
-}

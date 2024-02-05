@@ -6,11 +6,9 @@ import Spacing from "@/components/shared/Spacing"
 import { useRef } from "react"
 import { Editor } from "@toast-ui/react-editor"
 import { toast } from "react-toastify"
-import { techTagList } from "@/constants/editor"
 import { useRouter } from "next/navigation"
-import { useQuery, useQueryClient } from "@tanstack/react-query"
+import { useQueryClient } from "@tanstack/react-query"
 import { useClientSession } from "@/hooks/useClientSession"
-import { useSelectTagList } from "@/hooks/useSelectTagList"
 import type { FieldErrors } from "react-hook-form"
 import ContentLoading from "@/components/shared/animation/ContentLoading"
 import { EditMode } from "@/page/askQuestion/components/AskQuestionPageControl"
@@ -22,7 +20,6 @@ import {
 import CoffeeChatSection from "./components/CoffeeChatSection"
 import HashTagsSection from "./components/HashTagsSection"
 import ScheduleSection from "./components/ScheduleSection"
-import IntroductionSection from "./components/IntroductionSection"
 import { CoffeeChatQueries } from "@/react-query/coffee-chat"
 import { useRecoilState, useRecoilValue } from "recoil"
 import { HashTagList } from "@/recoil/atoms/coffee-chat/hashtags"
@@ -89,7 +86,7 @@ function CreateCoffeeChatReservationPage({
       return toast.error(errorMessage.unauthorized, { position: "top-center" })
     if (!data.title)
       return toast.error(errorMessage.notitle, { position: "top-center" })
-    if (!editorRef.current)
+    if (!editorRef.current?.getInstance().getMarkdown())
       return toast.error(errorMessage.noContent, { position: "top-center" })
     createCoffeeChatPost(
       {

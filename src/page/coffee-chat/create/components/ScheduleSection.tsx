@@ -171,13 +171,13 @@ function HoverBox() {
           </div>
           <div className="font-normal mt-3 flex items-center">
             <div className="w-[10px] h-[10px] rounded-full bg-[#00c47133] border-[1px] border-primary mr-1"></div>{" "}
-            당일로부터 <span className="text-primary mx-1">일주일</span> 뒤부터
-            멘토링 시작 날짜로 선택할 수 있습니다.{" "}
+            <span className="text-primary mx-1">일주일</span> 뒤부터 멘토링 시작
+            날짜로 선택할 수 있습니다.{" "}
           </div>
           <div className="font-normal mt-3 flex items-center">
             <div className="w-[10px] h-[10px] rounded-full bg-[#fbf8ce] border-[1px] border-[orange] mr-1"></div>{" "}
             선택한 멘토링 날짜가 되기 전까지{" "}
-            <span className="text-primary mx-1">6일</span> 동안 예약이
+            <span className="text-primary mx-1">5일</span> 동안 예약이
             진행됩니다.
           </div>
           <div className="font-normal mt-3 flex items-center">

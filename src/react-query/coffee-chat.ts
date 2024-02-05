@@ -80,11 +80,10 @@ const useGetMyCoffeeChatReservation = () =>
   useQuery({
     queryKey: [queryKey.chat],
     queryFn: () => getMyCoffeeChatReservation(),
-    placeholderData: keepPreviousData,
     staleTime: 1000 * 60 * 2,
     retry: 0,
     select(payload) {
-      return payload.data
+      return payload
     },
   })
 

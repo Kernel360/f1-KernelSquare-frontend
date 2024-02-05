@@ -37,6 +37,7 @@ export const successMessage = {
   updateAnswer: "답변이 수정되었습니다.",
   deleteQuestion: "질문이 삭제되었습니다.",
   deleteCoffeeChatPost: "커피챗 게시글이 삭제되었습니다.",
+  deleteCoffeeChatReservation: "커피챗 예약이 취소되었습니다.",
   cancleVote: "투표 기록이 삭제되었습니다.",
   reserveCoffeeChat: "커피챗 예약에 성공했습니다.",
   createCoffeeChatPost: "커피챗 등록글 생성에 성공했습니다.",

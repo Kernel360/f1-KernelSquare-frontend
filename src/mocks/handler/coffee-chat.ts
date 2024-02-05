@@ -403,17 +403,17 @@ export const coffeeChatHandler = [
         )
       }
 
-      if (dayjs(targetReservation.start_time).diff(dayjs(), "hour") <= 24) {
-        return HttpResponse.json(
-          {
-            code: 3402,
-            msg: "예약 취소 가능 시간이 지났습니다.",
-          },
-          {
-            status: HttpStatusCode.Forbidden,
-          },
-        )
-      }
+      // if (dayjs(targetReservation.start_time).diff(dayjs(), "hour") <= 24) {
+      //   return HttpResponse.json(
+      //     {
+      //       code: 3402,
+      //       msg: "예약 취소 가능 시간이 지났습니다.",
+      //     },
+      //     {
+      //       status: HttpStatusCode.Forbidden,
+      //     },
+      //   )
+      // }
 
       return HttpResponse.json(
         {
@@ -445,8 +445,8 @@ export const coffeeChatHandler = [
           )
         }
 
-        const reservation = mockCoffeeChatReservations.filter((post) =>
-          post.date_times.some((time) => time.menti_nickname === user.nickname),
+        const reservation = MockReservations.filter(
+          (post) => post.menti_nickname === user.nickname,
         )
 
         if (!reservation) {
