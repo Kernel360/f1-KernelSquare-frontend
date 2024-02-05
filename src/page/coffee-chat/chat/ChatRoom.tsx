@@ -16,16 +16,21 @@ interface ChatRoomProps {
   roomId: number
   roomKey: string
   user: NonNullable<SessionPayload>
+  expiration_time: string
 }
 
-function ChatRoom({ serverUrl, articleTitle, roomKey, user }: ChatRoomProps) {
+function ChatRoom({
+  serverUrl,
+  articleTitle,
+  roomKey,
+  user,
+  expiration_time,
+}: ChatRoomProps) {
   return (
     <>
       <ErrorBoundary FallbackComponent={ChatRoomFallback}>
         <ChatRoomHeader
-          startDate={getKorDayjs("2024-01-31T11:00:00Z").format(
-            "YYYY-MM-DDTHH:mm:ss",
-          )}
+          startDate={getKorDayjs(expiration_time).format("YYYY-MM-DDTHH:mm:ss")}
           articleTitle={articleTitle}
           user={user}
         />

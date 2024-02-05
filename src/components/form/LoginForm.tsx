@@ -1,6 +1,5 @@
 "use client"
 
-import { LoginFormData } from "@/interfaces/form"
 import { FieldErrors, useForm } from "react-hook-form"
 import { Input } from "../shared/input/Input"
 import Button from "../shared/button/Button"
@@ -13,8 +12,15 @@ import useModal from "@/hooks/useModal"
 import SocialButton from "../SocialButton"
 import { Validator } from "@/util/validate"
 import { revalidatePage } from "@/util/actions/revalidatePage"
-import { useClientSession } from "@/hooks/useClientSession"
 import { ToastContentProps, toast } from "react-toastify"
+import { login } from "@/service/auth"
+import { SessionPayload, userAtom } from "@/recoil/atoms/user"
+import dayjs from "dayjs"
+import { encrypt } from "@/util/crypto"
+import { setAuthCookie } from "@/util/actions/cookie"
+import { useSetRecoilState } from "recoil"
+import type { LoginFormData } from "@/interfaces/form"
+import Logo from "../icons/Logo"
 
 function LoginForm() {
   const {
@@ -22,8 +28,7 @@ function LoginForm() {
     handleSubmit,
     formState: { errors, isValid },
   } = useForm<LoginFormData>()
-
-  const { clientSessionLogin } = useClientSession()
+  const setUserAtom = useSetRecoilState(userAtom)
 
   const { closeModal } = useModal()
 
@@ -35,7 +40,37 @@ function LoginForm() {
 
   const onSubmit = async (data: LoginFormData) => {
     try {
-      await clientSessionLogin({ email: data.email, password: data.password })
+      const loginResponse = await login({
+        email: data.email,
+        password: data.password,
+      })
+
+      const { token_dto, ...userPayload } = loginResponse.data.data!
+
+      const { access_token, refresh_token } = token_dto
+      const payload = {
+        ...userPayload,
+      }
+
+      const expires = dayjs().add(1, "hours").startOf("second").toDate()
+
+      const stringifyPayload = JSON.stringify({
+        ...payload,
+        expires: expires.toJSON(),
+      } as SessionPayload)
+      const encryptedPayload = encrypt(stringifyPayload)
+
+      await setAuthCookie(
+        access_token,
+        refresh_token,
+        encryptedPayload,
+        expires,
+      )
+
+      setUserAtom({
+        ...payload,
+        expires: expires.toJSON(),
+      })
 
       await revalidatePage("*")
 
@@ -63,7 +98,12 @@ function LoginForm() {
       onSubmit={handleSubmit(onSubmit, onInvalid)}
       className="w-full sm:w-[320px]"
     >
-      <h3 className="text-center text-3xl font-bold">KernalSquare</h3>
+      <div className="w-full flex gap-1 justify-center items-center">
+        <Logo className="text-[40px]" />
+        <h3 className="text-center text-3xl font-bold text-secondary">
+          KernelSquare
+        </h3>
+      </div>
       <Spacing size={24} />
       <Input
         className="px-2"

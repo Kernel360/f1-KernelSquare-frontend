@@ -8,7 +8,11 @@ import {
 } from "@/constants/navigationRoute"
 import { useClientSession } from "@/hooks/useClientSession"
 import Link from "next/link"
-import { usePathname, useSelectedLayoutSegment } from "next/navigation"
+import {
+  useParams,
+  usePathname,
+  useSelectedLayoutSegment,
+} from "next/navigation"
 import { twMerge } from "tailwind-merge"
 
 interface NavigationTabProps {
@@ -21,6 +25,7 @@ interface NavigationTabItemProps
 function NavigationTab({ hasHeader }: NavigationTabProps) {
   const currentSegment = useSelectedLayoutSegment()
   const pathname = usePathname()
+  const params = useParams()
 
   const wrapperClassNames = twMerge([
     "sticky w-full top-[--height-header] z-navigation py-1 bg-white sm:hidden",
@@ -44,10 +49,15 @@ function NavigationTab({ hasHeader }: NavigationTabProps) {
 
   const profileRouteTabs = user
     ? profileRoute.map(({ label, to }) => {
+        const isMyPage =
+          pathname.includes("profile") && Number(params.id) === user?.member_id
+
         return {
           label,
-          content: <NavigationTabItem label={label} to={to} />,
-          active: activeNavItem ? activeNavItem.label === label : false,
+          content: (
+            <NavigationTabItem label={label} to={to + `/${user.member_id}`} />
+          ),
+          active: isMyPage,
         }
       })
     : []
@@ -59,7 +69,7 @@ function NavigationTab({ hasHeader }: NavigationTabProps) {
       <Tab
         defaultTab={activeNavItem?.label}
         classNames={{
-          wrapper: "h-[59px] font-bold px-4",
+          wrapper: "h-[59px] font-bold px-1 sm:px-4",
         }}
         activeClassNames={{
           tab: "text-secondary",
@@ -75,7 +85,7 @@ function NavigationTabItem({ label, to }: NavigationTabItemProps) {
   return (
     <Link
       href={to}
-      className="flex w-full h-full justify-center items-center px-2"
+      className="flex w-full h-full justify-center items-center px-2 text-sm"
     >
       {label}
     </Link>

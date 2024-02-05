@@ -61,7 +61,7 @@ function Header({ articleTitle, user, startDate }: ChatRoomHeaderProps) {
     if (isPopup) {
       ;(window.opener.postMessage as typeof window.postMessage)(
         { type: "leave", user } as PopupMessage,
-        window.location.origin,
+        process.env.NEXT_PUBLIC_SITE_URL!,
       )
 
       window.close()
@@ -87,13 +87,8 @@ function Header({ articleTitle, user, startDate }: ChatRoomHeaderProps) {
 function ChatTimer({ startDate }: { startDate: string }) {
   const { start, diffTime } = useStopwatch({
     startDate,
-    seconds: 60 * 30,
+    seconds: 0,
     stopAfterTargetTime: true,
-    callback({ isAfter }) {
-      if (isAfter) {
-        //
-      }
-    },
   })
 
   useEffect(() => {

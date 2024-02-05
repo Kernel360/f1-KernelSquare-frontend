@@ -21,7 +21,9 @@ self.addEventListener("message", (e) => {
 
   if (cmd === "init") {
     timer.startDate = dayjs(startDate)
-    timer.targetDate = dayjs(startDate).add(seconds, "seconds")
+    timer.targetDate = !seconds
+      ? timer.startDate
+      : dayjs(startDate).add(seconds, "seconds")
 
     return
   }

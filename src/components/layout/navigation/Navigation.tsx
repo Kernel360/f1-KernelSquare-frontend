@@ -2,6 +2,7 @@
 
 import {
   usePathname,
+  useRouter,
   useSearchParams,
   useSelectedLayoutSegment,
 } from "next/navigation"
@@ -14,6 +15,17 @@ function Navigation() {
   const currentSegment = useSelectedLayoutSegment()
   const pathname = usePathname()
   const searchParmas = useSearchParams()
+
+  const { replace } = useRouter()
+
+  if (currentSegment === null && pathname === "/") {
+    if (!searchParmas.get("page")) {
+      const urlSearchParams = new URLSearchParams()
+      urlSearchParams.set("page", "0")
+
+      replace(`/?${urlSearchParams.toString()}`)
+    }
+  }
 
   // NotFoundPage
   if (currentSegment === NOTMATCH_SEGMENT) return null

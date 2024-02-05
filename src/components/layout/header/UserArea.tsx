@@ -14,6 +14,7 @@ import { useClientSession } from "@/hooks/useClientSession"
 import { getAuthCookie } from "@/util/actions/cookie"
 import { revalidatePage } from "@/util/actions/revalidatePage"
 import type { LoginUserPayload } from "@/interfaces/dto/auth/login.dto"
+import DeleteMemberModal from "@/app/profile/[id]/_components/deleteMember/DeleteMemberModal"
 
 type ProfileDropdownMenu = {
   label?: string
@@ -60,6 +61,8 @@ function NotLoginedUserArea() {
 function LoginedUserArea({ user }: { user: LoginUserPayload }) {
   const { clientSessionLogout } = useClientSession()
 
+  const { openModal } = useModal()
+
   const DropDownMenu = () => {
     const profileDropdownMenu: Array<ProfileDropdownMenu> = [
       { label: "내 프로필", to: `/profile/${user.member_id}`, role: "menu" },
@@ -71,16 +74,12 @@ function LoginedUserArea({ user }: { user: LoginUserPayload }) {
           try {
             const { accessToken, refreshToken } = await getAuthCookie()
 
-            if (!accessToken || !refreshToken) {
-              await clientSessionLogout()
-
-              return
+            if (accessToken && refreshToken) {
+              await logout({
+                access_token: accessToken,
+                refresh_token: refreshToken,
+              })
             }
-
-            await logout({
-              access_token: accessToken,
-              refresh_token: refreshToken,
-            })
             await clientSessionLogout()
 
             revalidatePage("*")
@@ -95,6 +94,19 @@ function LoginedUserArea({ user }: { user: LoginUserPayload }) {
               position: "bottom-center",
             })
           }
+        },
+      },
+      { role: "divider" },
+      {
+        label: "탈퇴하기",
+        role: "menu",
+        onClick() {
+          openModal({
+            containsHeader: false,
+            closeableDim: true,
+            content: <DeleteMemberModal />,
+            classNames: "w-screen sm:w-[380px]",
+          })
         },
       },
     ]

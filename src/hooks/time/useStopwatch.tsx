@@ -22,7 +22,7 @@ export function useStopwatch({
   callback,
   stopAfterTargetTime = true,
 }: UseStopwatchOption) {
-  const timerWorkerRef = useRef<Worker | null>(new Worker("/timerWorker.js"))
+  const timerWorkerRef = useRef<Worker | null>(null)
 
   const [diffTime, setDiffTime] = useState<DiffTimePayload>({
     hour: 0,
@@ -44,33 +44,34 @@ export function useStopwatch({
       timerWorkerRef.current = new Worker("/timerWorker.js")
     }
 
-    timerWorkerRef.current.onmessage = (ev) => {
-      const { hour, minute, second, isAfter } = ev.data as DiffTimePayload
+    if (timerWorkerRef.current) {
+      timerWorkerRef.current.onmessage = (ev) => {
+        const { hour, minute, second, isAfter } = ev.data as DiffTimePayload
 
-      callback && callback({ hour, minute, second, isAfter })
+        callback && callback({ hour, minute, second, isAfter })
 
-      if (isAfter && stopAfterTargetTime) {
+        if (isAfter && stopAfterTargetTime) {
+          stop()
+
+          setDiffTime((prev) => ({
+            ...prev,
+            hour: 0,
+            minute: 0,
+            second: 0,
+            isAfter: true,
+          }))
+
+          return
+        }
+
         setDiffTime((prev) => ({
           ...prev,
-          hour: 0,
-          minute: 0,
-          second: 0,
-          isAfter: true,
+          hour,
+          minute,
+          second,
+          isAfter,
         }))
-
-        timerWorkerRef.current?.terminate()
-        timerWorkerRef.current = null
-
-        return
       }
-
-      setDiffTime((prev) => ({
-        ...prev,
-        hour,
-        minute,
-        second,
-        isAfter,
-      }))
     }
 
     timerWorkerRef.current?.postMessage({
