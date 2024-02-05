@@ -137,6 +137,10 @@ export const userClientSession = selector({
     const clientSessionLogout = getCallback(({ set }) => async () => {
       await deleteAuthCookie()
 
+      if (typeof window !== "undefined") {
+        localStorage.removeItem(USER_LOCAL_STORAGE_KEY)
+      }
+
       set(userAtom, null)
     })
 

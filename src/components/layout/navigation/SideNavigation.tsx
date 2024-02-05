@@ -67,16 +67,12 @@ function SideNavigation({ hasHeader }: SideNavigationProps) {
           })}
           {!!user &&
             profileRoute.map(({ label, icon, to, activeClassName }) => {
-              const active = activeNavItem
-                ? activeNavItem.label === label
-                : false
-
               return (
                 <li key={label}>
                   <SideNavigationItem
                     label={label}
                     icon={icon}
-                    active={isMyPage || active}
+                    active={isMyPage}
                     activeClassName={activeClassName}
                     to={to + `/${user.member_id}`}
                   />

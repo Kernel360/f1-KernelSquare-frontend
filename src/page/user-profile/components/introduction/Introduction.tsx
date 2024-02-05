@@ -55,8 +55,7 @@ function Introduction({ introduction, isMyPage, userId }: IntroductionProps) {
     )
   }
 
-  if (!userId) return <LoginForm />
-  if (!isMyPage) return null
+  // if (!userId) return <LoginForm />
 
   if (isIntroductionEditMode)
     return (
@@ -66,7 +65,7 @@ function Introduction({ introduction, isMyPage, userId }: IntroductionProps) {
             <MdEditor
               previous={introduction}
               editorRef={editorRef}
-              userId={userId}
+              userId={userId!}
             />
             <div className="flex justify-center mt-[20px]">
               <Button
