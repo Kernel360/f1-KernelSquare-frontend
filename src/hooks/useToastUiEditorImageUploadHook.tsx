@@ -107,7 +107,7 @@ export function useToastUiEditorImageUploadHook({
   const uploadImageHook = async (blob: File | Blob, callback: HookCallback) => {
     try {
       const { fileUploadImageLinks } = await editorSnapshot()
-      console.log("file", fileUploadImageLinks)
+      
       if (fileUploadImageLinks.length >= maximumUploadImageLength) {
         throw exceedingUploadableImagesError
       }

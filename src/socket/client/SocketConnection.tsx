@@ -91,17 +91,6 @@ function SocketConnection({ serverUrl, roomKey, user }: SocketConnectionProps) {
     const handleLeave = (e: CustomEvent) => {
       const { user: leaveUser, isPopup } = e.detail as LeaveRoomDetail
 
-      stomp?.send(
-        `/app/chat/message`,
-        {},
-        JSON.stringify({
-          type: "LEAVE",
-          room_key: roomKey,
-          sender: leaveUser.nickname,
-          send_time: dayjs().format("YYYY-MM-DDTHH:mm:ss"),
-        }),
-      )
-
       if (!isPopup) {
         setTimeout(() => {
           replace("/chat")
@@ -122,13 +111,13 @@ function SocketConnection({ serverUrl, roomKey, user }: SocketConnectionProps) {
       )
       ;(window.opener.postMessage as typeof window.postMessage)(
         { type: "leave", user } as PopupMessage,
-        window.location.origin,
+        process.env.NEXT_PUBLIC_SITE_URL!,
       )
     }
 
     const handleMessage = (e: MessageEvent) => {
       if (typeof window === "undefined") return
-      if (e.origin !== window.location.origin) return
+      if (e.origin !== process.env.NEXT_PUBLIC_SITE_URL!) return
 
       const { type } = e.data
 

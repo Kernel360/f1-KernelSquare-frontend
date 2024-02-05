@@ -104,7 +104,10 @@ function SubmitStep({ getValues }: FunnelStepFunctionComponentProps<Reason>) {
 
       const popup = await popupWindowSnapshot()
 
-      popup?.postMessage({ type: "deleteUser" }, window.location.origin)
+      popup?.postMessage(
+        { type: "deleteUser" },
+        process.env.NEXT_PUBLIC_SITE_URL!,
+      )
     }
 
     window.addEventListener("beforeunload", handleBeforeUnload)
@@ -150,7 +153,10 @@ function SuccessContent({ clone }: { clone: boolean }) {
   const onClick = async () => {
     const popup = await popupWindowSnapshot()
 
-    popup?.postMessage({ type: "deleteUser" }, window.location.origin)
+    popup?.postMessage(
+      { type: "deleteUser" },
+      process.env.NEXT_PUBLIC_SITE_URL!,
+    )
 
     closeModal()
 

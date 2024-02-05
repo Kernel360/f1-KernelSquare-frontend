@@ -4,6 +4,7 @@ import { coffeeChatHandler } from "./coffee-chat"
 import { memberHandler } from "./member"
 import { questionHandler } from "./question"
 import { searchHandler } from "./search"
+import { techTagsHandler } from "./techs"
 import { uploadHandler } from "./upload"
 
 export const mswHandler = [
@@ -14,4 +15,5 @@ export const mswHandler = [
   ...uploadHandler,
   ...coffeeChatHandler,
   ...searchHandler,
+  ...techTagsHandler,
 ]

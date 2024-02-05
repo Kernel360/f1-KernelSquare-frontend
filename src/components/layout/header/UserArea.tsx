@@ -74,16 +74,12 @@ function LoginedUserArea({ user }: { user: LoginUserPayload }) {
           try {
             const { accessToken, refreshToken } = await getAuthCookie()
 
-            if (!accessToken || !refreshToken) {
-              await clientSessionLogout()
-
-              return
+            if (accessToken && refreshToken) {
+              await logout({
+                access_token: accessToken,
+                refresh_token: refreshToken,
+              })
             }
-
-            await logout({
-              access_token: accessToken,
-              refresh_token: refreshToken,
-            })
             await clientSessionLogout()
 
             revalidatePage("*")

@@ -1,47 +1,26 @@
-import { atomFamily } from "recoil"
+import { atom, atomFamily } from "recoil"
 import type { TechTag } from "@/interfaces/tech-tag"
 
 type Tag = TechTag
 type TagList = Array<Tag>
 
 export const selectedTagListAtomFamily = atomFamily<
-  { tagList: TagList; selectedTagList: TagList },
+  TagList,
   {
     uniqueKey: string
-    initialTagList?: Array<TechTag>
-    initialSelectedTagList?: Array<TechTag>
+    initialSelectedTagList?: TagList
   }
 >({
   key: "selectedTagListAtomFamily",
   default(param) {
-    const { initialTagList, initialSelectedTagList } = param
+    return param.initialSelectedTagList ? [...param.initialSelectedTagList] : []
+  },
+})
 
-    if (initialSelectedTagList && !initialTagList) {
-      return {
-        tagList: [],
-        selectedTagList: [],
-      }
-    }
-
-    if (initialTagList) {
-      if (initialSelectedTagList) {
-        return {
-          tagList: initialTagList,
-          selectedTagList: initialSelectedTagList.filter((tag) =>
-            initialTagList.includes(tag),
-          ),
-        }
-      }
-
-      return {
-        tagList: initialTagList,
-        selectedTagList: [],
-      }
-    }
-
-    return {
-      tagList: [],
-      selectedTagList: [],
-    }
+export const searchTagAtom = atom<{ keyword: string; page: number }>({
+  key: "search-tag-list",
+  default: {
+    keyword: "",
+    page: 0,
   },
 })

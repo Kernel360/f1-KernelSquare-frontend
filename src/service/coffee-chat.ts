@@ -13,11 +13,10 @@ import type {
   CreateCoffeeChatReservationResponse,
 } from "@/interfaces/dto/coffee-chat/create-coffeechat-reservation.dto"
 import type { AxiosResponse } from "axios"
-import {
+import type {
   EnterChatRoomRequest,
   EnterChatRoomResponse,
 } from "@/interfaces/dto/coffee-chat/enter-chat-room"
-import axios from "axios"
 
 export async function getCoffeeChatReservationList(
   { page = 0, size = 5 }: GetCoffeeChatReservationListRequest = {

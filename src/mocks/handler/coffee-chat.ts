@@ -12,6 +12,7 @@ import type {
   EnterChatRoomRequest,
   EnterChatRoomResponse,
 } from "@/interfaces/dto/coffee-chat/enter-chat-room"
+import dayjs from "dayjs"
 
 export const coffeeChatHandler = [
   http.get<PathParams, DefaultBodyType, GetCoffeeChatReservationListResponse>(
@@ -180,6 +181,9 @@ export const coffeeChatHandler = [
             article_title,
             room_key: "test_room_key",
             active: true,
+            expiration_time: dayjs()
+              .add(30, "minutes")
+              .format("YYYY-MM-DDTHH:mm:ss"),
           },
         },
         {

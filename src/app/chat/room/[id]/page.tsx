@@ -84,7 +84,8 @@ export default async function CoffeeChatRoomPage({
       room_id: roomId,
     })
 
-    const { active, room_key, article_title } = enterChatRoomResponse.data.data!
+    const { active, room_key, article_title, expiration_time } =
+      enterChatRoomResponse.data.data!
 
     if (!active) {
       throw new EnterRoomError({ type: "nonAcitve" })
@@ -94,16 +95,16 @@ export default async function CoffeeChatRoomPage({
       throw new EnterRoomError({ type: "notMatch" })
     }
 
-    console.log({ active, room_key, article_title })
+    console.log({ active, room_key, article_title, expiration_time })
 
     return (
       <ChatRoom
         serverUrl={`${process.env.NEXT_PUBLIC_WS}`}
-        // serverUrl={`http://localhost:8080`}
         roomId={roomId}
         roomKey={room_key}
         articleTitle={articleTitle}
         user={user}
+        expiration_time={expiration_time}
       />
     )
   } catch (error) {
