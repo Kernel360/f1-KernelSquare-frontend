@@ -1,17 +1,22 @@
 import { IconBaseProps } from "react-icons"
 import { IoSearchOutline } from "react-icons/io5"
 import { IoIosNotifications } from "react-icons/io"
-import { FaUserCircle } from "react-icons/fa"
-import { LuCode2, LuSearchCode } from "react-icons/lu"
+import { FaCircle, FaRegCircle, FaUserCircle } from "react-icons/fa"
+import { LuCode2, LuInfo, LuSearchCode } from "react-icons/lu"
 import { AiOutlineNotification } from "react-icons/ai"
 import { HiOutlineChatBubbleLeftRight } from "react-icons/hi2"
 import { TbMessage2Question } from "react-icons/tb"
 import { GrDocumentUser } from "react-icons/gr"
 import { BsPencilSquare } from "react-icons/bs"
-import { BiSolidUpArrow } from "react-icons/bi"
+import {
+  BiSolidLeftArrow,
+  BiSolidRightArrow,
+  BiSolidUpArrow,
+} from "react-icons/bi"
 import { BiSolidDownArrow } from "react-icons/bi"
 import { TbPencilPlus } from "react-icons/tb"
 import { RiArrowUpSLine } from "react-icons/ri"
+import { MdClose } from "react-icons/md"
 
 type IconsKey =
   | "Search"
@@ -21,8 +26,11 @@ type IconsKey =
   | "PostQuestion"
   | "ScrollToTop"
   | "Search"
+  | "Close"
+  | "Info"
 type NavigationIconsKey = "QnA" | "Chat" | "Notice" | "FaQ" | "MyPage"
-type VoteIconsKey = "Up" | "Down"
+type DirectionIconsKey = "Up" | "Down" | "Left" | "Right"
+type CircleIconsKey = "Line" | "Fill"
 export type Icon = (props: IconBaseProps) => JSX.Element
 
 export const Icons: Record<IconsKey, Icon> = {
@@ -47,6 +55,12 @@ export const Icons: Record<IconsKey, Icon> = {
   Search(props) {
     return <LuSearchCode {...props} />
   },
+  Close(props) {
+    return <MdClose {...props} />
+  },
+  Info(props) {
+    return <LuInfo {...props} />
+  },
 }
 
 export const NavigationIcons: Record<NavigationIconsKey, Icon> = {
@@ -67,11 +81,26 @@ export const NavigationIcons: Record<NavigationIconsKey, Icon> = {
   },
 }
 
-export const VoteIcons: Record<VoteIconsKey, Icon> = {
+export const DirectionIcons: Record<DirectionIconsKey, Icon> = {
   Up(props) {
     return <BiSolidUpArrow {...props} />
   },
   Down(props) {
     return <BiSolidDownArrow {...props} />
+  },
+  Left(props) {
+    return <BiSolidLeftArrow {...props} />
+  },
+  Right(props) {
+    return <BiSolidRightArrow {...props} />
+  },
+}
+
+export const CircleIcons: Record<CircleIconsKey, Icon> = {
+  Line(props) {
+    return <FaRegCircle {...props} />
+  },
+  Fill(props) {
+    return <FaCircle {...props} />
   },
 }

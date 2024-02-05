@@ -35,7 +35,6 @@ function CoffeeChatList({ coffeeChatList }: CoffeeChatListProps) {
           level,
           level_image_url,
           hash_tag_list,
-          full_check,
           created_date,
           modified_date,
         }) => {

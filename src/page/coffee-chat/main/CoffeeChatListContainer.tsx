@@ -12,6 +12,7 @@ import { keyframes } from "@emotion/react"
 import styled from "@emotion/styled"
 import CoffeeChatPageLoading from "@/app/chat/_components/Loading"
 import type { APIResponse } from "@/interfaces/dto/api-response"
+import { useMemo } from "react"
 
 function CoffeeChatListContainer() {
   const searchParams = useSearchParams()
@@ -32,6 +33,8 @@ function CoffeeChatListContainer() {
       return response.data.data
     },
   })
+
+  const portalContainer = document.getElementById("chat-pagination")
 
   if (isPending) {
     return <CoffeeChatPageLoading page="main" />
@@ -59,19 +62,21 @@ function CoffeeChatListContainer() {
       return <CoffeeChatList.NotHasCoffeeChatList type={"noContent"} />
     }
 
-    const Portal = createPortal(
-      <Pagination
-        previousLabel="이전"
-        nextLabel="다음"
-        disabledClassName="hidden"
-        forcePage={Number(page)}
-        pageCount={coffeeChatList!.pagination.total_page}
-        onPageChange={({ selected }) => {
-          push(`/chat?page=${selected}`)
-        }}
-      />,
-      document.getElementById("chat-pagination")!,
-    )
+    const Portal = portalContainer
+      ? createPortal(
+          <Pagination
+            previousLabel="이전"
+            nextLabel="다음"
+            disabledClassName="hidden"
+            forcePage={Number(page)}
+            pageCount={coffeeChatList!.pagination.total_page}
+            onPageChange={({ selected }) => {
+              push(`/chat?page=${selected}`)
+            }}
+          />,
+          portalContainer,
+        )
+      : null
 
     return (
       <div className="mt-1 py-4 w-[calc(100%-14px)] sm:w-[calc(100%-24px)] lg:w-[calc(100%-44px)] mx-auto">

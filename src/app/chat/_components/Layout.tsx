@@ -39,6 +39,15 @@ function CoffeeChatPageLayout({ children }: CoffeeChatPageLayoutProps) {
     return "커피챗 페이지"
   }
 
+  if (pathname.startsWith("/chat/") && !pathname.includes("room"))
+    return (
+      <div>
+        <div className="mt-5 w-[calc(100%-12px)] sm:w-[calc(100%-22px)] lg:w-[calc(100%-42px)] mx-auto">
+          {children}
+        </div>
+      </div>
+    )
+
   return (
     <div className="flex">
       <div className="relative box-border flex-1">

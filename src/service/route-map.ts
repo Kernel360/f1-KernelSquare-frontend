@@ -216,6 +216,8 @@ export class RouteMap {
    *
    * **coffeeChatReservation** 커피챗 예약(POST)
    *
+   * **deleteCoffeeChatReservation** 커피챗 예약 삭제(DELETE)
+   *
    * **reviewCoffeeChat** 커피챗 리뷰(POST)
    *
    * **enterCoffeeChatRoom** 채팅방 입장(POST)
@@ -226,8 +228,8 @@ export class RouteMap {
     updateCoffeeChatPost(postId: number) {
       return `${RouteMap.routeGroupBaseURL.coffeeChat}/posts/${postId}`
     },
-    deleteCoffeeChatPost(postId: number) {
-      return `${RouteMap.routeGroupBaseURL.coffeeChat}/posts/${postId}`
+    deleteCoffeeChatPost(postId?: number) {
+      return `${RouteMap.routeGroupBaseURL.coffeeChat}/posts/${postId ?? ":id"}`
     },
     getCoffeeChatDetail(postId?: number) {
       return `${RouteMap.routeGroupBaseURL.coffeeChat}/posts/${postId ?? ":id"}`
@@ -235,8 +237,12 @@ export class RouteMap {
     getCoffeeChatReservationInfo(postId: number) {
       return `${RouteMap.routeGroupBaseURL.coffeeChat}/posts/${postId}/reservation`
     },
-    coffeeChatReservation(postId: number) {
-      return `${RouteMap.routeGroupBaseURL.coffeeChat}/posts/${postId}/reservation`
+    getMyCoffeeChatReservation: `${RouteMap.routeGroupBaseURL.coffeeChat}/reservations`,
+    coffeeChatReservation: `${RouteMap.routeGroupBaseURL.coffeeChat}/reservations/book`,
+    deleteCoffeeChatReservation(reservationId?: number) {
+      return `${RouteMap.routeGroupBaseURL.coffeeChat}/${
+        reservationId ?? ":id"
+      }`
     },
     reviewCoffeeChat(postId: number) {
       return `${RouteMap.routeGroupBaseURL.coffeeChat}/posts/${postId}/review`

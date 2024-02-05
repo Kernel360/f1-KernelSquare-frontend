@@ -1,6 +1,6 @@
 "use client"
 
-import { VoteIcons } from "@/components/icons/Icons"
+import { DirectionIcons } from "@/components/icons/Icons"
 import useAnswerVote from "../../hooks/useAnswerVote"
 import SuccessModalContent from "../SuccessModalContent"
 import { successMessage } from "@/constants/message"
@@ -40,11 +40,14 @@ const VoteBox: React.FC<VoteBoxProps> = ({ answer }) => {
   return (
     <form className="mr-5">
       <div className="flex justify-center">
-        <VoteIcons.Up className={raiseClass} onClick={handleVoteRaise} />
+        <DirectionIcons.Up className={raiseClass} onClick={handleVoteRaise} />
       </div>
       <div className="text-[30px]">{replaceNumber(answer.vote_count)}</div>
       <div className="flex justify-center">
-        <VoteIcons.Down className={reduceClass} onClick={handleVoteReduce} />
+        <DirectionIcons.Down
+          className={reduceClass}
+          onClick={handleVoteReduce}
+        />
       </div>
     </form>
   )

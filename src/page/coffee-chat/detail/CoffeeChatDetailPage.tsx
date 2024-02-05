@@ -15,16 +15,17 @@ function CoffeeChatDetailPage({
   coffeeChatDetailPayload,
 }: CoffeeChatDetailPageProps) {
   return (
-    <div className="">
+    <div className="w-[80%] m-auto mt-5">
       <CoffeeChatDetailHeader
+        article_id={coffeeChatDetailPayload.article_id}
         title={coffeeChatDetailPayload.title}
         nickname={coffeeChatDetailPayload.nickname}
         member_image_url={coffeeChatDetailPayload.member_image_url}
         level={coffeeChatDetailPayload.level}
         level_image_url={coffeeChatDetailPayload.level_image_url}
-        hash_tag_list={coffeeChatDetailPayload.hash_tag_list}
+        hashtags={coffeeChatDetailPayload.hashtags}
       />
-      <Spacing size={16} />
+      <Spacing size={35} />
       <CoffeeChatDetailContent content={coffeeChatDetailPayload.content} />
       <Spacing size={32} />
       <div className="w-full flex justify-center items-center">
@@ -34,7 +35,11 @@ function CoffeeChatDetailPage({
         />
       </div>
       <Spacing size={32} />
-      <ScheduleMentoringSession />
+      <ScheduleMentoringSession
+        mentor={coffeeChatDetailPayload.member_id}
+        reservation={coffeeChatDetailPayload.date_times}
+        created={coffeeChatDetailPayload.created_date}
+      />
     </div>
   )
 }
