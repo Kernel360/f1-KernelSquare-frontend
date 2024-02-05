@@ -3,10 +3,9 @@
 import Button from "@/components/shared/button/Button"
 import { useClientSession } from "@/hooks/useClientSession"
 import { toast } from "react-toastify"
-import { useEffect } from "react"
-import { PopupMessage } from "../chat/ChatRoomHeader"
-import { useRecoilState, useSetRecoilState } from "recoil"
+import { useRecoilState } from "recoil"
 import { popupWindowAtom } from "@/recoil/atoms/popup/popupWindowAtom"
+import { cloneDeep, cloneDeepWith } from "lodash-es"
 
 interface EnterCoffeeChatProps {
   articleTitle: string
@@ -14,7 +13,7 @@ interface EnterCoffeeChatProps {
 }
 
 function EnterCoffeeChat({ articleTitle, roomId }: EnterCoffeeChatProps) {
-  const { user, clientSessionReset } = useClientSession()
+  const { user } = useClientSession()
 
   const [popupWindow, setPopupWindow] = useRecoilState(popupWindowAtom)
 
@@ -30,6 +29,11 @@ function EnterCoffeeChat({ articleTitle, roomId }: EnterCoffeeChatProps) {
     )
 
     setPopupWindow(popup)
+
+    localStorage.setItem(
+      "popup",
+      JSON.stringify(cloneDeep({ postMessage: popup?.postMessage })),
+    )
   }
 
   const onSubmitEnterCoffeeChatRoom = async () => {
@@ -47,31 +51,6 @@ function EnterCoffeeChat({ articleTitle, roomId }: EnterCoffeeChatProps) {
 
     openChatRoomPopup()
   }
-
-  useEffect(() => {
-    const handleMessage = (e: MessageEvent) => {
-      if ((e.source as Window).name !== "kernel_chat_window") return
-      if (e.origin !== window.location.origin) return
-
-      const { type, user } = e.data as PopupMessage
-
-      if (type === "loginRequired") {
-        clientSessionReset()
-
-        return
-      }
-
-      if (type === "leave") {
-        setPopupWindow(null)
-      }
-    }
-
-    window.addEventListener("message", handleMessage)
-
-    return () => {
-      window.removeEventListener("message", handleMessage)
-    }
-  }, []) /* eslint-disable-line */
 
   return (
     <Button

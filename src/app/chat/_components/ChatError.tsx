@@ -39,7 +39,7 @@ function ChatError({ errorType }: ChatErrorProps) {
     const handleBeforeUnload = (e: BeforeUnloadEvent) => {
       ;(window.opener.postMessage as typeof window.postMessage)(
         { type: "leave" } as PopupMessage,
-        window.location.origin,
+        process.env.NEXT_PUBLIC_SITE_URL!,
       )
     }
 
@@ -69,7 +69,7 @@ ChatError.LoginRequired = function ChatLoginRequired() {
     if (isPopup) {
       ;(window.opener.postMessage as typeof window.postMessage)(
         { type: "loginRequired" } as PopupMessage,
-        window.location.origin,
+        process.env.NEXT_PUBLIC_SITE_URL!,
       )
 
       return

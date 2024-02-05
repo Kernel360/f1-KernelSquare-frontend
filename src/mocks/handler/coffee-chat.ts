@@ -1,3 +1,4 @@
+import dayjs from "dayjs"
 import { RouteMap } from "@/service/route-map"
 import { generatePagination } from "@/util/paginate"
 import { DefaultBodyType, HttpResponse, PathParams, http } from "msw"
@@ -7,6 +8,10 @@ import {
   mockCoffeeChatReservations,
 } from "../db/coffee-chat"
 import { ApiStatus } from "@/constants/response/api"
+import { mockUsers } from "../db/user"
+import { HttpStatusCode } from "axios"
+import badge_url from "@/assets/images/badges"
+import { useClientSession } from "@/hooks/useClientSession"
 import type {
   CoffeeChatReservation,
   GetCoffeeChatReservationListResponse,
@@ -16,22 +21,17 @@ import type {
   EnterChatRoomRequest,
   EnterChatRoomResponse,
 } from "@/interfaces/dto/coffee-chat/enter-chat-room"
-import {
+import type {
   CreateCoffeeChatReservationRequest,
   CreateCoffeeChatReservationResponse,
 } from "@/interfaces/dto/coffee-chat/create-coffeechat-reservation.dto"
-import { mockUsers } from "../db/user"
-import { HttpStatusCode } from "axios"
-import dayjs from "dayjs"
-import badge_url from "@/assets/images/badges"
-import { DeleteCoffeeChatResponse } from "@/interfaces/dto/coffee-chat/delete-coffeechat.dto"
-import { GetMyCoffeeChatReservationListResponse } from "@/interfaces/dto/coffee-chat/get-my-coffeechat-reservation"
-import { useClientSession } from "@/hooks/useClientSession"
-import {
+import type { DeleteCoffeeChatResponse } from "@/interfaces/dto/coffee-chat/delete-coffeechat.dto"
+import type { GetMyCoffeeChatReservationListResponse } from "@/interfaces/dto/coffee-chat/get-my-coffeechat-reservation"
+import type {
   MakeReservationRequest,
   MakeReservationResponse,
 } from "@/interfaces/dto/coffee-chat/make-reservation.dto"
-import {
+import type {
   DeleteReservationRequest,
   DeleteReservationResponse,
 } from "@/interfaces/dto/coffee-chat/delete-reservation.dto"
@@ -212,6 +212,9 @@ export const coffeeChatHandler = [
             article_title,
             room_key: "test_room_key",
             active: true,
+            expiration_time: dayjs()
+              .add(30, "minutes")
+              .format("YYYY-MM-DDTHH:mm:ss"),
           },
         },
         {

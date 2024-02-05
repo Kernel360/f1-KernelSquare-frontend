@@ -1,5 +1,7 @@
 import { apiInstance } from "./axios"
 import { RouteMap } from "./route-map"
+import { AxiosError } from "axios"
+import { DefaultBodyType } from "msw"
 import type {
   GetCoffeeChatReservationListRequest,
   GetCoffeeChatReservationListResponse,
@@ -13,23 +15,21 @@ import type {
   CreateCoffeeChatReservationResponse,
 } from "@/interfaces/dto/coffee-chat/create-coffeechat-reservation.dto"
 import type { AxiosResponse } from "axios"
-import {
+import type {
   EnterChatRoomRequest,
   EnterChatRoomResponse,
 } from "@/interfaces/dto/coffee-chat/enter-chat-room"
-import axios, { AxiosError } from "axios"
-import {
+import type {
   DeleteCoffeeChatRequest,
   DeleteCoffeeChatResponse,
 } from "@/interfaces/dto/coffee-chat/delete-coffeechat.dto"
-import { DefaultBodyType } from "msw"
-import { APIResponse } from "@/interfaces/dto/api-response"
-import {
+import type { APIResponse } from "@/interfaces/dto/api-response"
+import type {
   MakeReservationRequest,
   MakeReservationResponse,
 } from "@/interfaces/dto/coffee-chat/make-reservation.dto"
-import { DeleteReservationRequest } from "@/interfaces/dto/coffee-chat/delete-reservation.dto"
-import {
+import type { DeleteReservationRequest } from "@/interfaces/dto/coffee-chat/delete-reservation.dto"
+import type {
   GetMyCoffeeChatReservationListResponse,
   GetMyCoffeeChatReservationRequest,
 } from "@/interfaces/dto/coffee-chat/get-my-coffeechat-reservation"

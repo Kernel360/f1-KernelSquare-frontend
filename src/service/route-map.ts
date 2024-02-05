@@ -11,6 +11,7 @@ export class RouteMap {
     search: "search",
     notification: "notification",
     images: "images",
+    techTags: "techs",
   }
   private static routeGroupBaseURL = {
     member: `${RouteMap.baseURL}/${RouteMap.prefix.member}`,
@@ -22,6 +23,12 @@ export class RouteMap {
     search: `${RouteMap.baseURL}/${RouteMap.prefix.search}`,
     notification: `${RouteMap.baseURL}/${RouteMap.prefix.notification}`,
     images: `${RouteMap.baseURL}/${RouteMap.prefix.images}`,
+    techTags: `${RouteMap.baseURL}/${RouteMap.prefix.techTags}`,
+  }
+
+  static techTags = {
+    getTechTags: `${RouteMap.routeGroupBaseURL.techTags}`,
+    searchTechTag: `${RouteMap.baseURL}/search/${RouteMap.prefix.techTags}`,
   }
 
   /**

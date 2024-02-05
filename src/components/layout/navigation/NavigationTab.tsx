@@ -69,7 +69,7 @@ function NavigationTab({ hasHeader }: NavigationTabProps) {
       <Tab
         defaultTab={activeNavItem?.label}
         classNames={{
-          wrapper: "h-[59px] font-bold px-4",
+          wrapper: "h-[59px] font-bold px-1 sm:px-4",
         }}
         activeClassNames={{
           tab: "text-secondary",
@@ -85,7 +85,7 @@ function NavigationTabItem({ label, to }: NavigationTabItemProps) {
   return (
     <Link
       href={to}
-      className="flex w-full h-full justify-center items-center px-2"
+      className="flex w-full h-full justify-center items-center px-2 text-sm"
     >
       {label}
     </Link>
