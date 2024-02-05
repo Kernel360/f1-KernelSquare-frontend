@@ -25,6 +25,7 @@ export const errorMessage = {
   overHashtagCntLimit: `해시태그는 최대 ${Limitation.hashtags_cnt}개까지 입력 가능합니다.`,
   overHashtagWordLimit: `해시태그는 최대 ${Limitation.hashtags_word}자까지 입력 가능합니다.`,
   overtimeCntLimit: `멘토링 시간은 최대 ${Limitation.mentoring_time}개까지 선택 가능합니다.`,
+  undertimeCntLimit: "멘토링 시간은 최소 하나 이상 선택해야 합니다.",
   preventSpecialCharacter: `문자와 숫자만 입력 가능합니다.`,
   preventDuplicateValue: "이미 입력된 값입니다.",
 } as const

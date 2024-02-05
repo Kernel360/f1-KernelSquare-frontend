@@ -5,7 +5,7 @@ import CoffeeChatSection from "./CoffeeChatSection"
 import { DirectionIcons, Icons } from "@/components/icons/Icons"
 import TimeOptions from "./TimeOptions"
 import { AM, PM } from "@/constants/timeOptions"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { TimeZone } from "../CreateCoffeeChatReservationPage.types"
 import { twJoin } from "tailwind-merge"
 import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil"
@@ -33,8 +33,9 @@ const ScheduleSection = () => {
   const today = new Date()
   const startDate = new Date(dayjs(today).add(7, "day").format("YYYY-MM-DD"))
   const date = useRecoilValue(CoffeeChatStartDate)
-  const setSelectedDay = useSetRecoilState(SelectedDate)
+  const [selectedDay, setSelectedDay] = useRecoilState(SelectedDate)
   const timeCount = useRecoilValue(TimeCount)
+  console.log("DAY", dayjs(date + "").format("YYYY년MM월DD일"))
 
   // // 오전 or 오후
   const [timeZone, setTimeZone] = useState<TimeZone>(TimeZone.AM)
@@ -48,7 +49,7 @@ const ScheduleSection = () => {
       <div className="w-full align-top max-w-full flex-col md:flex-row md:justify-start md:items-center">
         <CoffeeChatSection.Label className="block w-max flex items-center">
           <div>멘토링 가능 일시</div>
-          <HoverBox />
+          {date && <HoverBox />}
         </CoffeeChatSection.Label>
         <div className="flex justify-around">
           <div>
@@ -81,14 +82,14 @@ const ScheduleSection = () => {
                 <Select
                   onValueChange={(day: string) => {
                     setSelectedDay(day)
+                    setTimeZone(TimeZone.AM)
                   }}
                   defaultValue={dayjs(date + "").format("YYYY년MM월DD일")}
                 >
                   <SelectTrigger className="w-[180px] text-center">
-                    <SelectValue
-                      className="flex flex-1"
-                      placeholder={dayjs(date + "").format("YYYY년MM월DD일")}
-                    />
+                    <SelectValue className="flex flex-1">
+                      {selectedDay || dayjs(date + "").format("YYYY년MM월DD일")}
+                    </SelectValue>
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem

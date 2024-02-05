@@ -21,7 +21,7 @@ import CoffeeChatSection from "./components/CoffeeChatSection"
 import HashTagsSection from "./components/HashTagsSection"
 import ScheduleSection from "./components/ScheduleSection"
 import { CoffeeChatQueries } from "@/react-query/coffee-chat"
-import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil"
+import { useRecoilState, useRecoilValue } from "recoil"
 import { HashTagList } from "@/recoil/atoms/coffee-chat/hashtags"
 import { errorMessage } from "@/constants/message"
 import dynamic from "next/dynamic"
@@ -44,7 +44,7 @@ function CreateCoffeeChatReservationPage({
   const [hash_tags, setHash_tags] = useRecoilState(HashTagList)
   const queryClient = useQueryClient()
   const { replace } = useRouter()
-  const setTimeCount = useSetRecoilState(TimeCount)
+  const [timeCount, setTimeCount] = useRecoilState(TimeCount)
 
   const { user } = useClientSession()
 
@@ -87,6 +87,10 @@ function CreateCoffeeChatReservationPage({
       return toast.error(errorMessage.notitle, { position: "top-center" })
     if (!editorRef.current?.getInstance().getMarkdown())
       return toast.error(errorMessage.noContent, { position: "top-center" })
+    if (timeCount === 0)
+      return toast.error(errorMessage.undertimeCntLimit, {
+        position: "top-center",
+      })
     createCoffeeChatPost(
       {
         member_id: user.member_id,

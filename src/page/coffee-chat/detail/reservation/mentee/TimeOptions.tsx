@@ -93,6 +93,12 @@ const TimeOptions = ({ reservation, cate, date }: TimeOptionsProps) => {
                 queryKey: [queryKey.chat],
               })
             },
+            onError: (res) => {
+              toast.error(res.message, {
+                position: "top-center",
+                autoClose: 1000,
+              })
+            },
           },
         )
       }
@@ -142,6 +148,12 @@ const TimeOptions = ({ reservation, cate, date }: TimeOptionsProps) => {
                 queryKey: [queryKey.chat],
               })
             },
+            onError: (res) => {
+              toast.error(res.message, {
+                position: "top-center",
+                autoClose: 1000,
+              })
+            },
           },
         )
       }
@@ -167,7 +179,7 @@ const TimeOptions = ({ reservation, cate, date }: TimeOptionsProps) => {
   const isReserved = (mentee_nickname: string | null) =>
     twJoin(
       [
-        "flex py-2 rounded justify-center transition-colors break-all text-sm text-secondary font-semibold shadow-sm",
+        "w-full flex py-2 rounded justify-center transition-colors break-all text-sm text-secondary font-semibold shadow-sm",
       ],
       [
         mentee_nickname === user?.nickname &&
@@ -200,10 +212,12 @@ const TimeOptions = ({ reservation, cate, date }: TimeOptionsProps) => {
     )
 
   return (
-    <div className="grid grid-cols-1 sm:grid-rows-4 sm:grid-cols-4 gap-4 shrink-0 m-auto">
+    <div className="w-full grid grid-cols-1 sm:grid-rows-4 sm:grid-cols-4 gap-4 shrink-0 m-auto">
       {getList(cate).map((time, i) => (
         <Button
-          className={"inline text-left leading-[30px] p-0"}
+          className={
+            "inline text-left leading-[30px] p-0 flex items-center px-2"
+          }
           key={time.room_id + i}
           onClick={() => handleRegister(time, time.mentee_nickname)}
         >
@@ -212,7 +226,9 @@ const TimeOptions = ({ reservation, cate, date }: TimeOptionsProps) => {
               <ProfileImage image_url={time.mentee_image_url} />
             )}
             {time.mentee_nickname && !time.mentee_image_url && (
-              <Icons.UserProfile />
+              <div className="w-[20px] h-[20px] mr-1 mt-[2px]">
+                <Icons.UserProfile />
+              </div>
             )}
             <div>{getTime(time.start_time)}</div>
           </span>
