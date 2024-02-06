@@ -3,6 +3,7 @@ import {
   errorMessage,
   notificationMessage,
   pendingMessage,
+  successMessage,
 } from "@/constants/message"
 import queryKey from "@/constants/queryKey"
 import { useClientSession } from "@/hooks/useClientSession"
@@ -56,7 +57,9 @@ const useAnswerVote = ({ answer }: VoteProps) => {
       return toast.error(errorMessage.unauthorized, { position: "top-center" })
     try {
       if (voteAnswerStatus.isVoteAnswer)
-        return toast.error(pendingMessage.votePending)
+        return toast.error(pendingMessage.votePending, {
+          position: "top-center",
+        })
       voteAnswer(
         {
           answerId: answer?.answer_id,
@@ -79,7 +82,9 @@ const useAnswerVote = ({ answer }: VoteProps) => {
       return toast.error(errorMessage.unauthorized, { position: "top-center" })
     try {
       if (voteAnswerStatus.isVoteAnswer)
-        return toast.error(pendingMessage.votePending)
+        return toast.error(pendingMessage.votePending, {
+          position: "top-center",
+        })
       voteAnswer(
         {
           answerId: answer.answer_id,
@@ -96,11 +101,11 @@ const useAnswerVote = ({ answer }: VoteProps) => {
     }
   }
 
-  const handleCancle = ({ successModal }: DeleteVoteProps) => {
+  const handleCancle = () => {
     if (!user)
       return toast.error(errorMessage.unauthorized, { position: "top-center" })
     if (deleteVoteAnswerStatus.isDeleteVoteAnswer)
-      return toast.error(pendingMessage.votePending)
+      return toast.error(pendingMessage.votePending, { position: "top-center" })
     const onSuccess = async () => {
       try {
         deleteVoteAnswer(
@@ -109,13 +114,11 @@ const useAnswerVote = ({ answer }: VoteProps) => {
           },
           {
             onSuccess: () => {
-              openModal({
-                content: successModal,
-                onClose() {
-                  queryClient.invalidateQueries({
-                    queryKey: [queryKey.answer],
-                  })
-                },
+              queryClient.invalidateQueries({
+                queryKey: [queryKey.answer],
+              })
+              toast.success(successMessage.cancleVote, {
+                position: "top-center",
               })
               sleep(5000).then(() => {
                 queryClient.invalidateQueries({
