@@ -1,8 +1,6 @@
 "use client"
 
 import { Icons } from "@/components/icons/Icons"
-import Button from "@/components/shared/button/Button"
-import RowInput from "@/components/shared/input/RowInput"
 import useModal from "@/hooks/useModal"
 import { useRouter } from "next/navigation"
 import { useRef } from "react"
@@ -15,13 +13,8 @@ interface SearchForm {
 function SearchModal() {
   const { closeModal } = useModal()
   const router = useRouter()
-  const { register, handleSubmit, control } = useForm<SearchForm>()
+  const { handleSubmit, control } = useForm<SearchForm>()
   const wrapperRef = useRef<HTMLDivElement>(null)
-
-  // const handleSubmitData = handleSubmit(data) => {
-  //   router.replace(`/search?keyword=${data.search}&page=0`)
-  //   closeModal()
-  // }
 
   const handleFocus = (e: React.FocusEvent<HTMLDivElement, Element>) => {
     if (e.target.tagName === "INPUT") {
@@ -41,20 +34,6 @@ function SearchModal() {
 
   return (
     <form onSubmit={handleSubmitData}>
-      {/* <RowInput
-        {...(register("search"), { required: true })}
-        spellCheck="false"
-        sideField={
-          <Button type="submit">
-            <Icons.Search />
-          </Button>
-        }
-        classNames={{
-          wrapper:
-            "bg-colorsLightGray border-transparent hover:border-primary focus-within:outline focus-within:outline-offset-[3px] focus-within:outline-emerald-200/30",
-          input: "bg-transparent",
-        }}
-      /> */}
       <Controller
         name="search"
         control={control}
