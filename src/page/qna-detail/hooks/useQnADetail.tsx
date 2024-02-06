@@ -8,11 +8,8 @@ import { useState } from "react"
 import { toast } from "react-toastify"
 import SuccessModalContent from "../components/SuccessModalContent"
 import queryKey from "@/constants/queryKey"
-import { sleep } from "@/util/sleep"
 import useModal from "@/hooks/useModal"
 import { useQueryClient } from "@tanstack/react-query"
-import { useRecoilState } from "recoil"
-import { AnswerWriteMode } from "@/recoil/atoms/mode"
 import { answerQueries } from "@/react-query/answers"
 
 export interface SubmitValueProps {
@@ -27,9 +24,7 @@ const useQnADetail = ({ questionId }: useQnADetailProps) => {
   const { user } = useClientSession()
   const { openModal } = useModal()
   const queryClient = useQueryClient()
-  const [isAnswerMode, setIsAnswerMode] = useRecoilState(
-    AnswerWriteMode(questionId),
-  )
+
   const { createAnswer, createAnswerStatus } = answerQueries.useCreateAnswer()
 
   const checkNullValue = (submitValue: string | undefined) => {
@@ -53,8 +48,20 @@ const useQnADetail = ({ questionId }: useQnADetailProps) => {
   /**
    * 본인이 쓴 답변이 존재하면 editor 보이지 않게 하기
    */
-  const handleCheckMyAnswer = (list: Answer[], nickname?: string) =>
-    list?.some((answer) => answer.created_by === nickname)
+  const handleCheckAbilityToWriteAnswer = (
+    list?: Answer[],
+    nickname?: string,
+  ) => {
+    // 질문, 사용자 관련 데이터가 없을 경우
+    if (!list) return false
+    if (!nickname) return false
+    // 답변 중에 이미 내가 작성한 답변이 있을 경우
+    if (list?.some((answer) => answer.created_by === user?.nickname))
+      return false
+    // 본인 질문글일 경우
+    if (nickname === user?.nickname) return false
+    return true
+  }
 
   const handleSubmitValue = async ({
     questionId,
@@ -86,28 +93,28 @@ const useQnADetail = ({ questionId }: useQnADetailProps) => {
                   queryClient.invalidateQueries({
                     queryKey: [queryKey.answer, questionId],
                   })
-                  setIsAnswerMode(false)
+                  queryClient.invalidateQueries({
+                    queryKey: [queryKey.question, questionId],
+                  })
                 },
               })
               queryClient.invalidateQueries({
                 queryKey: [queryKey.answer, questionId],
               })
-              setIsAnswerMode(false)
+              queryClient.invalidateQueries({
+                queryKey: [queryKey.question, questionId],
+              })
             },
           },
         )
-        if (createAnswerStatus.isCreateAnswer) setIsAnswerMode(false)
       }
     } catch (err) {
       console.error("error", err)
     }
-    setIsAnswerMode(false)
   }
 
   return {
     user,
-    isAnswerMode,
-    setIsAnswerMode,
     checkNullValue,
     ProgressModalView,
     setModalStart: () => setStep("start"),
@@ -117,7 +124,7 @@ const useQnADetail = ({ questionId }: useQnADetailProps) => {
     handleIsChecked: () => setIsChecked((prev: boolean) => !prev),
     handleSubmitValue,
     isChecked,
-    handleCheckMyAnswer,
+    handleCheckAbilityToWriteAnswer,
   }
 }
 

@@ -2,9 +2,10 @@
 
 import { DirectionIcons } from "@/components/icons/Icons"
 import useAnswerVote from "../../hooks/useAnswerVote"
-import SuccessModalContent from "../SuccessModalContent"
-import { successMessage } from "@/constants/message"
+import { errorMessage } from "@/constants/message"
 import type { Answer } from "@/interfaces/answer"
+import { useClientSession } from "@/hooks/useClientSession"
+import { toast } from "react-toastify"
 
 export type VoteBoxProps = {
   userId?: number
@@ -22,13 +23,18 @@ const VoteBox: React.FC<VoteBoxProps> = ({ answer }) => {
   } = useAnswerVote({
     answer,
   })
+  const { user } = useClientSession()
 
   const handleVoteRaise = () => {
+    if (answer.created_by === user?.nickname)
+      return toast.error(errorMessage.voteForMe, { position: "top-center" })
     if (answer.vote_status === 0) return handleRaise()
     return handleCancle()
   }
 
   const handleVoteReduce = () => {
+    if (answer.created_by === user?.nickname)
+      return toast.error(errorMessage.voteForMe, { position: "top-center" })
     if (answer.vote_status === 0) return handleReduce()
 
     return handleCancle()

@@ -28,6 +28,7 @@ export const errorMessage = {
   undertimeCntLimit: "멘토링 시간은 최소 하나 이상 선택해야 합니다.",
   preventSpecialCharacter: `문자와 숫자만 입력 가능합니다.`,
   preventDuplicateValue: "이미 입력된 값입니다.",
+  voteForMe: "자신의 답변에는 투표할 수 없습니다.",
 } as const
 
 export const successMessage = {
