@@ -15,5 +15,5 @@ export const AnswerEditMode = atomFamily<boolean, number>({
 // Q&A 답변 작성 가능 상태
 export const AnswerWriteMode = atomFamily<boolean, number>({
   key: "AnswerWriteMode-atom",
-  default: (id: number) => false,
+  default: false,
 })

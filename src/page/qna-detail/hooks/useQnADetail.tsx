@@ -30,7 +30,7 @@ const useQnADetail = ({ questionId }: useQnADetailProps) => {
   const [isAnswerMode, setIsAnswerMode] = useRecoilState(
     AnswerWriteMode(questionId),
   )
-  const { createAnswer } = answerQueries.useCreateAnswer()
+  const { createAnswer, createAnswerStatus } = answerQueries.useCreateAnswer()
 
   const checkNullValue = (submitValue: string | undefined) => {
     if (typeof submitValue === undefined) return true
@@ -96,6 +96,7 @@ const useQnADetail = ({ questionId }: useQnADetailProps) => {
             },
           },
         )
+        if (createAnswerStatus.isCreateAnswer) setIsAnswerMode(false)
       }
     } catch (err) {
       console.error("error", err)

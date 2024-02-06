@@ -45,16 +45,6 @@ function Introduction({ introduction, isMyPage, userId }: IntroductionProps) {
     if (introduction) handleSubmitIntroduction(introduction)
   }
 
-  if (!introduction) {
-    return (
-      <UserProfileMenu.MenuContentWrapper>
-        <span className="font-bold text-colorsGray text-center block">
-          {notificationMessage.noIntroduction}
-        </span>
-      </UserProfileMenu.MenuContentWrapper>
-    )
-  }
-
   // if (!userId) return <LoginForm />
 
   if (isIntroductionEditMode)
@@ -86,7 +76,12 @@ function Introduction({ introduction, isMyPage, userId }: IntroductionProps) {
 
   return (
     <UserProfileMenu.MenuContentWrapper>
-      <MdViewer content={introduction} />
+      {!introduction && (
+        <div className="text-center text-slate-400">
+          {notificationMessage.noIntroduction}
+        </div>
+      )}
+      {introduction && <MdViewer content={introduction} />}
     </UserProfileMenu.MenuContentWrapper>
   )
 }

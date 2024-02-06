@@ -29,6 +29,8 @@ const QnADetail: React.FC<{ id: string }> = ({ id }) => {
     questionId: Number(id),
   })
 
+  if (isAnswerPending) setIsAnswerMode(false)
+
   useEffect(() => {
     const fetchData = () => {
       if (

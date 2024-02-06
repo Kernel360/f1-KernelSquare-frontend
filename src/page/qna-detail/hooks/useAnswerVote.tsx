@@ -35,9 +35,6 @@ const useAnswerVote = ({ answer }: VoteProps) => {
   const { deleteVoteAnswer, deleteVoteAnswerStatus } =
     answerQueries.useDeleteVoteAnswer()
 
-  console.log("[vote answer]", voteAnswerStatus)
-  console.log("[delete vote answer]", deleteVoteAnswerStatus)
-
   const buttonClass = twJoin([
     "text-[30px]",
     `${user ? "hover:text-primary cursor-pointer" : "text-slate-300"}`,

@@ -91,24 +91,16 @@ const useHandleMyAnswer = ({ answerId, questionId }: AnswerProps) => {
           },
           {
             onSuccess: () => {
-              openModal({
-                content: successModal,
-                onClose() {
-                  queryClient.invalidateQueries({
-                    queryKey: [queryKey.answer],
-                  })
-                  setIsAnswerMode(true)
-                },
+              toast.success(successMessage.deleteAnswer, {
+                position: "top-center",
               })
-              sleep(5000).then(() => {
-                queryClient.invalidateQueries({
-                  queryKey: [queryKey.answer],
-                })
-                setIsAnswerMode(true)
 
-                if (answer.answer_image_url)
-                  deleteImage(answer.answer_image_url)
+              queryClient.invalidateQueries({
+                queryKey: [queryKey.answer],
               })
+              setIsAnswerMode(true)
+
+              if (answer.answer_image_url) deleteImage(answer.answer_image_url)
             },
           },
         )
