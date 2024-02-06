@@ -32,6 +32,7 @@ const VoteBox: React.FC<VoteBoxProps> = ({ answer }) => {
 
   const handleVoteReduce = () => {
     if (answer.vote_status === 0) return handleReduce()
+
     return handleCancle({
       successModal: <SuccessModalContent message={successMessage.cancleVote} />,
     })

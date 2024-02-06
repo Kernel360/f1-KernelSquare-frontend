@@ -93,3 +93,7 @@ export const searchTipMessage = [
   "조금 더 일반적인 단어로 다시 검색해보세요.",
   "검색하는 단어의 수를 줄여보세요.",
 ] as const
+
+export const pendingMessage = {
+  votePending: "현재 투표가 처리 중입니다. 잠시 후 다시 시도해주세요.",
+} as const

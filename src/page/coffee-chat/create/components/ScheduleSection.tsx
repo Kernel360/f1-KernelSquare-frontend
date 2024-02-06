@@ -11,6 +11,7 @@ import { twJoin } from "tailwind-merge"
 import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil"
 import {
   CoffeeChatStartDate,
+  ScheduleListAtomFamily,
   SelectedDate,
   TimeCount,
 } from "@/recoil/atoms/coffee-chat/schedule"
@@ -27,6 +28,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/Select"
+import Button from "@/components/shared/button/Button"
 
 const ScheduleSection = () => {
   // 캘린더에서 선택된 날짜
@@ -35,7 +37,6 @@ const ScheduleSection = () => {
   const date = useRecoilValue(CoffeeChatStartDate)
   const [selectedDay, setSelectedDay] = useRecoilState(SelectedDate)
   const timeCount = useRecoilValue(TimeCount)
-  console.log("DAY", dayjs(date + "").format("YYYY년MM월DD일"))
 
   // // 오전 or 오후
   const [timeZone, setTimeZone] = useState<TimeZone>(TimeZone.AM)
@@ -43,6 +44,11 @@ const ScheduleSection = () => {
   // 오전, 오후 선택 화살표 스타일
   const ArrowClassName = (disabled: boolean) =>
     twJoin([disabled && "text-slate-200"], [!disabled && "cursor-pointer"])
+
+  const setSelectedDate = useSetRecoilState(ScheduleListAtomFamily(selectedDay))
+  const handleResetSchedule = () => {
+    setSelectedDate({ schedule: [] })
+  }
 
   return (
     <CoffeeChatSection>
@@ -140,10 +146,23 @@ const ScheduleSection = () => {
                       <TimeOptions date={PM} />
                     </div>
                   )}
-                  <div className="mt-3 text-right">
-                    선택한 멘토링 시간:{" "}
-                    <span className="font-bold text-primary">{timeCount}</span>
-                    /10개
+                  <div className="mt-3 text-right flex justify-between ">
+                    <div>
+                      <Button
+                        ghost
+                        className="px-3 py-2 hover:text-primary"
+                        onClick={handleResetSchedule}
+                      >
+                        선택 초기화
+                      </Button>
+                    </div>
+                    <div>
+                      선택한 멘토링 시간:{" "}
+                      <span className="font-bold text-primary">
+                        {timeCount}
+                      </span>
+                      /10개
+                    </div>
                   </div>
                 </div>
                 <DirectionIcons.Right
