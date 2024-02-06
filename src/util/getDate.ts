@@ -92,7 +92,7 @@ const getKorRelativeTime = ({
 
     switch (unit) {
       case "second":
-        if (parsedDiff < 1) {
+        if (parsedDiff <= 1) {
           targetUnit = "now"
 
           shouldReturn = true

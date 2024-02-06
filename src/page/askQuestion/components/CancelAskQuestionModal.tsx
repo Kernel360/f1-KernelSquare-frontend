@@ -5,6 +5,8 @@ import Button from "@/components/shared/button/Button"
 import { useRouter } from "next/navigation"
 import { useToastUiQuestionEditor } from "@/hooks/editor/useToastuiQuestionEditor"
 import { DELETE_IMAGE_LOCAL_STORAGE_KEY } from "@/constants/editor"
+import { useResetRecoilState } from "recoil"
+import { searchTagAtom } from "@/recoil/atoms/tag"
 import type { EditMode } from "./AskQuestionPageControl"
 
 interface CancelAskQuestionModalProps {
@@ -22,10 +24,13 @@ function CancelAskQuestionModal({
     uniqueKey: editMode,
   })
 
+  const clearTagSearch = useResetRecoilState(searchTagAtom)
+
   const handleCancel = async () => {
     try {
-      await cancelQuestionSubmit({ editMode: editMode })
+      await cancelQuestionSubmit({ editMode })
       localStorage.removeItem(DELETE_IMAGE_LOCAL_STORAGE_KEY)
+      clearTagSearch()
     } catch (error) {
     } finally {
       queueMicrotask(() => {

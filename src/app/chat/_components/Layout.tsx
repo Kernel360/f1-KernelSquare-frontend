@@ -4,12 +4,17 @@ import { Icons } from "@/components/icons/Icons"
 import CupRunning from "@/components/shared/animation/CupRunning"
 import Button from "@/components/shared/button/Button"
 import LabelDivider from "@/components/shared/divider/LabelDivider"
+import { NOTMATCH_SEGMENT } from "@/constants/layoutMeta"
 import { useClientSession } from "@/hooks/useClientSession"
 import CoffeeChatWelcome from "@/page/coffee-chat/main/CoffeeChatWelcome"
 import { keyframes } from "@emotion/react"
 import styled from "@emotion/styled"
 import Link from "next/link"
-import { usePathname, useSearchParams } from "next/navigation"
+import {
+  usePathname,
+  useSearchParams,
+  useSelectedLayoutSegment,
+} from "next/navigation"
 import { twMerge } from "tailwind-merge"
 
 interface CoffeeChatPageLayoutProps {
@@ -18,6 +23,8 @@ interface CoffeeChatPageLayoutProps {
 
 function CoffeeChatPageLayout({ children }: CoffeeChatPageLayoutProps) {
   const { user } = useClientSession()
+
+  const currentSegment = useSelectedLayoutSegment()
 
   const pathname = usePathname()
   const searchParmas = useSearchParams()
@@ -73,7 +80,9 @@ function CoffeeChatPageLayout({ children }: CoffeeChatPageLayoutProps) {
               <CoffeeChatWelcome />
             </div>
           </div>
-          {user?.roles.includes("ROLE_MENTOR") ? (
+          {user?.roles.includes("ROLE_MENTOR") &&
+          currentSegment !== NOTMATCH_SEGMENT &&
+          !pathname.includes("/room/") ? (
             <div className="flex w-full justify-center items-center">
               <ChatCreateButton />
             </div>
