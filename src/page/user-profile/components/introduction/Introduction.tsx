@@ -3,16 +3,11 @@
 import { useForm } from "react-hook-form"
 import useIntroduction from "../../hooks/useIntroduction"
 import { useRef } from "react"
-import {
-  buttonMessage,
-  errorMessage,
-  notificationMessage,
-} from "@/constants/message"
+import { buttonMessage, notificationMessage } from "@/constants/message"
 import Button from "@/components/shared/button/Button"
 import UserProfileMenu from "../UserProfileMenu"
 import dynamic from "next/dynamic"
 import { Editor } from "@toast-ui/react-editor"
-import { toast } from "react-toastify"
 
 const MdEditor = dynamic(() => import("./MdEditor"), {
   ssr: false,
@@ -28,7 +23,7 @@ interface IntroductionProps {
   userId: number | undefined
 }
 
-function Introduction({ introduction, isMyPage, userId }: IntroductionProps) {
+function Introduction({ introduction, userId }: IntroductionProps) {
   const editorRef = useRef<Editor>(null)
   const {
     closeIntroductionEditMode,
