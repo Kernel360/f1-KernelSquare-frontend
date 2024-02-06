@@ -42,6 +42,8 @@ import type {
   EditMode,
   SendEditorRefPayload,
 } from "./AskQuestionPageControl"
+import { useResetRecoilState } from "recoil"
+import { searchTagAtom } from "@/recoil/atoms/tag"
 
 export interface QuestionEditorInitialValues {
   title: string
@@ -80,6 +82,9 @@ function AskQuestionForm({
   question_id,
   editMode,
 }: AskQustionFormProps) {
+  // 실제 연동시 잘되는지 보기 위한 용도
+  // 삭제 될 수 있음
+  console.log({ editMode, initialValues })
   const { user } = useClientSession()
 
   const { register, setValue, setFocus, handleSubmit } =
@@ -110,9 +115,11 @@ function AskQuestionForm({
   const { clearSelectedTagList } = useSelectTagList({
     uniqueKey: editMode,
     initialSelectedTagList: initialValues?.skills?.length
-      ? initialValues.skills
+      ? [...initialValues.skills]
       : undefined,
   })
+
+  const clearTagSearch = useResetRecoilState(searchTagAtom)
 
   const { uploadImageHook, uploadImageStatus } =
     useToastUiEditorImageUploadHook({
@@ -201,6 +208,7 @@ function AskQuestionForm({
 
           clearQuestionEditorState()
           clearSelectedTagList()
+          clearTagSearch()
         }, 0)
 
         return
@@ -257,6 +265,7 @@ function AskQuestionForm({
 
         clearQuestionEditorState()
         clearSelectedTagList()
+        clearTagSearch()
       }, 0)
 
       return
@@ -294,6 +303,7 @@ function AskQuestionForm({
 
   useEffect(() => {
     localStorage.removeItem(DELETE_IMAGE_LOCAL_STORAGE_KEY)
+    clearTagSearch()
 
     const deleteImageLinkFromMarkdown = async (e: CustomEvent) => {
       const markdown = editorRef.current?.getInstance().getMarkdown() ?? ""
@@ -362,15 +372,14 @@ function AskQuestionForm({
             </AskQuestionSection.Label>
             <SelectableTagList.SummarizedSelectedTagList
               uniqueKey={editMode}
-              {...(initialValues?.skills && {
-                initialSelectedTagList: [...initialValues.skills],
-              })}
+              questionId={question_id}
               callback={selectCallback}
             />
           </div>
           <SelectableTagList
             searchable
             uniqueKey={editMode}
+            questionId={question_id}
             tagList={techTagList}
             {...(initialValues?.skills && {
               initialSelectedTagList: [...initialValues.skills],

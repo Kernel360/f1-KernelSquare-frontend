@@ -8,12 +8,12 @@ export const selectedTagListAtomFamily = atomFamily<
   TagList,
   {
     uniqueKey: string
-    initialSelectedTagList?: TagList
+    questionId?: number
   }
 >({
   key: "selectedTagListAtomFamily",
   default(param) {
-    return param.initialSelectedTagList ? [...param.initialSelectedTagList] : []
+    return []
   },
 })
 
