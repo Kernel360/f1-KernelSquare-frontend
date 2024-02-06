@@ -25,9 +25,9 @@ const QnADetail: React.FC<{ id: string }> = ({ id }) => {
     questionId: Number(id),
   })
 
-  if (isError) return <NotFound />
+  if (isError || !data) return <NotFound />
 
-  if (isPending || isAnswerPending || !data) return <Loading />
+  if (isPending || isAnswerPending) return <Loading />
 
   if (data)
     return (

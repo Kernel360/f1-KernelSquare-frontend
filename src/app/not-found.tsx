@@ -1,3 +1,4 @@
+import PageNotFound from "@/page/notFound/PageNotFound"
 import { Metadata } from "next"
 
 export const metadata: Metadata = {
@@ -6,7 +7,5 @@ export const metadata: Metadata = {
 }
 
 export default function NotFound() {
-  // [TODO]
-
-  return <div>notfound</div>
+  return <PageNotFound />
 }
