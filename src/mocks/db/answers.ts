@@ -20,8 +20,7 @@ const mockAnswers: Answer[] = [
   {
     answer_id: 2,
     question_id: 1,
-    content:
-      "Integer pede justo, lacinia eget, tincidunt eget, tempus vel, pede. Morbi porttitor lorem id ligula. Suspendisse ornare consequat lectus.",
+    content: "[네이버](www.naver.com)",
     author_level: 2,
     rank_image_url: null,
     member_image_url:

@@ -29,3 +29,24 @@ const Editor = forwardRef<
 })
 
 export default Editor
+
+/*
+customHTMLRenderer={{
+  link (node, context) {
+    const {entering, origin, getChildrenText, leaf,options, skipChildren} = context;
+
+    console.log({})
+      
+    const result = origin ? origin() : null
+
+    if(result) {
+      if(!Array.isArray(result)) {
+        result.type === ''
+      }
+    }
+
+      return result
+    }
+}}
+
+*/
