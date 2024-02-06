@@ -9,7 +9,7 @@ import { cloneDeep, cloneDeepWith } from "lodash-es"
 
 interface EnterCoffeeChatProps {
   articleTitle: string
-  roomId: number
+  roomId: number | null
 }
 
 function EnterCoffeeChat({ articleTitle, roomId }: EnterCoffeeChatProps) {
@@ -25,7 +25,7 @@ function EnterCoffeeChat({ articleTitle, roomId }: EnterCoffeeChatProps) {
     const popup = window.open(
       `/chat/room/${roomId}?${urlSearchParams.toString()}`,
       "kernel_chat_window",
-      "width=400, height=500",
+      "width=500, height=600",
     )
 
     setPopupWindow(popup)

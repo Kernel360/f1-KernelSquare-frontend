@@ -28,6 +28,8 @@ function MessageControl({ roomKey, user }: MessageControlProps) {
   const formRef = useRef<HTMLFormElement>(null)
   const textAreaRef = useRef<HTMLTextAreaElement>(null)
 
+  const submitBtnRef = useRef<HTMLButtonElement>(null)
+
   const onSubmit = (e: React.FormEvent) => {
     e.preventDefault()
 
@@ -110,6 +112,8 @@ function MessageControl({ roomKey, user }: MessageControlProps) {
               if (e.shiftKey && e.key === "Enter") {
                 e.preventDefault()
 
+                if (e.nativeEvent.isComposing) return
+
                 e.currentTarget.value += "\n"
 
                 e.currentTarget.scroll({
@@ -123,13 +127,24 @@ function MessageControl({ roomKey, user }: MessageControlProps) {
               if (e.key === "Enter") {
                 e.preventDefault()
 
-                formRef.current?.requestSubmit()
+                if (e.nativeEvent.isComposing) return
 
-                e.currentTarget.value = ""
+                submitBtnRef.current?.click()
+
+                // formRef.current?.requestSubmit()
+
+                // e.currentTarget.value = ""
               }
             }}
           />
-          <SubmitButton />
+          <Button
+            type="button"
+            ref={submitBtnRef}
+            className="shrink-0"
+            onClick={() => formRef.current?.requestSubmit()}
+          >
+            보내기
+          </Button>
         </div>
       </Inner>
     </form>
@@ -137,14 +152,6 @@ function MessageControl({ roomKey, user }: MessageControlProps) {
 }
 
 export default MessageControl
-
-function SubmitButton() {
-  return (
-    <Button className="shrink-0" type="submit">
-      보내기
-    </Button>
-  )
-}
 
 function Toolbar() {
   const { openModal } = useModal()
