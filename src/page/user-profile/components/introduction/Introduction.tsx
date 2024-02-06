@@ -3,17 +3,11 @@
 import { useForm } from "react-hook-form"
 import useIntroduction from "../../hooks/useIntroduction"
 import { useRef } from "react"
-import {
-  buttonMessage,
-  errorMessage,
-  notificationMessage,
-} from "@/constants/message"
+import { buttonMessage, notificationMessage } from "@/constants/message"
 import Button from "@/components/shared/button/Button"
 import UserProfileMenu from "../UserProfileMenu"
 import dynamic from "next/dynamic"
 import { Editor } from "@toast-ui/react-editor"
-import { toast } from "react-toastify"
-import LoginForm from "@/components/form/LoginForm"
 
 const MdEditor = dynamic(() => import("./MdEditor"), {
   ssr: false,
@@ -29,7 +23,7 @@ interface IntroductionProps {
   userId: number | undefined
 }
 
-function Introduction({ introduction, isMyPage, userId }: IntroductionProps) {
+function Introduction({ introduction, userId }: IntroductionProps) {
   const editorRef = useRef<Editor>(null)
   const {
     closeIntroductionEditMode,
@@ -40,22 +34,8 @@ function Introduction({ introduction, isMyPage, userId }: IntroductionProps) {
 
   const onsubmit = () => {
     const introduction = editorRef.current?.getInstance().getMarkdown()
-    if (!introduction)
-      toast.error(errorMessage.noContent, { position: "top-center" })
-    if (introduction) handleSubmitIntroduction(introduction)
+    handleSubmitIntroduction(introduction ?? "")
   }
-
-  if (!introduction) {
-    return (
-      <UserProfileMenu.MenuContentWrapper>
-        <span className="font-bold text-colorsGray text-center block">
-          {notificationMessage.noIntroduction}
-        </span>
-      </UserProfileMenu.MenuContentWrapper>
-    )
-  }
-
-  // if (!userId) return <LoginForm />
 
   if (isIntroductionEditMode)
     return (
@@ -86,7 +66,12 @@ function Introduction({ introduction, isMyPage, userId }: IntroductionProps) {
 
   return (
     <UserProfileMenu.MenuContentWrapper>
-      <MdViewer content={introduction} />
+      {!introduction && (
+        <div className="text-center text-slate-400">
+          {notificationMessage.noIntroduction}
+        </div>
+      )}
+      {introduction && <MdViewer content={introduction} />}
     </UserProfileMenu.MenuContentWrapper>
   )
 }

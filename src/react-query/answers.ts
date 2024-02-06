@@ -2,11 +2,13 @@ import queryKey from "@/constants/queryKey"
 import type { CreateAnswerRequest } from "@/interfaces/dto/answer/create-answer.dto"
 import type { CreateVoteRequest } from "@/interfaces/dto/answer/create-vote.dto"
 import type { DeleteAnswerRequest } from "@/interfaces/dto/answer/delete-answer.dto"
+import { DeleteVoteRequest } from "@/interfaces/dto/answer/delete-vote.dto"
 import type { GetAnswerRequest } from "@/interfaces/dto/answer/get-answerlist.dto"
 import type { UpdateAnswerRequest } from "@/interfaces/dto/answer/update-answer.dto"
 import {
   createAnswer,
   deleteAnswer,
+  deleteVote,
   getAnswer,
   updateAnswer,
   voteAnswer,
@@ -106,8 +108,6 @@ const useVoteAnswer = () => {
     mutationKey: [queryKey.answer],
     mutationFn: ({ answerId, member_id, status }: CreateVoteRequest) =>
       voteAnswer({ answerId, member_id, status }),
-    onSuccess: () => console.log("투표 성공"),
-    onError: (error) => console.log("error", error.message),
   })
 
   return {
@@ -120,10 +120,32 @@ const useVoteAnswer = () => {
   }
 }
 
+const useDeleteVoteAnswer = () => {
+  const {
+    mutate: voteDeleteAnswerMutate,
+    isPending: isDeleteVoteAnswer,
+    isError: isDeleteVoteAnswerError,
+    isSuccess: isDeleteVoteAnswerSuccess,
+  } = useMutation({
+    mutationKey: [queryKey.answer],
+    mutationFn: ({ answerId }: DeleteVoteRequest) => deleteVote({ answerId }),
+  })
+
+  return {
+    deleteVoteAnswer: voteDeleteAnswerMutate,
+    deleteVoteAnswerStatus: {
+      isDeleteVoteAnswer,
+      isDeleteVoteAnswerError,
+      isDeleteVoteAnswerSuccess,
+    },
+  }
+}
+
 export const answerQueries = {
   useGetAnswers,
   useCreateAnswer,
   useUpdateAnswer,
   useDeleteAnswer,
   useVoteAnswer,
+  useDeleteVoteAnswer,
 }

@@ -10,18 +10,22 @@ import useModal from "@/hooks/useModal"
 import LoginForm from "@/components/form/LoginForm"
 import { buttonMessage, notificationMessage } from "@/constants/message"
 import useQnADetail from "../hooks/useQnADetail"
+import { Answer } from "@/interfaces/answer"
 
 export interface MyAnswerProps {
   questionId: number
+  list?: Answer[]
+  nickname?: string
 }
 
 const MdEditor = dynamic(() => import("../components/Markdown/MdEditor"), {
   ssr: false,
 })
 
-const MyAnswer: React.FC<MyAnswerProps> = ({ questionId }) => {
+const MyAnswer: React.FC<MyAnswerProps> = ({ questionId, list, nickname }) => {
   const { openModal } = useModal()
-  const { user, handleSubmitValue, isAnswerMode } = useQnADetail({ questionId })
+  const { user, handleSubmitValue, handleCheckAbilityToWriteAnswer } =
+    useQnADetail({ questionId })
 
   const { handleSubmit } = useForm()
   const editorRef = useRef<Editor>(null)
@@ -51,7 +55,7 @@ const MyAnswer: React.FC<MyAnswerProps> = ({ questionId }) => {
     )
 
   return (
-    isAnswerMode && (
+    handleCheckAbilityToWriteAnswer(list, nickname) && (
       <Container>
         <div>
           <Title title="My Answer" />

@@ -1,10 +1,14 @@
 import ConfirmModal from "@/components/shared/confirm-modal/ConfirmModal"
-import { errorMessage, notificationMessage } from "@/constants/message"
+import {
+  errorMessage,
+  notificationMessage,
+  pendingMessage,
+  successMessage,
+} from "@/constants/message"
 import queryKey from "@/constants/queryKey"
 import { useClientSession } from "@/hooks/useClientSession"
 import useModal from "@/hooks/useModal"
 import voteAtoms from "@/recoil/atoms/vote"
-import { deleteVote, voteAnswer } from "@/service/answers"
 import { sleep } from "@/util/sleep"
 import { useQueryClient } from "@tanstack/react-query"
 import { toast } from "react-toastify"
@@ -12,6 +16,7 @@ import { useRecoilState } from "recoil"
 import { twJoin } from "tailwind-merge"
 import type { Answer } from "@/interfaces/answer"
 import type { ModalState } from "@/interfaces/modal"
+import { answerQueries } from "@/react-query/answers"
 
 export interface VoteProps {
   answer: Answer
@@ -26,6 +31,9 @@ const useAnswerVote = ({ answer }: VoteProps) => {
   const queryClient = useQueryClient()
   const { user } = useClientSession()
   const { openModal } = useModal()
+  const { voteAnswer, voteAnswerStatus } = answerQueries.useVoteAnswer()
+  const { deleteVoteAnswer, deleteVoteAnswerStatus } =
+    answerQueries.useDeleteVoteAnswer()
 
   const buttonClass = twJoin([
     "text-[30px]",
@@ -45,17 +53,24 @@ const useAnswerVote = ({ answer }: VoteProps) => {
     if (!user)
       return toast.error(errorMessage.unauthorized, { position: "top-center" })
     try {
-      const res = await voteAnswer({
-        answerId: answer?.answer_id,
-        member_id: user.member_id,
-        status: 1,
-      })
-      console.log("[set vote]", res)
-
-      queryClient.invalidateQueries({ queryKey: [queryKey.answer] })
-      console.log("status", answer.vote_status)
+      if (voteAnswerStatus.isVoteAnswer)
+        return toast.error(pendingMessage.votePending, {
+          position: "top-center",
+        })
+      voteAnswer(
+        {
+          answerId: answer?.answer_id,
+          member_id: user.member_id,
+          status: 1,
+        },
+        {
+          onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: [queryKey.answer] })
+          },
+        },
+      )
     } catch (err) {
-      console.error("error", err)
+      throw new Error("투표 진행 중 오류가 발생했습니다.")
     }
   }
 
@@ -63,43 +78,55 @@ const useAnswerVote = ({ answer }: VoteProps) => {
     if (!user)
       return toast.error(errorMessage.unauthorized, { position: "top-center" })
     try {
-      const res = await voteAnswer({
-        answerId: answer.answer_id,
-        member_id: user.member_id,
-        status: -1,
-      })
-      console.log("res", res.data.msg)
-      queryClient.invalidateQueries({ queryKey: [queryKey.answer] })
+      if (voteAnswerStatus.isVoteAnswer)
+        return toast.error(pendingMessage.votePending, {
+          position: "top-center",
+        })
+      voteAnswer(
+        {
+          answerId: answer.answer_id,
+          member_id: user.member_id,
+          status: -1,
+        },
+        {
+          onSuccess: () =>
+            queryClient.invalidateQueries({ queryKey: [queryKey.answer] }),
+        },
+      )
     } catch (err) {
-      console.error("error", err)
+      throw new Error("투표 진행 중 오류가 발생했습니다.")
     }
   }
 
-  const handleCancle = ({ successModal }: DeleteVoteProps) => {
+  const handleCancle = () => {
     if (!user)
       return toast.error(errorMessage.unauthorized, { position: "top-center" })
+    if (deleteVoteAnswerStatus.isDeleteVoteAnswer)
+      return toast.error(pendingMessage.votePending, { position: "top-center" })
     const onSuccess = async () => {
       try {
-        const res = await deleteVote({
-          answerId: answer.answer_id,
-        })
-
-        console.log("success", res.data.msg)
-        openModal({
-          content: successModal,
-          onClose() {
-            queryClient.invalidateQueries({
-              queryKey: [queryKey.answer],
-            })
+        deleteVoteAnswer(
+          {
+            answerId: answer.answer_id,
           },
-        })
-        sleep(5000).then(() => {
-          queryClient.invalidateQueries({
-            queryKey: [queryKey.answer],
-          })
-        })
+          {
+            onSuccess: () => {
+              queryClient.invalidateQueries({
+                queryKey: [queryKey.answer],
+              })
+              toast.success(successMessage.cancleVote, {
+                position: "top-center",
+              })
+              sleep(5000).then(() => {
+                queryClient.invalidateQueries({
+                  queryKey: [queryKey.answer],
+                })
+              })
+            },
+          },
+        )
       } catch (err) {
-        console.error(err)
+        throw new Error("투표 진행 중 오류가 발생했습니다.")
       }
     }
     const onCancel = () => {

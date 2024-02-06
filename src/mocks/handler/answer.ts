@@ -28,6 +28,7 @@ import {
   DeleteVoteRequest,
   DeleteVoteResponse,
 } from "@/interfaces/dto/answer/delete-vote.dto"
+import { sleep } from "@/util/sleep"
 
 export const answerHandler = [
   // 특정 질문 답변 조회
@@ -201,6 +202,8 @@ export const answerHandler = [
         targetAnswer.vote_count += status
         targetAnswer.vote_status = status
 
+        await sleep(4000)
+
         return HttpResponse.json(
           {
             code: 2244,
@@ -249,6 +252,8 @@ export const answerHandler = [
         if (targetAnswer.vote_status === 1) targetAnswer.vote_count--
         if (targetAnswer.vote_status === -1) targetAnswer.vote_count++
         targetAnswer.vote_status = 0
+
+        await sleep(4000)
 
         return HttpResponse.json(
           {
