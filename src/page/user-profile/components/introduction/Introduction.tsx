@@ -39,9 +39,7 @@ function Introduction({ introduction, isMyPage, userId }: IntroductionProps) {
 
   const onsubmit = () => {
     const introduction = editorRef.current?.getInstance().getMarkdown()
-    if (!introduction)
-      toast.error(errorMessage.noContent, { position: "top-center" })
-    if (introduction) handleSubmitIntroduction(introduction)
+    handleSubmitIntroduction(introduction ?? "")
   }
 
   if (isIntroductionEditMode)
