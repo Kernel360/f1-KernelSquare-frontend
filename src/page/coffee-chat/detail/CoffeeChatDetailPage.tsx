@@ -6,6 +6,7 @@ import CoffeeChatDetailHeader from "./CoffeeChatDetailHeader"
 import { CoffeeChatReservationDetailPayload } from "@/interfaces/dto/coffee-chat/coffeechat-reservation-detail.dto"
 import EnterCoffeeChat from "./EnterCoffeeChat"
 import ScheduleMentoringSession from "./reservation/ScheduleMentoringSession"
+import { useClientSession } from "@/hooks/useClientSession"
 
 interface CoffeeChatDetailPageProps {
   coffeeChatDetailPayload: CoffeeChatReservationDetailPayload
@@ -14,6 +15,14 @@ interface CoffeeChatDetailPageProps {
 function CoffeeChatDetailPage({
   coffeeChatDetailPayload,
 }: CoffeeChatDetailPageProps) {
+  const { user } = useClientSession()
+
+  const matchRoom = user
+    ? coffeeChatDetailPayload.date_times.find((dateTime) => {
+        return dateTime.mentee_nickname === user?.nickname
+      }) ?? null
+    : null
+
   return (
     <div className="w-[80%] m-auto mt-5">
       <CoffeeChatDetailHeader
@@ -31,7 +40,7 @@ function CoffeeChatDetailPage({
       <div className="w-full flex justify-center items-center">
         <EnterCoffeeChat
           articleTitle={coffeeChatDetailPayload.title}
-          roomId={1}
+          roomId={matchRoom ? matchRoom.room_id : null}
         />
       </div>
       <Spacing size={32} />
