@@ -130,10 +130,6 @@ function MessageControl({ roomKey, user }: MessageControlProps) {
                 if (e.nativeEvent.isComposing) return
 
                 submitBtnRef.current?.click()
-
-                // formRef.current?.requestSubmit()
-
-                // e.currentTarget.value = ""
               }
             }}
           />
