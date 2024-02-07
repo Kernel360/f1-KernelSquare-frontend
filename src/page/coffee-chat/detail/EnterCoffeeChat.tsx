@@ -25,15 +25,16 @@ function EnterCoffeeChat({
 
   const [popupWindow, setPopupWindow] = useRecoilState(popupWindowAtom)
 
-  const isTimePossible = dayjs().isBetween(
-    dayjs(startTime),
-    dayjs(startTime).add(30, "minutes"),
-    "seconds",
-    "[]",
-  )
+  // const isTimePossible = dayjs().isBetween(
+  //   dayjs(startTime),
+  //   dayjs(startTime).add(30, "minutes"),
+  //   "seconds",
+  //   "[]",
+  // )
 
   const openChatRoomPopup = () => {
-    if (!isTimePossible) return
+    // if (!isTimePossible) return
+    if (roomId === null) return
 
     const urlSearchParams = new URLSearchParams()
     urlSearchParams.set("popup", "true")
@@ -72,7 +73,7 @@ function EnterCoffeeChat({
   return (
     <Button
       buttonTheme="primary"
-      disabled={!isTimePossible || !!popupWindow}
+      disabled={roomId === null || !!popupWindow}
       onClick={onSubmitEnterCoffeeChatRoom}
       className="disabled:bg-colorsGray disabled:text-colorsDarkGray"
     >
