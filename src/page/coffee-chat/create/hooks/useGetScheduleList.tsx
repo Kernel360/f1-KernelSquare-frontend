@@ -18,7 +18,7 @@ export const useGetScheduleList = (addNum: number) => {
       .add(addNum, "day")
       .format("YYYY-MM-DD")
     const dateTimeStr = `${DAY} ${time}`
-    return `${dayjs(dateTimeStr).add(addNum, "day").utc().format()}`
+    return dayjs(dateTimeStr).add(addNum, "day").utc().format().slice(0, -1)
   })
 }
 
