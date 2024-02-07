@@ -4,8 +4,7 @@ import { NOTMATCH_SEGMENT } from "./layoutMeta"
 export const enum NavigationRouteIndex {
   Qna = 0,
   Chat = 1,
-  Notice = 2,
-  Faq = 3,
+  Faq = 2,
 }
 
 export const enum ProfileRouteIndex {
@@ -24,12 +23,6 @@ export const navigationRoutes = [
     icon: NavigationIcons.Chat,
     to: "/chat",
     activeClassName: "text-amber-600",
-  },
-  {
-    label: "공지",
-    icon: NavigationIcons.Notice,
-    to: "/notice",
-    activeClassName: "text-orange-400",
   },
   {
     label: "FAQ",
@@ -83,11 +76,6 @@ export function getActiveNavigationItem({
       return profileRoute[ProfileRouteIndex.Mypage]
 
     return null
-  }
-
-  // Notice Path (/notice/**)
-  if (segment === "notice") {
-    return navigationRoutes[NavigationRouteIndex.Notice]
   }
 
   // Faq Path (/faq/**)
