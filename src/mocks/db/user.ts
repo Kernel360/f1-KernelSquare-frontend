@@ -12,7 +12,7 @@ export const mockUsers = [
     account_status: ACCOUNT_STATUS.FALSE,
     image_url:
       "https://images.unsplash.com/photo-1520085601670-ee14aa5fa3e8?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-    introduction: "코딩 zi존의 페이지",
+    introduction: "",
   },
   {
     id: 2,

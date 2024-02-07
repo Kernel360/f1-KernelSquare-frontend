@@ -3,7 +3,6 @@
 import { AxiosError, HttpStatusCode } from "axios"
 
 import { useRecoilCallback } from "recoil"
-import { questionEditorAtomFamily } from "@/recoil/atoms/questionEditor"
 import type { HookCallback } from "@/components/shared/toast-ui-editor/editor/EditorWrapper"
 import type { APIResponse } from "@/interfaces/dto/api-response"
 import type { UploadImagesCategory } from "@/interfaces/dto/upload/upload-images.dto"

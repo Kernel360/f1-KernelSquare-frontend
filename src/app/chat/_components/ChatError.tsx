@@ -31,7 +31,7 @@ function ChatError({ errorType }: ChatErrorProps) {
       case "Unauthorization":
         return <ChatError.Unauthorization />
       default:
-        return <div>알 수 없는 에러가 발생했습니다</div>
+        return <ChatError errorType="InternalServer" />
     }
   }
 

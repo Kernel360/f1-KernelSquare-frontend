@@ -15,6 +15,10 @@ export class Validator {
         return () => this.format() && this.length()
       },
       format() {
+        const korRegExp = /[ㄱ-ㅎ가-힣ㅏ-ㅣ]/g
+
+        if (korRegExp.test(email)) return false
+
         return validator.isEmail(email)
       },
       length() {
@@ -37,7 +41,6 @@ export class Validator {
         }
 
         // [TODO] 숫자허용시 수정
-
         const regexp = new RegExp(`[가-힣a-zA-Z]{${nickname.length}}`)
 
         return regexp.test(nickname)

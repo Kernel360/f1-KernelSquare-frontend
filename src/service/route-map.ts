@@ -240,7 +240,7 @@ export class RouteMap {
     getMyCoffeeChatReservation: `${RouteMap.routeGroupBaseURL.coffeeChat}/reservations`,
     coffeeChatReservation: `${RouteMap.routeGroupBaseURL.coffeeChat}/reservations/book`,
     deleteCoffeeChatReservation(reservationId?: number) {
-      return `${RouteMap.routeGroupBaseURL.coffeeChat}/${
+      return `${RouteMap.routeGroupBaseURL.coffeeChat}/reservations/${
         reservationId ?? ":id"
       }`
     },

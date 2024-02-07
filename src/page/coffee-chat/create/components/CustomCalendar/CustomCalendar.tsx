@@ -12,6 +12,7 @@ import {
   SelectedDate,
 } from "@/recoil/atoms/coffee-chat/schedule"
 import { Value } from "./Calendar.types"
+import { useSetScheduleList } from "../../hooks/useGetScheduleList"
 
 type CustomCalendarProps = {
   start: Date
@@ -67,9 +68,16 @@ const CustomCalendar = ({ start, limit }: CustomCalendarProps) => {
   const isMentoringPeriod = (target: Date) => {
     const date1 = dayjs(date + "", "YYYY-MM-DD")
     const date2 = dayjs(target, "YYYY-MM-DD")
-    if (date2.diff(date1, "day") >= 0 && date2.diff(date1, "day") <= 2)
+    if (getDate({ date: start + "" }) === getDate({ date: date + "" })) {
+      if (
+        Math.round(date2.diff(date1, "day", true)) >= 0 &&
+        date2.diff(date1, "day") <= 1
+      )
+        return true
+      return false
+    } else if (date2.diff(date1, "day") >= 0 && date2.diff(date1, "day") <= 2) {
       return true
-    return false
+    } else return false
   }
 
   const dateRangeClassName = ({ date }: TileArgs) => {
@@ -79,12 +87,19 @@ const CustomCalendar = ({ start, limit }: CustomCalendarProps) => {
   }
 
   // onChange 함수
+  const setFirstDate = useSetScheduleList(0)
+  const setSecondDate = useSetScheduleList(1)
+  const setThirdDate = useSetScheduleList(2)
   const handleDateChange = (value: Value) => {
-    if (getDate({ date: date + "" }) === getDate({ date: value + "" })) {
-      setDate(undefined)
-
-      return
-    }
+    setFirstDate({
+      schedule: [],
+    })
+    setSecondDate({
+      schedule: [],
+    })
+    setThirdDate({
+      schedule: [],
+    })
     setDate(value)
     setSelectedDate(dayjs(value + "").format("YYYY년MM월DD일"))
   }

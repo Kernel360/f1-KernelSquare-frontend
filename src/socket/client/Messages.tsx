@@ -20,7 +20,7 @@ import { IoClose } from "react-icons/io5"
 import { debounce, throttle } from "lodash-es"
 import { useRouter, useSearchParams } from "next/navigation"
 import { PopupMessage } from "@/page/coffee-chat/chat/ChatRoomHeader"
-import { getKorDayjs } from "@/util/getDate"
+import dayjs from "dayjs"
 import type { SessionPayload } from "@/recoil/atoms/user"
 
 interface MessagesProps {
@@ -96,10 +96,7 @@ Messages.Message = function Message({
     me ? "flex-row-reverse" : "flex-row",
   ])
 
-  const profileClassNames = twMerge([
-    "w-8 h-8 self-start shrink-0",
-    // me ? "order-2" : "order-1",
-  ])
+  const profileClassNames = twMerge(["w-8 h-8 self-start shrink-0"])
 
   const messageClassNames = twMerge([
     "whitespace-pre-wrap w-fit px-2 py-1 break-all rounded-sm",
@@ -184,11 +181,12 @@ Messages.Message = function Message({
   )
 }
 
+// [TODO]서버 DB에 시간이 원하는 포멧의 시간으로 저장될 수 있도록 협의하여 수정할 예정
 Messages.Time = function MessageTime({ formatTime }: { formatTime: string }) {
   return (
     <div className="flex shrink-0 self-end">
       <span className="text-secondary text-[10px] font-bold">
-        {getKorDayjs(formatTime).format("Ahh:mm")}
+        {dayjs(formatTime.replace("Z", "")).format("Ahh:mm")}
       </span>
     </div>
   )
@@ -276,8 +274,6 @@ Messages.CodeMessage = function CodeMessage({
 
     const handleResize = (e: UIEvent) => {
       if (!highlighterRef.current) return
-
-      console.log("highlighter height", highlighterRef.current.scrollHeight)
 
       setIsWrap(highlighterRef.current.scrollHeight >= 224 ? true : false)
     }

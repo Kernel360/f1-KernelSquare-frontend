@@ -7,7 +7,7 @@ import type { TechTag } from "@/interfaces/tech-tag"
 
 export interface TagListAtomParam {
   uniqueKey: string
-  initialSelectedTagList?: Array<TechTag>
+  questionId?: number
 }
 
 export interface SelectCallback {
@@ -16,17 +16,19 @@ export interface SelectCallback {
   ) => void | ((selectedTagList: Array<TechTag>) => Promise<void>)
 }
 
-export type UseSelectTagListOption = TagListAtomParam & SelectCallback
+export type UseSelectTagListOption = TagListAtomParam &
+  SelectCallback & { initialSelectedTagList?: Array<TechTag> }
 
 export function useSelectTagList({
   uniqueKey,
   initialSelectedTagList,
+  questionId,
   callback,
 }: UseSelectTagListOption) {
   const [selectedTagList, setSelectedTagList] = useRecoilState(
     selectedTagListAtomFamily({
       uniqueKey,
-      initialSelectedTagList,
+      questionId,
     }),
   )
 
@@ -61,6 +63,15 @@ export function useSelectTagList({
   const clearSelectedTagList = useCallback(() => {
     setSelectedTagList((prev) => [])
   }, [setSelectedTagList])
+
+  useEffect(() => {
+    if (initialSelectedTagList) {
+      // 현재는 문자열이므로, 객체간의 깊은 비교를 하지 않아도 됨
+      if (selectedTagList.toString() !== initialSelectedTagList.toString()) {
+        setSelectedTagList((prev) => [...initialSelectedTagList])
+      }
+    }
+  }, []) /* eslint-disable-line */
 
   return {
     selectedTagList,
