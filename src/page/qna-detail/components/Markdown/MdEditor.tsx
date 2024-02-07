@@ -2,10 +2,7 @@
 
 import MarkdownEditor from "@/components/shared/markdown/Editor/MarkdownEditor"
 import { errorMessage } from "@/constants/message"
-import {
-  MAXIMUM_UPLOAD_IMAGE_LENGTH,
-  useToastUiEditorImageUploadHook,
-} from "@/hooks/useToastUiEditorImageUploadHook"
+import { MAXIMUM_UPLOAD_IMAGE_LENGTH } from "@/hooks/useToastUiEditorImageUploadHook"
 import {
   answerEditorAtomFamily,
   answerEditorLoadedAtomFamily,
