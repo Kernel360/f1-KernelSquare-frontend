@@ -23,6 +23,10 @@ function CoffeeChatDetailPage({
       }) ?? null
     : null
 
+  const isMentee =
+    !user?.roles.includes("ROLE_MENTOR") ||
+    coffeeChatDetailPayload.member_id !== user?.member_id
+
   return (
     <div className="w-[80%] m-auto mt-5">
       <CoffeeChatDetailHeader
@@ -38,16 +42,20 @@ function CoffeeChatDetailPage({
       <CoffeeChatDetailContent content={coffeeChatDetailPayload.content} />
       <Spacing size={32} />
       <div className="w-full flex justify-center items-center">
-        <EnterCoffeeChat
-          articleTitle={coffeeChatDetailPayload.title}
-          roomId={matchRoom ? matchRoom.room_id : null}
-        />
+        {isMentee && (
+          <EnterCoffeeChat
+            articleTitle={coffeeChatDetailPayload.title}
+            roomId={matchRoom ? matchRoom.room_id : null}
+            startTime={matchRoom?.start_time || null}
+          />
+        )}
       </div>
       <Spacing size={32} />
       <ScheduleMentoringSession
         mentor={coffeeChatDetailPayload.member_id}
         reservation={coffeeChatDetailPayload.date_times}
         created={coffeeChatDetailPayload.created_date}
+        title={coffeeChatDetailPayload.title}
       />
     </div>
   )
