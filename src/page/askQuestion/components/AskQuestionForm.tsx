@@ -251,14 +251,15 @@ function AskQuestionForm({
 
       toast.success("질문 수정에 성공했습니다", { position: "bottom-center" })
 
-      Promise.allSettled([
-        queryClient.invalidateQueries({
-          queryKey: ["question", "list"],
-        }),
-        queryClient.invalidateQueries({
-          queryKey: ["question", question_id],
-        }),
-      ])
+      queryClient.invalidateQueries({
+        queryKey: ["question", "list"],
+      })
+
+      queryClient.resetQueries({
+        queryKey: ["question", question_id],
+      })
+
+      await revalidatePage("/question/u/[id]", "page")
 
       setTimeout(() => {
         replace(`/question/${question_id!}`)
