@@ -4,19 +4,22 @@ import {
 } from "@/recoil/atoms/coffee-chat/schedule"
 import dayjs from "dayjs"
 import { useRecoilValue, useSetRecoilState } from "recoil"
+import utc from "dayjs/plugin/utc"
 
 export const useGetScheduleList = (addNum: number) => {
+  dayjs.extend(utc)
   const date = useRecoilValue(CoffeeChatStartDate)
   const targetDay = dayjs(date + "")
     .add(addNum, "day")
     .format("YYYY년MM월DD일")
   const targetList = useRecoilValue(ScheduleListAtomFamily(targetDay))
-  return targetList.schedule.map(
-    (time) =>
-      `${dayjs(date + "")
-        .add(addNum, "day")
-        .format("YYYY-MM-DD")}T${time}:00`,
-  )
+  return targetList.schedule.map((time) => {
+    const DAY = dayjs(date + "")
+      .add(addNum, "day")
+      .format("YYYY-MM-DD")
+    const dateTimeStr = `${DAY} ${time}`
+    return dayjs(dateTimeStr).add(addNum, "day").utc().format().slice(0, -1)
+  })
 }
 
 export const useSetScheduleList = (addNum: number) => {
