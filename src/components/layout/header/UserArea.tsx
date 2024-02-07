@@ -96,19 +96,6 @@ function LoginedUserArea({ user }: { user: LoginUserPayload }) {
           }
         },
       },
-      { role: "divider" },
-      {
-        label: "탈퇴하기",
-        role: "menu",
-        onClick() {
-          openModal({
-            containsHeader: false,
-            closeableDim: true,
-            content: <DeleteMemberModal />,
-            classNames: "w-screen sm:w-[380px]",
-          })
-        },
-      },
     ]
 
     return (
