@@ -13,13 +13,16 @@ import type { CoffeeChatReservationTime } from "@/interfaces/dto/coffee-chat/cof
 import { twJoin } from "tailwind-merge"
 import CoffeeChat from "@/components/shared/animation/CoffeeChat"
 import { revalidatePage } from "@/util/actions/revalidatePage"
+import Button from "@/components/shared/button/Button"
+import EnterCoffeeChat from "../../EnterCoffeeChat"
 
 interface MentorProps {
   reservation: CoffeeChatReservationTime[]
   created: string
+  title: string
 }
 
-function ReservationForMentor({ reservation, created }: MentorProps) {
+function ReservationForMentor({ reservation, created, title }: MentorProps) {
   const [date, setDate] = useState<Value>(new Date(reservation[0].start_time))
   const isReserved = (nickname: string | null) =>
     twJoin(["ml-2 text-[20px]"], [nickname && "text-primary font-bold"])
@@ -96,7 +99,11 @@ function ReservationForMentor({ reservation, created }: MentorProps) {
             {!!target.length && (
               <div>
                 {target.map((time) => (
-                  <ReservedTime time={time} key={time.reservation_id} />
+                  <ReservedTime
+                    time={time}
+                    key={time.reservation_id}
+                    title={title}
+                  />
                 ))}
               </div>
             )}
@@ -109,9 +116,10 @@ function ReservationForMentor({ reservation, created }: MentorProps) {
 
 type ReservedTimeProps = {
   time: CoffeeChatReservationTime
+  title: string
 }
 
-function ReservedTime({ time }: ReservedTimeProps) {
+function ReservedTime({ time, title }: ReservedTimeProps) {
   if (time.mentee_nickname)
     return (
       <div className="flex justify-around w-full flex-wrap min-h-[50px] my-5">
@@ -127,6 +135,13 @@ function ReservedTime({ time }: ReservedTimeProps) {
         <div>
           <div className="font-bold text-left">{time.mentee_nickname} 님</div>
           <div>과(와)의 멘토링이 예정되어 있습니다.</div>
+        </div>
+        <div>
+          <EnterCoffeeChat
+            articleTitle={title}
+            roomId={time.room_id}
+            startTime={time.start_time}
+          />
         </div>
       </div>
     )
