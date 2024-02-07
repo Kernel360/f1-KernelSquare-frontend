@@ -61,6 +61,7 @@ export async function createQuestion({
     content,
     image_url,
     skills,
+    parsedSkills: skills ?? [],
   })
   const res = await apiInstance.post<
     any,
@@ -71,7 +72,7 @@ export async function createQuestion({
     title,
     content,
     image_url,
-    skills,
+    skills: skills ?? [],
   })
 
   return res
@@ -110,6 +111,7 @@ export async function updateQuestion({
     content,
     image_url,
     skills,
+    parsedSkills: skills ?? [],
   })
   const res = await apiInstance.put<
     any,
@@ -119,7 +121,7 @@ export async function updateQuestion({
     title,
     content,
     image_url,
-    skills,
+    skills: skills ?? [],
   })
 
   return res
