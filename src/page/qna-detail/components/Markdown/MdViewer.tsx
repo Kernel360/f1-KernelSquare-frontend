@@ -14,7 +14,32 @@ const MdViewer: React.FC<ViewerProps> = ({ content }) => {
   return (
     <div>
       {content && (
-        <div className="[&_.toastui-editor-contents]:text-[20px]">
+        <div
+          className="[&_.toastui-editor-contents]:text-[20px]"
+          onClick={(e) => {
+            if ((e.target as HTMLElement).tagName !== "A") return
+
+            const target = e.target as HTMLAnchorElement
+
+            if (
+              !target.href.startsWith("http://") ||
+              !target.href.startsWith("https://")
+            ) {
+              e.preventDefault()
+
+              const origin = `${window.location.origin}/question`
+
+              const targetURL = target.href.replace(`${origin}/`, "")
+              const newLink = `https://${targetURL}`
+
+              const linkElement = document.createElement("a")
+              linkElement.href = newLink
+              linkElement.target = "_blank"
+
+              linkElement.click()
+            }
+          }}
+        >
           <Viewer
             initialValue={content || " "}
             /*@ts-ignore*/
