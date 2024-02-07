@@ -12,12 +12,14 @@ interface ScheduleMentoringSessionProps {
   mentor: number
   reservation: CoffeeChatReservationTime[]
   created: string
+  title: string
 }
 
 function ScheduleMentoringSession({
   mentor,
   reservation,
   created,
+  title,
 }: ScheduleMentoringSessionProps) {
   const { user } = useClientSession()
 
@@ -25,7 +27,13 @@ function ScheduleMentoringSession({
     user?.roles.includes("ROLE_MENTOR") && mentor === user.member_id
 
   if (isMyCoffeeChat)
-    return <ReservationForMentor reservation={reservation} created={created} />
+    return (
+      <ReservationForMentor
+        reservation={reservation}
+        created={created}
+        title={title}
+      />
+    )
   else
     return <ReservationForMentee reservation={reservation} created={created} />
 }
