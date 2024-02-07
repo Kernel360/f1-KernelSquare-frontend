@@ -11,7 +11,7 @@ export const mockCoffeeChatReservations: Array<MockCoffeechat> = [
   {
     article_id: 1,
     title: "홍주광의 알고리즘 특강",
-    content: "콘텐츠 1",
+    content: "[네이버](www.naver.com)",
     member_id: mockUsers[1].id,
     member_image_url: mockUsers[1].image_url!,
     nickname: mockUsers[1].nickname,

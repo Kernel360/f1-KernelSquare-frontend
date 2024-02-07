@@ -1,5 +1,6 @@
 "use client"
 
+import { handleViewerLink } from "@/util/editor"
 import dynamic from "next/dynamic"
 
 interface CoffeeChatDetailContentProps {
@@ -15,7 +16,10 @@ const MdViewer = dynamic(
 
 function CoffeeChatDetailContent({ content }: CoffeeChatDetailContentProps) {
   return (
-    <div className="min-h-[200px] border border-colorsGray rounded-lg p-2">
+    <div
+      className="min-h-[200px] border border-colorsGray rounded-lg p-2"
+      onClick={(e) => handleViewerLink("chat")(e)}
+    >
       <MdViewer content={content} />
     </div>
   )

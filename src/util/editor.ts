@@ -47,3 +47,28 @@ function getMockImageIdFromLink(mockImageUrl: string) {
 
   return imageIdResultArray[0]
 }
+
+export const handleViewerLink =
+  (domain: string) => (e: React.MouseEvent<HTMLDivElement>) => {
+    if ((e.target as HTMLElement).tagName !== "A") return
+
+    const target = e.target as HTMLAnchorElement
+
+    if (
+      !target.href.startsWith("http://") ||
+      !target.href.startsWith("https://")
+    ) {
+      e.preventDefault()
+
+      const origin = `${window.location.origin}/${domain}`
+
+      const targetURL = target.href.replace(`${origin}/`, "")
+      const newLink = `https://${targetURL}`
+
+      const linkElement = document.createElement("a")
+      linkElement.href = newLink
+      linkElement.target = "_blank"
+
+      linkElement.click()
+    }
+  }
