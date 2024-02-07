@@ -5,7 +5,7 @@ import { useClientSession } from "@/hooks/useClientSession"
 import { toast } from "react-toastify"
 import { useRecoilState } from "recoil"
 import { popupWindowAtom } from "@/recoil/atoms/popup/popupWindowAtom"
-import { cloneDeep, cloneDeepWith } from "lodash-es"
+import { cloneDeep } from "lodash-es"
 
 interface EnterCoffeeChatProps {
   articleTitle: string
@@ -18,6 +18,8 @@ function EnterCoffeeChat({ articleTitle, roomId }: EnterCoffeeChatProps) {
   const [popupWindow, setPopupWindow] = useRecoilState(popupWindowAtom)
 
   const openChatRoomPopup = () => {
+    if (roomId === null) return
+
     const urlSearchParams = new URLSearchParams()
     urlSearchParams.set("popup", "true")
     urlSearchParams.set("title", articleTitle)
@@ -55,7 +57,7 @@ function EnterCoffeeChat({ articleTitle, roomId }: EnterCoffeeChatProps) {
   return (
     <Button
       buttonTheme="primary"
-      disabled={!!popupWindow}
+      disabled={roomId === null || !!popupWindow}
       onClick={onSubmitEnterCoffeeChatRoom}
       className="disabled:bg-colorsGray disabled:text-colorsDarkGray"
     >
