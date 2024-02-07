@@ -2,13 +2,14 @@
 
 import Messages from "@/socket/client/Messages"
 import SocketConnection from "@/socket/client/SocketConnection"
-import ChatRoomHeader from "./ChatRoomHeader"
+import ChatRoomHeader, { PopupMessage } from "./ChatRoomHeader"
 import MessageControl from "@/socket/client/MessageControl"
-import type { SessionPayload } from "@/recoil/atoms/user"
 import { ErrorBoundary, FallbackProps } from "react-error-boundary"
 import { getKorDayjs } from "@/util/getDate"
 import { useSearchParams } from "next/navigation"
 import Button from "@/components/shared/button/Button"
+import { useEffect } from "react"
+import type { SessionPayload } from "@/recoil/atoms/user"
 
 interface ChatRoomProps {
   serverUrl: string
@@ -47,6 +48,21 @@ export default ChatRoom
 function ChatRoomFallback({ error }: FallbackProps) {
   const searchParams = useSearchParams()
   const isPopup = searchParams.get("popup")
+
+  useEffect(() => {
+    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+      ;(window.opener.postMessage as typeof window.postMessage)(
+        { type: "leave" } as PopupMessage,
+        process.env.NEXT_PUBLIC_SITE_URL!,
+      )
+    }
+
+    window.addEventListener("beforeunload", handleBeforeUnload)
+
+    return () => {
+      window.removeEventListener("beforeunload", handleBeforeUnload)
+    }
+  }, [])
 
   if (error.message === "cannotConnect") {
     return (

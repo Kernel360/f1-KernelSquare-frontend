@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useEffect } from "react"
+import React from "react"
 import Question from "./components/Question/Question"
 import MyAnswer from "./components/MyAnswer"
 import AnswerList from "./components/Answers/AnswerList"
@@ -8,15 +8,11 @@ import { questionQueries } from "@/react-query/question"
 import ContentLoading from "@/components/shared/animation/ContentLoading"
 import { answerQueries } from "@/react-query/answers"
 import { useClientSession } from "@/hooks/useClientSession"
-import useQnADetail from "./hooks/useQnADetail"
 import NotFound from "@/app/not-found"
 
 const QnADetail: React.FC<{ id: string }> = ({ id }) => {
   const { data, isPending } = questionQueries.useQuestionData({
     id: Number(id),
-  })
-  const { setIsAnswerMode, handleCheckMyAnswer } = useQnADetail({
-    questionId: Number(id),
   })
 
   const { user } = useClientSession()
@@ -29,30 +25,8 @@ const QnADetail: React.FC<{ id: string }> = ({ id }) => {
     questionId: Number(id),
   })
 
-  useEffect(() => {
-    const fetchData = () => {
-      if (
-        answers?.data &&
-        user?.nickname &&
-        !handleCheckMyAnswer(answers.data.answer_responses, user.nickname) &&
-        data?.data?.nickname !== user.nickname
-      ) {
-        setIsAnswerMode(true)
-      }
-    }
-
-    fetchData()
-  }, [
-    answers,
-    data?.data?.nickname,
-    handleCheckMyAnswer,
-    setIsAnswerMode,
-    user?.nickname,
-  ])
-
-  if (isError) return <NotFound />
-
-  if (isPending || isAnswerPending || !data) return <Loading />
+  if (isPending || isAnswerPending) return <Loading />
+  if (isError || !data) return <NotFound />
 
   if (data)
     return (
@@ -60,7 +34,11 @@ const QnADetail: React.FC<{ id: string }> = ({ id }) => {
         <div className="w-[calc(100%-12px)] sm:w-[calc(100%-22px)] lg:w-[calc(100%-42px)] mx-auto">
           <div className="font-bold text-[36px]">Q&A</div>
           <Question id={Number(id)} />
-          <MyAnswer questionId={Number(id)} />
+          <MyAnswer
+            questionId={Number(id)}
+            list={answers.data?.answer_responses}
+            nickname={data.data?.nickname}
+          />
           <AnswerList
             createdby={user?.nickname!}
             questionId={Number(id)}

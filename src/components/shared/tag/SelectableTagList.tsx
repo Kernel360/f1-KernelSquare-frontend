@@ -1,6 +1,6 @@
 "use client"
 
-import { useLayoutEffect, useRef, useState } from "react"
+import { useRef } from "react"
 import SelectableTag from "./SelectableTag"
 import { Input } from "../input/Input"
 import Spacing from "../Spacing"
@@ -8,17 +8,14 @@ import Tag from "./Tag"
 import { MdClose } from "react-icons/md"
 import { useSelectTagList } from "@/hooks/useSelectTagList"
 import type { TechTag } from "@/interfaces/tech-tag"
-import type {
-  TagListAtomParam,
-  UseSelectTagListOption,
-} from "@/hooks/useSelectTagList"
+import type { UseSelectTagListOption } from "@/hooks/useSelectTagList"
 import { useQuery } from "@tanstack/react-query"
-import { getTechTags, searchTags } from "@/service/techs"
+import { searchTags } from "@/service/techs"
 import { useRecoilState } from "recoil"
 import { searchTagAtom } from "@/recoil/atoms/tag"
 import Button from "../button/Button"
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io"
-import { debounce, throttle } from "lodash-es"
+import { debounce } from "lodash-es"
 import ContentLoading from "../animation/ContentLoading"
 import Skeleton from "react-loading-skeleton"
 
@@ -30,6 +27,7 @@ interface TagState {
 interface SelectableTagListProps {
   uniqueKey: string
   tagList?: Array<TechTag>
+  questionId?: number
   initialSelectedTagList?: TagState["selectedTagList"]
   searchable?: boolean
   maximumLength?: number
@@ -43,6 +41,7 @@ maximumSelectableError.cause = {
 
 function SelectableTagList({
   uniqueKey,
+  questionId,
   initialSelectedTagList,
   searchable = false,
   maximumLength,
@@ -50,6 +49,7 @@ function SelectableTagList({
 }: SelectableTagListProps) {
   const { selectedTagList, select, unselect } = useSelectTagList({
     uniqueKey,
+    questionId,
     initialSelectedTagList,
     callback,
   })
@@ -102,12 +102,12 @@ SelectableTagList.Search = function SelectableTagListSearch() {
 SelectableTagList.SummarizedSelectedTagList =
   function SummerizedSelectedTagList({
     uniqueKey,
-    initialSelectedTagList,
+    questionId,
     callback,
   }: UseSelectTagListOption) {
     const { selectedTagList, unselect } = useSelectTagList({
       uniqueKey,
-      initialSelectedTagList,
+      questionId,
       callback,
     })
 

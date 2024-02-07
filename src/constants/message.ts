@@ -28,6 +28,7 @@ export const errorMessage = {
   undertimeCntLimit: "멘토링 시간은 최소 하나 이상 선택해야 합니다.",
   preventSpecialCharacter: `문자와 숫자만 입력 가능합니다.`,
   preventDuplicateValue: "이미 입력된 값입니다.",
+  voteForMe: "자신의 답변에는 투표할 수 없습니다.",
 } as const
 
 export const successMessage = {
@@ -93,3 +94,7 @@ export const searchTipMessage = [
   "조금 더 일반적인 단어로 다시 검색해보세요.",
   "검색하는 단어의 수를 줄여보세요.",
 ] as const
+
+export const pendingMessage = {
+  votePending: "현재 투표가 처리 중입니다. 잠시 후 다시 시도해주세요.",
+} as const

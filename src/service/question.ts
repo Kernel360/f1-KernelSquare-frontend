@@ -54,6 +54,14 @@ export async function createQuestion({
   image_url,
   skills,
 }: CreateQuestionRequest) {
+  // 서버 로그 확인용
+  console.log("[create submit]", {
+    member_id,
+    title,
+    content,
+    image_url,
+    skills,
+  })
   const res = await apiInstance.post<
     any,
     AxiosResponse<CreateQuestionResponse>,
@@ -95,6 +103,14 @@ export async function updateQuestion({
   image_url,
   skills,
 }: UpdateQuestionRequest) {
+  // 서버 로그 확인용
+  console.log("[update submit]", {
+    questionId,
+    title,
+    content,
+    image_url,
+    skills,
+  })
   const res = await apiInstance.put<
     any,
     AxiosResponse<UpdateQuestionResponse>,

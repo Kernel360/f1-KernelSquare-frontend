@@ -7,7 +7,6 @@ import {
   successMessage,
 } from "@/constants/message"
 import useModal from "@/hooks/useModal"
-import { sleep } from "@/util/sleep"
 import { useQueryClient } from "@tanstack/react-query"
 import { toast } from "react-toastify"
 import useQnADetail from "./useQnADetail"
@@ -15,7 +14,6 @@ import { useRecoilState } from "recoil"
 import { AnswerEditMode } from "@/recoil/atoms/mode"
 import queryKey from "@/constants/queryKey"
 import { useDeleteImage } from "@/hooks/image/useDeleteImage"
-import Regex from "@/constants/regex"
 import { answerQueries } from "@/react-query/answers"
 import type { Answer } from "@/interfaces/answer"
 import type { ModalState } from "@/interfaces/modal"
@@ -42,7 +40,7 @@ const useHandleMyAnswer = ({ answerId, questionId }: AnswerProps) => {
   )
   const queryClient = useQueryClient()
   const { openModal } = useModal()
-  const { checkNullValue, setIsAnswerMode } = useQnADetail({ questionId })
+  const { checkNullValue } = useQnADetail({ questionId })
   const { deleteImage } = useDeleteImage()
   const { updateAnswer } = answerQueries.useUpdateAnswer()
   const { deleteAnswer } = answerQueries.useDeleteAnswer()
@@ -91,24 +89,18 @@ const useHandleMyAnswer = ({ answerId, questionId }: AnswerProps) => {
           },
           {
             onSuccess: () => {
-              openModal({
-                content: successModal,
-                onClose() {
-                  queryClient.invalidateQueries({
-                    queryKey: [queryKey.answer],
-                  })
-                  setIsAnswerMode(true)
-                },
+              toast.success(successMessage.deleteAnswer, {
+                position: "top-center",
               })
-              sleep(5000).then(() => {
-                queryClient.invalidateQueries({
-                  queryKey: [queryKey.answer],
-                })
-                setIsAnswerMode(true)
 
-                if (answer.answer_image_url)
-                  deleteImage(answer.answer_image_url)
+              queryClient.invalidateQueries({
+                queryKey: [queryKey.answer],
               })
+              queryClient.invalidateQueries({
+                queryKey: [queryKey.question, questionId],
+              })
+
+              if (answer.answer_image_url) deleteImage(answer.answer_image_url)
             },
           },
         )

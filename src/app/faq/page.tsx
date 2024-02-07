@@ -1,5 +1,5 @@
 import { layoutMeta } from "@/constants/layoutMeta"
-import FaQ from "@/page/FaQ"
+import FaQ from "@/page/faq/FaQPage"
 import { Metadata } from "next"
 
 export const metadata: Metadata = {

@@ -59,6 +59,19 @@ function SocketConnection({ serverUrl, roomKey, user }: SocketConnectionProps) {
           stomp.subscribe(`/topic/chat/room/${roomKey}`, (message) => {
             const payload = JSON.parse(message.body)
 
+            if (payload.type === "EXPIRE") {
+              stomp.send(
+                `/app/chat/message`,
+                {},
+                JSON.stringify({
+                  type: "LEAVE",
+                  room_key: roomKey,
+                  sender: user.nickname,
+                  send_time: dayjs().format("YYYY-MM-DDTHH:mm:ss"),
+                }),
+              )
+            }
+
             setRoom((prev) => ({
               ...prev,
               messages: [
