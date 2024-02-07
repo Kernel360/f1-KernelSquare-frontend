@@ -59,7 +59,7 @@ const ScheduleSection = () => {
         </CoffeeChatSection.Label>
         <div className="flex justify-around">
           <div>
-            <CustomCalendar start={startDate} limit={29} />
+            <CustomCalendar start={startDate} limit={21} />
             {!date && (
               <div className="font-bold text-primary mt-3">
                 원하는 시작 일자를 클릭하면 시간대를 설정할 수 있습니다.
