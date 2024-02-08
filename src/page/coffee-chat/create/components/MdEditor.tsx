@@ -27,6 +27,7 @@ const MdEditorContainer: React.FC<EditorProps> = ({
           initialValue={previous}
           isImage={false}
           setLoaded={setLoaded}
+          placeholder="생성할 커피챗에 대해 설명해보세요."
         />
       )}
     </div>
