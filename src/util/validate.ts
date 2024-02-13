@@ -9,6 +9,10 @@ export class Validator {
     Validator.instance = this
   }
 
+  noSpace(value: string = "") {
+    return !/[ ]/.test(value)
+  }
+
   validateEmail(email: string = "") {
     return {
       get allCheck() {
@@ -58,6 +62,14 @@ export class Validator {
     return {
       get allCheck() {
         return () => this.format() && this.length()
+      },
+      eachFormat() {
+        return {
+          minLowerCase: /[a-z]/.test(password),
+          minUppercase: /[A-Z]/.test(password),
+          minNumbers: /[0-9]/.test(password),
+          minSymbols: /[-#!$@£%^&*()_+|~=`{}\[\]:";'<>?,.\/]/.test(password),
+        }
       },
       format() {
         return validator.isStrongPassword(password, {
