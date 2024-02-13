@@ -29,6 +29,18 @@ function QnAList({ questions }: QnAListProps) {
 
   const now = dayjs().format()
 
+  const goToQnaDetail =
+    (id: number) => (e: React.MouseEvent<HTMLLIElement>) => {
+      push(`/question/${id}`)
+    }
+
+  const goToUserProfile =
+    (id: number) => (e: React.MouseEvent<HTMLDivElement>) => {
+      e.stopPropagation()
+
+      push(`/profile/${id}`)
+    }
+
   return (
     <div className="py-4 w-[calc(100%-12px)] sm:w-[calc(100%-22px)] lg:w-[calc(100%-42px)] mx-auto">
       <ul className="flex flex-col gap-8">
@@ -47,7 +59,8 @@ function QnAList({ questions }: QnAListProps) {
             return (
               <li
                 key={id}
-                className={`shadow-sm hover:shadow-md transition-shadow max-w-full box-border border border-colorsGray rounded-lg p-2`}
+                className={`shadow-sm hover:shadow-md transition-shadow max-w-full box-border border border-colorsGray rounded-lg p-2 cursor-pointer`}
+                onClick={goToQnaDetail(id)}
               >
                 <h3 className="w-fit">
                   <Link
@@ -59,7 +72,14 @@ function QnAList({ questions }: QnAListProps) {
                 </h3>
                 <ul className="flex gap-2 flex-wrap my-1">
                   {skills.map((skill, index) => {
-                    return <Tag key={`${id}-${index}-${skill}`}>{skill}</Tag>
+                    return (
+                      <Tag
+                        key={`${id}-${index}-${skill}`}
+                        className={`pointer-events-none`}
+                      >
+                        {skill}
+                      </Tag>
+                    )
                   })}
                 </ul>
                 <div className="flex h-full">
@@ -71,18 +91,18 @@ function QnAList({ questions }: QnAListProps) {
                   <div
                     className={`shrink-0 flex h-max max-h-14 items-center gap-1 ml-4 rounded-lg ${
                       user
-                        ? "cursor-pointer relative outline outline-[2px] outline-transparent transition-colors hover:outline hover:outline-primary outline-offset-1"
-                        : "cursor-default"
+                        ? "cursor-pointer pointer-events-auto relative outline outline-[2px] outline-transparent transition-colors hover:outline hover:outline-primary outline-offset-1"
+                        : "cursor-default pointer-events-none"
                     } `}
                     {...(user && {
-                      onClick: (e) => push(`/profile/${member_id}`),
+                      onClick: goToUserProfile(member_id),
                       title: "유저 프로필로 이동",
                     })}
                   >
                     <div className="h-full box-border m-1 shrink-0 translate-x-0 translate-y-0">
                       <Profile
                         profileImage={member_image_url}
-                        className="align-top m-0.5 cursor-default"
+                        className="align-top m-0.5"
                       />
                     </div>
                     <div className="w-16 h-full flex flex-col justify-center items-start shrink-0">
