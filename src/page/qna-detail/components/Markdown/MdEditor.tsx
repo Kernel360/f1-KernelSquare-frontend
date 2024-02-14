@@ -86,6 +86,7 @@ const MdEditor: React.FC<EditorProps> = ({
           hooks={{
             addImageBlobHook: uploadImageHook,
           }}
+          placeholder="질문을 작성해주세요."
         />
       )}
     </div>

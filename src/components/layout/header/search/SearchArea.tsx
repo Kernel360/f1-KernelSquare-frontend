@@ -22,7 +22,6 @@ function SearchArea() {
   }
 
   const handleSubmitData = handleSubmit((data) => {
-    console.log("[bar] data", data)
     if (data.search) {
       router.replace(`/search?keyword=${data.search}&page=0`)
     }

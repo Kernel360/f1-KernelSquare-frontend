@@ -274,7 +274,6 @@ export const coffeeChatHandler = [
       }
 
       mockCoffeeChatReservations.push(newCoffeeChatPost)
-      console.log("mock", mockCoffeeChatReservations)
 
       return HttpResponse.json(
         {
@@ -423,7 +422,6 @@ export const coffeeChatHandler = [
       )
 
       if (hasDuplicateMentoringTime) {
-        console.log("hasDuplicateMentoringTime", hasDuplicateMentoringTime)
         return HttpResponse.json(
           {
             code: 3409,

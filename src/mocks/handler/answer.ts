@@ -214,8 +214,6 @@ export const answerHandler = [
           },
         )
       } catch (err) {
-        console.log(`%cError`, `background:red; color:#fff`)
-        console.log({ err })
         return HttpResponse.json(
           {
             code: 500,
@@ -265,8 +263,6 @@ export const answerHandler = [
           },
         )
       } catch (err) {
-        console.log(`%cError`, `background:red; color:#fff`)
-        console.log({ err })
         return HttpResponse.json(
           {
             code: 500,
