@@ -6,7 +6,7 @@ COPY . /app
 
 WORKDIR /app
 
-RUN npm install -g pnpm@0.11.0
+RUN npm install -g pnpm@8.11.0
 RUN pnpm install
 
 ARG NEXT_PUBLIC_API_MOCKING \ 
