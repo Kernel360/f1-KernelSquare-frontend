@@ -8,11 +8,11 @@ on:
 jobs:
   build:
     name: docker_build
-	  if: github.repository == "KernelSquare/Frontend" && github.event.pull_request.merged == true
-	  runs-on: ubuntu-latest
-	  steps:
+    if: github.repository == "KernelSquare/Frontend" && github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+    steps:
       - name: Checkout
-        uses: actions/checkout@v4 
+        uses: actions/checkout@v4
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
       - name: Set up Docker Buildx
