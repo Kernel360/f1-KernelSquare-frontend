@@ -6,10 +6,10 @@ on:
     types:
       - closed
 jobs:
-  image-build:
-	if: github.repository == 'KernelSquare/Frontend' && github.event.pull_request.merged == true
-	runs-on: ubuntu-latest
-	steps:
+  build:
+	  if: github.repository == "KernelSquare/Frontend" && github.event.pull_request.merged == true
+	  runs-on: ubuntu-latest
+	  steps:
       - name: Checkout
         uses: actions/checkout@v4 
       - name: Set up QEMU
@@ -35,8 +35,8 @@ jobs:
             NEXT_PUBLIC_CRYPTO_IV_SECRET=${{ secrets.NEXT_PUBLIC_CRYPTO_IV_SECRET }} \
             NEXT_PUBLIC_CRYPTO_IV_LENGTH=${{ secrets.NEXT_PUBLIC_CRYPTO_IV_LENGTH }}
   notify:
-    needs: image-build
-    if: github.repository == 'KernelSquare/Frontend'
+    needs: build
+    if: github.repository == "KernelSquare/Frontend"
     runs-on: ubuntu-latest
     steps:
       - name: Slack Notification
