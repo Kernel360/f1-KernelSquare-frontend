@@ -6,7 +6,7 @@ interface TagProps extends ButtonHTMLAttributes<HTMLButtonElement> {}
 
 function Tag({ children, className, ...props }: TagProps) {
   const contentClassNames = twMerge([
-    "transition-colors cursor-pointer break-all bg-colorsLightGray hover:bg-colorsGray px-2 py-1 rounded-lg text-sm text-secondary font-semibold shadow-sm",
+    "transition-colors cursor-default break-all bg-colorsLightGray px-2 py-1 rounded-lg text-sm text-secondary font-semibold shadow-sm",
     className,
   ])
 

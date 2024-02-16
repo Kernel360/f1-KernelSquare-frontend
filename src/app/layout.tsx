@@ -42,7 +42,7 @@ export default function RootLayout({
             <ScrollTop />
             <Layout>{children}</Layout>
             <Modal />
-            <ToastContainer />
+            <ToastContainer limit={1} />
           </ReactQueryProvider>
         </RecoilProvider>
       </body>

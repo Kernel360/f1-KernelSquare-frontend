@@ -30,7 +30,6 @@ function ReservationForMentor({ reservation, created, title }: MentorProps) {
     ({ start_time }) =>
       getDate({ date: date + "" }) === getDate({ date: start_time }),
   )
-  console.log("res", reservation)
 
   useEffect(() => {
     return () => {

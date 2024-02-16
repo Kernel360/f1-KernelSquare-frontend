@@ -48,7 +48,6 @@ function CoffeeChatDetailHeader({
         const res = await deleteCoffeeChatPost({
           postId: article_id,
         })
-        console.log("success", res.data.msg)
         openModal({
           content: (
             <SuccessModalContent

@@ -44,6 +44,7 @@ const MarkdownEditor = (
     hooks,
     isImage,
     setLoaded,
+    placeholder,
     ...props
   }: MarkdownEditorProps,
   ref: ForwardedRef<ToastEditor>,
@@ -142,7 +143,7 @@ const MarkdownEditor = (
             ? contentEditorToolbarItemsWithImage
             : contentEditorToolbarItemsWithoutImage
         }
-        placeholder="질문을 작성해주세요"
+        placeholder={placeholder}
         initialEditType="markdown"
         previewStyle="tab"
         hideModeSwitch

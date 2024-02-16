@@ -29,6 +29,7 @@ const MdEditorContainer: React.FC<EditorProps> = ({
           initialValue={previous}
           isImage={false}
           setLoaded={setLoaded}
+          placeholder="자기소개를 작성해주세요"
         />
       )}
     </div>

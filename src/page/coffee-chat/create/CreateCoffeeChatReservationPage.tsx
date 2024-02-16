@@ -87,7 +87,6 @@ function CreateCoffeeChatReservationPage({
           queryClient.invalidateQueries({
             queryKey: ["chat"],
           })
-          console.log("id", res.data.data?.reservation_article_id)
           setTimeout(() => {
             replace(`/chat/${res.data.data?.reservation_article_id}`)
 

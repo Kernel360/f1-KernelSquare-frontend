@@ -134,7 +134,6 @@ export const memberHandler = [
       const { image_url } = await request.json()
 
       const target = mockUsers.find((user) => user.id === Number(userId))!
-      console.log("프로필 이미지 수정", target)
 
       if (typeof image_url !== "undefined") target.image_url = image_url
 
