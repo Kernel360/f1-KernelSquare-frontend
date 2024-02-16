@@ -8,7 +8,7 @@ on:
 jobs:
   build:
     name: docker_build
-    if: github.repository == KernelSquare/Frontend && github.event.pull_request.merged == true
+    if: github.repository == 'KernelSquare/Frontend' && github.event.pull_request.merged == true
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -37,7 +37,7 @@ jobs:
             NEXT_PUBLIC_CRYPTO_IV_LENGTH=${{ secrets.NEXT_PUBLIC_CRYPTO_IV_LENGTH }}
   notify:
     needs: build
-    if: github.repository == KernelSquare/Frontend
+    if: github.repository == 'KernelSquare/Frontend'
     runs-on: ubuntu-latest
     steps:
       - name: Slack Notification
