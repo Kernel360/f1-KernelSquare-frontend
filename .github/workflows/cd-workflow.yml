@@ -22,9 +22,7 @@ jobs:
           node-version: "20"
       - name: Get Github Actions IP
         id: ip
-        run: |
-          ipv4=$(curl -s https://api.ipify.org)
-          echo "::set-output name=ipv4::$ipv4"
+        uses: haythem/public-ip@v1.3
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
@@ -39,7 +37,7 @@ jobs:
         with:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USER }}
-          key: ${{ secrets.SSH_KEY }}
+          password: ${{ secrets.EC2_PASSWORD }}
           script_stop: true
           script: |
             docker pull ${{ secrets.DOCKER_TAG }}
