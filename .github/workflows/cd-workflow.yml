@@ -10,7 +10,7 @@ permissions:
   contents: read
 jobs:
   deploy:
-    if: github.event.pull_request.merged == true
+    if: github.repository == github.action_repository && github.event.pull_request.merged == true
     name: ec2Deploy
     runs-on: ubuntu-latest
     steps:
@@ -52,7 +52,7 @@ jobs:
           aws ec2 revoke-security-group-ingress --group-id ${{ secrets.AWS_SG_ID }} --protocol tcp --port 22 --cidr ${{ steps.ip.outputs.ipv4 }}/32
   notify:
     needs: deploy
-    if: always()
+    if: github.repository == github.action_repository
     runs-on: ubuntu-latest
     steps:
       - name: Slack Notification
