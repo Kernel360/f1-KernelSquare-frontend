@@ -18,9 +18,7 @@ jobs:
         uses: actions/checkout@v4
       - name: Get Github Actions IP
         id: ip
-        uses: haythem/public-ip@v1.3
-        with:
-          using: "node20"
+        uses: candidob@get-runner-ip@v1.0.0
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
