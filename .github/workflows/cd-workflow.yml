@@ -52,7 +52,7 @@ jobs:
           aws ec2 revoke-security-group-ingress --group-id ${{ secrets.AWS_SG_ID }} --protocol tcp --port 22 --cidr ${{ steps.ip.outputs.ipv4 }}/32
   notify:
     needs: deploy
-    if: github.repository == 'Kernel360/f1-KernelSquare-frontend' && github.event_name == 'pull_request'
+    if: always()
     runs-on: ubuntu-latest
     steps:
       - name: Slack Notification
