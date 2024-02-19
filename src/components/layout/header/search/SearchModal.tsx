@@ -25,7 +25,6 @@ function SearchModal() {
   }
 
   const handleSubmitData = handleSubmit((data) => {
-    console.log("[modal] data", data)
     if (data.search) {
       router.replace(`/search?keyword=${data.search}&page=0`)
     }

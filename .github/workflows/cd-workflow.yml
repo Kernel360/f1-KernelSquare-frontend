@@ -1,0 +1,67 @@
+name: AWS EC2 Deploy
+on:
+  pull_request:
+    branches:
+      - main
+    types:
+      - closed
+jobs:
+  deploy:
+    if: github.repository == 'Kernel360/f1-KernelSquare-frontend' && github.event.pull_request.merged == true
+    name: ec2Deploy
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get Github Actions IP
+        id: ip
+        uses: haythem/public-ip@v1.3
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-region: ap-northeast-2
+          role-to-assume: ${{ secrets.AWS_ASSUME_ROLE_ARN }}
+          role-duration-seconds: 1200
+      - name: Add Github Actions IP to Security Group
+        run: |
+          aws ec2 authorize-security-group-ingress --group-id ${{ secrets.AWS_SG_ID }} --protocol tcp --port 22 --cidr ${{ steps.ip.outputs.ipv4 }}/32
+      - name: Pull Image and Run
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.SSH_KEY }}
+          script_stop: true
+          script: |
+            docker pull ${{ secrets.DOCKER_TAG }}
+            if docker ps --format '{{.Names}}' | grep -q "kernel_frontend_app"; then
+            docker stop kernel_frontend_app
+            docker rm kernel_frontend_app
+            fi
+            docker run --name kernel_frontend_app --restart=always -itd -p 3000:3000 ${{ secrets.DOCKER_TAG }}
+      - name: Remove Github Actions IP From Security Group
+        if: always()
+        run: |
+          aws ec2 revoke-security-group-ingress --group-id ${{ secrets.AWS_SG_ID }} --protocol tcp --port 22 --cidr ${{ steps.ip.outputs.ipv4 }}/32
+  notify:
+    needs: deploy
+    if: github.repository == 'Kernel360/f1-KernelSquare-frontend' && github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Slack Notification
+        uses: slackapi/slack-github-action@v1.25.0
+        with:
+          payload: |
+            {
+              "text": "ec2 deploy result: ${{ job.status }}",
+              "blocks": [
+                {
+                  "type": "section",
+                  "text": {
+                    "type": "mrkdwn",
+                    "text": "ec2 deploy result: ${{ job.status }}\n${{ github.event.pull_request.html_url || github.event.head_commit.url }}"
+                  }
+                }
+              ]
+            }
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+          SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK

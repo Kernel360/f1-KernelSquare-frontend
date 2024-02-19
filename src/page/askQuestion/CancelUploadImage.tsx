@@ -22,8 +22,6 @@ function CancelUploadImageModal({
 }: CancelUploadImageModalProps) {
   const isSoftDelteTargetImage = initialUploadImages?.includes(imageUrl)
 
-  console.log({ initialUploadImages, imageUrl })
-
   return (
     <div className="w-full sm:w-[320px]">
       <p className="text-center">업로드된 이미지 파일을 삭제하시겠습니까?</p>

@@ -7,21 +7,25 @@ import dayjs from "dayjs"
 import Link from "next/link"
 import Profile from "@/components/shared/Profile"
 import Image from "next/image"
-import Tag from "@/components/shared/tag/Tag"
 import { getKorRelativeTime } from "@/util/getDate"
-import { FaHashtag } from "react-icons/fa"
 import Spacing from "@/components/shared/Spacing"
-import type { CoffeeChatReservationListPayload } from "@/interfaces/dto/coffee-chat/get-all-coffeechat-reservation.dto"
 import HashTag from "@/components/shared/tag/HashTag"
+import { useRouter } from "next/navigation"
+import type { CoffeeChatReservationListPayload } from "@/interfaces/dto/coffee-chat/get-all-coffeechat-reservation.dto"
 
 interface CoffeeChatListProps {
   coffeeChatList: CoffeeChatReservationListPayload["list"]
 }
 
 function CoffeeChatList({ coffeeChatList }: CoffeeChatListProps) {
-  const { user } = useClientSession()
+  const { push } = useRouter()
 
   const now = dayjs().format()
+
+  const goToCoffeeChatDetail =
+    (id: number) => (e: React.MouseEvent<HTMLLIElement>) => {
+      push(`/chat/${id}`)
+    }
 
   return (
     <ul className="flex flex-col gap-8 lgDevice:grid lgDevice:grid-cols-2">
@@ -41,7 +45,8 @@ function CoffeeChatList({ coffeeChatList }: CoffeeChatListProps) {
           return (
             <li
               key={article_id}
-              className={`shadow-sm hover:shadow-md transition-shadow max-w-full box-border border border-colorsGray rounded-lg p-2`}
+              className={`shadow-sm hover:shadow-md transition-shadow max-w-full box-border border border-colorsGray rounded-lg p-2 cursor-pointer`}
+              onClick={goToCoffeeChatDetail(article_id)}
             >
               <div className="flex gap-1">
                 <div className="flex flex-col items-center py-1">
@@ -88,11 +93,7 @@ function CoffeeChatList({ coffeeChatList }: CoffeeChatListProps) {
                     key={`hash-${tag}`}
                     className="flex shrink-0 items-center"
                   >
-                    <HashTag>{tag}</HashTag>
-                    {/* <Tag className="!w-fit !inline-flex !align-top !items-center">
-                      <FaHashtag className="shrink-0 self-start mt-1" />
-                      {tag}
-                    </Tag> */}
+                    <HashTag className="pointer-events-none">{tag}</HashTag>
                   </li>
                 ))}
               </ul>

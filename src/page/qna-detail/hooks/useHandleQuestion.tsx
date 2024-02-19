@@ -43,7 +43,6 @@ const useHandleQuestion = () => {
         const res = await deleteQuestion({
           questionId: question.id,
         })
-        console.log("success", res.data.msg)
         openModal({
           content: successModal,
           onClose() {
