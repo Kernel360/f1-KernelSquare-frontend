@@ -1,4 +1,4 @@
-## 노션 링크
+## 협업 링크
 
 [kernel square 노션 링크](https://www.notion.so/KernelSquare-96828531139a49a2983ec2a09a0df0ae?pvs=4)
 
