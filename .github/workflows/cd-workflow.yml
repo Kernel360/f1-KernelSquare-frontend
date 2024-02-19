@@ -16,9 +16,13 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+      - name: Node.js20
+        uses: actions/setup-node@v2
+        with:
+          node-version: "20"
       - name: Get Github Actions IP
         id: ip
-        uses: candidob@get-runner-ip@v1.0.0
+        uses: haythem/public-ip@v1.3
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
