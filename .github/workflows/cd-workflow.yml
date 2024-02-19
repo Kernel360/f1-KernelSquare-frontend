@@ -5,6 +5,9 @@ on:
       - main
     types:
       - closed
+permissions:
+  id-token: write
+  contents: read
 jobs:
   deploy:
     if: github.repository == 'Kernel360/f1-KernelSquare-frontend' && github.event.pull_request.merged == true
