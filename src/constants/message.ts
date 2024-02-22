@@ -3,7 +3,8 @@ import Limitation from "./limitation"
 export const errorMessage = {
   notitle: "제목을 작성해주세요",
   noContent: "본문 내용을 작성해주세요",
-  introductionLimit: "최대 300자까지 입력 가능합니다.",
+  introductionLimitOver: "최대 1,000자까지 입력 가능합니다.",
+  introductionLimitUnder: "최소 10자 이상 입력해야 합니다.",
   imageUploadLimit: "이미지 파일 업로드는 1장만 가능합니다",
   unauthorized: "로그인 후 다시 이용해주세요",
   failToUploadImage:

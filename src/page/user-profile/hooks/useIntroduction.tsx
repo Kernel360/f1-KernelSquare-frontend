@@ -34,6 +34,20 @@ const useIntroduction = () => {
       })
       return
     }
+    if (introduction.length < 10) {
+      toast.error(errorMessage.introductionLimitUnder, {
+        position: "top-center",
+        autoClose: 1000,
+      })
+      return
+    }
+    if (introduction.length > 1000) {
+      toast.error(errorMessage.introductionLimitOver, {
+        position: "top-center",
+        autoClose: 1000,
+      })
+      return
+    }
 
     try {
       updateMemberIntroduction(
