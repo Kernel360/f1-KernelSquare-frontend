@@ -12,6 +12,7 @@ import { toast } from "react-toastify"
 import queryKey from "@/constants/queryKey"
 import { useQueryClient } from "@tanstack/react-query"
 import { memberQueries } from "@/react-query/member"
+import Limitation from "@/constants/limitation"
 
 export interface SaveImageProps {
   image: File
@@ -92,6 +93,30 @@ const useProfileImage = (image_url: string | null) => {
   ) => {
     if (event.target.files) {
       const file = event.target.files[0]
+      console.log("image size", file.size, file.size > Limitation.image_size)
+
+      // 파일 용량 제한
+      if (file.size > Limitation.image_size) {
+        toast.error(errorMessage.imageLimitOver, {
+          position: "top-center",
+          autoClose: 1000,
+        })
+        return
+      }
+
+      // 파일 확장자 제한
+      if (
+        !file.type.includes("png") ||
+        !file.type.includes("svg") ||
+        !file.type.includes("jpeg") ||
+        !file.type.includes("gif")
+      ) {
+        toast.error(errorMessage.invalidImageExtension, {
+          position: "top-center",
+          autoClose: 1000,
+        })
+        return
+      }
 
       setPreview((prevPreview) => {
         if (prevPreview) {
