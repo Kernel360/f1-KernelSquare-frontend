@@ -15,7 +15,7 @@ export const navigationRoutes = [
   {
     label: "개발자 Q&A",
     icon: NavigationIcons.QnA,
-    to: "/",
+    to: "/qna?page=0",
     activeClassName: "text-primary",
   },
   {
@@ -53,8 +53,12 @@ export function getActiveNavigationItem({
 
   // RootPath(/)
   if (segment === null) {
-    // QnA 리스트
-    if (pathname === "/") return navigationRoutes[NavigationRouteIndex.Qna]
+    return null
+  }
+
+  // Qna Path(/qna/**)
+  if (segment === "qna") {
+    if (pathname === "/qna") return navigationRoutes[NavigationRouteIndex.Qna]
 
     return null
   }
