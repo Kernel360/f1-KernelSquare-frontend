@@ -8,6 +8,8 @@ import type { HookCallback } from "@/components/shared/toast-ui-editor/editor/Ed
 import type { APIResponse } from "@/interfaces/dto/api-response"
 import type { UploadImagesCategory } from "@/interfaces/dto/upload/upload-images.dto"
 
+type ImageSizeUnit = "MB"
+
 type SuccessCallbackArg = {
   file: File
   linkUrl: string
@@ -27,7 +29,7 @@ type UploadErrorCallback =
 
 type ErrorCallbackArg = {
   error: unknown
-  errorCase?: "isMaximum"
+  errorCase?: "isMaximum" | "isMaximumSize" | "notAllowedExtension"
 }
 type ErrorCallback =
   | ((arg: ErrorCallbackArg) => void)
@@ -48,7 +50,37 @@ export const exceedingUploadableImagesError = new Error(
   { cause: "exceeding uploadable images" },
 )
 
+export const exceedingUploadableImageSizeError = new Error(
+  "exceeding uploadable image size",
+  { cause: "exceeding uploadable image size" },
+)
+
+export const notAllowedUploadableExtension = new Error(
+  "not allowed file extension",
+  { cause: "not allowed file extension" },
+)
+
 export const MAXIMUM_UPLOAD_IMAGE_LENGTH = 1
+export const MAXIMUN_UPLOAD_IMAGE_SIZE = {
+  target: [3, "MB"] as [number, ImageSizeUnit],
+  toString() {
+    return this.target.join("")
+  },
+  get value() {
+    const [size, unit] = this.target
+
+    switch (unit) {
+      case "MB":
+        return size * 1024 * 1024
+    }
+  },
+}
+export const ALLOW_IMAGE_TYPES = [
+  "image/jpeg",
+  "image/png",
+  "image/svg+xml",
+  "image/gif",
+]
 
 export function useToastUiEditorImageUploadHook({
   atomKey,
@@ -108,10 +140,16 @@ export function useToastUiEditorImageUploadHook({
     try {
       const { fileUploadImageLinks } = await editorSnapshot()
 
-      console.log("file_hook", fileUploadImageLinks)
-
       if (fileUploadImageLinks.length >= maximumUploadImageLength) {
         throw exceedingUploadableImagesError
+      }
+
+      if ((blob as File)?.size && blob.size > MAXIMUN_UPLOAD_IMAGE_SIZE.value) {
+        throw exceedingUploadableImageSizeError
+      }
+
+      if ((blob as File)?.type && !ALLOW_IMAGE_TYPES.includes(blob.type)) {
+        throw notAllowedUploadableExtension
       }
 
       uploadImage({
@@ -123,7 +161,16 @@ export function useToastUiEditorImageUploadHook({
       if (error instanceof Error) {
         if (error.cause === exceedingUploadableImagesError.cause) {
           onError && onError({ error, errorCase: "isMaximum" })
+          return
+        }
 
+        if (error.cause === exceedingUploadableImageSizeError.cause) {
+          onError && onError({ error, errorCase: "isMaximumSize" })
+          return
+        }
+
+        if (error.cause === notAllowedUploadableExtension.cause) {
+          onError && onError({ error, errorCase: "notAllowedExtension" })
           return
         }
 
