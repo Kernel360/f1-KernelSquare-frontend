@@ -51,10 +51,14 @@ const useAnswerVote = ({ answer }: VoteProps) => {
 
   const handleRaise = async () => {
     if (!user)
-      return toast.error(errorMessage.unauthorized, { position: "top-center" })
+      return toast.error(errorMessage.unauthorized, {
+        toastId: "upauthorizedToVote",
+        position: "top-center",
+      })
     try {
       if (voteAnswerStatus.isVoteAnswer)
         return toast.error(pendingMessage.votePending, {
+          toastId: "votePending",
           position: "top-center",
         })
       voteAnswer(
@@ -70,16 +74,24 @@ const useAnswerVote = ({ answer }: VoteProps) => {
         },
       )
     } catch (err) {
+      toast.error(errorMessage.failToVote, {
+        toastId: "failToVote",
+        position: "top-center",
+      })
       throw new Error("투표 진행 중 오류가 발생했습니다.")
     }
   }
 
   const handleReduce = async () => {
     if (!user)
-      return toast.error(errorMessage.unauthorized, { position: "top-center" })
+      return toast.error(errorMessage.unauthorized, {
+        toastId: "upauthorizedToVote",
+        position: "top-center",
+      })
     try {
       if (voteAnswerStatus.isVoteAnswer)
         return toast.error(pendingMessage.votePending, {
+          toastId: "votePending",
           position: "top-center",
         })
       voteAnswer(
@@ -94,15 +106,25 @@ const useAnswerVote = ({ answer }: VoteProps) => {
         },
       )
     } catch (err) {
+      toast.error(errorMessage.failToVote, {
+        toastId: "failToVote",
+        position: "top-center",
+      })
       throw new Error("투표 진행 중 오류가 발생했습니다.")
     }
   }
 
   const handleCancle = () => {
     if (!user)
-      return toast.error(errorMessage.unauthorized, { position: "top-center" })
+      return toast.error(errorMessage.unauthorized, {
+        toastId: "upauthorizedToVote",
+        position: "top-center",
+      })
     if (deleteVoteAnswerStatus.isDeleteVoteAnswer)
-      return toast.error(pendingMessage.votePending, { position: "top-center" })
+      return toast.error(pendingMessage.votePending, {
+        toastId: "votePending",
+        position: "top-center",
+      })
     const onSuccess = async () => {
       try {
         deleteVoteAnswer(
@@ -126,11 +148,16 @@ const useAnswerVote = ({ answer }: VoteProps) => {
           },
         )
       } catch (err) {
+        toast.error(errorMessage.failToVote, {
+          toastId: "failToVote",
+          position: "top-center",
+        })
         throw new Error("투표 진행 중 오류가 발생했습니다.")
       }
     }
     const onCancel = () => {
       toast.error(notificationMessage.cancleDeleteVote, {
+        toastId: "cancleDeleteVote",
         position: "top-center",
       })
     }

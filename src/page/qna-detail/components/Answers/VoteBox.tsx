@@ -27,14 +27,20 @@ const VoteBox: React.FC<VoteBoxProps> = ({ answer }) => {
 
   const handleVoteRaise = () => {
     if (answer.created_by === user?.nickname)
-      return toast.error(errorMessage.voteForMe, { position: "top-center" })
+      return toast.error(errorMessage.voteForMe, {
+        toastId: "voteForMe",
+        position: "top-center",
+      })
     if (answer.vote_status === 0) return handleRaise()
     return handleCancle()
   }
 
   const handleVoteReduce = () => {
     if (answer.created_by === user?.nickname)
-      return toast.error(errorMessage.voteForMe, { position: "top-center" })
+      return toast.error(errorMessage.voteForMe, {
+        toastId: "voteForMe",
+        position: "top-center",
+      })
     if (answer.vote_status === 0) return handleReduce()
 
     return handleCancle()
