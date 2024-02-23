@@ -13,6 +13,7 @@ import queryKey from "@/constants/queryKey"
 import { useQueryClient } from "@tanstack/react-query"
 import { memberQueries } from "@/react-query/member"
 import Limitation from "@/constants/limitation"
+import { useDeleteImage } from "@/hooks/image/useDeleteImage"
 
 export interface SaveImageProps {
   image: File
@@ -24,6 +25,7 @@ export interface ResetImageProps {}
 const useProfileImage = (image_url: string | null) => {
   const { user, clientSessionUpdate } = useClientSession()
   const { openModal } = useModal()
+  const { deleteImage } = useDeleteImage()
   const [image, setImage] = useState<string | ArrayBuffer | null>(image_url)
   const [preview, setPreview] = useState<string>("")
   const queryClient = useQueryClient()
@@ -46,6 +48,7 @@ const useProfileImage = (image_url: string | null) => {
             onSuccess: () => {
               toast.success(successMessage.editProfileImage, {
                 position: "top-center",
+                toastId: "successToUploadProfileImage",
               })
               clientSessionUpdate({
                 image_url: imageUploadResponse.data.data?.image_url,
@@ -65,6 +68,7 @@ const useProfileImage = (image_url: string | null) => {
       } catch (error) {
         toast.error(errorMessage.failToUploadImage, {
           position: "top-center",
+          toastId: "failToUploadProfileImage",
         })
       }
     }
@@ -72,6 +76,7 @@ const useProfileImage = (image_url: string | null) => {
     const onCancel = () => {
       toast.error(notificationMessage.cancleUploadImage, {
         position: "top-center",
+        toastId: "cancleUploadProfileImage",
       })
     }
 
@@ -99,6 +104,7 @@ const useProfileImage = (image_url: string | null) => {
       if (file.size > Limitation.image_size) {
         toast.error(errorMessage.imageLimitOver, {
           position: "top-center",
+          toastId: "profileImageLimitOver",
           autoClose: 1000,
         })
         return
@@ -113,6 +119,7 @@ const useProfileImage = (image_url: string | null) => {
       ) {
         toast.error(errorMessage.invalidImageExtension, {
           position: "top-center",
+          toastId: "invalidImageExtension",
           autoClose: 1000,
         })
         return
@@ -144,6 +151,7 @@ const useProfileImage = (image_url: string | null) => {
 
   const handleResetImage = async (memberId: number) => {
     const onSuccess = async () => {
+      const previousImage = image_url
       try {
         updateMemberProfileImage(
           {
@@ -152,8 +160,10 @@ const useProfileImage = (image_url: string | null) => {
           },
           {
             onSuccess: () => {
+              if (previousImage) deleteImage(previousImage)
               toast.success(successMessage.editResetProfileImage, {
                 position: "top-center",
+                toastId: "successToResetProfileImage",
               })
               clientSessionUpdate({
                 image_url: null,
@@ -173,6 +183,7 @@ const useProfileImage = (image_url: string | null) => {
       } catch (error) {
         toast.error(errorMessage.failToResetImage, {
           position: "top-center",
+          toastId: "failToResetProfileImage",
         })
         console.error("Error", error)
       }
@@ -181,6 +192,7 @@ const useProfileImage = (image_url: string | null) => {
     const onCancel = () => {
       toast.error(notificationMessage.cancleResetImage, {
         position: "top-center",
+        toastId: "cancleResetProfileImage",
       })
     }
 
