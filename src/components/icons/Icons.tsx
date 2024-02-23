@@ -17,6 +17,7 @@ import { BiSolidDownArrow } from "react-icons/bi"
 import { TbPencilPlus } from "react-icons/tb"
 import { RiArrowUpSLine } from "react-icons/ri"
 import { MdClose } from "react-icons/md"
+import { MdComputer } from "react-icons/md"
 
 type IconsKey =
   | "Search"
@@ -28,7 +29,13 @@ type IconsKey =
   | "Search"
   | "Close"
   | "Info"
-type NavigationIconsKey = "QnA" | "Chat" | "Notice" | "FaQ" | "MyPage"
+type NavigationIconsKey =
+  | "QnA"
+  | "Chat"
+  | "CodingMeetings"
+  | "Notice"
+  | "FaQ"
+  | "MyPage"
 type DirectionIconsKey = "Up" | "Down" | "Left" | "Right"
 type CircleIconsKey = "Line" | "Fill"
 export type Icon = (props: IconBaseProps) => JSX.Element
@@ -69,6 +76,9 @@ export const NavigationIcons: Record<NavigationIconsKey, Icon> = {
   },
   Chat(props) {
     return <HiOutlineChatBubbleLeftRight {...props} />
+  },
+  CodingMeetings(props) {
+    return <MdComputer {...props} />
   },
   Notice(props) {
     return <AiOutlineNotification {...props} />

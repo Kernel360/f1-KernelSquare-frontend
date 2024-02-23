@@ -4,7 +4,8 @@ import { NOTMATCH_SEGMENT } from "./layoutMeta"
 export const enum NavigationRouteIndex {
   Qna = 0,
   Chat = 1,
-  Faq = 2,
+  CodingMeetings = 2,
+  Faq = 3,
 }
 
 export const enum ProfileRouteIndex {
@@ -23,6 +24,12 @@ export const navigationRoutes = [
     icon: NavigationIcons.Chat,
     to: "/chat",
     activeClassName: "text-amber-600",
+  },
+  {
+    label: "모각코",
+    icon: NavigationIcons.CodingMeetings,
+    to: "/coding-meetings",
+    activeClassName: "text-secondary",
   },
   {
     label: "FAQ",
@@ -72,6 +79,10 @@ export function getActiveNavigationItem({
       return navigationRoutes[NavigationRouteIndex.Qna]
 
     return null
+  }
+
+  if (segment === "coding-meetings") {
+    return navigationRoutes[NavigationRouteIndex.CodingMeetings]
   }
 
   // Profile Path (/profile/**)
