@@ -97,7 +97,7 @@ UserProfilePresenter.ContentWrapper = function UserProfileContentWrapper({
 }: PropsWithChildren) {
   return (
     <>
-      <div className="relative box-border px-4 z-[1] bg-white sm:flex-1">
+      <div className="w-[100px] relative box-border px-4 z-[1] bg-white sm:flex-1">
         {children}
       </div>
     </>

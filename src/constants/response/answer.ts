@@ -66,7 +66,7 @@ export const AnswerApiStatus = {
      * 답변을 입력할 권한이 없는 회원
      */
     Forbidden: {
-      Code: 2200,
+      Code: -1,
       HttpStatus: HttpStatusCode.Forbidden,
     },
     /**
@@ -88,9 +88,10 @@ export const AnswerApiStatus = {
     /**
      * (답변 생성) 잘못된 요청
      * - 커스텀 코드가 없어서 현재는 code를 -1로 설정함
+     * - 본인 질문글에 답변 불가
      */
     BadRequest: {
-      Code: -1,
+      Code: 2202,
       HttpStatus: HttpStatusCode.BadRequest,
     },
     /**
@@ -255,6 +256,13 @@ export const AnswerApiStatus = {
     InternalServerError: {
       Code: -1,
       HttpStatus: HttpStatusCode.InternalServerError,
+    },
+    /**
+     * (투표 생성) 중복 투표 에러
+     */
+    Conflict: {
+      Code: 2602,
+      HttpStatus: HttpStatusCode.Conflict,
     },
   },
   /**

@@ -17,7 +17,7 @@ export interface OneAnswerProps {
 }
 
 const OneAnswer: React.FC<OneAnswerProps> = ({ answer, createdby }) => {
-  const { ProgressModalView } = useQnADetail({ questionId: answer.question_id })
+  const { ProgressModalView } = useQnADetail()
   const { user } = useClientSession()
 
   return (

@@ -1,14 +1,9 @@
 "use client"
 
-import { useRecoilState } from "recoil"
-import { ScheduleListAtomFamily } from "@/recoil/atoms/coffee-chat/schedule"
 import { twJoin } from "tailwind-merge"
 import Button from "@/components/shared/button/Button"
 import { getDate, getHour, getTime } from "@/util/getDate"
-import {
-  CoffeeChatReservationDetailPayload,
-  CoffeeChatReservationTime,
-} from "@/interfaces/dto/coffee-chat/coffeechat-reservation-detail.dto"
+import { CoffeeChatReservationTime } from "@/interfaces/dto/coffee-chat/coffeechat-reservation-detail.dto"
 import { toast } from "react-toastify"
 import {
   errorMessage,
@@ -77,6 +72,7 @@ const TimeOptions = ({ reservation, cate, date }: TimeOptionsProps) => {
   ) => {
     if (!user)
       return toast.error(errorMessage.unauthorized, {
+        toastId: "unauthorizedToRegister",
         position: "top-center",
       })
     if (isAlreadyReservedByMe && nickname === user.nickname) {
@@ -86,6 +82,7 @@ const TimeOptions = ({ reservation, cate, date }: TimeOptionsProps) => {
           {
             onSuccess: () => {
               toast.success(successMessage.deleteCoffeeChatReservation, {
+                toastId: "successToDeleteReservation",
                 position: "top-center",
                 autoClose: 1000,
               })
@@ -95,6 +92,7 @@ const TimeOptions = ({ reservation, cate, date }: TimeOptionsProps) => {
             },
             onError: (res) => {
               toast.error(res.message, {
+                toastId: "failToDeleteReservation",
                 position: "top-center",
                 autoClose: 1000,
               })
@@ -105,6 +103,7 @@ const TimeOptions = ({ reservation, cate, date }: TimeOptionsProps) => {
 
       const cancleToDelete = () => {
         toast.error(notificationMessage.cancleReservation, {
+          toastId: "cancleDeleteReservation",
           position: "top-center",
         })
       }
@@ -122,11 +121,13 @@ const TimeOptions = ({ reservation, cate, date }: TimeOptionsProps) => {
 
     if (isAlreadyReservedByMe)
       return toast.error(errorMessage.youAlreadyReserved, {
+        toastId: "youAlreadyReserved",
         position: "top-center",
       })
 
     if (nickname && nickname !== user.nickname)
       return toast.error(errorMessage.alreadyReserved, {
+        toastId: "othersAlreadyReserved",
         position: "top-center",
       })
     else {
@@ -141,6 +142,7 @@ const TimeOptions = ({ reservation, cate, date }: TimeOptionsProps) => {
           {
             onSuccess: () => {
               toast.success(successMessage.reserveCoffeeChat, {
+                toastId: "successToCreateReservation",
                 position: "top-center",
                 autoClose: 1000,
               })
@@ -150,6 +152,7 @@ const TimeOptions = ({ reservation, cate, date }: TimeOptionsProps) => {
             },
             onError: (res) => {
               toast.error(res.message, {
+                toastId: "failToCreateReservation",
                 position: "top-center",
                 autoClose: 1000,
               })
@@ -160,6 +163,7 @@ const TimeOptions = ({ reservation, cate, date }: TimeOptionsProps) => {
 
       const cancleToCreate = () => {
         toast.error(notificationMessage.cancleReservation, {
+          toastId: "cancleCreateReservation",
           position: "top-center",
         })
       }

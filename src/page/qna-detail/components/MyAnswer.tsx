@@ -25,7 +25,7 @@ const MdEditor = dynamic(() => import("../components/Markdown/MdEditor"), {
 const MyAnswer: React.FC<MyAnswerProps> = ({ questionId, list, nickname }) => {
   const { openModal } = useModal()
   const { user, handleSubmitValue, handleCheckAbilityToWriteAnswer } =
-    useQnADetail({ questionId })
+    useQnADetail()
 
   const { handleSubmit } = useForm()
   const editorRef = useRef<Editor>(null)

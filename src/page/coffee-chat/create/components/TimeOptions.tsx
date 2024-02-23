@@ -27,6 +27,7 @@ const TimeOptions = ({ date }: TimeOptionsProps) => {
     } else {
       if (timeCount === Limitation.mentoring_time)
         return toast.error(errorMessage.overtimeCntLimit, {
+          toastId: "overTimeCntLimit",
           position: "top-center",
         })
       setSchedulelist({ schedule: [...schedulelist.schedule, time] })
