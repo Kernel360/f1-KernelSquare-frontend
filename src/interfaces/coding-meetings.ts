@@ -39,7 +39,9 @@ export interface CodingMeetingMemberRange {
 // detail
 export type CodingMeetingDetail = BaseCodingMeeting &
   CodingMeetingLocation &
-  CodingMeetingMemberRange
+  CodingMeetingMemberRange & {
+    coding_meeting_content: string
+  }
 
 // mock db type
 export type MockCodingMeeting = CodingMeetingDetail
