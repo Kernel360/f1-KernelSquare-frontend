@@ -27,6 +27,7 @@ import { errorMessage } from "@/constants/message"
 import dynamic from "next/dynamic"
 import { TimeCount } from "@/recoil/atoms/coffee-chat/schedule"
 import { useGetScheduleList } from "./hooks/useGetScheduleList"
+import Limitation from "@/constants/limitation"
 
 const MdEditor = dynamic(() => import("./components/MdEditor"), {
   ssr: false,
@@ -36,6 +37,7 @@ function CreateCoffeeChatReservationPage({
   initialValues,
   post_id,
 }: CoffeeChatFormProps) {
+  // 추후 커피챗 게시글 수정 기능 구현 시 사용 예정
   const editMode: EditMode = initialValues && post_id ? "update" : "create"
   const [hash_tags, setHash_tags] = useRecoilState(HashTagList)
   const queryClient = useQueryClient()
@@ -65,13 +67,27 @@ function CreateCoffeeChatReservationPage({
 
   const onSubmit = async (data: CoffeeChatFormData) => {
     if (!user)
-      return toast.error(errorMessage.unauthorized, { position: "top-center" })
-    if (!data.title)
-      return toast.error(errorMessage.notitle, { position: "top-center" })
-    if (!editorRef.current?.getInstance().getMarkdown())
-      return toast.error(errorMessage.noContent, { position: "top-center" })
+      return toast.error(errorMessage.unauthorized, {
+        toastId: "unauthorizedToCreateCoffeeChat",
+        position: "top-center",
+      })
+    if (data.title.length < Limitation.title_limit_under)
+      return toast.error(errorMessage.underTitleLimit, {
+        toastId: "emptyCoffeeChatTitle",
+        position: "top-center",
+      })
+    if (
+      !editorRef.current?.getInstance().getMarkdown() ||
+      editorRef.current?.getInstance().getMarkdown().length <
+        Limitation.content_limit_under
+    )
+      return toast.error(errorMessage.underContentLimit, {
+        toastId: "emptyCoffeeChatContent",
+        position: "top-center",
+      })
     if (timeCount === 0)
       return toast.error(errorMessage.undertimeCntLimit, {
+        toastId: "emptyCoffeeChatTime",
         position: "top-center",
       })
     createCoffeeChatPost(
@@ -87,11 +103,10 @@ function CreateCoffeeChatReservationPage({
           queryClient.invalidateQueries({
             queryKey: ["chat"],
           })
-          setTimeout(() => {
-            replace(`/chat/${res.data.data?.reservation_article_id}`)
 
-            setHash_tags([])
-          }, 0)
+          replace(`/chat/${res.data.data?.reservation_article_id}`)
+
+          setHash_tags([])
         },
       },
     )
@@ -99,16 +114,15 @@ function CreateCoffeeChatReservationPage({
 
   const onInvalid = async (errors: FieldErrors<CoffeeChatFormData>) => {
     if (errors.title?.type === "required") {
-      toast.error("제목을 입력해주세요", { position: "top-center" })
+      toast.error(errorMessage.notitle, {
+        toastId: "emptyCoffeeChatTitle",
+        position: "top-center",
+      })
 
       window.scroll({
         top: 0,
         behavior: "smooth",
       })
-
-      setTimeout(() => {
-        setFocus("title")
-      }, 0)
 
       return
     }
@@ -168,26 +182,3 @@ function CreateCoffeeChatReservationPage({
 }
 
 export default CreateCoffeeChatReservationPage
-
-function Loading() {
-  return (
-    <div className="fixed left-0 top-[calc(var(--height-header)+67px)] sm:top-[--height-header] w-full h-full bg-white/60 backdrop-blur-[1px] flex justify-center items-center box-border p-1">
-      <h3 className="absolute w-full top-6 flex justify-center items-center">
-        <span className="inline-flex align-top justify-center items-center w-max break-all text-sm box-border px-2 py-0.5 rounded-lg border border-colorsGray bg-colorsLightGray">
-          커피챗 상세 페이지
-        </span>
-        &nbsp;를 로딩하고 있어요
-      </h3>
-      <div className="h-full">
-        <ContentLoading
-          style={{
-            width: "calc(100% - 80px)",
-            maxWidth: "400px",
-            margin: "0 auto",
-            opacity: "0.5",
-          }}
-        />
-      </div>
-    </div>
-  )
-}

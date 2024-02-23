@@ -12,7 +12,7 @@ export interface HandleQuestionBoxProps {
 
 const HandleQuestionBox: React.FC<HandleQuestionBoxProps> = ({ question }) => {
   const { handleEditQuestion, handleDeleteQuestion } = useHandleQuestion()
-  const { user } = useQnADetail({ questionId: question.id })
+  const { user } = useQnADetail()
 
   if (user?.nickname === question.nickname)
     return (

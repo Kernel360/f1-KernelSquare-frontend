@@ -25,9 +25,7 @@ const AnswerList: React.FC<AnswerProps> = ({
   const { data, isPending } = answerQueries.useGetAnswers({
     questionId,
   })
-  const { filterMyAnswer, handleIsChecked } = useQnADetail({
-    questionId,
-  })
+  const { filterMyAnswer, handleIsChecked } = useQnADetail()
   const isAnswer = !!data?.data?.answer_responses.length
 
   if (isPending) return <Loading />
