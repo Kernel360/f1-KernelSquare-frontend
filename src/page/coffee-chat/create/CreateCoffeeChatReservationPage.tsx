@@ -27,6 +27,7 @@ import { errorMessage } from "@/constants/message"
 import dynamic from "next/dynamic"
 import { TimeCount } from "@/recoil/atoms/coffee-chat/schedule"
 import { useGetScheduleList } from "./hooks/useGetScheduleList"
+import Limitation from "@/constants/limitation"
 
 const MdEditor = dynamic(() => import("./components/MdEditor"), {
   ssr: false,
@@ -70,13 +71,17 @@ function CreateCoffeeChatReservationPage({
         toastId: "unauthorizedToCreateCoffeeChat",
         position: "top-center",
       })
-    if (!data.title)
-      return toast.error(errorMessage.notitle, {
+    if (data.title.length < Limitation.title_limit_under)
+      return toast.error(errorMessage.underTitleLimit, {
         toastId: "emptyCoffeeChatTitle",
         position: "top-center",
       })
-    if (!editorRef.current?.getInstance().getMarkdown())
-      return toast.error(errorMessage.noContent, {
+    if (
+      !editorRef.current?.getInstance().getMarkdown() ||
+      editorRef.current?.getInstance().getMarkdown().length <
+        Limitation.content_limit_under
+    )
+      return toast.error(errorMessage.underContentLimit, {
         toastId: "emptyCoffeeChatContent",
         position: "top-center",
       })
