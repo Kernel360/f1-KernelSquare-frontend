@@ -2,6 +2,7 @@ import { CodingMeetingHashTags } from "@/interfaces/coding-meetings"
 import { APIResponse } from "../api-response"
 
 export interface CreateCodingMeetingRequest {
+  member_id: number
   coding_meeting_title: string
   coding_meeting_location_id: string
   coding_meeting_location_place_name: string

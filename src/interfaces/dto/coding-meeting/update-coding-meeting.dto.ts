@@ -2,6 +2,7 @@ import { CodingMeetingHashTags } from "@/interfaces/coding-meetings"
 import { APIResponse } from "../api-response"
 
 export interface UpdateCodingMeetingRequest {
+  coding_meeting_token: string
   coding_meeting_title: string
   coding_meeting_location_id: string
   coding_meeting_location_place_name: string
@@ -12,7 +13,7 @@ export interface UpdateCodingMeetingRequest {
   coding_meeting_start_time: string
   coding_meeting_end_time: string
   coding_meeting_content: string
-  skills: CodingMeetingHashTags
+  coding_meeting_hashtags: CodingMeetingHashTags
 }
 
 export interface UpdateCodingMeetingResponse extends APIResponse {}
