@@ -25,7 +25,7 @@ export type BaseCodingMeeting = CodingMeetingAuthor &
   }
 
 export interface CodingMeetingLocation {
-  coding_meeting_location_id: number
+  coding_meeting_location_id: string
   coding_meeting_location_place_name: string
   coding_meeting_location_longitude: string
   coding_meeting_location_latitude: string
@@ -39,7 +39,9 @@ export interface CodingMeetingMemberRange {
 // detail
 export type CodingMeetingDetail = BaseCodingMeeting &
   CodingMeetingLocation &
-  CodingMeetingMemberRange
+  CodingMeetingMemberRange & {
+    coding_meeting_content: string
+  }
 
 // mock db type
 export type MockCodingMeeting = CodingMeetingDetail

@@ -21,6 +21,7 @@ export const errorMessage = {
   emptyCookie: "쿠키가 비어있습니다.",
   deleteAnswer: "답변 삭제 중 오류가 발생하였습니다.",
   deleteQuestion: "질문 삭제 중 오류가 발생하였습니다.",
+  deleteCodingMeeting: "모각코 게시물 삭제 중 오류가 발생하였습니다.",
   updateAnswer: "답변 수정 중 오류가 발생하였습니다.",
   tryAgain: "잠시 후 다시 시도해주세요.",
   saySorry: "이용에 불편을 드려 죄송해요.",

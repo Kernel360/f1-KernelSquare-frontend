@@ -1,0 +1,306 @@
+import { ApiStatus } from "@/constants/response/api"
+import type {
+  BaseCodingMeeting,
+  MockCodingMeeting,
+} from "@/interfaces/coding-meetings"
+import type { GetCodingMeetingListResponse } from "@/interfaces/dto/coding-meeting/get-coding-meetingl-list.dto"
+import { RouteMap } from "@/service/route-map"
+import { generatePagination } from "@/util/paginate"
+import { DefaultBodyType, HttpResponse, PathParams, http } from "msw"
+import mockCodingMeetings from "../db/coding-meetings"
+import type {
+  CreateCodingMeetingRequest,
+  CreateCodingMeetingResponse,
+} from "@/interfaces/dto/coding-meeting/create-coding-meeting.dto"
+import { mockUsers } from "../db/user"
+import { HttpStatusCode } from "axios"
+import dayjs from "dayjs"
+import badge_url from "@/assets/images/badges"
+import type { DeleteCodingMeetingResponse } from "@/interfaces/dto/coding-meeting/delete-coding-meeting.dto"
+import type {
+  UpdateCodingMeetingRequest,
+  UpdateCodingMeetingResponse,
+} from "@/interfaces/dto/coding-meeting/update-coding-meeting.dto"
+
+export const codingMeetingHandler = [
+  // 모든 모각코 모집글 조회
+  http.get<PathParams, DefaultBodyType, GetCodingMeetingListResponse>(
+    `${process.env.NEXT_PUBLIC_SERVER}${RouteMap.codingMeeting.getCodingMeetingList}`,
+    async ({ request }) => {
+      try {
+        const url = new URL(request.url)
+
+        const page = Number(url.searchParams.get("page"))
+        const perPage = Number(url.searchParams.get("size"))
+
+        const invalidQueries = []
+
+        // page는 0부터 시작
+        if (page < 0 || Number.isNaN(page)) invalidQueries.push("page")
+        if (perPage <= 0 || Number.isNaN(perPage)) invalidQueries.push("size")
+
+        if (invalidQueries.length) {
+          const { Code, HttpStatus } =
+            ApiStatus.CodingMeetings.getCodingMeetingList.BadRequest
+
+          return HttpResponse.json(
+            { code: Code, msg: "잘못된 요청입니다" },
+            { status: HttpStatus },
+          )
+        }
+
+        const { pages, maximumPage } = generatePagination<BaseCodingMeeting>(
+          mockCodingMeetings.map((mockReservation) => {
+            const { ...reservation } = mockReservation
+
+            return { ...reservation }
+          }),
+          { perPage: 5 },
+        )
+
+        const pagePayload = pages[page] ?? []
+
+        if (mockCodingMeetings.length && !pagePayload?.length) {
+          const { Code, HttpStatus } =
+            ApiStatus.CodingMeetings.getCodingMeetingList.NotFound
+
+          return HttpResponse.json(
+            {
+              code: Code,
+              msg: "존재하지 않는 페이지",
+            },
+            { status: HttpStatus },
+          )
+        }
+
+        const { Code, HttpStatus } =
+          ApiStatus.CodingMeetings.getCodingMeetingList.Ok
+
+        return HttpResponse.json(
+          {
+            code: Code,
+            msg: "모든 모각코 조회 성공",
+            data: {
+              pagination: {
+                total_page: maximumPage,
+                pageable: pagePayload.length,
+                is_end: page === maximumPage - 1,
+              },
+              list: [...pagePayload],
+            },
+          },
+          { status: HttpStatus },
+        )
+      } catch (error) {
+        const { Code, HttpStatus } =
+          ApiStatus.CodingMeetings.getCodingMeetingList.InternalServerError
+
+        return HttpResponse.json(
+          {
+            code: Code,
+            msg: "서버 오류",
+          },
+          { status: HttpStatus },
+        )
+      }
+    },
+  ),
+  // 모각코 모집글 생성
+  http.post<
+    PathParams,
+    CreateCodingMeetingRequest,
+    CreateCodingMeetingResponse
+  >(
+    `${process.env.NEXT_PUBLIC_SERVER}${RouteMap.codingMeeting.createCodingMeeting}`,
+    async ({ request }) => {
+      const {
+        member_id,
+        coding_meeting_title,
+        coding_meeting_location_id,
+        coding_meeting_location_place_name,
+        coding_meeting_location_longitude,
+        coding_meeting_location_latitude,
+        coding_meeting_member_lower_limit,
+        coding_meeting_member_upper_limit,
+        coding_meeting_start_time,
+        coding_meeting_end_time,
+        coding_meeting_content,
+        coding_meeting_hashtags,
+      } = await request.json()
+
+      const targetMember = mockUsers.find((member) => member.id === member_id)
+
+      if (!targetMember) {
+        return HttpResponse.json(
+          {
+            code: -1,
+            msg: "답변을 입력할 권한이 없습니다.",
+          },
+          {
+            status: HttpStatusCode.Forbidden,
+          },
+        )
+      }
+
+      const token = "CMT" + Math.random() * 10000
+
+      const newCoffeeChatPost: MockCodingMeeting = {
+        member_id: targetMember.id,
+        member_level: targetMember.level,
+        member_nickname: targetMember.nickname,
+        member_profile_url: targetMember.image_url,
+        member_level_image_url: badge_url[targetMember.level],
+        created_date: dayjs().format(),
+        coding_meeting_token: token,
+        coding_meeting_title,
+        coding_meeting_start_time,
+        coding_meeting_end_time,
+        coding_meeting_member_lower_limit,
+        coding_meeting_member_upper_limit,
+        coding_meeting_hashtags,
+        coding_meeting_location_id,
+        coding_meeting_location_place_name,
+        coding_meeting_location_latitude,
+        coding_meeting_location_longitude,
+        coding_meeting_content,
+      }
+
+      mockCodingMeetings.push(newCoffeeChatPost)
+
+      return HttpResponse.json(
+        {
+          code: 5144,
+          msg: "모각코 생성 성공",
+          data: { coding_meeting_token: token },
+        },
+        {
+          status: HttpStatusCode.Ok,
+        },
+      )
+    },
+  ),
+  // 모각코 모집글 삭제
+  http.delete<
+    { coding_meeting_token: string },
+    DefaultBodyType,
+    DeleteCodingMeetingResponse
+  >(
+    `${
+      process.env.NEXT_PUBLIC_SERVER
+    }${RouteMap.codingMeeting.deleteCodingMeeting()}`,
+    async ({ params }) => {
+      const targetPost = mockCodingMeetings.findIndex(
+        (post) => post.coding_meeting_token === params.coding_meeting_token,
+      )
+
+      mockCodingMeetings.splice(targetPost, 1)
+
+      return HttpResponse.json(
+        {
+          code: 5144,
+          msg: "모각코 삭제 성공",
+        },
+        {
+          status: HttpStatusCode.Ok,
+        },
+      )
+    },
+  ),
+  // 모각코 모집글 수정
+  http.put<
+    { coding_meeting_token: string },
+    UpdateCodingMeetingRequest,
+    UpdateCodingMeetingResponse
+  >(
+    `${
+      process.env.NEXT_PUBLIC_SERVER
+    }${RouteMap.codingMeeting.updateCodingMeeting()}`,
+    async ({ params, request }) => {
+      try {
+        const header = request.headers
+        const token = header.get("Authorization")
+
+        if (!token) {
+          const { Code, HttpStatus } = ApiStatus.QnA.updateQustion.Unauthorized
+          return HttpResponse.json(
+            {
+              code: Code,
+              msg: "인증된 유저가 아닙니다",
+            },
+            { status: HttpStatus },
+          )
+        }
+
+        const targetToken = params.coding_meeting_token
+
+        const {
+          coding_meeting_title,
+          coding_meeting_location_id,
+          coding_meeting_location_place_name,
+          coding_meeting_location_longitude,
+          coding_meeting_location_latitude,
+          coding_meeting_member_lower_limit,
+          coding_meeting_member_upper_limit,
+          coding_meeting_start_time,
+          coding_meeting_end_time,
+          coding_meeting_content,
+          coding_meeting_hashtags,
+        } = await request.json()
+
+        const targetMockIdx = mockCodingMeetings.findIndex(
+          (post) => post.coding_meeting_token === targetToken,
+        )
+
+        if (targetMockIdx < 0) {
+          const { Code, HttpStatus } =
+            ApiStatus.CodingMeetings.updateCodingMeeting.NotFound
+
+          return HttpResponse.json(
+            {
+              code: Code,
+              msg: "존재하지 않는 질문",
+            },
+            { status: HttpStatus },
+          )
+        }
+
+        mockCodingMeetings[targetMockIdx] = {
+          ...mockCodingMeetings[targetMockIdx],
+          coding_meeting_title,
+          coding_meeting_location_id,
+          coding_meeting_location_place_name,
+          coding_meeting_location_longitude,
+          coding_meeting_location_latitude,
+          coding_meeting_member_lower_limit,
+          coding_meeting_member_upper_limit,
+          coding_meeting_start_time,
+          coding_meeting_end_time,
+          coding_meeting_content,
+          coding_meeting_hashtags,
+        }
+
+        const { Code, HttpStatus } =
+          ApiStatus.CodingMeetings.updateCodingMeeting.Ok
+
+        return HttpResponse.json(
+          {
+            code: Code,
+            msg: "질문 수정 성공",
+          },
+          { status: HttpStatus },
+        )
+      } catch (error) {
+        const { Code, HttpStatus } =
+          ApiStatus.CodingMeetings.updateCodingMeeting.InternalServerError
+
+        return HttpResponse.json(
+          {
+            code: Code,
+            msg: "서버 오류",
+          },
+          { status: HttpStatus },
+        )
+      }
+    },
+  ),
+]
