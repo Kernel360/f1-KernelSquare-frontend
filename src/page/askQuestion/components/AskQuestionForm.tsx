@@ -31,10 +31,7 @@ import { revalidatePage } from "@/util/actions/revalidatePage"
 import { replaceAllMarkdownImageLink } from "@/util/editor"
 import { useDeleteImage } from "@/hooks/image/useDeleteImage"
 import { useToastUiQuestionEditor } from "@/hooks/editor/useToastuiQuestionEditor"
-import {
-  MAXIMUM_UPLOAD_IMAGE_LENGTH,
-  useToastUiEditorImageUploadHook,
-} from "@/hooks/useToastUiEditorImageUploadHook"
+import { useToastUiEditorImageUploadHook } from "@/hooks/useToastUiEditorImageUploadHook"
 import { useSelectTagList } from "@/hooks/useSelectTagList"
 import type { FieldErrors } from "react-hook-form"
 import type {
@@ -45,6 +42,7 @@ import type {
 import { useResetRecoilState } from "recoil"
 import { searchTagAtom } from "@/recoil/atoms/tag"
 import Limitation from "@/constants/limitation"
+import { errorMessage } from "@/constants/message"
 
 export interface QuestionEditorInitialValues {
   title: string
@@ -149,31 +147,28 @@ function AskQuestionForm({
       },
       onError({ errorCase }) {
         if (errorCase === "isMaximum") {
-          toast.error(
-            `이미지 파일 업로드는 최대${MAXIMUM_UPLOAD_IMAGE_LENGTH}장 가능합니다`,
-            { position: "top-center", toastId: "imageLengthError" },
-          )
+          toast.error(errorMessage.imageUploadLimit, {
+            position: "top-center",
+            toastId: "imageLengthError",
+          })
 
           return
         }
 
         if (errorCase === "isMaximumSize") {
-          toast.error(
-            `이미지 파일 업로드는 최대 ${Limitation.image.stringifyedValue} 가능합니다`,
-            {
-              position: "top-center",
-              toastId: "imageSizeError",
-            },
-          )
+          toast.error(errorMessage.imageLimitOver, {
+            position: "top-center",
+            toastId: "imageSizeError",
+          })
 
           return
         }
 
         if (errorCase === "notAllowedExtension") {
-          toast.error(
-            `이미지 파일 업로드는 ${Limitation.image.extension.toString()} 확장자만 가능합니다`,
-            { position: "top-center", toastId: "imageExtensionError" },
-          )
+          toast.error(errorMessage.notAllowedImageExtensions, {
+            position: "top-center",
+            toastId: "imageExtensionError",
+          })
 
           return
         }
@@ -310,11 +305,11 @@ function AskQuestionForm({
       const titleErrorMessage = ((type: typeof errors.title.type) => {
         switch (type) {
           case "required":
-            return "제목을 입력해주세요"
+            return errorMessage.notitle
           case "minLength":
-            return `제목은 최소 ${Limitation.title_limit_under}자 이상 가능합니다`
+            return errorMessage.underTitleLimit
           case "maxLength":
-            return `제목은 최대 ${Limitation.question_title_limit_over}자까지 가능합니다`
+            return errorMessage.questionOverTitleLimit
         }
       })(errors.title.type)
 
@@ -340,11 +335,11 @@ function AskQuestionForm({
       const contentErrorMessage = ((type: typeof errors.content.type) => {
         switch (type) {
           case "required":
-            return "본문을 입력해주세요"
+            return errorMessage.noContent
           case "minLength":
-            return `본문은 최소 ${Limitation.content_limit_under}자 이상 가능합니다`
+            return errorMessage.underContentLimit
           case "maxLength":
-            return `본문은 최대 ${Limitation.question_content_limit_over}자까지 가능합니다`
+            return errorMessage.questionContentOverLimit
         }
       })(errors.content.type)
 

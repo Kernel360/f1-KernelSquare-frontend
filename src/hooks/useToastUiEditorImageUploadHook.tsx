@@ -59,13 +59,11 @@ export const notAllowedUploadableExtension = new Error(
   { cause: "not allowed file extension" },
 )
 
-export const MAXIMUM_UPLOAD_IMAGE_LENGTH = 1
-
 export function useToastUiEditorImageUploadHook({
   atomKey,
   category,
   action,
-  maximumUploadImageLength = MAXIMUM_UPLOAD_IMAGE_LENGTH,
+  maximumUploadImageLength = Limitation.image.upload.maxLength,
   onUploadSuccess,
   onUploadError,
   onError,
