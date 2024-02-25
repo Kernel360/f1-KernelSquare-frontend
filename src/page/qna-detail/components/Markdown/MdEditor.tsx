@@ -57,6 +57,7 @@ const MdEditor: React.FC<EditorProps> = ({
       }
 
       toast.error(errorMessage.failToUploadImage, {
+        toastId: "failToUploadAnswerImage",
         position: "top-center",
       })
     },
@@ -64,13 +65,16 @@ const MdEditor: React.FC<EditorProps> = ({
       if (errorCase === "isMaximum") {
         toast.error(
           `이미지 파일 업로드는 최대 ${MAXIMUM_UPLOAD_IMAGE_LENGTH}장 가능합니다`,
-          { position: "top-center" },
+          { toastId: "overAnswerImageLimit", position: "top-center" },
         )
 
         return
       }
 
-      toast.error(errorMessage.failToUploadImage, { position: "top-center" })
+      toast.error(errorMessage.failToUploadImage, {
+        toastId: "failToUploadImage",
+        position: "top-center",
+      })
     },
   })
 

@@ -8,7 +8,6 @@ import { deleteQuestion } from "@/service/question"
 import { useQueryClient } from "@tanstack/react-query"
 import { useRouter } from "next/navigation"
 import { toast } from "react-toastify"
-import Regex from "@/constants/regex"
 import { useDeleteImage } from "@/hooks/image/useDeleteImage"
 import type { ModalState } from "@/interfaces/modal"
 import type { Question } from "@/interfaces/question"
@@ -40,7 +39,7 @@ const useHandleQuestion = () => {
       try {
         const imageUrl = findImageLinkUrlFromMarkdown(question.content)
 
-        const res = await deleteQuestion({
+        deleteQuestion({
           questionId: question.id,
         })
         openModal({
@@ -66,6 +65,7 @@ const useHandleQuestion = () => {
     }
     const onCancel = () => {
       toast.error(notificationMessage.cancleDeleteQuestion, {
+        toastId: "cancleDeleteQuestion",
         position: "top-center",
       })
     }

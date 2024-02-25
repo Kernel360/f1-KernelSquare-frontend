@@ -1,6 +1,7 @@
 export type LayoutMetaKey =
   | "/"
   | "qna"
+  | "coding-meetings"
   | "question"
   | "updateQuestion"
   | "signup"
@@ -36,6 +37,15 @@ export const layoutMeta = {
   qna: {
     title: "개발자 Q&A",
     description: "커널 스퀘어 개발자 Q&A",
+    containLayout: {
+      header: true,
+      navigation: true,
+      footer: false,
+    },
+  },
+  "coding-meetings": {
+    title: "모각코",
+    description: "모여서 각자 코딩",
     containLayout: {
       header: true,
       navigation: true,

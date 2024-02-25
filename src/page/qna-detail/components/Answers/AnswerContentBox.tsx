@@ -40,7 +40,7 @@ const AnswerContentBox: React.FC<EditAnswerProps> = ({ answer }) => {
     answerId: Number(answer.answer_id),
     questionId: Number(answer.question_id),
   })
-  const { checkNullValue } = useQnADetail({ questionId: answer.question_id })
+  const { checkNullValue } = useQnADetail()
   const { updateAnswer } = answerQueries.useUpdateAnswer()
   const queryClient = useQueryClient()
 
@@ -53,6 +53,7 @@ const AnswerContentBox: React.FC<EditAnswerProps> = ({ answer }) => {
     const submitValue = editorRef.current?.getInstance().getMarkdown()
     if (!submitValue || checkNullValue(submitValue)) {
       toast.error(errorMessage.noContent, {
+        toastId: "emptyAnswerContent",
         position: "top-center",
         autoClose: 1000,
       })
@@ -70,6 +71,7 @@ const AnswerContentBox: React.FC<EditAnswerProps> = ({ answer }) => {
     updateAnswer(updateProps, {
       onSuccess: () => {
         toast.success(successMessage.updateAnswer, {
+          toastId: "successToUpdateAnswer",
           position: "top-center",
         })
         setIsAnswerEditMode(false)

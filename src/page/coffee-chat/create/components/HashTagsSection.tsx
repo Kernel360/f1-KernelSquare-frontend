@@ -21,15 +21,20 @@ const HashTagsSection = () => {
   const handleAddHashTags = () => {
     // 빈 값 방지
     if (!hashtagRef.current?.value)
-      return toast.error(errorMessage.noValue, { position: "top-center" })
+      return toast.error(errorMessage.noValue, {
+        toastId: "emtpyHashtagValue",
+        position: "top-center",
+      })
     // 해시태그 개수 제한
     if (hashtags.length >= Limitation.hashtags_cnt)
       return toast.error(errorMessage.overHashtagCntLimit, {
+        toastId: "overHashtagCntLimit",
         position: "top-center",
       })
     // 해시태그 개수 제한
     if (hashtagRef.current?.value.length >= Limitation.hashtags_word)
       return toast.error(errorMessage.overHashtagWordLimit, {
+        toastId: "overHahtagWordLmit",
         position: "top-center",
       })
     // 특수문자 + 이모지 제출 방지
@@ -38,11 +43,13 @@ const HashTagsSection = () => {
       hashtagRef.current?.value.match(Regex.preventEmoji)
     )
       return toast.error(errorMessage.preventSpecialCharacter, {
+        toastId: "preventSpecialCharacter",
         position: "top-center",
       })
     // 중복 제출 방지
     if (hashtags.includes(hashtagRef.current.value))
       return toast.error(errorMessage.preventDuplicateValue, {
+        toastId: "preventDuplicateValue",
         position: "top-center",
       })
     setHashtags([...hashtags, hashtagRef.current?.value])

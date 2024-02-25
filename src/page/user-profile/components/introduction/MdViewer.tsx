@@ -16,7 +16,7 @@ const MdViewer: React.FC<ViewerProps> = ({ content }) => {
     <div>
       {content && (
         <div
-          className="[&_.toastui-editor-contents]:text-[16px]"
+          className="[&_.toastui-editor-contents]:text-[16px] overflow-x-hidden"
           onClick={(e) => handleViewerLink("profile")(e)}
         >
           <Viewer

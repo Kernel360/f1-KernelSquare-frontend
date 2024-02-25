@@ -17,15 +17,13 @@ export interface SubmitValueProps {
   submitValue: string | undefined
 }
 
-type useQnADetailProps = { questionId: number }
-
-const useQnADetail = ({ questionId }: useQnADetailProps) => {
+const useQnADetail = () => {
   const { ProgressModalView, setStep } = useProgressModal()
   const { user } = useClientSession()
   const { openModal } = useModal()
   const queryClient = useQueryClient()
 
-  const { createAnswer, createAnswerStatus } = answerQueries.useCreateAnswer()
+  const { createAnswer } = answerQueries.useCreateAnswer()
 
   const checkNullValue = (submitValue: string | undefined) => {
     if (typeof submitValue === undefined) return true
@@ -69,6 +67,7 @@ const useQnADetail = ({ questionId }: useQnADetailProps) => {
   }: SubmitValueProps) => {
     if (checkNullValue(submitValue)) {
       toast.error(errorMessage.noContent, {
+        toastId: "emptyAnswerContent",
         position: "top-center",
         autoClose: 1000,
       })

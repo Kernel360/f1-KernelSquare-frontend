@@ -1,5 +1,6 @@
 import { answerHandler } from "./answer"
 import { authHandler } from "./auth"
+import { codingMeetingHandler } from "./coding-meeting"
 import { coffeeChatHandler } from "./coffee-chat"
 import { memberHandler } from "./member"
 import { questionHandler } from "./question"
@@ -16,4 +17,5 @@ export const mswHandler = [
   ...coffeeChatHandler,
   ...searchHandler,
   ...techTagsHandler,
+  ...codingMeetingHandler,
 ]
