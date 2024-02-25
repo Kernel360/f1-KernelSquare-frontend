@@ -2,7 +2,6 @@
 
 import MarkdownEditor from "@/components/shared/markdown/Editor/MarkdownEditor"
 import { errorMessage } from "@/constants/message"
-import { MAXIMUM_UPLOAD_IMAGE_LENGTH } from "@/hooks/useToastUiEditorImageUploadHook"
 import {
   answerEditorAtomFamily,
   answerEditorLoadedAtomFamily,
@@ -63,10 +62,10 @@ const MdEditor: React.FC<EditorProps> = ({
     },
     onError({ errorCase }) {
       if (errorCase === "isMaximum") {
-        toast.error(
-          `이미지 파일 업로드는 최대 ${MAXIMUM_UPLOAD_IMAGE_LENGTH}장 가능합니다`,
-          { toastId: "overAnswerImageLimit", position: "top-center" },
-        )
+        toast.error(errorMessage.imageUploadLimit, {
+          toastId: "overAnswerImageLimit",
+          position: "top-center",
+        })
 
         return
       }

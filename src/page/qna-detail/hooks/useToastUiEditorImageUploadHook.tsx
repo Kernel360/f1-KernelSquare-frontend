@@ -8,6 +8,7 @@ import type { APIResponse } from "@/interfaces/dto/api-response"
 import type { UploadImagesCategory } from "@/interfaces/dto/upload/upload-images.dto"
 import { useUploadImage } from "@/hooks/image/useUploadImage"
 import { answerEditorAtomFamily } from "@/recoil/atoms/answerEditor"
+import Limitation from "@/constants/limitation"
 
 type SuccessCallbackArg = {
   file: File
@@ -49,13 +50,11 @@ export const exceedingUploadableImagesError = new Error(
   { cause: "exceeding uploadable images" },
 )
 
-export const MAXIMUM_UPLOAD_IMAGE_LENGTH = 1
-
 export function useAnswerToastUiEditorImageUploadHook({
   atomKey,
   category,
   action,
-  maximumUploadImageLength = MAXIMUM_UPLOAD_IMAGE_LENGTH,
+  maximumUploadImageLength = Limitation.image.upload.maxLength,
   onUploadSuccess,
   onUploadError,
   onError,

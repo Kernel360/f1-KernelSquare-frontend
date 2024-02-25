@@ -3,13 +3,19 @@ import Limitation from "./limitation"
 export const errorMessage = {
   notitle: "제목을 작성해주세요",
   underTitleLimit: `제목은 최소 ${Limitation.title_limit_under}자 이상이어야 합니다.`,
+  questionOverTitleLimit: `제목은 최대 ${Limitation.question_title_limit_over}자 이하이어야 합니다.`,
   noContent: "본문 내용을 작성해주세요",
   underContentLimit: `본문 내용은 최소 ${Limitation.content_limit_under}자 이상이어야 합니다.`,
+  questionContentOverLimit: `본문 내용은 최대 ${Limitation.question_content_limit_over}자 이하이어야 합니다.`,
   introductionLimitOver: `최대 ${Limitation.introduction_limit_over}자까지 입력 가능합니다.`,
   introductionLimitUnder: `최소 ${Limitation.introduction_limit_under}자 이상 입력해야 합니다.`,
-  imageLimitOver: "3MB 이하의 이미지만 업로드할 수 있습니다.",
-  imageUploadLimit: "이미지 파일 업로드는 1장만 가능합니다",
+  imageLimitOver: `${Limitation.image.stringifyedSize} 이하의 이미지만 업로드할 수 있습니다.`,
+  imageUploadLimit:
+    Limitation.image.upload.maxLength === 1
+      ? "이미지 파일 업로드는 1장만 가능합니다"
+      : `이미지 파일 업로드는 최대${Limitation.image.upload.maxLength}장까지 가능합니다.`,
   invalidImageExtension: "올바른 형식의 이미지가 아닙니다.",
+  notAllowedImageExtensions: `이미지 파일 업로드는 ${Limitation.image.extension.toString()} 확장자만 가능합니다`,
   unauthorized: "로그인 후 다시 이용해주세요",
   failToUploadImage:
     "이미지 업로드 중 오류가 발생하였습니다. 다시 시도해주세요.",
