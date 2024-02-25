@@ -7,8 +7,7 @@ import { questionEditorAtomFamily } from "@/recoil/atoms/questionEditor"
 import type { HookCallback } from "@/components/shared/toast-ui-editor/editor/EditorWrapper"
 import type { APIResponse } from "@/interfaces/dto/api-response"
 import type { UploadImagesCategory } from "@/interfaces/dto/upload/upload-images.dto"
-
-type ImageSizeUnit = "MB"
+import Limitation from "@/constants/limitation"
 
 type SuccessCallbackArg = {
   file: File
@@ -61,26 +60,6 @@ export const notAllowedUploadableExtension = new Error(
 )
 
 export const MAXIMUM_UPLOAD_IMAGE_LENGTH = 1
-export const MAXIMUN_UPLOAD_IMAGE_SIZE = {
-  target: [3, "MB"] as [number, ImageSizeUnit],
-  toString() {
-    return this.target.join("")
-  },
-  get value() {
-    const [size, unit] = this.target
-
-    switch (unit) {
-      case "MB":
-        return size * 1024 * 1024
-    }
-  },
-}
-export const ALLOW_IMAGE_TYPES = [
-  "image/jpeg",
-  "image/png",
-  "image/svg+xml",
-  "image/gif",
-]
 
 export function useToastUiEditorImageUploadHook({
   atomKey,
@@ -144,11 +123,14 @@ export function useToastUiEditorImageUploadHook({
         throw exceedingUploadableImagesError
       }
 
-      if ((blob as File)?.size && blob.size > MAXIMUN_UPLOAD_IMAGE_SIZE.value) {
+      if ((blob as File)?.size && blob.size > Limitation.image.size) {
         throw exceedingUploadableImageSizeError
       }
 
-      if ((blob as File)?.type && !ALLOW_IMAGE_TYPES.includes(blob.type)) {
+      if (
+        (blob as File)?.type &&
+        !Limitation.image.extension.isValidExtendsion(blob.type)
+      ) {
         throw notAllowedUploadableExtension
       }
 

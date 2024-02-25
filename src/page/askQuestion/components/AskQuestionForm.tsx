@@ -32,9 +32,7 @@ import { replaceAllMarkdownImageLink } from "@/util/editor"
 import { useDeleteImage } from "@/hooks/image/useDeleteImage"
 import { useToastUiQuestionEditor } from "@/hooks/editor/useToastuiQuestionEditor"
 import {
-  ALLOW_IMAGE_TYPES,
   MAXIMUM_UPLOAD_IMAGE_LENGTH,
-  MAXIMUN_UPLOAD_IMAGE_SIZE,
   useToastUiEditorImageUploadHook,
 } from "@/hooks/useToastUiEditorImageUploadHook"
 import { useSelectTagList } from "@/hooks/useSelectTagList"
@@ -46,6 +44,7 @@ import type {
 } from "./AskQuestionPageControl"
 import { useResetRecoilState } from "recoil"
 import { searchTagAtom } from "@/recoil/atoms/tag"
+import Limitation from "@/constants/limitation"
 
 export interface QuestionEditorInitialValues {
   title: string
@@ -145,6 +144,7 @@ function AskQuestionForm({
 
         toast.error("이미지 업로드에 실패했습니다", {
           position: "top-center",
+          toastId: "imageUploadError",
         })
       },
       onError({ errorCase }) {
@@ -159,7 +159,7 @@ function AskQuestionForm({
 
         if (errorCase === "isMaximumSize") {
           toast.error(
-            `이미지 파일 업로드는 최대 ${MAXIMUN_UPLOAD_IMAGE_SIZE.toString()} 가능합니다`,
+            `이미지 파일 업로드는 최대 ${Limitation.image.stringifyedValue} 가능합니다`,
             {
               position: "top-center",
               toastId: "imageSizeError",
@@ -171,9 +171,7 @@ function AskQuestionForm({
 
         if (errorCase === "notAllowedExtension") {
           toast.error(
-            `이미지 파일 업로드는 ${ALLOW_IMAGE_TYPES.map((imageType) =>
-              imageType.replace("image/", "").replace("+xml", ""),
-            ).join(", ")} 확장자만 가능합니다`,
+            `이미지 파일 업로드는 ${Limitation.image.extension.toString()} 확장자만 가능합니다`,
             { position: "top-center", toastId: "imageExtensionError" },
           )
 
@@ -239,7 +237,10 @@ function AskQuestionForm({
         return
       }
 
-      toast.error("질문 생성에 실패했습니다", { position: "bottom-center" })
+      toast.error("질문 생성에 실패했습니다", {
+        position: "bottom-center",
+        toastId: "createQuestionError",
+      })
 
       return
     }
@@ -297,7 +298,10 @@ function AskQuestionForm({
       return
     }
 
-    toast.error("질문 수정에 실패했습니다", { position: "bottom-center" })
+    toast.error("질문 수정에 실패했습니다", {
+      position: "bottom-center",
+      toastId: "updateQuestionError",
+    })
   }
 
   const onInvalid = async (errors: FieldErrors<AskQuestionFormData>) => {
@@ -308,9 +312,9 @@ function AskQuestionForm({
           case "required":
             return "제목을 입력해주세요"
           case "minLength":
-            return "제목은 최소 5자 이상 가능합니다"
+            return `제목은 최소 ${Limitation.title_limit_under}자 이상 가능합니다`
           case "maxLength":
-            return "제목은 최대 100자까지 가능합니다"
+            return `제목은 최대 ${Limitation.question_title_limit_over}자까지 가능합니다`
         }
       })(errors.title.type)
 
@@ -338,9 +342,9 @@ function AskQuestionForm({
           case "required":
             return "본문을 입력해주세요"
           case "minLength":
-            return "본문은 최소 10자 이상 가능합니다"
+            return `본문은 최소 ${Limitation.content_limit_under}자 이상 가능합니다`
           case "maxLength":
-            return "본문은 최대 10,000자까지 가능합니다"
+            return `본문은 최대 ${Limitation.question_content_limit_over}자까지 가능합니다`
         }
       })(errors.content.type)
 
@@ -410,8 +414,8 @@ function AskQuestionForm({
             placeholder="제목"
             {...register("title", {
               required: true,
-              minLength: 5,
-              maxLength: 100,
+              minLength: Limitation.title_limit_under,
+              maxLength: Limitation.question_title_limit_over,
               disabled: !loaded,
               onChange(event) {
                 updateQuestionEditorState({
@@ -456,8 +460,8 @@ function AskQuestionForm({
             spellCheck="false"
             {...register("content", {
               required: true,
-              minLength: 10,
-              maxLength: 10000,
+              minLength: Limitation.content_limit_under,
+              maxLength: Limitation.question_content_limit_over,
             })}
           />
         </div>
