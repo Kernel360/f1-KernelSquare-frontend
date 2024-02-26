@@ -8,7 +8,6 @@ export interface CreateCodingMeetingRequest {
   coding_meeting_location_place_name: string
   coding_meeting_location_longitude: string
   coding_meeting_location_latitude: string
-  coding_meeting_member_lower_limit: number
   coding_meeting_member_upper_limit: number
   coding_meeting_start_time: string
   coding_meeting_end_time: string

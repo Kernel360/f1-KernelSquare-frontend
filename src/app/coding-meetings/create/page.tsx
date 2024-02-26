@@ -1,6 +1,6 @@
 import Mentee from "@/components/shared/animation/Mentee"
 import { errorMessage } from "@/constants/message"
-import CreateCodingMeetingPage from "@/page/coding-meetings/create/CreatePage"
+import CreateCodingMeetingPage from "@/page/coding-meetings/create/CreateCodingMeetingPage"
 
 import { getServerSession } from "@/util/auth"
 import { Metadata } from "next"
