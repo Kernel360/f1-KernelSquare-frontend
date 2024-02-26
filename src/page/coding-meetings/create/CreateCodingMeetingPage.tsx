@@ -19,6 +19,7 @@ import HeadCountSection from "./components/HeadCountSection"
 import DateTimeSection from "./components/DateTimeSection"
 import { CodingMeetingQueries } from "@/react-query/coding-meeting"
 import { CodingMeetingHeadCount } from "@/recoil/atoms/coding-meeting/headcount"
+import { DirectionIcons } from "@/components/icons/Icons"
 
 interface CodingMeetingFormData {
   title: string
@@ -38,6 +39,8 @@ const CreateCodingMeetingPage = () => {
 
   const { createCodingMeetingPost } =
     CodingMeetingQueries.useCreateCodingMeetingPost()
+
+  const goToListPage = () => replace("/coding-meetings")
 
   const onSubmit = async (data: CodingMeetingFormData) => {
     if (!user)
@@ -66,7 +69,7 @@ const CreateCodingMeetingPage = () => {
             queryKey: ["chat"],
           })
 
-          replace(`/chat/${res.data.data?.coding_meeting_token}`)
+          replace(`/coding-meetings/${res.data.data?.coding_meeting_token}`)
 
           setHash_tags([])
         },
@@ -94,49 +97,60 @@ const CreateCodingMeetingPage = () => {
 
   return (
     <div className="w-[80%] m-auto">
+      <div
+        className="flex text-[#828282] items-center mt-10 cursor-pointer"
+        onClick={goToListPage}
+      >
+        <DirectionIcons.LeftLine className="text-2xl" />
+        <div className="text-base">목록 보기</div>
+      </div>
+      <div className="text-[32px] font-bold p-6">모각코 모집하기</div>
       <form
         onSubmit={handleSubmit(onSubmit, onInvalid)}
         className={`transition-opacity duration-1000 m-auto`}
       >
         {/* title section */}
-        <CodingMeetingSection className="border-transparent p-0">
+        <CodingMeetingSection>
+          <CodingMeetingSection.Label htmlFor="title">
+            제목
+          </CodingMeetingSection.Label>
           <Input
             id="title"
             spellCheck="false"
             autoComplete="off"
             fullWidth
-            className="rounded-none border-r-0 border-l-0 border-t-0 text-3xl placeholder:text-3xl mt-10  "
-            placeholder="제목"
+            className="text-base placeholder:text-base"
+            placeholder="제목을 입력해주세요"
             {...register("title", {
               required: true,
             })}
           />
         </CodingMeetingSection>
-        <Spacing size={20} />
+        <Spacing size={10} />
         <LocationSection />
-        <Spacing size={20} />
+        <Spacing size={10} />
         <HeadCountSection />
-        <Spacing size={20} />
+        <Spacing size={10} />
         <DateTimeSection />
-        <Spacing size={20} />
+        <Spacing size={10} />
         <HashTagsSection />
-        <Spacing size={20} />
+        <Spacing size={10} />
         <CodingMeetingSection>
           <CodingMeetingSection.Label htmlFor="content">
             소개글
           </CodingMeetingSection.Label>
-          <div className="relative mt-3">
+          <div className="w-full">
             <Textarea
               className="w-full min-h-[200px]"
-              placeholder="개설하고자 하는 모각코를 설명해보세요."
+              placeholder="모집글의 내용을 작성해주세요 (최대 10,000자)"
               {...register("content", {
                 required: true,
               })}
             />
           </div>
         </CodingMeetingSection>
-        <Spacing size={20} />
-        <div className="flex justify-center">
+        <Spacing size={10} />
+        <div className="flex float-right mr-5">
           <Button
             buttonTheme="primary"
             className="p-5 py-3 my-10"

@@ -65,40 +65,42 @@ const HashTagsSection = () => {
       <CodingMeetingSection.Label className="block w-max">
         해시태그 ({hashtags.length}/{Limitation.hashtags_cnt})
       </CodingMeetingSection.Label>
-      <div className="flex">
-        <Input
-          id="hashtags"
-          spellCheck="false"
-          autoComplete="off"
-          className="rounded-none border-r-0 border-l-0 border-t-0 text-xl"
-          placeholder="해시태그를 추가해보세요"
-          ref={hashtagRef}
-        />
-        <div className="flex flex-col justify-center ml-3">
-          <Button
-            buttonTheme="primary"
-            className="px-5 py-2"
-            onClick={handleAddHashTags}
-          >
-            추가
-          </Button>
-        </div>
-      </div>
-      <div className="min-h-[30px] mt-5 flex">
-        {hashtags.map((tag) => (
-          <div
-            key={tag}
-            className="px-3 mr-3 flex border-[1px] border-primary rounded items-center"
-          >
-            <div className="mr-1"># {tag}</div>
-            <div
-              className="transition-colors w-5 h-5 p-1 rounded-full border flex justify-center items-center bg-white hover:bg-secondary hover:text-white"
-              onClick={() => handleDeleteHashTags(tag)}
+      <div>
+        <div className="flex">
+          <Input
+            id="hashtags"
+            spellCheck="false"
+            autoComplete="off"
+            className="rounded-none border-r-0 border-l-0 border-t-0 text-xl"
+            placeholder="해시태그를 추가해보세요"
+            ref={hashtagRef}
+          />
+          <div className="flex flex-col justify-center ml-3">
+            <Button
+              buttonTheme="primary"
+              className="px-5 py-2"
+              onClick={handleAddHashTags}
             >
-              <Icons.Close />
-            </div>
+              추가
+            </Button>
           </div>
-        ))}
+        </div>
+        <div className="min-h-[30px] mt-5 flex flex-wrap">
+          {hashtags.map((tag) => (
+            <div
+              key={tag}
+              className="p-3 mr-3 flex border-[1px] border-slate-300 rounded-3xl items-center min-w-[50px] mb-5"
+            >
+              <div className="mr-1"># {tag}</div>
+              <div
+                className="transition-colors w-5 h-5 p-1 rounded-full border flex justify-center items-center bg-white hover:bg-secondary hover:text-white"
+                onClick={() => handleDeleteHashTags(tag)}
+              >
+                <Icons.Close />
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
     </CodingMeetingSection>
   )

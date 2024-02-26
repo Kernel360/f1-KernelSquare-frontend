@@ -22,7 +22,8 @@
       "@/*": ["./src/*"],
       "@toast-ui/editor": ["./node_modules/@toast-ui/editor/types/index.d.ts"],
       "@toast-ui/editor/types": ["./node_modules/@toast-ui/editor/types"]
-    }
+    },
+    "types": ["kakao.maps.d.ts"]
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
   "exclude": ["node_modules"]

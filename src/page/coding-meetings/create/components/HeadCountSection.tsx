@@ -18,25 +18,32 @@ const HeadCountSection = () => {
   return (
     <CodingMeetingSection>
       <CodingMeetingSection.Label className="block w-max mb-5">
-        인 원
+        모집인원
       </CodingMeetingSection.Label>
-      <Select
-        onValueChange={(cnt: string) => {
-          setHeadCount(cnt)
-        }}
-        defaultValue={HeadCountValue[0]}
-      >
-        <SelectTrigger className="w-[180px] text-center">
-          <SelectValue className="flex flex-1">{headCount}</SelectValue>
-        </SelectTrigger>
-        <SelectContent>
-          {HeadCountValue.map((cnt) => (
-            <SelectItem value={cnt} key={cnt}>
-              {cnt}
-            </SelectItem>
-          ))}
-        </SelectContent>
-      </Select>
+      <div className="w-full">
+        <div className="text-slate-500 mb-2">
+          본인 포함 최대 6명까지 가능합니다.
+        </div>
+        <Select
+          onValueChange={(cnt: string) => {
+            setHeadCount(cnt)
+          }}
+        >
+          <SelectTrigger className="w-[224px] text-center">
+            <SelectValue
+              className="flex flex-1"
+              placeholder="인원 수를 선택해주세요"
+            />
+          </SelectTrigger>
+          <SelectContent>
+            {HeadCountValue.map((cnt) => (
+              <SelectItem value={cnt} key={cnt}>
+                {cnt}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      </div>
     </CodingMeetingSection>
   )
 }
