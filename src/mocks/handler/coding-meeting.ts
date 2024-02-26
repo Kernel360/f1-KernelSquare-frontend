@@ -129,7 +129,7 @@ export const codingMeetingHandler = [
         )
       }
 
-      const token = "CMT" + Math.random() * 10000
+      const token = "CMT" + (mockCodingMeetings.length + 10000)
 
       const newCoffeeChatPost: MockCodingMeeting = {
         member_id: targetMember.id,

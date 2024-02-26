@@ -33,7 +33,7 @@ const CreateCodingMeetingPage = () => {
   const { replace } = useRouter()
   const { user } = useClientSession()
 
-  const { register, setFocus, handleSubmit } = useForm<CodingMeetingFormData>({
+  const { register, handleSubmit } = useForm<CodingMeetingFormData>({
     defaultValues: { title: "", content: "" },
   })
 
