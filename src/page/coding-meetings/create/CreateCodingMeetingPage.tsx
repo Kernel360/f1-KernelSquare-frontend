@@ -20,6 +20,14 @@ import DateTimeSection from "./components/DateTimeSection"
 import { CodingMeetingQueries } from "@/react-query/coding-meeting"
 import { CodingMeetingHeadCount } from "@/recoil/atoms/coding-meeting/headcount"
 import { DirectionIcons } from "@/components/icons/Icons"
+import {
+  CodingMeetingDay,
+  EndTime,
+  StartTime,
+} from "@/recoil/atoms/coding-meeting/dateTime"
+import dayjs from "dayjs"
+import utc from "dayjs/plugin/utc"
+import type { Time } from "@/recoil/atoms/coding-meeting/dateTime"
 
 interface CodingMeetingFormData {
   title: string
@@ -29,6 +37,9 @@ interface CodingMeetingFormData {
 const CreateCodingMeetingPage = () => {
   const [hash_tags, setHash_tags] = useRecoilState(CodingMeetingHashTagList)
   const [head_cnt, setHead_cnt] = useRecoilState(CodingMeetingHeadCount)
+  const [day, setDay] = useRecoilState(CodingMeetingDay)
+  const [startTime, setStartTime] = useRecoilState(StartTime)
+  const [endTime, setEndTime] = useRecoilState(EndTime)
   const queryClient = useQueryClient()
   const { replace } = useRouter()
   const { user } = useClientSession()
@@ -42,6 +53,19 @@ const CreateCodingMeetingPage = () => {
 
   const goToListPage = () => replace("/coding-meetings")
 
+  const DAY = dayjs(day + "").format("YYYY-MM-DD")
+  const getTime = ({ range, hour, minute }: Time) => {
+    console.log(range, hour, minute)
+    if (range === "오후") hour = Number(hour) + 12 + ""
+    if (hour && hour.length === 1) hour = "0" + hour
+    console.log(`${hour}:${minute}`)
+    return `${hour}:${minute}`
+  }
+  const formatTime = (time: string) => {
+    dayjs.extend(utc)
+    return dayjs(`${DAY} ${time}`).utc().format().slice(0, -1)
+  }
+
   const onSubmit = async (data: CodingMeetingFormData) => {
     if (!user)
       return toast.error(errorMessage.unauthorized, {
@@ -49,32 +73,31 @@ const CreateCodingMeetingPage = () => {
         position: "top-center",
       })
 
-    createCodingMeetingPost(
-      {
-        member_id: user.member_id,
-        coding_meeting_title: data.title,
-        coding_meeting_content: data.content,
-        coding_meeting_hashtags: hash_tags,
-        coding_meeting_location_id: "",
-        coding_meeting_location_place_name: "",
-        coding_meeting_location_longitude: "",
-        coding_meeting_location_latitude: "",
-        coding_meeting_member_upper_limit: Number(head_cnt),
-        coding_meeting_start_time: "",
-        coding_meeting_end_time: "",
-      },
-      {
-        onSuccess: (res) => {
-          queryClient.invalidateQueries({
-            queryKey: ["chat"],
-          })
+    const createPayload = {
+      member_id: user.member_id,
+      coding_meeting_title: data.title,
+      coding_meeting_content: data.content,
+      coding_meeting_hashtags: hash_tags,
+      coding_meeting_location_id: "",
+      coding_meeting_location_place_name: "",
+      coding_meeting_location_longitude: "",
+      coding_meeting_location_latitude: "",
+      coding_meeting_member_upper_limit: Number(head_cnt),
+      coding_meeting_start_time: formatTime(getTime(startTime)),
+      coding_meeting_end_time: formatTime(getTime(endTime)),
+    }
+    console.log("create", createPayload)
+    createCodingMeetingPost(createPayload, {
+      onSuccess: (res) => {
+        queryClient.invalidateQueries({
+          queryKey: ["chat"],
+        })
 
-          replace(`/coding-meetings/${res.data.data?.coding_meeting_token}`)
+        replace(`/coding-meetings/${res.data.data?.coding_meeting_token}`)
 
-          setHash_tags([])
-        },
+        setHash_tags([])
       },
-    )
+    })
   }
 
   const onInvalid = async (errors: FieldErrors<CodingMeetingFormData>) => {
