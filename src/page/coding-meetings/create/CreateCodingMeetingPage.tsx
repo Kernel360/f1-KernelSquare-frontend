@@ -109,7 +109,6 @@ const CreateCodingMeetingPage = () => {
         onSubmit={handleSubmit(onSubmit, onInvalid)}
         className={`transition-opacity duration-1000 m-auto`}
       >
-        {/* title section */}
         <CodingMeetingSection>
           <CodingMeetingSection.Label htmlFor="title">
             제목
