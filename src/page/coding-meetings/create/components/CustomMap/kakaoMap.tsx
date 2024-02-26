@@ -1,35 +1,89 @@
-import Head from "next/head"
-import { useEffect } from "react"
+import React, { useState, useEffect } from "react"
+import {
+  Map,
+  MapMarker,
+  MapMarkerProps,
+  useKakaoLoader,
+} from "react-kakao-maps-sdk"
 
 declare const window: typeof globalThis & {
   kakao: any
 }
 
-export default function KakaoMapPage() {
+// window.kakao
+
+interface MarkerType {
+  position: {
+    lan: number
+    lat: number
+  }
+  content: string
+}
+
+export default function KakaoMapPage({ keyword }: { keyword: string }) {
+  useKakaoLoader({
+    appkey: process.env.NEXT_PUBLIC_KAKAO_MAP!,
+    libraries: ["services"],
+  })
+  const [info, setInfo] = useState<any>()
+  const [markers, setMarkers] = useState<MarkerType[]>([])
+  const [map, setMap] = useState<kakao.maps.Map>()
+
   useEffect(() => {
-    const script = document.createElement("script")
-    script.src = `//dapi.kakao.com/v2/maps/sdk.js?appkey=${process.env.NEXT_PUBLIC_KAKAO_MAP}&autoload=false`
+    if (!map) return
+    const ps = new kakao.maps.services.Places()
 
-    document.head.appendChild(script)
+    ps.keywordSearch(keyword, (data, status, _pagination) => {
+      if (status === kakao.maps.services.Status.OK) {
+        // 검색된 장소 위치를 기준으로 지도 범위를 재설정하기위해
+        // LatLngBounds 객체에 좌표를 추가합니다
+        const bounds = new kakao.maps.LatLngBounds()
+        let markers = []
+        console.log("data", data)
 
-    script.onload = () => {
-      window.kakao.maps.load(function () {
-        const container = document.getElementById("map") // 지도를 담을 영역의 DOM 레퍼런스
-        const options = {
-          // 지도를 생성할 때 필요한 기본 옵션
-          center: new window.kakao.maps.LatLng(33.450701, 126.570667), // 지도의 중심좌표.
-          level: 3, // 지도의 레벨(확대, 축소 정도)
+        for (var i = 0; i < data.length; i++) {
+          // @ts-ignore
+          markers.push({
+            position: {
+              lat: data[i].y,
+              lng: data[i].x,
+            },
+            content: data[i].place_name,
+          })
+          // @ts-ignore
+          bounds.extend(new kakao.maps.LatLng(data[i].y, data[i].x))
         }
+        setMarkers(markers as any[])
 
-        var map = new window.kakao.maps.Map(container, options) //지도 생성 및 객체 리턴
-      })
-    }
-  }, [])
+        // 검색된 장소 위치를 기준으로 지도 범위를 재설정합니다
+        map.setBounds(bounds)
+      }
+    })
+  }, [map, keyword])
   return (
-    <div>
-      <div>
-        <div id="map" style={{ width: "400px", height: "300px" }}></div>
-      </div>
-    </div>
+    <Map // 로드뷰를 표시할 Container
+      center={{
+        lat: 37.566826,
+        lng: 126.9786567,
+      }}
+      style={{
+        width: "400px",
+        height: "300px",
+      }}
+      level={3}
+      onCreate={setMap}
+    >
+      {(markers as any[]).map((marker) => (
+        <MapMarker
+          key={`marker-${marker.content}-${marker.position.lat},${marker.position.lng}`}
+          position={marker.position}
+          onClick={() => setInfo(marker)}
+        >
+          {info && info.content === marker.content && (
+            <div style={{ color: "#000" }}>{marker.content}</div>
+          )}
+        </MapMarker>
+      ))}
+    </Map>
   )
 }

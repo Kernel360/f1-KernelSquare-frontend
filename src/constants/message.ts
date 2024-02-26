@@ -2,6 +2,7 @@ import Limitation from "./limitation"
 
 export const errorMessage = {
   notitle: "제목을 작성해주세요",
+  noSearchResult: "검색 결과가 존재하지 않습니다.",
   underTitleLimit: `제목은 최소 ${Limitation.title_limit_under}자 이상이어야 합니다.`,
   questionOverTitleLimit: `제목은 최대 ${Limitation.question_title_limit_over}자 이하이어야 합니다.`,
   noContent: "본문 내용을 작성해주세요",
@@ -24,6 +25,7 @@ export const errorMessage = {
   failToUploadIntroduction:
     "자기소개글 수정 중 오류가 발생하였습니다. 다시 시도해주세요.",
   failToVote: "투표 진행 중 오류가 발생하였습니다. 다시 시도해주세요.",
+  failToSearchLocation: "장소 검색 중 오류가 발생하였습니다.",
   emptyCookie: "쿠키가 비어있습니다.",
   deleteAnswer: "답변 삭제 중 오류가 발생하였습니다.",
   deleteQuestion: "질문 삭제 중 오류가 발생하였습니다.",
