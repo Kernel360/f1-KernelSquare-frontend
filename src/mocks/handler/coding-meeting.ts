@@ -113,20 +113,7 @@ export const codingMeetingHandler = [
   >(
     `${process.env.NEXT_PUBLIC_SERVER}${RouteMap.codingMeeting.createCodingMeeting}`,
     async ({ request }) => {
-      const {
-        member_id,
-        coding_meeting_title,
-        coding_meeting_location_id,
-        coding_meeting_location_place_name,
-        coding_meeting_location_longitude,
-        coding_meeting_location_latitude,
-        coding_meeting_member_lower_limit,
-        coding_meeting_member_upper_limit,
-        coding_meeting_start_time,
-        coding_meeting_end_time,
-        coding_meeting_content,
-        coding_meeting_hashtags,
-      } = await request.json()
+      const { member_id, ...createPayload } = await request.json()
 
       const targetMember = mockUsers.find((member) => member.id === member_id)
 
@@ -142,7 +129,7 @@ export const codingMeetingHandler = [
         )
       }
 
-      const token = "CMT" + Math.random() * 10000
+      const token = "CMT" + (mockCodingMeetings.length + 10000)
 
       const newCoffeeChatPost: MockCodingMeeting = {
         member_id: targetMember.id,
@@ -152,17 +139,7 @@ export const codingMeetingHandler = [
         member_level_image_url: badge_url[targetMember.level],
         created_date: dayjs().format(),
         coding_meeting_token: token,
-        coding_meeting_title,
-        coding_meeting_start_time,
-        coding_meeting_end_time,
-        coding_meeting_member_lower_limit,
-        coding_meeting_member_upper_limit,
-        coding_meeting_hashtags,
-        coding_meeting_location_id,
-        coding_meeting_location_place_name,
-        coding_meeting_location_latitude,
-        coding_meeting_location_longitude,
-        coding_meeting_content,
+        ...createPayload,
       }
 
       mockCodingMeetings.push(newCoffeeChatPost)
@@ -233,19 +210,7 @@ export const codingMeetingHandler = [
 
         const targetToken = params.coding_meeting_token
 
-        const {
-          coding_meeting_title,
-          coding_meeting_location_id,
-          coding_meeting_location_place_name,
-          coding_meeting_location_longitude,
-          coding_meeting_location_latitude,
-          coding_meeting_member_lower_limit,
-          coding_meeting_member_upper_limit,
-          coding_meeting_start_time,
-          coding_meeting_end_time,
-          coding_meeting_content,
-          coding_meeting_hashtags,
-        } = await request.json()
+        const updatePayload = await request.json()
 
         const targetMockIdx = mockCodingMeetings.findIndex(
           (post) => post.coding_meeting_token === targetToken,
@@ -266,17 +231,7 @@ export const codingMeetingHandler = [
 
         mockCodingMeetings[targetMockIdx] = {
           ...mockCodingMeetings[targetMockIdx],
-          coding_meeting_title,
-          coding_meeting_location_id,
-          coding_meeting_location_place_name,
-          coding_meeting_location_longitude,
-          coding_meeting_location_latitude,
-          coding_meeting_member_lower_limit,
-          coding_meeting_member_upper_limit,
-          coding_meeting_start_time,
-          coding_meeting_end_time,
-          coding_meeting_content,
-          coding_meeting_hashtags,
+          ...updatePayload,
         }
 
         const { Code, HttpStatus } =

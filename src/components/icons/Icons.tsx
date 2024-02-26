@@ -1,5 +1,4 @@
 import { IconBaseProps } from "react-icons"
-import { IoSearchOutline } from "react-icons/io5"
 import { IoIosNotifications } from "react-icons/io"
 import { FaCircle, FaRegCircle, FaUserCircle } from "react-icons/fa"
 import { LuCode2, LuInfo, LuSearchCode } from "react-icons/lu"
@@ -13,6 +12,7 @@ import {
   BiSolidRightArrow,
   BiSolidUpArrow,
 } from "react-icons/bi"
+import { GoChevronLeft } from "react-icons/go"
 import { BiSolidDownArrow } from "react-icons/bi"
 import { TbPencilPlus } from "react-icons/tb"
 import { RiArrowUpSLine } from "react-icons/ri"
@@ -36,7 +36,7 @@ type NavigationIconsKey =
   | "Notice"
   | "FaQ"
   | "MyPage"
-type DirectionIconsKey = "Up" | "Down" | "Left" | "Right"
+type DirectionIconsKey = "Up" | "Down" | "Left" | "Right" | "LeftLine"
 type CircleIconsKey = "Line" | "Fill"
 export type Icon = (props: IconBaseProps) => JSX.Element
 
@@ -100,6 +100,9 @@ export const DirectionIcons: Record<DirectionIconsKey, Icon> = {
   },
   Left(props) {
     return <BiSolidLeftArrow {...props} />
+  },
+  LeftLine(props) {
+    return <GoChevronLeft {...props} />
   },
   Right(props) {
     return <BiSolidRightArrow {...props} />

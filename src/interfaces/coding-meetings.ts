@@ -32,7 +32,6 @@ export interface CodingMeetingLocation {
 }
 
 export interface CodingMeetingMemberRange {
-  coding_meeting_member_lower_limit: number
   coding_meeting_member_upper_limit: number
 }
 

@@ -9,7 +9,6 @@ import type {
   CreateCodingMeetingResponse,
 } from "@/interfaces/dto/coding-meeting/create-coding-meeting.dto"
 import { AxiosError, AxiosResponse } from "axios"
-import { DeleteAnswerRequest } from "@/interfaces/dto/answer/delete-answer.dto"
 import {
   DeleteCodingMeetingRequest,
   DeleteCodingMeetingResponse,
@@ -36,37 +35,15 @@ export async function getCodingMeetingList(
   return res
 }
 
-export async function createCodingMeeting({
-  member_id,
-  coding_meeting_title,
-  coding_meeting_location_id,
-  coding_meeting_location_place_name,
-  coding_meeting_location_longitude,
-  coding_meeting_location_latitude,
-  coding_meeting_member_lower_limit,
-  coding_meeting_member_upper_limit,
-  coding_meeting_start_time,
-  coding_meeting_end_time,
-  coding_meeting_content,
-  coding_meeting_hashtags,
-}: CreateCodingMeetingRequest) {
+export async function createCodingMeeting(
+  createPayload: CreateCodingMeetingRequest,
+) {
   const res = await apiInstance.post<
     any,
     AxiosResponse<CreateCodingMeetingResponse>,
     CreateCodingMeetingRequest
   >(RouteMap.codingMeeting.createCodingMeeting, {
-    member_id,
-    coding_meeting_title,
-    coding_meeting_location_id,
-    coding_meeting_location_place_name,
-    coding_meeting_location_longitude,
-    coding_meeting_location_latitude,
-    coding_meeting_member_lower_limit,
-    coding_meeting_member_upper_limit,
-    coding_meeting_start_time,
-    coding_meeting_end_time,
-    coding_meeting_content,
-    coding_meeting_hashtags,
+    ...createPayload,
   })
 
   return res
@@ -95,34 +72,14 @@ export async function deleteCodingMeeting({
 
 export async function updateCodingMeeting({
   coding_meeting_token,
-  coding_meeting_title,
-  coding_meeting_location_id,
-  coding_meeting_location_place_name,
-  coding_meeting_location_longitude,
-  coding_meeting_location_latitude,
-  coding_meeting_member_lower_limit,
-  coding_meeting_member_upper_limit,
-  coding_meeting_start_time,
-  coding_meeting_end_time,
-  coding_meeting_content,
-  coding_meeting_hashtags,
+  ...updatePayload
 }: UpdateCodingMeetingRequest) {
   const res = await apiInstance.put<
     any,
     AxiosResponse<UpdateCodingMeetingResponse>,
     Omit<UpdateCodingMeetingRequest, "coding_meeting_token">
   >(RouteMap.codingMeeting.updateCodingMeeting(coding_meeting_token), {
-    coding_meeting_title,
-    coding_meeting_location_id,
-    coding_meeting_location_place_name,
-    coding_meeting_location_longitude,
-    coding_meeting_location_latitude,
-    coding_meeting_member_lower_limit,
-    coding_meeting_member_upper_limit,
-    coding_meeting_start_time,
-    coding_meeting_end_time,
-    coding_meeting_content,
-    coding_meeting_hashtags,
+    ...updatePayload,
   })
 
   return res
