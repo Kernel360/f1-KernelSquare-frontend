@@ -1,3 +1,9 @@
+import {
+  CodingMeetingMapData,
+  Marker,
+  SearchMapMarker,
+  SelectedPlace,
+} from "@/recoil/atoms/coding-meeting/mapData"
 import React, { useState, useEffect } from "react"
 import {
   Map,
@@ -5,6 +11,7 @@ import {
   MapMarkerProps,
   useKakaoLoader,
 } from "react-kakao-maps-sdk"
+import { useRecoilState } from "recoil"
 
 declare const window: typeof globalThis & {
   kakao: any
@@ -12,25 +19,20 @@ declare const window: typeof globalThis & {
 
 // window.kakao
 
-interface MarkerType {
-  position: {
-    lan: number
-    lat: number
-  }
-  content: string
-}
-
 export default function KakaoMapPage({ keyword }: { keyword: string }) {
   useKakaoLoader({
     appkey: process.env.NEXT_PUBLIC_KAKAO_MAP!,
     libraries: ["services"],
   })
-  const [info, setInfo] = useState<any>()
-  const [markers, setMarkers] = useState<MarkerType[]>([])
+  const [info, setInfo] = useState<Marker>()
+  const [markers, setMarkers] = useRecoilState(SearchMapMarker)
   const [map, setMap] = useState<kakao.maps.Map>()
+  const [mapData, setMapData] = useRecoilState(CodingMeetingMapData)
+  const [selectedPlace, setSelectedPlace] = useRecoilState(SelectedPlace)
 
   useEffect(() => {
     if (!map) return
+    if (!keyword) return
     const ps = new kakao.maps.services.Places()
 
     ps.keywordSearch(keyword, (data, status, _pagination) => {
@@ -38,9 +40,8 @@ export default function KakaoMapPage({ keyword }: { keyword: string }) {
         // 검색된 장소 위치를 기준으로 지도 범위를 재설정하기위해
         // LatLngBounds 객체에 좌표를 추가합니다
         const bounds = new kakao.maps.LatLngBounds()
-        let markers = []
-        console.log("data", data)
-
+        let markers: Marker[] = []
+        setMapData(data)
         for (var i = 0; i < data.length; i++) {
           // @ts-ignore
           markers.push({
@@ -53,8 +54,7 @@ export default function KakaoMapPage({ keyword }: { keyword: string }) {
           // @ts-ignore
           bounds.extend(new kakao.maps.LatLng(data[i].y, data[i].x))
         }
-        setMarkers(markers as any[])
-
+        setMarkers(markers)
         // 검색된 장소 위치를 기준으로 지도 범위를 재설정합니다
         map.setBounds(bounds)
       }
@@ -73,17 +73,33 @@ export default function KakaoMapPage({ keyword }: { keyword: string }) {
       level={3}
       onCreate={setMap}
     >
-      {(markers as any[]).map((marker) => (
-        <MapMarker
-          key={`marker-${marker.content}-${marker.position.lat},${marker.position.lng}`}
-          position={marker.position}
-          onClick={() => setInfo(marker)}
-        >
-          {info && info.content === marker.content && (
-            <div style={{ color: "#000" }}>{marker.content}</div>
-          )}
-        </MapMarker>
-      ))}
+      {markers &&
+        markers.map((marker) => (
+          <MapMarker
+            key={`marker-${marker.content}-${marker.position.lat},${marker.position.lng}`}
+            position={{
+              lat: Number(marker.position.lat),
+              lng: Number(marker.position.lng),
+            }}
+            onClick={() => {
+              setSelectedPlace(marker)
+              setInfo(marker)
+            }}
+          >
+            {info && info.content === marker.content && (
+              <div
+                style={{
+                  color: "#000",
+                  borderRadius: "16px",
+                  border: "none",
+                  textAlign: "center",
+                }}
+              >
+                {marker.content}
+              </div>
+            )}
+          </MapMarker>
+        ))}
     </Map>
   )
 }

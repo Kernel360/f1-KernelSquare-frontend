@@ -28,6 +28,7 @@ import {
 import dayjs from "dayjs"
 import utc from "dayjs/plugin/utc"
 import type { Time } from "@/recoil/atoms/coding-meeting/dateTime"
+import { LocationForSubmit } from "@/recoil/atoms/coding-meeting/mapData"
 
 interface CodingMeetingFormData {
   title: string
@@ -40,6 +41,7 @@ const CreateCodingMeetingPage = () => {
   const [day, setDay] = useRecoilState(CodingMeetingDay)
   const [startTime, setStartTime] = useRecoilState(StartTime)
   const [endTime, setEndTime] = useRecoilState(EndTime)
+  const [location, setLocation] = useRecoilState(LocationForSubmit)
   const queryClient = useQueryClient()
   const { replace } = useRouter()
   const { user } = useClientSession()
@@ -65,11 +67,13 @@ const CreateCodingMeetingPage = () => {
   }
 
   const onSubmit = async (data: CodingMeetingFormData) => {
+    // 사용자 권한 인증
     if (!user)
       return toast.error(errorMessage.unauthorized, {
         toastId: "unauthorizedToCreateCodingMeeting",
         position: "top-center",
       })
+    // 제목 유효성 검사
     if (data.title.length < 5)
       return toast.error(errorMessage.underTitleLimit, {
         toastId: "underCodingMeetingTitleLimit",
@@ -80,6 +84,7 @@ const CreateCodingMeetingPage = () => {
         toastId: "overCodingMeetingTitleLimit",
         position: "top-center",
       })
+    // 본문 유효성 검사
     if (data.content.length < 10)
       return toast.error(errorMessage.underContentLimit, {
         toastId: "underCodingMeetingContentLimit",
@@ -90,6 +95,20 @@ const CreateCodingMeetingPage = () => {
         toastId: "overCodingMeetingContentLimit",
         position: "top-center",
       })
+    // 장소 유효성 검사
+    if (!location)
+      return toast.error(errorMessage.noLocation, {
+        toastId: "emptyLocation",
+        position: "top-center",
+      })
+    // 인원수 유효성 검사
+    if (head_cnt === "0")
+      return toast.error(errorMessage.noHeadCnt, {
+        toastId: "emptyHeadCnt",
+        position: "top-center",
+      })
+    // 시간 유효성 검사
+    // 시간 값이 없을 경우
     if (!startTime || !endTime)
       return toast.error(errorMessage.noTime, {
         toastId: "emptyCodingMeetingTime",
@@ -97,11 +116,13 @@ const CreateCodingMeetingPage = () => {
       })
     const formattedStartTime = dayjs(`${DAY} ${getTime(startTime)}`)
     const formattedEndTime = dayjs(`${DAY} ${getTime(endTime)}`)
+    // 종료 시간이 시작 시간보다 빠를 경우
     if (formattedEndTime.isBefore(formattedStartTime))
       return toast.error(errorMessage.timeError, {
         toastId: "codingMeetingTimeError",
         position: "top-center",
       })
+    // 시작 시간이 종료 시간과 같을 경우
     if (formattedEndTime.isSame(formattedStartTime, "minute"))
       return toast.error(errorMessage.sameTime, {
         toastId: "codingMeetingSameTimeError",
@@ -113,10 +134,13 @@ const CreateCodingMeetingPage = () => {
       coding_meeting_title: data.title,
       coding_meeting_content: data.content,
       coding_meeting_hashtags: hash_tags,
-      coding_meeting_location_id: "",
-      coding_meeting_location_place_name: "",
-      coding_meeting_location_longitude: "",
-      coding_meeting_location_latitude: "",
+      coding_meeting_location_id: location?.coding_meeting_location_id,
+      coding_meeting_location_place_name:
+        location.coding_meeting_location_place_name,
+      coding_meeting_location_longitude:
+        location.coding_meeting_location_longitude,
+      coding_meeting_location_latitude:
+        location.coding_meeting_location_latitude,
       coding_meeting_member_upper_limit: Number(head_cnt),
       coding_meeting_start_time: formatTime(getTime(startTime)),
       coding_meeting_end_time: formatTime(getTime(endTime)),
@@ -135,6 +159,7 @@ const CreateCodingMeetingPage = () => {
         setDay(new Date())
         setStartTime(undefined)
         setEndTime(undefined)
+        setLocation(undefined)
       },
     })
   }

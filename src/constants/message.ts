@@ -7,6 +7,8 @@ export const errorMessage = {
   questionOverTitleLimit: `제목은 최대 ${Limitation.question_title_limit_over}자 이하이어야 합니다.`,
   noContent: "본문 내용을 작성해주세요",
   noTime: "정확한 시간대를 설정해주세요",
+  noLocation: "모임 위치를 설정해주세요",
+  noHeadCnt: "모임 인원을 설정해주세요",
   underContentLimit: `본문 내용은 최소 ${Limitation.content_limit_under}자 이상이어야 합니다.`,
   questionContentOverLimit: `본문 내용은 최대 ${Limitation.question_content_limit_over}자 이하이어야 합니다.`,
   introductionLimitOver: `최대 ${Limitation.introduction_limit_over}자까지 입력 가능합니다.`,
