@@ -4,6 +4,7 @@ import {
   SearchMapMarker,
   SelectedPlace,
 } from "@/recoil/atoms/coding-meeting/mapData"
+import { debounce } from "lodash-es"
 import React, { useState, useEffect } from "react"
 import {
   Map,
@@ -35,30 +36,34 @@ export default function KakaoMapPage({ keyword }: { keyword: string }) {
     if (!keyword) return
     const ps = new kakao.maps.services.Places()
 
-    ps.keywordSearch(keyword, (data, status, _pagination) => {
-      if (status === kakao.maps.services.Status.OK) {
-        // 검색된 장소 위치를 기준으로 지도 범위를 재설정하기위해
-        // LatLngBounds 객체에 좌표를 추가합니다
-        const bounds = new kakao.maps.LatLngBounds()
-        let markers: Marker[] = []
-        setMapData(data)
-        for (var i = 0; i < data.length; i++) {
-          // @ts-ignore
-          markers.push({
-            position: {
-              lat: data[i].y,
-              lng: data[i].x,
-            },
-            content: data[i].place_name,
-          })
-          // @ts-ignore
-          bounds.extend(new kakao.maps.LatLng(data[i].y, data[i].x))
+    const handleKeywordSearch = debounce(() => {
+      ps.keywordSearch(keyword, (data, status, _pagination) => {
+        if (status === kakao.maps.services.Status.OK) {
+          // 검색된 장소 위치를 기준으로 지도 범위를 재설정하기위해
+          // LatLngBounds 객체에 좌표를 추가합니다
+          const bounds = new kakao.maps.LatLngBounds()
+          let markers: Marker[] = []
+          setMapData(data)
+          for (var i = 0; i < data.length; i++) {
+            // @ts-ignore
+            markers.push({
+              position: {
+                lat: data[i].y,
+                lng: data[i].x,
+              },
+              content: data[i].place_name,
+            })
+            // @ts-ignore
+            bounds.extend(new kakao.maps.LatLng(data[i].y, data[i].x))
+          }
+          setMarkers(markers)
+          // 검색된 장소 위치를 기준으로 지도 범위를 재설정합니다
+          map.setBounds(bounds)
         }
-        setMarkers(markers)
-        // 검색된 장소 위치를 기준으로 지도 범위를 재설정합니다
-        map.setBounds(bounds)
-      }
-    })
+      })
+    }, 500)
+
+    handleKeywordSearch()
   }, [map, keyword])
   return (
     <Map // 로드뷰를 표시할 Container

@@ -23,7 +23,6 @@ import {
   SearchMapMarker,
   SelectedPlace,
 } from "@/recoil/atoms/coding-meeting/mapData"
-import { twJoin } from "tailwind-merge"
 
 const LocationSection = () => {
   return (
