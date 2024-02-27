@@ -29,9 +29,9 @@ const Limitation = {
   hashtags_word: 10,
   mentoring_time: 10,
   title_limit_under: 5,
-  question_title_limit_over: 100,
+  title_limit_over: 100,
   content_limit_under: 10,
-  question_content_limit_over: 10000,
+  content_limit_over: 10000,
   introduction_limit_under: 10,
   introduction_limit_over: 1000,
   image: {

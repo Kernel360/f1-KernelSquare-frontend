@@ -29,6 +29,7 @@ import dayjs from "dayjs"
 import utc from "dayjs/plugin/utc"
 import type { Time } from "@/recoil/atoms/coding-meeting/dateTime"
 import { LocationForSubmit } from "@/recoil/atoms/coding-meeting/mapData"
+import Limitation from "@/constants/limitation"
 
 interface CodingMeetingFormData {
   title: string
@@ -71,28 +72,6 @@ const CreateCodingMeetingPage = () => {
     if (!user)
       return toast.error(errorMessage.unauthorized, {
         toastId: "unauthorizedToCreateCodingMeeting",
-        position: "top-center",
-      })
-    // 제목 유효성 검사
-    if (data.title.length < 5)
-      return toast.error(errorMessage.underTitleLimit, {
-        toastId: "underCodingMeetingTitleLimit",
-        position: "top-center",
-      })
-    if (data.title.length > 100)
-      return toast.error(errorMessage.questionOverTitleLimit, {
-        toastId: "overCodingMeetingTitleLimit",
-        position: "top-center",
-      })
-    // 본문 유효성 검사
-    if (data.content.length < 10)
-      return toast.error(errorMessage.underContentLimit, {
-        toastId: "underCodingMeetingContentLimit",
-        position: "top-center",
-      })
-    if (data.content.length > 10000)
-      return toast.error(errorMessage.questionContentOverLimit, {
-        toastId: "overCodingMeetingContentLimit",
         position: "top-center",
       })
     // 장소 유효성 검사
@@ -165,10 +144,21 @@ const CreateCodingMeetingPage = () => {
   }
 
   const onInvalid = async (errors: FieldErrors<CodingMeetingFormData>) => {
-    if (errors.title?.type === "required") {
-      toast.error(errorMessage.notitle, {
-        toastId: "emptyCodingMeetingTitle",
+    if (errors?.title) {
+      const titleErrorMessage = ((type: typeof errors.title.type) => {
+        switch (type) {
+          case "required":
+            return errorMessage.notitle
+          case "minLength":
+            return errorMessage.underTitleLimit
+          case "maxLength":
+            return errorMessage.overTitleLimit
+        }
+      })(errors.title.type)
+
+      toast.error(titleErrorMessage, {
         position: "top-center",
+        toastId: "createCodingMeetingTitle",
       })
 
       window.scroll({
@@ -178,16 +168,26 @@ const CreateCodingMeetingPage = () => {
 
       return
     }
-    if (errors.content?.type === "required") {
-      toast.error(errorMessage.noContent, {
-        toastId: "emptyCodingMeetingContent",
+
+    if (errors?.content) {
+      const contentErrorMessage = ((type: typeof errors.content.type) => {
+        switch (type) {
+          case "required":
+            return errorMessage.noContent
+          case "minLength":
+            return errorMessage.underContentLimit
+          case "maxLength":
+            return errorMessage.overContentLimit
+        }
+      })(errors.content.type)
+
+      toast.error(contentErrorMessage, {
         position: "top-center",
+        toastId: "createCodingMeetingContent",
       })
       return
     }
   }
-
-  if (!user) return
 
   return (
     <div className="w-[80%] m-auto">
@@ -216,6 +216,8 @@ const CreateCodingMeetingPage = () => {
             placeholder="제목을 입력해주세요"
             {...register("title", {
               required: true,
+              minLength: Limitation.title_limit_under,
+              maxLength: Limitation.title_limit_over,
             })}
           />
         </CodingMeetingSection>
@@ -238,6 +240,8 @@ const CreateCodingMeetingPage = () => {
               placeholder="모집글의 내용을 작성해주세요 (최대 10,000자)"
               {...register("content", {
                 required: true,
+                minLength: Limitation.content_limit_under,
+                maxLength: Limitation.content_limit_over,
               })}
             />
           </div>
