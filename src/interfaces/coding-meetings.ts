@@ -20,6 +20,7 @@ export type CodingMeetingHashTags = Array<CodingMeetingHashTag>
 export type BaseCodingMeeting = CodingMeetingAuthor &
   CodingMeetingInfo & {
     coding_meeting_hashtags: CodingMeetingHashTags
+    coding_meeting_closed: boolean
   } & {
     created_date: string
   }

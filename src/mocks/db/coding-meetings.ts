@@ -10,6 +10,7 @@ const mockCodingMeetings: MockCodingMeeting[] = [
     member_profile_url: mockUsers[0].image_url,
     member_level_image_url: badge_url[mockUsers[0].level],
     created_date: "2024-02-23T04:30:00.696Z",
+    coding_meeting_closed: false,
     coding_meeting_token: "CMT00000000",
     coding_meeting_title: "봉은사역에서 모각코할 분들 모집합니다.",
     coding_meeting_start_time: "2024-02-24T07:36:53.696Z",
@@ -31,6 +32,7 @@ const mockCodingMeetings: MockCodingMeeting[] = [
     member_profile_url: mockUsers[1].image_url,
     member_level_image_url: badge_url[mockUsers[1].level],
     created_date: "2024-02-22T05:28:00.696Z",
+    coding_meeting_closed: true,
     coding_meeting_token: "CMT00000001",
     coding_meeting_title:
       "[신림] 정기 오프라인 모각코 스터디 (주2회 이상 참여 必)",
@@ -53,7 +55,8 @@ const mockCodingMeetings: MockCodingMeeting[] = [
     member_profile_url: mockUsers[2].image_url,
     member_level_image_url: badge_url[mockUsers[2].level],
     created_date: "2024-02-23T04:36:53.696Z",
-    coding_meeting_token: "CMT00000000",
+    coding_meeting_closed: false,
+    coding_meeting_token: "CMT00000002",
     coding_meeting_title:
       "[사당역] Next.js 스터디 같이 하실 초보분들 모십니다.",
     coding_meeting_start_time: "2024-02-23T07:36:53.696Z",

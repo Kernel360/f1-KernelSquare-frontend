@@ -23,11 +23,16 @@ import {
 } from "@/interfaces/dto/coding-meeting/update-coding-meeting.dto"
 
 export async function getCodingMeetingList(
-  { page = 0, size = 5 }: GetCodingMeetingListRequest = { page: 0, size: 5 },
+  { page = 0, size = 10, filter = "all" }: GetCodingMeetingListRequest = {
+    page: 0,
+    size: 10,
+    filter: "all",
+  },
 ) {
   const searchParams = new URLSearchParams()
   searchParams.set("page", `${page}`)
   searchParams.set("size", `${size}`)
+  searchParams.set("filter", filter)
 
   const res = await apiInstance.get<GetCodingMeetingListResponse>(
     `${RouteMap.codingMeeting.getCodingMeetingList}?${searchParams.toString()}`,
