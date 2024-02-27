@@ -1,5 +1,5 @@
 import { Metadata } from "next"
-import CreateCodingMeeting from "@/page/coding-meetings/create/CreatePage"
+import CreateCodingMeeting from "@/page/coding-meetings/create/CreateCodingMeetingPage"
 
 export const metadata: Metadata = {
   title: "모각코 모임 생성",
