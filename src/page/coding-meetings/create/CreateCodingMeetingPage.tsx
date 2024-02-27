@@ -55,10 +55,8 @@ const CreateCodingMeetingPage = () => {
 
   const DAY = dayjs(day + "").format("YYYY-MM-DD")
   const getTime = ({ range, hour, minute }: Time) => {
-    console.log(range, hour, minute)
     if (range === "오후") hour = Number(hour) + 12 + ""
     if (hour && hour.length === 1) hour = "0" + hour
-    console.log(`${hour}:${minute}`)
     return `${hour}:${minute}`
   }
   const formatTime = (time: string) => {
@@ -70,6 +68,43 @@ const CreateCodingMeetingPage = () => {
     if (!user)
       return toast.error(errorMessage.unauthorized, {
         toastId: "unauthorizedToCreateCodingMeeting",
+        position: "top-center",
+      })
+    if (data.title.length < 5)
+      return toast.error(errorMessage.underTitleLimit, {
+        toastId: "underCodingMeetingTitleLimit",
+        position: "top-center",
+      })
+    if (data.title.length > 100)
+      return toast.error(errorMessage.questionOverTitleLimit, {
+        toastId: "overCodingMeetingTitleLimit",
+        position: "top-center",
+      })
+    if (data.content.length < 10)
+      return toast.error(errorMessage.underContentLimit, {
+        toastId: "underCodingMeetingContentLimit",
+        position: "top-center",
+      })
+    if (data.content.length > 10000)
+      return toast.error(errorMessage.questionContentOverLimit, {
+        toastId: "overCodingMeetingContentLimit",
+        position: "top-center",
+      })
+    if (!startTime || !endTime)
+      return toast.error(errorMessage.noTime, {
+        toastId: "emptyCodingMeetingTime",
+        position: "top-center",
+      })
+    const formattedStartTime = dayjs(`${DAY} ${getTime(startTime)}`)
+    const formattedEndTime = dayjs(`${DAY} ${getTime(endTime)}`)
+    if (formattedEndTime.isBefore(formattedStartTime))
+      return toast.error(errorMessage.timeError, {
+        toastId: "codingMeetingTimeError",
+        position: "top-center",
+      })
+    if (formattedEndTime.isSame(formattedStartTime, "minute"))
+      return toast.error(errorMessage.sameTime, {
+        toastId: "codingMeetingSameTimeError",
         position: "top-center",
       })
 
@@ -90,12 +125,16 @@ const CreateCodingMeetingPage = () => {
     createCodingMeetingPost(createPayload, {
       onSuccess: (res) => {
         queryClient.invalidateQueries({
-          queryKey: ["chat"],
+          queryKey: ["codingMeeting"],
         })
 
         replace(`/coding-meetings/${res.data.data?.coding_meeting_token}`)
 
         setHash_tags([])
+        setHead_cnt("3")
+        setDay(new Date())
+        setStartTime(undefined)
+        setEndTime(undefined)
       },
     })
   }
@@ -112,6 +151,13 @@ const CreateCodingMeetingPage = () => {
         behavior: "smooth",
       })
 
+      return
+    }
+    if (errors.content?.type === "required") {
+      toast.error(errorMessage.noContent, {
+        toastId: "emptyCodingMeetingContent",
+        position: "top-center",
+      })
       return
     }
   }

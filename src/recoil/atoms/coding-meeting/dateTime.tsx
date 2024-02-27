@@ -8,12 +8,12 @@ export type Time = {
   minute: string
 }
 
-export const StartTime = atom<Time>({
+export const StartTime = atom<Time | undefined>({
   key: "coding-meeting-start-time-atom",
   default: undefined,
 })
 
-export const EndTime = atom<Time>({
+export const EndTime = atom<Time | undefined>({
   key: "coding-meeting-end-time-atom",
   default: undefined,
 })
