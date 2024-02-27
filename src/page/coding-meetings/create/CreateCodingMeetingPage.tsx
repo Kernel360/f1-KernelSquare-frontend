@@ -62,6 +62,7 @@ const CreateCodingMeetingPage = () => {
         coding_meeting_member_upper_limit: Number(head_cnt),
         coding_meeting_start_time: "",
         coding_meeting_end_time: "",
+        coding_meeting_closed: false,
       },
       {
         onSuccess: (res) => {
