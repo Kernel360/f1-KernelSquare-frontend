@@ -178,9 +178,9 @@ export const codingMeetingHandler = [
         member_profile_url: targetMember.image_url,
         member_level_image_url: badge_url[targetMember.level],
         created_date: dayjs().format(),
-        coding_meeting_closed: false,
         coding_meeting_token: token,
         ...createPayload,
+        coding_meeting_closed: false,
       }
 
       mockCodingMeetings.push(newCoffeeChatPost)
