@@ -14,12 +14,14 @@ interface EnterCoffeeChatProps {
   articleTitle: string
   roomId: number | null
   startTime: string | null
+  reservation_id: number
 }
 
 function EnterCoffeeChat({
   articleTitle,
   roomId,
   startTime,
+  reservation_id,
 }: EnterCoffeeChatProps) {
   const { user } = useClientSession()
 
@@ -41,7 +43,7 @@ function EnterCoffeeChat({
     urlSearchParams.set("title", articleTitle)
 
     const popup = window.open(
-      `/chat/room/${roomId}?${urlSearchParams.toString()}`,
+      `/chat/room/${reservation_id}?${urlSearchParams.toString()}`,
       "kernel_chat_window",
       "width=500, height=600",
     )
