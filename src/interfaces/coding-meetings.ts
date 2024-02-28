@@ -44,7 +44,9 @@ export type CodingMeetingDetail = BaseCodingMeeting &
   }
 
 // mock db type
-export type MockCodingMeeting = CodingMeetingDetail
+export type MockCodingMeeting = CodingMeetingDetail & {
+  comments: Array<CodingMeetingComment>
+}
 
 // comment
 export type CodingMeetingCommentAuthor = CodingMeetingAuthor

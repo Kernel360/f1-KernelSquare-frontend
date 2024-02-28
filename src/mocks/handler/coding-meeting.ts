@@ -181,6 +181,7 @@ export const codingMeetingHandler = [
         coding_meeting_token: token,
         ...createPayload,
         coding_meeting_closed: false,
+        comments: [],
       }
 
       mockCodingMeetings.push(newCoffeeChatPost)

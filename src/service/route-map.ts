@@ -13,6 +13,7 @@ export class RouteMap {
     images: "images",
     techTags: "techs",
     codingMeetings: "coding-meetings",
+    codingMeetingComments: "coding-meeting-comments",
   }
   private static routeGroupBaseURL = {
     member: `${RouteMap.baseURL}/${RouteMap.prefix.member}`,
@@ -26,6 +27,7 @@ export class RouteMap {
     images: `${RouteMap.baseURL}/${RouteMap.prefix.images}`,
     techTags: `${RouteMap.baseURL}/${RouteMap.prefix.techTags}`,
     codingMeetings: `${RouteMap.baseURL}/${RouteMap.prefix.codingMeetings}`,
+    codingMeetingComments: `${RouteMap.baseURL}/${RouteMap.prefix.codingMeetingComments}`,
   }
 
   static techTags = {
@@ -357,6 +359,11 @@ export class RouteMap {
    * createCodingMeeting: 모각코 생성 (post)
    * updateCodingMeeting: 모각코 수정 (put)
    * deleteCodingMeeting: 모각코 삭제 (delete)
+   *
+   * getCodingMeetingCommentList: 특정 모각코 모든 댓글 조회(get)
+   * createCodingMeetingComment: 특정 모각코 댓글 생성(post)
+   * updateCodingMeetingComment: 특정 모각코 댓글 수정(put)
+   * deleteCodingMeetingComment: 특정 모각코 댓글 삭제(delete)
    */
   static codingMeeting = {
     getCodingMeetingList: `${RouteMap.routeGroupBaseURL.codingMeetings}`,
@@ -369,6 +376,22 @@ export class RouteMap {
     deleteCodingMeeting(coding_meeting_token?: string) {
       return `${RouteMap.routeGroupBaseURL.codingMeetings}/${
         coding_meeting_token ?? ":coding_meeting_token"
+      }`
+    },
+    getCodingMeetingCommentList(coding_meeting_token?: string) {
+      return `${RouteMap.routeGroupBaseURL.codingMeetingComments}/${
+        coding_meeting_token ?? ":coding_meeting_token"
+      }`
+    },
+    createCodingMeetingComment: `${RouteMap.routeGroupBaseURL.codingMeetingComments}`,
+    updateCodingMeetingComment(coding_meeting_comment_token?: string) {
+      return `${RouteMap.routeGroupBaseURL.codingMeetingComments}/${
+        coding_meeting_comment_token ?? ":coding_meeting_comment_token"
+      }`
+    },
+    deleteCodingMeetingComment(coding_meeting_comment_token?: string) {
+      return `${RouteMap.routeGroupBaseURL.codingMeetingComments}/${
+        coding_meeting_comment_token ?? ":coding_meeting_comment_token"
       }`
     },
   }

@@ -23,6 +23,7 @@ const mockCodingMeetings: MockCodingMeeting[] = [
     coding_meeting_location_longitude: "127.0631257",
     coding_meeting_content:
       "안녕하세요<br/>저는 아직 6개월 밖에 되지 않은 웹 개발자 입니다.<br/>주말동안 아무것도 안하게 되니 서로 정보공유 하며 공부할겸 의정부에서 모각코를 해볼까 합니다.<br/>관심있는 분들은 간단한 자기 소개 및 참여 의사 댓글에 남겨주시면 감사하겠습니다!!..🫡",
+    comments: [],
   },
   {
     member_id: mockUsers[1].id,
@@ -45,6 +46,7 @@ const mockCodingMeetings: MockCodingMeeting[] = [
     coding_meeting_location_longitude: "126.9297962",
     coding_meeting_content:
       "신림역 주변 카페에서 같이 모여서<br/>개발 관련 공부하실 분들 모집합니다!!<br/>아무래도 혼자 하다보면 딴 짓🤦하게 되거나 깊게 집중이 잘 안되니<br/>서로 촉매제가 되었으면 좋겠습니다!!<br/>와서 공부할 의지 있는 분만💻",
+    comments: [],
   },
   {
     member_id: mockUsers[2].id,
@@ -72,6 +74,7 @@ const mockCodingMeetings: MockCodingMeeting[] = [
     coding_meeting_location_longitude: "126.9833049",
     coding_meeting_content:
       "Next.js 학습 후 포트폴리오용/스킬업을 위한 나만의 프로젝트를 완성하는 오프라인 스터디원을 모집합니다.<br/>이번 모임을 통해 앞으로 포폴/스킬업을 위해 Next.js로 만들 프로젝트에 대한 계획을 발표하고 이후 추가 일정을 잡아 코드 리뷰 및 vercel 등에 배포 후 서로 피드백을 주는 시간을 가지면 좋을 것 같습니다. <br/>예상 스터디 일정(횟수) : 최소 5회 + α<br/> 아래 채팅방 들어오셔서 간단한 자기소개 부탁드립니다 <br/>'카카오톡 오픈채팅방 링크' <br/> ",
+    comments: [],
   },
 ]
 

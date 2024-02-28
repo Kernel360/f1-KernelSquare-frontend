@@ -20,6 +20,22 @@ import {
   UpdateCodingMeetingRequest,
   UpdateCodingMeetingResponse,
 } from "@/interfaces/dto/coding-meeting/update-coding-meeting.dto"
+import {
+  GetCodingMeetingCommentListRequest,
+  GetCodingMeetingCommentListResponse,
+} from "@/interfaces/dto/coding-meeting/comment/get-coding-meeting-comment-list.dto"
+import {
+  CreateCodingMeetingCommentRequest,
+  CreateCodingMeetingCommentResponse,
+} from "@/interfaces/dto/coding-meeting/comment/create-coding-meeting-comment.dto"
+import {
+  UpdateCodingMeetingCommentRequest,
+  UpdateCodingMeetingCommentResponse,
+} from "@/interfaces/dto/coding-meeting/comment/update-coding-meeting-comment.dto"
+import {
+  DeleteCodingMeetingCommentRequest,
+  DeleteCodingMeetingCommentResponse,
+} from "@/interfaces/dto/coding-meeting/comment/delete-coding-meeting-comment.dto"
 
 export async function getCodingMeetingList(
   { page = 0, size = 10, filter = "all" }: GetCodingMeetingListRequest = {
@@ -86,6 +102,67 @@ export async function updateCodingMeeting({
   >(RouteMap.codingMeeting.updateCodingMeeting(coding_meeting_token), {
     ...updatePayload,
   })
+
+  return res
+}
+
+// comment
+export async function getCodingMeetingComments({
+  coding_meeting_token,
+}: GetCodingMeetingCommentListRequest) {
+  const res = await apiInstance.get<GetCodingMeetingCommentListResponse>(
+    RouteMap.codingMeeting.getCodingMeetingCommentList(coding_meeting_token),
+  )
+
+  return res
+}
+
+export async function createCodingMeetingComment({
+  member_id,
+  coding_meeting_comment_token,
+  coding_meeting_comment_content,
+}: CreateCodingMeetingCommentRequest) {
+  const res = await apiInstance.post<
+    any,
+    AxiosResponse<CreateCodingMeetingCommentResponse>,
+    CreateCodingMeetingCommentRequest
+  >(RouteMap.codingMeeting.createCodingMeetingComment, {
+    member_id,
+    coding_meeting_comment_token,
+    coding_meeting_comment_content,
+  })
+
+  return res
+}
+
+export async function updateCodingMeetingComment({
+  coding_meeting_comment_token,
+  coding_meeting_comment_content,
+}: UpdateCodingMeetingCommentRequest) {
+  const res = await apiInstance.post<
+    any,
+    AxiosResponse<UpdateCodingMeetingCommentResponse>,
+    Pick<UpdateCodingMeetingCommentRequest, "coding_meeting_comment_content">
+  >(
+    RouteMap.codingMeeting.updateCodingMeetingComment(
+      coding_meeting_comment_token,
+    ),
+    {
+      coding_meeting_comment_content,
+    },
+  )
+
+  return res
+}
+
+export async function deleteCodingMeetingComment({
+  coding_meeting_comment_token,
+}: DeleteCodingMeetingCommentRequest) {
+  const res = await apiInstance.delete<DeleteCodingMeetingCommentResponse>(
+    RouteMap.codingMeeting.deleteCodingMeetingComment(
+      coding_meeting_comment_token,
+    ),
+  )
 
   return res
 }
