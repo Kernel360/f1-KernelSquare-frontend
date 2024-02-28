@@ -10,8 +10,7 @@ type BaseRequest = Omit<
   | "created_date"
   | "coding_meeting_token"
   | "coding_meeting_closed"
-> &
-  Pick<CodingMeetingAuthor, "member_id">
+>
 
 export interface CreateCodingMeetingRequest extends BaseRequest {}
 
