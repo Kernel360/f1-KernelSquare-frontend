@@ -6,8 +6,8 @@ import "./Calendar.css"
 import { getDay } from "@/util/getDate"
 import dayjs from "dayjs"
 import Holidays from "@/constants/holidays"
-import { Value } from "./Calendar.types"
 import { Dispatch, SetStateAction } from "react"
+import { Value } from "@/interfaces/calendar"
 
 type CustomCalendarProps = {
   date: Value
@@ -39,7 +39,7 @@ const CustomCalendar = ({ date, setDate }: CustomCalendarProps) => {
   }
 
   return (
-    <div className="react-calendar">
+    <div className="react-calendar min-h-[450px]">
       <Calendar
         locale="ko"
         onChange={setDate}

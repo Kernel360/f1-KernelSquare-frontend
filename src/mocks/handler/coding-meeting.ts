@@ -24,6 +24,7 @@ import type {
   UpdateCodingMeetingRequest,
   UpdateCodingMeetingResponse,
 } from "@/interfaces/dto/coding-meeting/update-coding-meeting.dto"
+import jwt, { DecodeOptions, JwtPayload, Secret } from "jsonwebtoken"
 
 export const codingMeetingHandler = [
   // 모든 모각코 모집글 조회
@@ -153,9 +154,29 @@ export const codingMeetingHandler = [
   >(
     `${process.env.NEXT_PUBLIC_SERVER}${RouteMap.codingMeeting.createCodingMeeting}`,
     async ({ request }) => {
-      const { member_id, ...createPayload } = await request.json()
+      const { ...createPayload } = await request.json()
 
-      const targetMember = mockUsers.find((member) => member.id === member_id)
+      const header = request.headers
+      const header_token = header.get("Authorization")
+
+      if (!header_token) {
+        const { Code, HttpStatus } = ApiStatus.QnA.updateQustion.Unauthorized
+        return HttpResponse.json(
+          {
+            code: Code,
+            msg: "인증된 유저가 아닙니다",
+          },
+          { status: HttpStatus },
+        )
+      }
+
+      const decoded_token = jwt.decode(header_token) as JwtPayload & {
+        id: number
+      }
+
+      const targetMember = mockUsers.find(
+        (user) => user.id === decoded_token.id,
+      )
 
       if (!targetMember) {
         return HttpResponse.json(

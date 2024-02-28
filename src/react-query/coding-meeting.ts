@@ -12,7 +12,7 @@ const useCreateCodingMeetingPost = () => {
     isError: isCodingMeetingPostError,
     isSuccess: isCodingMeetingPostSuccess,
   } = useMutation({
-    mutationKey: [queryKey.chat],
+    mutationKey: [queryKey.codingMeeting],
     mutationFn: (createPayload: CreateCodingMeetingRequest) =>
       createCodingMeeting({
         ...createPayload,

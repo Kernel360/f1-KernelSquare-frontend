@@ -18,6 +18,7 @@ import { TbPencilPlus } from "react-icons/tb"
 import { RiArrowUpSLine } from "react-icons/ri"
 import { MdClose } from "react-icons/md"
 import { MdComputer } from "react-icons/md"
+import { FaMapMarkerAlt } from "react-icons/fa"
 
 type IconsKey =
   | "Search"
@@ -29,6 +30,7 @@ type IconsKey =
   | "Search"
   | "Close"
   | "Info"
+  | "MapMarker"
 type NavigationIconsKey =
   | "QnA"
   | "Chat"
@@ -67,6 +69,9 @@ export const Icons: Record<IconsKey, Icon> = {
   },
   Info(props) {
     return <LuInfo {...props} />
+  },
+  MapMarker(props) {
+    return <FaMapMarkerAlt {...props} />
   },
 }
 

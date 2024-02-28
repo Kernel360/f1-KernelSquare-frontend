@@ -309,7 +309,7 @@ function AskQuestionForm({
           case "minLength":
             return errorMessage.underTitleLimit
           case "maxLength":
-            return errorMessage.questionOverTitleLimit
+            return errorMessage.overTitleLimit
         }
       })(errors.title.type)
 
@@ -339,7 +339,7 @@ function AskQuestionForm({
           case "minLength":
             return errorMessage.underContentLimit
           case "maxLength":
-            return errorMessage.questionContentOverLimit
+            return errorMessage.overContentLimit
         }
       })(errors.content.type)
 
@@ -410,7 +410,7 @@ function AskQuestionForm({
             {...register("title", {
               required: true,
               minLength: Limitation.title_limit_under,
-              maxLength: Limitation.question_title_limit_over,
+              maxLength: Limitation.title_limit_over,
               disabled: !loaded,
               onChange(event) {
                 updateQuestionEditorState({
@@ -456,7 +456,7 @@ function AskQuestionForm({
             {...register("content", {
               required: true,
               minLength: Limitation.content_limit_under,
-              maxLength: Limitation.question_content_limit_over,
+              maxLength: Limitation.content_limit_over,
             })}
           />
         </div>
