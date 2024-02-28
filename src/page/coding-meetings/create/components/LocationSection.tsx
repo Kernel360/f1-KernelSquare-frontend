@@ -15,8 +15,8 @@ import {
   DialogTrigger,
 } from "@/components/ui/Dialog"
 import KakaoMapPage from "./CustomMap/kakaoMap"
-import { useEffect, useState } from "react"
-import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil"
+import { useEffect, useLayoutEffect, useState } from "react"
+import { useRecoilState, useSetRecoilState } from "recoil"
 import {
   CodingMeetingMapData,
   LocationForSubmit,
@@ -24,9 +24,23 @@ import {
   SelectedPlace,
 } from "@/recoil/atoms/coding-meeting/mapData"
 import { twJoin } from "tailwind-merge"
+import { LocationSectionProps } from "../CreateCodingMeetingPage.types"
 
-const LocationSection = () => {
-  const location = useRecoilValue(LocationForSubmit)
+const LocationSection = ({ initialLocation }: LocationSectionProps) => {
+  const [location, setLocation] = useRecoilState(LocationForSubmit)
+
+  useLayoutEffect(() => {
+    if (initialLocation)
+      setLocation({
+        coding_meeting_location_id: initialLocation.coding_meeting_location_id,
+        coding_meeting_location_place_name:
+          initialLocation.coding_meeting_location_place_name,
+        coding_meeting_location_latitude:
+          initialLocation.coding_meeting_location_latitude,
+        coding_meeting_location_longitude:
+          initialLocation.coding_meeting_location_longitude,
+      })
+  }, [])
 
   return (
     <CodingMeetingSection>

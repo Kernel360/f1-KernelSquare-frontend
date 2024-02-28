@@ -1,6 +1,6 @@
 "use client"
 
-import { useRecoilState } from "recoil"
+import { useSetRecoilState } from "recoil"
 import CodingMeetingSection from "./CodingMeetingSection"
 import {
   Select,
@@ -10,11 +10,17 @@ import {
   SelectValue,
 } from "@/components/ui/Select"
 import { CodingMeetingHeadCount } from "@/recoil/atoms/coding-meeting/headcount"
+import { HeadCountValue } from "@/constants/select"
+import { useLayoutEffect } from "react"
+import type { HeadCountSectionProps } from "../CreateCodingMeetingPage.types"
 
-const HeadCountValue = ["2", "3", "4", "5", "6"]
+const HeadCountSection = ({ initialCnt }: HeadCountSectionProps) => {
+  const setHeadCount = useSetRecoilState(CodingMeetingHeadCount)
 
-const HeadCountSection = () => {
-  const [headCount, setHeadCount] = useRecoilState(CodingMeetingHeadCount)
+  useLayoutEffect(() => {
+    if (initialCnt) setHeadCount(initialCnt)
+  }, [])
+
   return (
     <CodingMeetingSection>
       <CodingMeetingSection.Label className="block w-max mb-5">
@@ -32,7 +38,8 @@ const HeadCountSection = () => {
           <SelectTrigger className="w-[224px] text-center">
             <SelectValue
               className="flex flex-1"
-              placeholder="인원 수를 선택해주세요"
+              defaultValue={initialCnt ? initialCnt : undefined}
+              placeholder={initialCnt ? initialCnt : "인원 수를 선택해주세요"}
             />
           </SelectTrigger>
           <SelectContent>

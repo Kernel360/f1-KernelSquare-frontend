@@ -30,13 +30,25 @@ import utc from "dayjs/plugin/utc"
 import type { Time } from "@/recoil/atoms/coding-meeting/dateTime"
 import { LocationForSubmit } from "@/recoil/atoms/coding-meeting/mapData"
 import Limitation from "@/constants/limitation"
+import type { CodingMeetingDetailPayload } from "@/interfaces/dto/coding-meeting/get-coding-meeting-detail.dto"
+import NotFound from "@/app/not-found"
+
+interface CreateCodingMeetingPageProps {
+  editMode: "create" | "update"
+  initialValues?: CodingMeetingDetailPayload
+  coding_meeting_token?: string
+}
 
 interface CodingMeetingFormData {
   title: string
   content: string
 }
 
-const CreateCodingMeetingPage = () => {
+const CreateCodingMeetingPage = ({
+  editMode,
+  initialValues,
+  coding_meeting_token,
+}: CreateCodingMeetingPageProps) => {
   const [hash_tags, setHash_tags] = useRecoilState(CodingMeetingHashTagList)
   const [head_cnt, setHead_cnt] = useRecoilState(CodingMeetingHeadCount)
   const [day, setDay] = useRecoilState(CodingMeetingDay)
@@ -46,13 +58,20 @@ const CreateCodingMeetingPage = () => {
   const queryClient = useQueryClient()
   const { replace } = useRouter()
   const { user } = useClientSession()
-
-  const { register, handleSubmit } = useForm<CodingMeetingFormData>({
-    defaultValues: { title: "", content: "" },
-  })
+  const { register, handleSubmit } = useForm<CodingMeetingFormData>(
+    initialValues
+      ? {
+          defaultValues: {
+            title: initialValues.coding_meeting_title,
+            content: initialValues.coding_meeting_content,
+          },
+        }
+      : {},
+  )
 
   const { createCodingMeetingPost } =
-    CodingMeetingQueries.useCreateCodingMeetingPost()
+    CodingMeetingQueries.useCreateCodingMeeting()
+  const { updateCodingMeeting } = CodingMeetingQueries.useUpdateCodingMeeting()
 
   const goToListPage = () => replace("/coding-meetings")
 
@@ -108,8 +127,7 @@ const CreateCodingMeetingPage = () => {
         position: "top-center",
       })
 
-    const createPayload = {
-      member_id: user.member_id,
+    const payload = {
       coding_meeting_title: data.title,
       coding_meeting_content: data.content,
       coding_meeting_hashtags: hash_tags,
@@ -124,25 +142,70 @@ const CreateCodingMeetingPage = () => {
       coding_meeting_start_time: formatTime(getTime(startTime)),
       coding_meeting_end_time: formatTime(getTime(endTime)),
     }
-    console.log("create", createPayload)
-    createCodingMeetingPost(createPayload, {
-      onSuccess: (res) => {
-        queryClient.invalidateQueries({
-          queryKey: ["codingMeeting"],
-        })
+    console.log("create", payload)
 
-        replace(`/coding-meetings/${res.data.data?.coding_meeting_token}`)
+    if (editMode === "create") {
+      createCodingMeetingPost(payload, {
+        onSuccess: (res) => {
+          queryClient.invalidateQueries({
+            queryKey: ["codingMeeting"],
+          })
 
-        setHash_tags([])
-        setHead_cnt("3")
-        setDay(new Date())
-        setStartTime(undefined)
-        setEndTime(undefined)
-        setLocation(undefined)
-      },
-    })
+          replace(`/coding-meetings/${res.data.data?.coding_meeting_token}`)
+
+          setHash_tags([])
+          setHead_cnt("3")
+          setDay(new Date())
+          setStartTime({
+            range: "",
+            hour: "",
+            minute: "",
+          })
+          setEndTime({
+            range: "",
+            hour: "",
+            minute: "",
+          })
+          setLocation(undefined)
+        },
+      })
+    }
+
+    if (!coding_meeting_token) {
+      return NotFound()
+    }
+
+    if (editMode === "update") {
+      const editPayload = {
+        ...payload,
+        coding_meeting_token,
+      }
+      updateCodingMeeting(editPayload, {
+        onSuccess: (res) => {
+          queryClient.invalidateQueries({
+            queryKey: ["codingMeeting"],
+          })
+
+          replace(`/coding-meetings/${coding_meeting_token}`)
+
+          setHash_tags([])
+          setHead_cnt("3")
+          setDay(new Date())
+          setStartTime({
+            range: "",
+            hour: "",
+            minute: "",
+          })
+          setEndTime({
+            range: "",
+            hour: "",
+            minute: "",
+          })
+          setLocation(undefined)
+        },
+      })
+    }
   }
-
   const onInvalid = async (errors: FieldErrors<CodingMeetingFormData>) => {
     if (errors?.title) {
       const titleErrorMessage = ((type: typeof errors.title.type) => {
@@ -222,13 +285,43 @@ const CreateCodingMeetingPage = () => {
           />
         </CodingMeetingSection>
         <Spacing size={10} />
-        <LocationSection />
+        <LocationSection
+          initialLocation={
+            initialValues && {
+              coding_meeting_location_id:
+                initialValues.coding_meeting_location_id,
+              coding_meeting_location_place_name:
+                initialValues.coding_meeting_location_place_name,
+              coding_meeting_location_latitude:
+                initialValues.coding_meeting_location_latitude,
+              coding_meeting_location_longitude:
+                initialValues.coding_meeting_location_longitude,
+            }
+          }
+        />
         <Spacing size={10} />
-        <HeadCountSection />
+        <HeadCountSection
+          initialCnt={
+            initialValues &&
+            initialValues?.coding_meeting_member_upper_limit + ""
+          }
+        />
         <Spacing size={10} />
-        <DateTimeSection />
+        <DateTimeSection
+          initialDateTime={
+            initialValues && {
+              coding_meeting_start_time:
+                initialValues?.coding_meeting_start_time,
+              coding_meeting_end_time: initialValues?.coding_meeting_end_time,
+            }
+          }
+        />
         <Spacing size={10} />
-        <HashTagsSection />
+        <HashTagsSection
+          initialHashTags={
+            initialValues && initialValues?.coding_meeting_hashtags
+          }
+        />
         <Spacing size={10} />
         <CodingMeetingSection>
           <CodingMeetingSection.Label htmlFor="content">
