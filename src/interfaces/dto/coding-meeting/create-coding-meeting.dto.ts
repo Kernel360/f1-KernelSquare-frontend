@@ -6,7 +6,10 @@ import { APIResponse } from "../api-response"
 
 type BaseRequest = Omit<
   CodingMeetingDetail,
-  keyof CodingMeetingAuthor | "created_date" | "coding_meeting_token"
+  | keyof CodingMeetingAuthor
+  | "created_date"
+  | "coding_meeting_token"
+  | "coding_meeting_closed"
 > &
   Pick<CodingMeetingAuthor, "member_id">
 

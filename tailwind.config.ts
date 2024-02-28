@@ -23,6 +23,7 @@ const config = {
         toastify: { max: "480px" },
         editor: { min: "480px" },
         lgDevice: { min: "992px" },
+        tablet: { min: "834px" },
       },
       colors: {
         colorsGray: "#ced4da",
