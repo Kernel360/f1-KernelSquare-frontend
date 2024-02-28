@@ -6,22 +6,22 @@ export interface CodingMeetingAuthor {
   member_level_image_url: string
 }
 
+export type CodingMeetingHashTag = string
+
+export type CodingMeetingHashTags = Array<CodingMeetingHashTag>
+
 export interface CodingMeetingInfo {
   coding_meeting_token: string
   coding_meeting_title: string
   coding_meeting_start_time: string
   coding_meeting_end_time: string
+  coding_meeting_hashtags: CodingMeetingHashTags
+  coding_meeting_closed: boolean
+  coding_meeting_content: string
 }
-
-export type CodingMeetingHashTag = string
-
-export type CodingMeetingHashTags = Array<CodingMeetingHashTag>
 
 export type BaseCodingMeeting = CodingMeetingAuthor &
   CodingMeetingInfo & {
-    coding_meeting_hashtags: CodingMeetingHashTags
-    coding_meeting_closed: boolean
-  } & {
     created_date: string
   }
 
@@ -39,9 +39,7 @@ export interface CodingMeetingMemberRange {
 // detail
 export type CodingMeetingDetail = BaseCodingMeeting &
   CodingMeetingLocation &
-  CodingMeetingMemberRange & {
-    coding_meeting_content: string
-  }
+  CodingMeetingMemberRange
 
 // mock db type
 export type MockCodingMeeting = CodingMeetingDetail

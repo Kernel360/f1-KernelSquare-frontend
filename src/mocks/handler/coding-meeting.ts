@@ -24,7 +24,8 @@ import type {
   UpdateCodingMeetingRequest,
   UpdateCodingMeetingResponse,
 } from "@/interfaces/dto/coding-meeting/update-coding-meeting.dto"
-import jwt, { DecodeOptions, JwtPayload, Secret } from "jsonwebtoken"
+import jwt, { JwtPayload } from "jsonwebtoken"
+import { GetCodingMeetingDetailResponse } from "@/interfaces/dto/coding-meeting/get-coding-meeting-detail.dto"
 
 export const codingMeetingHandler = [
   // 모든 모각코 모집글 조회
@@ -146,6 +147,76 @@ export const codingMeetingHandler = [
       }
     },
   ),
+  // 특정 모각코 모집글 조회
+  http.get<
+    { coding_meeting_token: string },
+    DefaultBodyType,
+    GetCodingMeetingDetailResponse
+  >(
+    `${
+      process.env.NEXT_PUBLIC_SERVER
+    }${RouteMap.codingMeeting.getCodingMeetingDetail()}`,
+    async ({ params }) => {
+      try {
+        const token = params.coding_meeting_token
+
+        if (!token) {
+          const { Code, HttpStatus } =
+            ApiStatus.CodingMeetings.getCodingMeetingDetail.BadRequest
+
+          return HttpResponse.json(
+            {
+              code: Code,
+              msg: "잘못된 요청입니다",
+            },
+            { status: HttpStatus },
+          )
+        }
+
+        const targetPost = mockCodingMeetings.find(
+          (post) => post.coding_meeting_token === token,
+        )
+
+        if (!targetPost) {
+          const { Code, HttpStatus } =
+            ApiStatus.CodingMeetings.getCodingMeetingDetail.NotFound
+
+          return HttpResponse.json(
+            {
+              code: Code,
+              msg: "존재하지 않는 모각코 일정입니다",
+            },
+            { status: HttpStatus },
+          )
+        }
+
+        const { Code, HttpStatus } =
+          ApiStatus.CodingMeetings.getCodingMeetingDetail.Ok
+
+        return HttpResponse.json(
+          {
+            code: Code,
+            msg: "모각코 일정을 조회했습니다.",
+            data: {
+              ...targetPost,
+            },
+          },
+          { status: HttpStatus },
+        )
+      } catch (error) {
+        const { Code, HttpStatus } =
+          ApiStatus.CodingMeetings.getCodingMeetingDetail.InternalServerError
+
+        return HttpResponse.json(
+          {
+            code: Code,
+            msg: "서버 오류",
+          },
+          { status: HttpStatus },
+        )
+      }
+    },
+  ),
   // 모각코 모집글 생성
   http.post<
     PathParams,
@@ -192,7 +263,7 @@ export const codingMeetingHandler = [
 
       const token = "CMT" + (mockCodingMeetings.length + 10000)
 
-      const newCoffeeChatPost: MockCodingMeeting = {
+      const newCodingMeetingPost: MockCodingMeeting = {
         member_id: targetMember.id,
         member_level: targetMember.level,
         member_nickname: targetMember.nickname,
@@ -204,7 +275,7 @@ export const codingMeetingHandler = [
         coding_meeting_closed: false,
       }
 
-      mockCodingMeetings.push(newCoffeeChatPost)
+      mockCodingMeetings.push(newCodingMeetingPost)
 
       return HttpResponse.json(
         {
