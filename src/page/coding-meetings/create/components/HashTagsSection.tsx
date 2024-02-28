@@ -1,6 +1,6 @@
 "use client"
 
-import { useRef } from "react"
+import { useLayoutEffect, useRef } from "react"
 import CodingMeetingSection from "./CodingMeetingSection"
 import { toast } from "react-toastify"
 import { errorMessage } from "@/constants/message"
@@ -11,12 +11,18 @@ import Button from "@/components/shared/button/Button"
 import { Icons } from "@/components/icons/Icons"
 import { useRecoilState } from "recoil"
 import { HashTagList } from "@/recoil/atoms/coffee-chat/hashtags"
+import type { HashTagsSectionProps } from "../CreateCodingMeetingPage.types"
 
-const HashTagsSection = () => {
+const HashTagsSection = ({ initialHashTags }: HashTagsSectionProps) => {
   const hashtagRef = useRef<HTMLInputElement>(null)
 
   // 제출된 해시태그
   const [hashtags, setHashtags] = useRecoilState(HashTagList)
+
+  useLayoutEffect(() => {
+    if (initialHashTags) setHashtags(initialHashTags)
+  }, [])
+
   // 해시태그 추가
   const handleAddHashTags = () => {
     // 빈 값 방지

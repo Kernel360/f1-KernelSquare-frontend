@@ -30,7 +30,6 @@ export default async function UpdateCodingMeetingsPage({
     const { data: codingMeetingPayload } = await getCodingMeetingDetail({
       coding_meeting_token: params.token,
     })
-    console.log("user", user, "data", codingMeetingPayload)
 
     if (!user) {
       return (

@@ -21,7 +21,7 @@ function UpdateCodingMeetingGuardModal({
   const { openModal } = useModal()
 
   useEffect(() => {
-    replace(`/coding-meetings/${coding_meeting_token}`)
+    replace(`/coding-meetings/post/${coding_meeting_token}`)
 
     setTimeout(() => {
       openModal({

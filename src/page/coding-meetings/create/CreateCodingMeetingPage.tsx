@@ -31,6 +31,7 @@ import type { Time } from "@/recoil/atoms/coding-meeting/dateTime"
 import { LocationForSubmit } from "@/recoil/atoms/coding-meeting/mapData"
 import Limitation from "@/constants/limitation"
 import type { CodingMeetingDetailPayload } from "@/interfaces/dto/coding-meeting/get-coding-meeting-detail.dto"
+import NotFound from "@/app/not-found"
 
 interface CreateCodingMeetingPageProps {
   editMode: "create" | "update"
@@ -57,7 +58,6 @@ const CreateCodingMeetingPage = ({
   const queryClient = useQueryClient()
   const { replace } = useRouter()
   const { user } = useClientSession()
-  if (initialValues) console.log("initial", initialValues)
   const { register, handleSubmit } = useForm<CodingMeetingFormData>(
     initialValues
       ? {
@@ -156,15 +156,31 @@ const CreateCodingMeetingPage = ({
           setHash_tags([])
           setHead_cnt("3")
           setDay(new Date())
-          setStartTime(undefined)
-          setEndTime(undefined)
+          setStartTime({
+            range: "",
+            hour: "",
+            minute: "",
+          })
+          setEndTime({
+            range: "",
+            hour: "",
+            minute: "",
+          })
           setLocation(undefined)
         },
       })
     }
 
+    if (!coding_meeting_token) {
+      return NotFound()
+    }
+
     if (editMode === "update") {
-      updateCodingMeeting(payload, {
+      const editPayload = {
+        ...payload,
+        coding_meeting_token,
+      }
+      updateCodingMeeting(editPayload, {
         onSuccess: (res) => {
           queryClient.invalidateQueries({
             queryKey: ["codingMeeting"],
@@ -175,8 +191,16 @@ const CreateCodingMeetingPage = ({
           setHash_tags([])
           setHead_cnt("3")
           setDay(new Date())
-          setStartTime(undefined)
-          setEndTime(undefined)
+          setStartTime({
+            range: "",
+            hour: "",
+            minute: "",
+          })
+          setEndTime({
+            range: "",
+            hour: "",
+            minute: "",
+          })
           setLocation(undefined)
         },
       })
@@ -261,13 +285,43 @@ const CreateCodingMeetingPage = ({
           />
         </CodingMeetingSection>
         <Spacing size={10} />
-        <LocationSection />
+        <LocationSection
+          initialLocation={
+            initialValues && {
+              coding_meeting_location_id:
+                initialValues.coding_meeting_location_id,
+              coding_meeting_location_place_name:
+                initialValues.coding_meeting_location_place_name,
+              coding_meeting_location_latitude:
+                initialValues.coding_meeting_location_latitude,
+              coding_meeting_location_longitude:
+                initialValues.coding_meeting_location_longitude,
+            }
+          }
+        />
         <Spacing size={10} />
-        <HeadCountSection />
+        <HeadCountSection
+          initialCnt={
+            initialValues &&
+            initialValues?.coding_meeting_member_upper_limit + ""
+          }
+        />
         <Spacing size={10} />
-        <DateTimeSection />
+        <DateTimeSection
+          initialDateTime={
+            initialValues && {
+              coding_meeting_start_time:
+                initialValues?.coding_meeting_start_time,
+              coding_meeting_end_time: initialValues?.coding_meeting_end_time,
+            }
+          }
+        />
         <Spacing size={10} />
-        <HashTagsSection />
+        <HashTagsSection
+          initialHashTags={
+            initialValues && initialValues?.coding_meeting_hashtags
+          }
+        />
         <Spacing size={10} />
         <CodingMeetingSection>
           <CodingMeetingSection.Label htmlFor="content">

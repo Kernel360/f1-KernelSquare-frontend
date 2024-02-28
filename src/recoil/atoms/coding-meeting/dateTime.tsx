@@ -1,5 +1,4 @@
 import { Value } from "@/interfaces/calendar"
-import dayjs from "dayjs"
 import { atom } from "recoil"
 
 export type Time = {
@@ -8,14 +7,22 @@ export type Time = {
   minute: string
 }
 
-export const StartTime = atom<Time | undefined>({
+export const StartTime = atom<Time>({
   key: "coding-meeting-start-time-atom",
-  default: undefined,
+  default: {
+    range: "",
+    hour: "",
+    minute: "",
+  },
 })
 
-export const EndTime = atom<Time | undefined>({
+export const EndTime = atom<Time>({
   key: "coding-meeting-end-time-atom",
-  default: undefined,
+  default: {
+    range: "",
+    hour: "",
+    minute: "",
+  },
 })
 
 export const CodingMeetingDay = atom<Value>({

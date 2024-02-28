@@ -10,11 +10,14 @@ export type CodingMeetingHashTag = string
 
 export type CodingMeetingHashTags = Array<CodingMeetingHashTag>
 
-export interface CodingMeetingInfo {
-  coding_meeting_token: string
-  coding_meeting_title: string
+export type CodingMeetingDateTime = {
   coding_meeting_start_time: string
   coding_meeting_end_time: string
+}
+
+export type CodingMeetingInfo = CodingMeetingDateTime & {
+  coding_meeting_token: string
+  coding_meeting_title: string
   coding_meeting_hashtags: CodingMeetingHashTags
   coding_meeting_closed: boolean
   coding_meeting_content: string
