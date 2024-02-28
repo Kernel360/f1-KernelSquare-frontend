@@ -3,7 +3,10 @@ import type {
   BaseCodingMeeting,
   MockCodingMeeting,
 } from "@/interfaces/coding-meetings"
-import type { GetCodingMeetingListResponse } from "@/interfaces/dto/coding-meeting/get-coding-meetingl-list.dto"
+import type {
+  CodingMeetingListFilter,
+  GetCodingMeetingListResponse,
+} from "@/interfaces/dto/coding-meeting/get-coding-meetingl-list.dto"
 import { RouteMap } from "@/service/route-map"
 import { generatePagination } from "@/util/paginate"
 import { DefaultBodyType, HttpResponse, PathParams, http } from "msw"
@@ -33,11 +36,23 @@ export const codingMeetingHandler = [
         const page = Number(url.searchParams.get("page"))
         const perPage = Number(url.searchParams.get("size"))
 
+        const filter = url.searchParams.get(
+          "filter",
+        ) as CodingMeetingListFilter | null
+
         const invalidQueries = []
 
         // page는 0부터 시작
         if (page < 0 || Number.isNaN(page)) invalidQueries.push("page")
         if (perPage <= 0 || Number.isNaN(perPage)) invalidQueries.push("size")
+        if (
+          filter &&
+          filter !== "all" &&
+          filter !== "open" &&
+          filter !== "closed"
+        ) {
+          invalidQueries.push("filter")
+        }
 
         if (invalidQueries.length) {
           const { Code, HttpStatus } =
@@ -49,37 +64,62 @@ export const codingMeetingHandler = [
           )
         }
 
-        const { pages, maximumPage } = generatePagination<BaseCodingMeeting>(
-          mockCodingMeetings.map((mockReservation) => {
+        // 20페이지 이상의 페이지네이션 테스트 목적
+        const targetList = [
+          ...mockCodingMeetings.map((mockReservation) => {
             const { ...reservation } = mockReservation
 
             return { ...reservation }
           }),
-          { perPage: 5 },
+          ...Array.from({ length: 200 }).map((_, index) => {
+            const target = { ...mockCodingMeetings[0] }
+
+            target.coding_meeting_token = "TMT" + (10000 + index)
+
+            return target
+          }),
+        ].filter(({ coding_meeting_closed }) => {
+          if (!filter || filter === "all") {
+            return true
+          }
+          if (filter === "open") return coding_meeting_closed === false
+          if (filter === "closed") return coding_meeting_closed === true
+
+          return true
+        })
+
+        const { pages, maximumPage } = generatePagination<BaseCodingMeeting>(
+          targetList,
+          { perPage: 10 },
         )
 
         const pagePayload = pages[page] ?? []
 
-        if (mockCodingMeetings.length && !pagePayload?.length) {
-          const { Code, HttpStatus } =
-            ApiStatus.CodingMeetings.getCodingMeetingList.NotFound
+        const { Code, HttpStatus } =
+          ApiStatus.CodingMeetings.getCodingMeetingList.Ok
 
+        if (mockCodingMeetings.length && !pagePayload?.length) {
           return HttpResponse.json(
             {
               code: Code,
-              msg: "존재하지 않는 페이지",
+              msg: "모각코 전체 조회 성공",
+              data: {
+                pagination: {
+                  total_page: 0,
+                  pageable: 10,
+                  is_end: false,
+                },
+                list: [],
+              },
             },
             { status: HttpStatus },
           )
         }
 
-        const { Code, HttpStatus } =
-          ApiStatus.CodingMeetings.getCodingMeetingList.Ok
-
         return HttpResponse.json(
           {
             code: Code,
-            msg: "모든 모각코 조회 성공",
+            msg: "모각코 전체 조회 성공",
             data: {
               pagination: {
                 total_page: maximumPage,
@@ -140,6 +180,7 @@ export const codingMeetingHandler = [
         created_date: dayjs().format(),
         coding_meeting_token: token,
         ...createPayload,
+        coding_meeting_closed: false,
       }
 
       mockCodingMeetings.push(newCoffeeChatPost)
