@@ -29,8 +29,8 @@ export const layoutMeta = {
     title: "홈",
     description: "커널 스퀘어에 오신 것을 환영합니다",
     containLayout: {
-      header: true,
-      navigation: true,
+      header: false,
+      navigation: false,
       footer: false,
     },
   },
