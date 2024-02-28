@@ -61,7 +61,7 @@ export default function KakaoMapPage({ keyword }: { keyword: string }) {
           map.setBounds(bounds)
         }
       })
-    }, 500)
+    }, 1000)
 
     handleKeywordSearch()
   }, [map, keyword])

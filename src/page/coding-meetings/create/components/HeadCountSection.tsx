@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/Select"
 import { CodingMeetingHeadCount } from "@/recoil/atoms/coding-meeting/headcount"
 
-const HeadCountValue = ["3", "4", "5", "6"]
+const HeadCountValue = ["2", "3", "4", "5", "6"]
 
 const HeadCountSection = () => {
   const [headCount, setHeadCount] = useRecoilState(CodingMeetingHeadCount)
