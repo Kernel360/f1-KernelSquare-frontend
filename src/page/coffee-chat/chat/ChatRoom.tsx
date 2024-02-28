@@ -14,10 +14,10 @@ import type { SessionPayload } from "@/recoil/atoms/user"
 interface ChatRoomProps {
   serverUrl: string
   articleTitle: string
-  roomId: number
   roomKey: string
   user: NonNullable<SessionPayload>
   expiration_time: string
+  reservation_id: number
 }
 
 function ChatRoom({

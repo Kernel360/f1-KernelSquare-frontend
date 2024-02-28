@@ -85,8 +85,7 @@ export async function createCoffeeChatReservation({
 
 export async function enterChatRoom({
   article_title,
-  member_id,
-  room_id,
+  reservation_id,
 }: EnterChatRoomRequest) {
   const res = await apiInstance.post<
     any,
@@ -94,8 +93,7 @@ export async function enterChatRoom({
     EnterChatRoomRequest
   >(RouteMap.coffeeChat.enterCoffeeChatRoom, {
     article_title,
-    room_id,
-    member_id,
+    reservation_id,
   })
 
   return res

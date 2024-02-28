@@ -1,9 +1,8 @@
 import { APIResponse } from "../api-response"
 
 export interface EnterChatRoomRequest {
-  member_id: number
-  room_id: number
   article_title: string
+  reservation_id: number
 }
 
 export interface EnterChatRoomPayload {
