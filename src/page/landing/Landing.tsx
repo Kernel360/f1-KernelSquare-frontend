@@ -17,7 +17,7 @@ const LandingPage: React.FC = () => {
         <source src="/video/landing_video.mp4" type="video/mp4" />
       </video>
       <LandingHeader />
-      <div className="absolute w-full flex-col items-center justify-center top-[30%] text-center">
+      <div className="absolute w-full flex-col items-center justify-center top-[40%] text-center">
         <div className="font-bold text-5xl text-white">
           지속 가능한 개발자 커뮤니티,
         </div>
