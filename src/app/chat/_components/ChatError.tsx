@@ -15,9 +15,10 @@ type ErrorType =
 
 interface ChatErrorProps {
   errorType: ErrorType
+  errorMessage?: string
 }
 
-function ChatError({ errorType }: ChatErrorProps) {
+function ChatError({ errorType, errorMessage }: ChatErrorProps) {
   const ChatErrorComponent = () => {
     switch (errorType) {
       case "LoginRequired":
@@ -51,8 +52,12 @@ function ChatError({ errorType }: ChatErrorProps) {
   }, [])
 
   return (
-    <div className="flex w-full justify-center items-center">
+    <div className="flex flex-col w-full justify-center items-center">
       <ChatErrorComponent />
+      <div>
+        <h4 className="w-full bg-slate-500 text-white">에러메시지</h4>
+        <span>{errorMessage ?? "unknown"}</span>
+      </div>
     </div>
   )
 }
