@@ -103,9 +103,9 @@ UpdateCodingMeetingGuardModal.ForbiddenContent =
     return (
       <>
         <div className="text-center">
-          모각코 모집글 작성자만
+          수정할 수 없는
           <br />
-          수정이 가능합니다
+          게시글입니다
         </div>
         <Spacing size={12} />
         <div className="flex w-full justify-center items-center">

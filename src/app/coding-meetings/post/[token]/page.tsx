@@ -39,7 +39,10 @@ export default async function UpdateCodingMeetingsPage({
         />
       )
     }
-    if (codingMeetingPayload!.data?.member_nickname !== user.nickname) {
+    if (
+      codingMeetingPayload!.data?.member_nickname !== user.nickname ||
+      codingMeetingPayload.data.coding_meeting_closed
+    ) {
       return (
         <AuthGuardModal
           page="updateCodingMeeting:Forbidden"

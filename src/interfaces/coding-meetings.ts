@@ -20,7 +20,6 @@ export type CodingMeetingInfo = CodingMeetingDateTime & {
   coding_meeting_title: string
   coding_meeting_hashtags: CodingMeetingHashTags
   coding_meeting_closed: boolean
-  coding_meeting_content: string
 }
 
 export type BaseCodingMeeting = CodingMeetingAuthor &
@@ -42,7 +41,9 @@ export interface CodingMeetingMemberRange {
 // detail
 export type CodingMeetingDetail = BaseCodingMeeting &
   CodingMeetingLocation &
-  CodingMeetingMemberRange
+  CodingMeetingMemberRange & {
+    coding_meeting_content: string
+  }
 
 // mock db type
 export type MockCodingMeeting = CodingMeetingDetail

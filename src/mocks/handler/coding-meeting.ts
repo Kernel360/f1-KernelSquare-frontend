@@ -158,9 +158,9 @@ export const codingMeetingHandler = [
     }${RouteMap.codingMeeting.getCodingMeetingDetail()}`,
     async ({ params }) => {
       try {
-        const token = params.coding_meeting_token
+        const codingMeetingToken = params.coding_meeting_token
 
-        if (!token) {
+        if (!codingMeetingToken) {
           const { Code, HttpStatus } =
             ApiStatus.CodingMeetings.getCodingMeetingDetail.BadRequest
 
@@ -173,11 +173,11 @@ export const codingMeetingHandler = [
           )
         }
 
-        const targetPost = mockCodingMeetings.find(
-          (post) => post.coding_meeting_token === token,
+        const targetCodingMeeting = mockCodingMeetings.find(
+          (post) => post.coding_meeting_token === codingMeetingToken,
         )
 
-        if (!targetPost) {
+        if (!targetCodingMeeting) {
           const { Code, HttpStatus } =
             ApiStatus.CodingMeetings.getCodingMeetingDetail.NotFound
 
@@ -198,7 +198,7 @@ export const codingMeetingHandler = [
             code: Code,
             msg: "모각코 일정을 조회했습니다.",
             data: {
-              ...targetPost,
+              ...targetCodingMeeting,
             },
           },
           { status: HttpStatus },
