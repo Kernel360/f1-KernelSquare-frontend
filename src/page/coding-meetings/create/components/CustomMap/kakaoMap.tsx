@@ -48,8 +48,8 @@ export default function KakaoMapPage({ keyword }: { keyword: string }) {
             // @ts-ignore
             markers.push({
               position: {
-                lat: data[i].x,
-                lng: data[i].y,
+                lat: data[i].y,
+                lng: data[i].x,
               },
               content: data[i].place_name,
             })
@@ -57,7 +57,7 @@ export default function KakaoMapPage({ keyword }: { keyword: string }) {
             bounds.extend(new kakao.maps.LatLng(data[i].y, data[i].x))
           }
           setMarkers(markers)
-          // 검색된 장소 위치를 기준으로 지도 범위를 재설정합니다
+          // 검색된 장소 위치를 기준으로 지도 범위를 재설정합니다.
           map.setBounds(bounds)
         }
       })
