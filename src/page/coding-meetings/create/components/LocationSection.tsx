@@ -77,6 +77,10 @@ const LocationDialog = () => {
     setSelectedPlace(undefined)
   }
 
+  useLayoutEffect(() => {
+    resetHistory()
+  }, [])
+
   useEffect(() => {
     if (!selectedPlace) return
     const element = document.getElementById(selectedPlace?.content)
@@ -166,8 +170,8 @@ const LocationDialog = () => {
                                   coding_meeting_location_id: place.id,
                                   coding_meeting_location_place_name:
                                     place.place_name,
-                                  coding_meeting_location_latitude: place.x,
-                                  coding_meeting_location_longitude: place.y,
+                                  coding_meeting_location_latitude: place.y,
+                                  coding_meeting_location_longitude: place.x,
                                 })
                               }
                             >
