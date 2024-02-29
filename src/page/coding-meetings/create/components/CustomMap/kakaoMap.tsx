@@ -48,8 +48,8 @@ export default function KakaoMapPage({ keyword }: { keyword: string }) {
             // @ts-ignore
             markers.push({
               position: {
-                lat: data[i].y,
-                lng: data[i].x,
+                lat: data[i].x,
+                lng: data[i].y,
               },
               content: data[i].place_name,
             })
