@@ -29,6 +29,9 @@ import { APIResponse } from "@/interfaces/dto/api-response"
 import { revalidatePage } from "@/util/actions/revalidatePage"
 import { RxDividerVertical } from "react-icons/rx"
 import { useRef, useState } from "react"
+import { FaRegCommentDots } from "react-icons/fa"
+import useModal from "@/hooks/useModal"
+import LoginForm from "@/components/form/LoginForm"
 
 interface DetailCommentsProps {
   author: CodingMeetingAuthor
@@ -154,7 +157,10 @@ function DetailComments({ author, token }: DetailCommentsProps) {
               buttonTheme="primary"
               className="w-[87px] h-[49px] disabled:bg-colorsGray disabled:text-colorsDarkGray"
             >
-              업로드
+              <div className="flex justify-center items-center flex-shrink-0 gap-1">
+                <FaRegCommentDots className="text-white flex-shrink-0" />
+                <span className="text-white text-sm">댓글 작성</span>
+              </div>
             </Button>
           </form>
           <div>
@@ -170,6 +176,7 @@ export default DetailComments
 
 function Info() {
   const { user } = useClientSession()
+  const { openModal } = useModal()
 
   if (user) return null
 
@@ -183,7 +190,15 @@ function Info() {
           로그인 하고 댓글을 남겨보세요!
         </span>
       </div>
-      <Button className="px-6 py-4" buttonTheme="primary">
+      <Button
+        className="px-6 py-4"
+        buttonTheme="primary"
+        onClick={() => {
+          openModal({
+            content: <LoginForm />,
+          })
+        }}
+      >
         로그인 하기
       </Button>
     </div>

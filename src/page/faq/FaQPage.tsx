@@ -21,7 +21,7 @@ function FaQ() {
           </Link>
           <Link
             target="_blank"
-            href="https://docs.google.com/forms/d/e/1FAIpQLScQYUi7woDgq5nW7cTP7AUIl-Za1gawhTMcGZTECC0MX99ICQ/viewform?usp=sf_link"
+            href="https://docs.google.com/forms/d/e/1FAIpQLSdUPyAFdRQJ9KmzKOr4QW92rCZxk022NC57jyov0GNrkjyuRw/viewform"
             className="w-44 h-[38px] flex gap-2 box-border px-2 py-1 justify-center items-center rounded-lg shadow-sm bg-socialGoogle border border-colorsGray"
           >
             <div className="shrink-0">
