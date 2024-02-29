@@ -102,6 +102,7 @@ function ReservationForMentor({ reservation, created, title }: MentorProps) {
                     time={time}
                     key={time.reservation_id}
                     title={title}
+                    reservation_id={time.reservation_id}
                   />
                 ))}
               </div>
@@ -116,9 +117,10 @@ function ReservationForMentor({ reservation, created, title }: MentorProps) {
 type ReservedTimeProps = {
   time: CoffeeChatReservationTime
   title: string
+  reservation_id: number
 }
 
-function ReservedTime({ time, title }: ReservedTimeProps) {
+function ReservedTime({ time, title, reservation_id }: ReservedTimeProps) {
   if (time.mentee_nickname)
     return (
       <div className="flex justify-around w-full flex-wrap min-h-[50px] my-5">
@@ -140,6 +142,7 @@ function ReservedTime({ time, title }: ReservedTimeProps) {
             articleTitle={title}
             roomId={time.room_id}
             startTime={time.start_time}
+            reservation_id={reservation_id}
           />
         </div>
       </div>

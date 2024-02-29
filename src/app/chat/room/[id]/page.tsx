@@ -67,7 +67,7 @@ export default async function CoffeeChatRoomPage({
 }: CoffeeChatRoomProps) {
   const { user } = getServerSession()
 
-  const roomId = Number(params.id)
+  const reservationId = Number(params.id)
 
   if (!isValidPageProps({ params, searchParams })) {
     notFound()
@@ -80,8 +80,7 @@ export default async function CoffeeChatRoomPage({
   try {
     const enterChatRoomResponse = await enterChatRoom({
       article_title: articleTitle,
-      member_id: user.member_id,
-      room_id: roomId,
+      reservation_id: reservationId,
     })
 
     const { active, room_key, article_title, expiration_time } =
@@ -100,8 +99,8 @@ export default async function CoffeeChatRoomPage({
     return (
       <ChatRoom
         serverUrl={`${process.env.NEXT_PUBLIC_WS}`}
-        roomId={roomId}
         roomKey={room_key}
+        reservation_id={reservationId}
         articleTitle={articleTitle}
         user={user}
         expiration_time={expiration_time}
@@ -115,7 +114,9 @@ export default async function CoffeeChatRoomPage({
         response?.status ===
         ApiStatus.CoffeeChat.enterChatRoom.NotFound.HttpStatus
       ) {
-        return <ChatError errorType="NotFound" />
+        return (
+          <ChatError errorType="NotFound" errorMessage={response.data.msg} />
+        )
       }
 
       if (response?.status === HttpStatusCode.BadRequest) {
@@ -123,13 +124,25 @@ export default async function CoffeeChatRoomPage({
           response.data.code ===
           ApiStatus.CoffeeChat.enterChatRoom.UnactiveRoom.Code
         ) {
-          return <ChatError errorType="Unactived" />
+          return (
+            <ChatError errorType="Unactived" errorMessage={response.data.msg} />
+          )
         }
 
-        return <ChatError errorType="Unauthorization" />
+        return (
+          <ChatError
+            errorType="Unauthorization"
+            errorMessage={response.data.msg}
+          />
+        )
       }
 
-      return <ChatError errorType="InternalServer" />
+      return (
+        <ChatError
+          errorType="InternalServer"
+          errorMessage={response?.data.msg}
+        />
+      )
     }
 
     if (error instanceof EnterRoomError) {
