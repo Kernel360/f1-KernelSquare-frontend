@@ -9,6 +9,10 @@ import Link from "next/link"
 import DetailMap from "./Map"
 import HashTag from "@/components/shared/tag/HashTag"
 import DetailComments from "./Comments"
+import dayjs from "dayjs"
+import "dayjs/locale/ko"
+
+dayjs.locale("ko")
 
 interface CodingMeetingsDetailPageProps {
   detail: CodingMeetingDetailPayload
