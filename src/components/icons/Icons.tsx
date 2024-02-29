@@ -19,6 +19,7 @@ import { RiArrowUpSLine } from "react-icons/ri"
 import { MdClose } from "react-icons/md"
 import { MdComputer } from "react-icons/md"
 import { FaMapMarkerAlt } from "react-icons/fa"
+import { IoSearchOutline } from "react-icons/io5"
 
 type IconsKey =
   | "Search"
@@ -28,6 +29,7 @@ type IconsKey =
   | "PostQuestion"
   | "ScrollToTop"
   | "Search"
+  | "PlainSearch"
   | "Close"
   | "Info"
   | "MapMarker"
@@ -63,6 +65,9 @@ export const Icons: Record<IconsKey, Icon> = {
   },
   Search(props) {
     return <LuSearchCode {...props} />
+  },
+  PlainSearch(props) {
+    return <IoSearchOutline {...props} />
   },
   Close(props) {
     return <MdClose {...props} />

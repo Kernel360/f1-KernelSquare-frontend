@@ -35,8 +35,10 @@ export const searchHandler = [
         const target = mockQuestions.filter((question) => {
           if (keyword === "") return true
           return (
-            question.title.includes(keyword) ||
-            question.skills.some((skill) => skill === keyword)
+            question.title.toLowerCase().includes(keyword.toLowerCase()) ||
+            question.skills.some(
+              (skill) => skill.toLowerCase() === keyword.toLowerCase(),
+            )
           )
         })
 
