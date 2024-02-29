@@ -46,4 +46,17 @@ export type CodingMeetingDetail = BaseCodingMeeting &
   }
 
 // mock db type
-export type MockCodingMeeting = CodingMeetingDetail
+export type MockCodingMeeting = CodingMeetingDetail & {
+  comments: Array<CodingMeetingComment>
+}
+
+// comment
+export type CodingMeetingCommentAuthor = CodingMeetingAuthor
+export type CodingMeetingCommentContent = {
+  coding_meeting_comment_token: string
+  coding_meeting_comment_content: string
+}
+export type CodingMeetingComment = CodingMeetingCommentAuthor &
+  CodingMeetingCommentContent & {
+    created_date: string
+  }
