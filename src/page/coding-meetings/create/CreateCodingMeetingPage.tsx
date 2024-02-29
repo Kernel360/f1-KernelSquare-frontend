@@ -346,7 +346,7 @@ const CreateCodingMeetingPage = ({
             className="p-5 py-3 my-10"
             type="submit"
           >
-            모각코 개설하기
+            {editMode === "update" ? "모각코 수정하기" : "모각코 개설하기"}
           </Button>
         </div>
       </form>
