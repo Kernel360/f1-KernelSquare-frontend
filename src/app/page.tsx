@@ -1,4 +1,5 @@
 import { layoutMeta } from "@/constants/layoutMeta"
+import LandingPage from "@/page/landing/Landing"
 import { Metadata } from "next"
 
 export const metadata: Metadata = {
@@ -7,5 +8,5 @@ export const metadata: Metadata = {
 }
 
 export default async function Main() {
-  return <div>메인</div>
+  return <LandingPage />
 }
