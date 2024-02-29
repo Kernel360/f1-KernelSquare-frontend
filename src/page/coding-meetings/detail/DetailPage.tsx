@@ -4,19 +4,21 @@ import { CodingMeetingAuthor } from "@/interfaces/coding-meetings"
 import DetailMenu from "./DetailMenu"
 import Spacing from "@/components/shared/Spacing"
 import DetailSection from "./Section"
-import { getCollapsedDate, getKorDayjs } from "@/util/getDate"
 import Link from "next/link"
 import DetailMap from "./Map"
 import HashTag from "@/components/shared/tag/HashTag"
 import DetailComments from "./Comments"
-import dayjs from "dayjs"
-import "dayjs/locale/ko"
-
-dayjs.locale("ko")
+import dynamic from "next/dynamic"
+import Skeleton from "react-loading-skeleton"
 
 interface CodingMeetingsDetailPageProps {
   detail: CodingMeetingDetailPayload
 }
+
+const DetailCodingMeetingTime = dynamic(
+  () => import("@/page/coding-meetings/detail/DetailTime"),
+  { ssr: false, loading: () => <Skeleton className="w-12 h-6" /> },
+)
 
 const CodingMeetingsDetailPage = ({
   detail,
@@ -28,17 +30,6 @@ const CodingMeetingsDetailPage = ({
     member_level_image_url: detail.member_level_image_url,
     member_level: detail.member_level,
   }
-
-  console.log("detail Time", {
-    start: {
-      origin: detail.coding_meeting_start_time,
-      kor: getKorDayjs(detail.coding_meeting_start_time),
-    },
-    end: {
-      origin: detail.coding_meeting_end_time,
-      kor: getKorDayjs(detail.coding_meeting_end_time),
-    },
-  })
 
   return (
     <>
@@ -63,12 +54,10 @@ const CodingMeetingsDetailPage = ({
           <div className="flex flex-col tablet:flex-row tablet:justify-between tablet:gap-4">
             <div className="flex flex-col gap-4 max-w-full tablet:w-[40%]">
               <DetailSection title="일시">
-                <span className="font-medium">
-                  {getCollapsedDate({
-                    start: detail.coding_meeting_start_time,
-                    end: detail.coding_meeting_end_time,
-                  })}
-                </span>
+                <DetailCodingMeetingTime
+                  startTime={detail.coding_meeting_start_time}
+                  endTime={detail.coding_meeting_end_time}
+                />
               </DetailSection>
               <DetailSection title="인원">
                 <span className="font-medium">
