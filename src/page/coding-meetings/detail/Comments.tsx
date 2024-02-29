@@ -96,10 +96,15 @@ function DetailComments({ author, token }: DetailCommentsProps) {
           return
         }
 
-        toast.error(response?.data.msg ?? "댓글 생성에 실패했습니다.", {
-          position: "top-center",
-          toastId,
-        })
+        toast.error(
+          response?.data.msg
+            ? response.data.msg.split(" : ")[1]
+            : "댓글 생성에 실패했습니다.",
+          {
+            position: "top-center",
+            toastId,
+          },
+        )
 
         return
       }
@@ -111,6 +116,14 @@ function DetailComments({ author, token }: DetailCommentsProps) {
 
     if (errors.comment?.type === "required") {
       toast.error("댓글을 작성해주세요.", { position: "top-center", toastId })
+      return
+    }
+
+    if (errors.comment?.type === "minLength") {
+      toast.error("댓글은 최소 10자 이상이어야 합니다.", {
+        position: "top-center",
+        toastId,
+      })
       return
     }
 
@@ -146,7 +159,11 @@ function DetailComments({ author, token }: DetailCommentsProps) {
             className="w-full flex flex-wrap justify-center items-center gap-4 mb-[22px]"
           >
             <input
-              {...register("comment", { required: true, maxLength: 10000 })}
+              {...register("comment", {
+                required: true,
+                minLength: 10,
+                maxLength: 10000,
+              })}
               className="box-border flex-1 px-4 py-3 placeholder:text-[#BDBDBD] border border-[#E0E0E0] rounded-lg"
               placeholder="댓글을 입력해주세요"
               autoComplete="off"
@@ -241,14 +258,6 @@ function CommentList({
   return (
     <ul className={wrapperClassNames("comments")}>
       {comments.map((comment) => {
-        const commentAuthor: CodingMeetingCommentAuthor = {
-          member_id: comment.member_id,
-          member_nickname: comment.member_nickname,
-          member_profile_url: comment.member_profile_url,
-          member_level: comment.member_level,
-          member_level_image_url: comment.member_level_image_url,
-        }
-
         return (
           <Comment
             key={comment.coding_meeting_comment_token}
@@ -333,6 +342,15 @@ function Comment({
 
     if (!content.length) {
       toast.error("내용을 입력해주세요", { position: "top-center", toastId })
+
+      return false
+    }
+
+    if (content.length < 10) {
+      toast.error("댓글은 최소 10자 이상이어야 합니다.", {
+        position: "top-center",
+        toastId,
+      })
 
       return false
     }
