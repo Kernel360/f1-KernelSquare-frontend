@@ -10,14 +10,14 @@ import { Input } from "@/components/shared/input/Input"
 import Button from "@/components/shared/button/Button"
 import { Icons } from "@/components/icons/Icons"
 import { useRecoilState } from "recoil"
-import { HashTagList } from "@/recoil/atoms/coffee-chat/hashtags"
 import type { HashTagsSectionProps } from "../CreateCodingMeetingPage.types"
+import { CodingMeetingHashTagList } from "@/recoil/atoms/coding-meeting/hashtags"
 
 const HashTagsSection = ({ initialHashTags }: HashTagsSectionProps) => {
   const hashtagRef = useRef<HTMLInputElement>(null)
 
   // 제출된 해시태그
-  const [hashtags, setHashtags] = useRecoilState(HashTagList)
+  const [hashtags, setHashtags] = useRecoilState(CodingMeetingHashTagList)
 
   useLayoutEffect(() => {
     if (initialHashTags) setHashtags(initialHashTags)
