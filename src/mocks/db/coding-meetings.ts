@@ -13,8 +13,8 @@ const mockCodingMeetings: MockCodingMeeting[] = [
     coding_meeting_closed: false,
     coding_meeting_token: "CMT00000000",
     coding_meeting_title: "봉은사역에서 모각코할 분들 모집합니다.",
-    coding_meeting_start_time: "2024-02-24T07:36:53.696Z",
-    coding_meeting_end_time: "2024-02-24T09:36:53.696Z",
+    coding_meeting_start_time: "2024-02-29T07:30:53.696Z",
+    coding_meeting_end_time: "2024-02-29T09:00:53.696Z",
     coding_meeting_member_upper_limit: 4,
     coding_meeting_hashtags: ["모각코", "맥북", "필수"],
     coding_meeting_location_id: "123",
@@ -57,8 +57,8 @@ const mockCodingMeetings: MockCodingMeeting[] = [
     coding_meeting_token: "CMT00000001",
     coding_meeting_title:
       "[신림] 정기 오프라인 모각코 스터디 (주2회 이상 참여 必)",
-    coding_meeting_start_time: "2024-02-25T15:30:00.696Z",
-    coding_meeting_end_time: "2024-02-25T20:00:00.696Z",
+    coding_meeting_start_time: "2024-02-29T15:30:00.696Z",
+    coding_meeting_end_time: "2024-02-29T20:00:00.696Z",
     coding_meeting_member_upper_limit: 6,
     coding_meeting_hashtags: ["신림", "스터디", "오프라인"],
     coding_meeting_location_id: "124",
@@ -80,8 +80,8 @@ const mockCodingMeetings: MockCodingMeeting[] = [
     coding_meeting_token: "CMT00000002",
     coding_meeting_title:
       "[사당역] Next.js 스터디 같이 하실 초보분들 모십니다.",
-    coding_meeting_start_time: "2024-02-23T07:36:53.696Z",
-    coding_meeting_end_time: "2024-02-23T09:36:53.696Z",
+    coding_meeting_start_time: "2024-03-01T08:00:53.696Z",
+    coding_meeting_end_time: "2024-03-01T09:00:53.696Z",
     coding_meeting_member_upper_limit: 4,
     coding_meeting_hashtags: [
       "프론트엔드",

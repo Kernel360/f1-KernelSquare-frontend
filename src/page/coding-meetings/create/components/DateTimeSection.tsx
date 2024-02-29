@@ -1,8 +1,7 @@
 "use client"
 
-import { useState } from "react"
+import { useLayoutEffect, useState } from "react"
 import CodingMeetingSection from "./CodingMeetingSection"
-import { Value } from "./CustomCalendar/Calendar.types"
 import CustomCalendar from "./CustomCalendar/CustomCalendar"
 import {
   Select,
@@ -11,13 +10,54 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/Select"
+import { timeSelect } from "@/constants/timeOptions"
+import { useRecoilState, useSetRecoilState } from "recoil"
+import {
+  CodingMeetingDay,
+  EndTime,
+  StartTime,
+} from "@/recoil/atoms/coding-meeting/dateTime"
+import type {
+  DateTimeSectionProps,
+  SelectBoxProps,
+  TimeBoxProps,
+} from "../CreateCodingMeetingPage.types"
+import dayjs from "dayjs"
 
-const DateTimeSection = () => {
-  const [date, setDate] = useState<Value>(new Date())
+const DateTimeSection = ({ initialDateTime }: DateTimeSectionProps) => {
+  const [date, setDate] = useRecoilState(CodingMeetingDay)
+  const setStartTime = useSetRecoilState(StartTime)
+  const setEndTime = useSetRecoilState(EndTime)
 
-  const range = ["오전", "오후"]
-  const hours = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"]
-  const minutes = ["00", "30"]
+  useLayoutEffect(() => {
+    if (initialDateTime) {
+      const initialDate = dayjs(
+        initialDateTime.coding_meeting_start_time,
+      ).format("YYYY-MM-DD")
+      const start = dayjs(initialDateTime.coding_meeting_start_time)
+      const end = dayjs(initialDateTime.coding_meeting_end_time)
+      setDate(new Date(initialDate))
+      setStartTime({
+        range: start.format("a"),
+        hour:
+          (start.get("hour") > 12
+            ? start.subtract(12, "hour").get("hour")
+            : start.get("hour")) + "",
+        minute: start.get("minute") + "",
+      })
+      setEndTime({
+        range: end.format("a"),
+        hour:
+          (end.get("hour") > 12
+            ? end.subtract(12, "hour").get("hour")
+            : end.get("hour")) + "",
+        minute:
+          String(end.get("minute")).length === 1
+            ? "0" + String(end.get("minute"))
+            : end.get("minute") + "",
+      })
+    }
+  }, [])
 
   return (
     <CodingMeetingSection>
@@ -32,28 +72,8 @@ const DateTimeSection = () => {
         <div>
           <div className="flex flex-col gap-5">
             <div className="font-bold">시간</div>
-            <div className="flex items-center gap-2">
-              <SelectBox targetArray={range} placeholder="구분" />
-              <div>
-                <SelectBox targetArray={hours} placeholder="시간" />
-              </div>
-              <div>:</div>
-              <div>
-                <SelectBox targetArray={minutes} placeholder="분" />
-              </div>
-              <div>부터</div>
-            </div>
-            <div className="flex items-center gap-2">
-              <SelectBox targetArray={range} placeholder="구분" />
-              <div>
-                <SelectBox targetArray={hours} placeholder="시간" />
-              </div>
-              <div>:</div>
-              <div>
-                <SelectBox targetArray={minutes} placeholder="분" />
-              </div>
-              <div>까지</div>
-            </div>
+            <StartBox />
+            <EndBox />
           </div>
         </div>
       </div>
@@ -63,16 +83,70 @@ const DateTimeSection = () => {
 
 export default DateTimeSection
 
-type SelectBoxProps = {
-  targetArray: string[]
-  placeholder: string
+const TimeBox = ({ timeState, setTimeState, suffix }: TimeBoxProps) => {
+  const handleTimeChange = (
+    type: "range" | "hour" | "minute",
+    value: string,
+  ) => {
+    setTimeState({ ...timeState, [type]: value })
+  }
+
+  return (
+    <div className="flex items-center gap-2">
+      <SelectBox
+        targetArray={timeSelect.range}
+        placeholder="구분"
+        handler={(value: string) => handleTimeChange("range", value)}
+        defaultValue={timeState.range}
+      />
+      <div>
+        <SelectBox
+          targetArray={timeSelect.hours}
+          placeholder="시간"
+          handler={(value: string) => handleTimeChange("hour", value)}
+          defaultValue={timeState.hour}
+        />
+      </div>
+      <div>:</div>
+      <div>
+        <SelectBox
+          targetArray={timeSelect.minutes}
+          placeholder="분"
+          handler={(value: string) => handleTimeChange("minute", value)}
+          defaultValue={timeState.minute}
+        />
+      </div>
+      <div>{suffix}</div>
+    </div>
+  )
 }
 
-const SelectBox = ({ targetArray, placeholder }: SelectBoxProps) => {
+const StartBox = () => {
+  const [startTime, setStartTime] = useRecoilState(StartTime)
   return (
-    <Select>
+    <TimeBox timeState={startTime} setTimeState={setStartTime} suffix="부터" />
+  )
+}
+
+const EndBox = () => {
+  const [endTime, setEndTime] = useRecoilState(EndTime)
+  return <TimeBox timeState={endTime} setTimeState={setEndTime} suffix="까지" />
+}
+
+const SelectBox = ({
+  targetArray,
+  placeholder,
+  handler,
+  defaultValue,
+}: SelectBoxProps) => {
+  return (
+    <Select onValueChange={(value: string) => handler(value)}>
       <SelectTrigger className="w-[100px] text-center">
-        <SelectValue className="flex flex-1" placeholder={placeholder} />
+        <SelectValue
+          className="flex flex-1"
+          placeholder={defaultValue ? defaultValue : placeholder}
+          defaultValue={defaultValue}
+        />
       </SelectTrigger>
       <SelectContent>
         {targetArray.map((val) => (

@@ -45,6 +45,7 @@ import {
   CloseCodingMeetingResponse,
 } from "@/interfaces/dto/coding-meeting/close-coding-meeting.dto"
 
+// 모든 모각코 조회
 export async function getCodingMeetingList(
   { page = 0, size = 10, filter = "all" }: GetCodingMeetingListRequest = {
     page: 0,
@@ -64,6 +65,7 @@ export async function getCodingMeetingList(
   return res
 }
 
+// 모각코 생성
 export async function createCodingMeeting(
   createPayload: CreateCodingMeetingRequest,
 ) {
@@ -78,6 +80,7 @@ export async function createCodingMeeting(
   return res
 }
 
+// 모각코 삭제
 export async function deleteCodingMeeting({
   coding_meeting_token,
 }: DeleteCodingMeetingRequest) {
@@ -99,6 +102,7 @@ export async function deleteCodingMeeting({
   }
 }
 
+// 모각코 수정
 export async function updateCodingMeeting({
   coding_meeting_token,
   ...updatePayload
@@ -114,6 +118,7 @@ export async function updateCodingMeeting({
   return res
 }
 
+// 특정 모각코 조회
 export async function getCodingMeetingDetail({
   coding_meeting_token,
 }: GetCodingMeetingDetailRequest) {

@@ -26,21 +26,18 @@ import type {
   UpdateCodingMeetingResponse,
 } from "@/interfaces/dto/coding-meeting/update-coding-meeting.dto"
 import { GetCodingMeetingDetailResponse } from "@/interfaces/dto/coding-meeting/get-coding-meeting-detail.dto"
-import {
-  GetCodingMeetingCommentListRequest,
-  GetCodingMeetingCommentListResponse,
-} from "@/interfaces/dto/coding-meeting/comment/get-coding-meeting-comment-list.dto"
+import { GetCodingMeetingCommentListResponse } from "@/interfaces/dto/coding-meeting/comment/get-coding-meeting-comment-list.dto"
 import { CloseCodingMeetingResponse } from "@/interfaces/dto/coding-meeting/close-coding-meeting.dto"
 import {
   UpdateCodingMeetingCommentRequest,
   UpdateCodingMeetingCommentResponse,
 } from "@/interfaces/dto/coding-meeting/comment/update-coding-meeting-comment.dto"
 import { DeleteCodingMeetingCommentResponse } from "@/interfaces/dto/coding-meeting/comment/delete-coding-meeting-comment.dto"
-import jwt, { JwtPayload } from "jsonwebtoken"
 import {
   CreateCodingMeetingCommentRequest,
   CreateCodingMeetingCommentResponse,
 } from "@/interfaces/dto/coding-meeting/comment/create-coding-meeting-comment.dto"
+import jwt, { JwtPayload } from "jsonwebtoken"
 
 export const codingMeetingHandler = [
   // 모든 모각코 모집글 조회
@@ -162,6 +159,76 @@ export const codingMeetingHandler = [
       }
     },
   ),
+  // 특정 모각코 모집글 조회
+  http.get<
+    { coding_meeting_token: string },
+    DefaultBodyType,
+    GetCodingMeetingDetailResponse
+  >(
+    `${
+      process.env.NEXT_PUBLIC_SERVER
+    }${RouteMap.codingMeeting.getCodingMeetingDetail()}`,
+    async ({ params }) => {
+      try {
+        const codingMeetingToken = params.coding_meeting_token
+
+        if (!codingMeetingToken) {
+          const { Code, HttpStatus } =
+            ApiStatus.CodingMeetings.getCodingMeetingDetail.BadRequest
+
+          return HttpResponse.json(
+            {
+              code: Code,
+              msg: "잘못된 요청입니다",
+            },
+            { status: HttpStatus },
+          )
+        }
+
+        const targetCodingMeeting = mockCodingMeetings.find(
+          (post) => post.coding_meeting_token === codingMeetingToken,
+        )
+
+        if (!targetCodingMeeting) {
+          const { Code, HttpStatus } =
+            ApiStatus.CodingMeetings.getCodingMeetingDetail.NotFound
+
+          return HttpResponse.json(
+            {
+              code: Code,
+              msg: "존재하지 않는 모각코 일정입니다",
+            },
+            { status: HttpStatus },
+          )
+        }
+
+        const { Code, HttpStatus } =
+          ApiStatus.CodingMeetings.getCodingMeetingDetail.Ok
+
+        return HttpResponse.json(
+          {
+            code: Code,
+            msg: "모각코 일정을 조회했습니다.",
+            data: {
+              ...targetCodingMeeting,
+            },
+          },
+          { status: HttpStatus },
+        )
+      } catch (error) {
+        const { Code, HttpStatus } =
+          ApiStatus.CodingMeetings.getCodingMeetingDetail.InternalServerError
+
+        return HttpResponse.json(
+          {
+            code: Code,
+            msg: "서버 오류",
+          },
+          { status: HttpStatus },
+        )
+      }
+    },
+  ),
   // 모각코 모집글 생성
   http.post<
     PathParams,
@@ -170,9 +237,29 @@ export const codingMeetingHandler = [
   >(
     `${process.env.NEXT_PUBLIC_SERVER}${RouteMap.codingMeeting.createCodingMeeting}`,
     async ({ request }) => {
-      const { member_id, ...createPayload } = await request.json()
+      const { ...createPayload } = await request.json()
 
-      const targetMember = mockUsers.find((member) => member.id === member_id)
+      const header = request.headers
+      const header_token = header.get("Authorization")
+
+      if (!header_token) {
+        const { Code, HttpStatus } = ApiStatus.QnA.updateQustion.Unauthorized
+        return HttpResponse.json(
+          {
+            code: Code,
+            msg: "인증된 유저가 아닙니다",
+          },
+          { status: HttpStatus },
+        )
+      }
+
+      const decoded_token = jwt.decode(header_token) as JwtPayload & {
+        id: number
+      }
+
+      const targetMember = mockUsers.find(
+        (user) => user.id === decoded_token.id,
+      )
 
       if (!targetMember) {
         return HttpResponse.json(
@@ -188,7 +275,7 @@ export const codingMeetingHandler = [
 
       const token = "CMT" + (mockCodingMeetings.length + 10000)
 
-      const newCoffeeChatPost: MockCodingMeeting = {
+      const newCodingMeetingPost: MockCodingMeeting = {
         member_id: targetMember.id,
         member_level: targetMember.level,
         member_nickname: targetMember.nickname,
@@ -201,7 +288,7 @@ export const codingMeetingHandler = [
         comments: [],
       }
 
-      mockCodingMeetings.push(newCoffeeChatPost)
+      mockCodingMeetings.push(newCodingMeetingPost)
 
       return HttpResponse.json(
         {

@@ -6,9 +6,11 @@ import { APIResponse } from "../api-response"
 
 type BaseRequest = Omit<
   CodingMeetingDetail,
-  keyof CodingMeetingAuthor | "created_date" | "coding_meeting_token"
-> &
-  Pick<CodingMeetingAuthor, "member_id">
+  | keyof CodingMeetingAuthor
+  | "created_date"
+  | "coding_meeting_token"
+  | "coding_meeting_closed"
+>
 
 export interface CreateCodingMeetingRequest extends BaseRequest {}
 

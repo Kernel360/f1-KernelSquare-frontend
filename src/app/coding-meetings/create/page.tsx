@@ -27,7 +27,7 @@ export default async function CreateCodingMeetingsPage() {
       )
     }
 
-    return <CreateCodingMeetingPage />
+    return <CreateCodingMeetingPage editMode="create" />
   } catch (error) {
     notFound()
   }

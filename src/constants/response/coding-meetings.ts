@@ -56,6 +56,59 @@ export const CodingMeetingApiStatus = {
     },
   },
   /**
+   * 특정 모각코 등록글 조회 관련 api status
+   */
+  getCodingMeetingDetail: {
+    /**
+     * 특정 모각코 조회 성공
+     * - 커스텀 코드가 없어서 현재는 code를 -1로 설정함
+     */
+    Ok: {
+      Code: 5141,
+      HttpStatus: HttpStatusCode.Ok,
+    },
+    /**
+     * (특정 모각코 조회) 권한이 없는 회원
+     * - 커스텀 코드가 없어서 현재는 code를 -1로 설정함
+     */
+    Forbidden: {
+      Code: -1,
+      HttpStatus: HttpStatusCode.Forbidden,
+    },
+    /**
+     * (특정 모각코 조회) 인증되지 않은 회원
+     * - 커스텀 코드가 없어서 현재는 code를 -1로 설정함
+     */
+    Unauthorized: {
+      Code: -1,
+      HttpStatus: HttpStatusCode.Unauthorized,
+    },
+    /**
+     * (특정 모각코 조회) 존재하지 않는 회원
+     * - 커스텀 코드가 없어서 현재는 code를 -1로 설정함
+     */
+    NotFound: {
+      Code: -1,
+      HttpStatus: HttpStatusCode.NotFound,
+    },
+    /**
+     * (특정 모각코 조회) 잘못된 요청
+     * - 커스텀 코드가 없어서 현재는 code를 -1로 설정함
+     */
+    BadRequest: {
+      Code: -1,
+      HttpStatus: HttpStatusCode.BadRequest,
+    },
+    /**
+     * (특정 모각코 조회) 서버 에러
+     * - 커스텀 코드가 없어서 현재는 code를 -1로 설정함
+     */
+    InternalServerError: {
+      Code: -1,
+      HttpStatus: HttpStatusCode.InternalServerError,
+    },
+  },
+  /**
    * 모각코 등록글 생성 관련 api status
    */
   createCodingMeeting: {
@@ -226,7 +279,7 @@ export const CodingMeetingApiStatus = {
   /**
    * 모각코 상세 관련 api status
    */
-  getCodingMeetingDetail: {
+  getCodingMeetingDetailComment: {
     Ok: {
       Code: 5140,
       HttpStatus: HttpStatusCode.Ok,

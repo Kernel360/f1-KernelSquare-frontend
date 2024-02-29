@@ -372,6 +372,11 @@ export class RouteMap {
   static codingMeeting = {
     getCodingMeetingList: `${RouteMap.routeGroupBaseURL.codingMeetings}`,
     createCodingMeeting: `${RouteMap.routeGroupBaseURL.codingMeetings}`,
+    getCodingMeetingDetail(coding_meeting_token?: string) {
+      return `${RouteMap.routeGroupBaseURL.codingMeetings}/${
+        coding_meeting_token ?? ":coding_meeting_token"
+      }`
+    },
     updateCodingMeeting(coding_meeting_token?: string) {
       return `${RouteMap.routeGroupBaseURL.codingMeetings}/${
         coding_meeting_token ?? ":coding_meeting_token"

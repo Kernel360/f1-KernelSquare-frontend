@@ -1,4 +1,4 @@
-import { GetCodingMeetingDetailPayload } from "@/interfaces/dto/coding-meeting/get-coding-meeting-detail.dto"
+import { CodingMeetingDetailPayload } from "@/interfaces/dto/coding-meeting/get-coding-meeting-detail.dto"
 import UserInfo from "./UserInfo"
 import { CodingMeetingAuthor } from "@/interfaces/coding-meetings"
 import DetailMenu from "./DetailMenu"
@@ -11,7 +11,7 @@ import HashTag from "@/components/shared/tag/HashTag"
 import DetailComments from "./Comments"
 
 interface CodingMeetingsDetailPageProps {
-  detail: GetCodingMeetingDetailPayload
+  detail: CodingMeetingDetailPayload
 }
 
 const CodingMeetingsDetailPage = ({
