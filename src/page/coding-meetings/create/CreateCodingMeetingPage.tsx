@@ -32,6 +32,7 @@ import { LocationForSubmit } from "@/recoil/atoms/coding-meeting/mapData"
 import Limitation from "@/constants/limitation"
 import type { CodingMeetingDetailPayload } from "@/interfaces/dto/coding-meeting/get-coding-meeting-detail.dto"
 import NotFound from "@/app/not-found"
+import { revalidatePage } from "@/util/actions/revalidatePage"
 
 interface CreateCodingMeetingPageProps {
   editMode: "create" | "update"
@@ -184,7 +185,7 @@ const CreateCodingMeetingPage = ({
           queryClient.invalidateQueries({
             queryKey: ["codingMeeting"],
           })
-
+          revalidatePage("/coding-meetings/[token]", "page")
           replace(`/coding-meetings/${coding_meeting_token}`)
 
           setHash_tags([])
