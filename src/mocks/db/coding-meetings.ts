@@ -23,7 +23,28 @@ const mockCodingMeetings: MockCodingMeeting[] = [
     coding_meeting_location_longitude: "127.0631257",
     coding_meeting_content:
       "안녕하세요<br/>저는 아직 6개월 밖에 되지 않은 웹 개발자 입니다.<br/>주말동안 아무것도 안하게 되니 서로 정보공유 하며 공부할겸 의정부에서 모각코를 해볼까 합니다.<br/>관심있는 분들은 간단한 자기 소개 및 참여 의사 댓글에 남겨주시면 감사하겠습니다!!..🫡",
-    comments: [],
+    comments: [
+      {
+        member_id: mockUsers[0].id,
+        member_level: mockUsers[0].level,
+        member_nickname: mockUsers[0].nickname,
+        member_profile_url: mockUsers[0].image_url,
+        member_level_image_url: badge_url[mockUsers[0].level],
+        coding_meeting_comment_token: "CT-000000001",
+        coding_meeting_comment_content: "안녕하세요",
+        created_date: "2024-02-24T07:36:53.696Z",
+      },
+      {
+        member_id: mockUsers[1].id,
+        member_level: mockUsers[1].level,
+        member_nickname: mockUsers[1].nickname,
+        member_profile_url: mockUsers[1].image_url,
+        member_level_image_url: badge_url[mockUsers[1].level],
+        coding_meeting_comment_token: "CT-000000002",
+        coding_meeting_comment_content: "반갑습니다",
+        created_date: "2024-02-24T07:36:53.696Z",
+      },
+    ],
   },
   {
     member_id: mockUsers[1].id,

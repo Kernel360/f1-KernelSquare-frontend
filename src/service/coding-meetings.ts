@@ -36,6 +36,14 @@ import {
   DeleteCodingMeetingCommentRequest,
   DeleteCodingMeetingCommentResponse,
 } from "@/interfaces/dto/coding-meeting/comment/delete-coding-meeting-comment.dto"
+import {
+  GetCodingMeetingDetailRequest,
+  GetCodingMeetingDetailResponse,
+} from "@/interfaces/dto/coding-meeting/get-coding-meeting-detail.dto"
+import {
+  CloseCodingMeetingRequest,
+  CloseCodingMeetingResponse,
+} from "@/interfaces/dto/coding-meeting/close-coding-meeting.dto"
 
 export async function getCodingMeetingList(
   { page = 0, size = 10, filter = "all" }: GetCodingMeetingListRequest = {
@@ -106,6 +114,27 @@ export async function updateCodingMeeting({
   return res
 }
 
+export async function getCodingMeetingDetail({
+  coding_meeting_token,
+}: GetCodingMeetingDetailRequest) {
+  const res = await apiInstance.get<GetCodingMeetingDetailResponse>(
+    RouteMap.codingMeeting.getCodingMeetingDetail(coding_meeting_token),
+  )
+
+  return res
+}
+
+export async function closeCodingMeeting({
+  coding_meeting_token,
+}: CloseCodingMeetingRequest) {
+  const res = await apiInstance.put<
+    any,
+    AxiosResponse<CloseCodingMeetingResponse>
+  >(RouteMap.codingMeeting.closeCodingMeeting(coding_meeting_token))
+
+  return res
+}
+
 // comment
 export async function getCodingMeetingComments({
   coding_meeting_token,
@@ -118,8 +147,7 @@ export async function getCodingMeetingComments({
 }
 
 export async function createCodingMeetingComment({
-  member_id,
-  coding_meeting_comment_token,
+  coding_meeting_token,
   coding_meeting_comment_content,
 }: CreateCodingMeetingCommentRequest) {
   const res = await apiInstance.post<
@@ -127,8 +155,7 @@ export async function createCodingMeetingComment({
     AxiosResponse<CreateCodingMeetingCommentResponse>,
     CreateCodingMeetingCommentRequest
   >(RouteMap.codingMeeting.createCodingMeetingComment, {
-    member_id,
-    coding_meeting_comment_token,
+    coding_meeting_token,
     coding_meeting_comment_content,
   })
 
@@ -139,7 +166,7 @@ export async function updateCodingMeetingComment({
   coding_meeting_comment_token,
   coding_meeting_comment_content,
 }: UpdateCodingMeetingCommentRequest) {
-  const res = await apiInstance.post<
+  const res = await apiInstance.put<
     any,
     AxiosResponse<UpdateCodingMeetingCommentResponse>,
     Pick<UpdateCodingMeetingCommentRequest, "coding_meeting_comment_content">

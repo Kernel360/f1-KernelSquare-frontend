@@ -4,8 +4,10 @@ import {
 } from "@/interfaces/coding-meetings"
 import { APIResponse } from "../../api-response"
 
-type BaseRequest = Pick<CodingMeetingCommentAuthor, "member_id"> &
-  CodingMeetingCommentContent
+interface BaseRequest
+  extends Pick<CodingMeetingCommentContent, "coding_meeting_comment_content"> {
+  coding_meeting_token: string
+}
 
 export interface CreateCodingMeetingCommentRequest extends BaseRequest {}
 

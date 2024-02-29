@@ -360,6 +360,10 @@ export class RouteMap {
    * updateCodingMeeting: 모각코 수정 (put)
    * deleteCodingMeeting: 모각코 삭제 (delete)
    *
+   * getCodingMeetingDetail: 특정 모각코 상세 조회(get)
+   *
+   * closeCodingMeeting: 모각코 마감(put)
+   *
    * getCodingMeetingCommentList: 특정 모각코 모든 댓글 조회(get)
    * createCodingMeetingComment: 특정 모각코 댓글 생성(post)
    * updateCodingMeetingComment: 특정 모각코 댓글 수정(put)
@@ -377,6 +381,16 @@ export class RouteMap {
       return `${RouteMap.routeGroupBaseURL.codingMeetings}/${
         coding_meeting_token ?? ":coding_meeting_token"
       }`
+    },
+    getCodingMeetingDetail(coding_meeting_token?: string) {
+      return `${RouteMap.routeGroupBaseURL.codingMeetings}/${
+        coding_meeting_token ?? ":coding_meeting_token"
+      }`
+    },
+    closeCodingMeeting(coding_meeting_token?: string) {
+      return `${RouteMap.routeGroupBaseURL.codingMeetings}/${
+        coding_meeting_token ?? ":coding_meeting_token"
+      }/status`
     },
     getCodingMeetingCommentList(coding_meeting_token?: string) {
       return `${RouteMap.routeGroupBaseURL.codingMeetingComments}/${

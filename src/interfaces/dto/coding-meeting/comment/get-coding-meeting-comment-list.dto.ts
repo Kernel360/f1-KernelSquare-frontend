@@ -5,9 +5,7 @@ export interface GetCodingMeetingCommentListRequest {
   coding_meeting_token: string
 }
 
-export interface GetCodingMeetingCommentListPayload {
-  coding_meeting_comments: Array<CodingMeetingComment>
-}
+export type GetCodingMeetingCommentListPayload = Array<CodingMeetingComment>
 
 export interface GetCodingMeetingCommentListResponse
   extends APIResponse<GetCodingMeetingCommentListPayload> {}

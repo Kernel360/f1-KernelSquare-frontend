@@ -214,4 +214,39 @@ export const CodingMeetingApiStatus = {
       HttpStatus: HttpStatusCode.InternalServerError,
     },
   },
+  /**
+   * 모각코 마감 api status
+   */
+  closeCodingMeeting: {
+    Ok: {
+      Code: 5145,
+      HttpStatus: HttpStatusCode.Ok,
+    },
+  },
+  /**
+   * 모각코 상세 관련 api status
+   */
+  getCodingMeetingDetail: {
+    Ok: {
+      Code: 5140,
+      HttpStatus: HttpStatusCode.Ok,
+    },
+    NotFound: {
+      Code: -1,
+      HttpStatus: HttpStatusCode.NotFound,
+    },
+  },
+  /**
+   * 모각코 댓글 조회 api status
+   */
+  getCodingMeetingComments: {
+    Ok: {
+      Code: 5140,
+      HttpStatus: HttpStatusCode.Ok,
+    },
+    NotFound: {
+      Code: -1,
+      HttpStatus: HttpStatusCode.NotFound,
+    },
+  },
 } satisfies Record<string, ApiStatus>

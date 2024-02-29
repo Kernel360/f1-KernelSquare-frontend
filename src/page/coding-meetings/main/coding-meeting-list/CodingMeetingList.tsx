@@ -8,7 +8,11 @@ import Button from "@/components/shared/button/Button"
 import HashTag from "@/components/shared/tag/HashTag"
 import { useClientSession } from "@/hooks/useClientSession"
 import { GetCodingMeetingListResponse } from "@/interfaces/dto/coding-meeting/get-coding-meetingl-list.dto"
-import { getKorDayjs, getKorRelativeTime } from "@/util/getDate"
+import {
+  getCollapsedDate,
+  getKorDayjs,
+  getKorRelativeTime,
+} from "@/util/getDate"
 import dayjs from "dayjs"
 import Image from "next/image"
 import Link from "next/link"
@@ -146,15 +150,6 @@ function CodingMeetingList({ codingMeetings }: CodingMeetingListProps) {
 }
 
 export default CodingMeetingList
-
-function getCollapsedDate({ start, end }: { start: string; end: string }) {
-  const startDate = getKorDayjs(start)
-  const endDate = getKorDayjs(end)
-
-  return `${startDate.format("YYYY년 MM월 DD일 HH:mm")} ~ ${endDate.format(
-    "HH:mm",
-  )}`
-}
 
 CodingMeetingList.OpenStatusTag = function CodingMeetingListOpenStatusTag({
   isClosed,
