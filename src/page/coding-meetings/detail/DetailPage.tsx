@@ -4,7 +4,7 @@ import { CodingMeetingAuthor } from "@/interfaces/coding-meetings"
 import DetailMenu from "./DetailMenu"
 import Spacing from "@/components/shared/Spacing"
 import DetailSection from "./Section"
-import { getCollapsedDate } from "@/util/getDate"
+import { getCollapsedDate, getKorDayjs } from "@/util/getDate"
 import Link from "next/link"
 import DetailMap from "./Map"
 import HashTag from "@/components/shared/tag/HashTag"
@@ -28,6 +28,17 @@ const CodingMeetingsDetailPage = ({
     member_level_image_url: detail.member_level_image_url,
     member_level: detail.member_level,
   }
+
+  console.log("detail Time", {
+    start: {
+      origin: detail.coding_meeting_start_time,
+      kor: getKorDayjs(detail.coding_meeting_start_time),
+    },
+    end: {
+      origin: detail.coding_meeting_end_time,
+      kor: getKorDayjs(detail.coding_meeting_end_time),
+    },
+  })
 
   return (
     <>
