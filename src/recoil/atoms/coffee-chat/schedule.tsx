@@ -1,4 +1,4 @@
-import { Value } from "@/page/coffee-chat/create/components/CustomCalendar/Calendar.types"
+import type { Value } from "@/interfaces/calendar"
 import { atom, atomFamily } from "recoil"
 
 export const ScheduleList = atom<string[]>({

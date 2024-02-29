@@ -195,3 +195,18 @@ export {
   getKorDayjs,
   formatDate,
 }
+
+export function getCollapsedDate({
+  start,
+  end,
+}: {
+  start: string
+  end: string
+}) {
+  const startDate = getKorDayjs(start)
+  const endDate = getKorDayjs(end)
+
+  return `${startDate.format("YYYY년 MM월 DD일 HH:mm")} ~ ${endDate.format(
+    "HH:mm",
+  )}`
+}

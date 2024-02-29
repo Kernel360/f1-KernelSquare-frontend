@@ -16,6 +16,7 @@ const config = {
       padding: "2rem",
       screens: {
         "2xl": "1400px",
+        "3xl": "1920px",
       },
     },
     extend: {
@@ -23,6 +24,7 @@ const config = {
         toastify: { max: "480px" },
         editor: { min: "480px" },
         lgDevice: { min: "992px" },
+        tablet: { min: "834px" },
       },
       colors: {
         colorsGray: "#ced4da",

@@ -2,17 +2,37 @@ import Limitation from "./limitation"
 
 export const errorMessage = {
   notitle: "제목을 작성해주세요",
+  noSearchResult: "검색 결과가 존재하지 않습니다.",
+  underTitleLimit: `제목은 최소 ${Limitation.title_limit_under}자 이상이어야 합니다.`,
+  overTitleLimit: `제목은 최대 ${Limitation.title_limit_over}자 이하이어야 합니다.`,
   noContent: "본문 내용을 작성해주세요",
-  introductionLimit: "최대 300자까지 입력 가능합니다.",
-  imageUploadLimit: "이미지 파일 업로드는 1장만 가능합니다",
+  noTime: "정확한 시간대를 설정해주세요",
+  noLocation: "모임 위치를 설정해주세요",
+  noHeadCnt: "모임 인원을 설정해주세요",
+  underContentLimit: `본문 내용은 최소 ${Limitation.content_limit_under}자 이상이어야 합니다.`,
+  overContentLimit: `본문 내용은 최대 ${Limitation.content_limit_over}자 이하이어야 합니다.`,
+  introductionLimitOver: `최대 ${Limitation.introduction_limit_over}자까지 입력 가능합니다.`,
+  introductionLimitUnder: `최소 ${Limitation.introduction_limit_under}자 이상 입력해야 합니다.`,
+  imageLimitOver: `${Limitation.image.stringifyedSize} 이하의 이미지만 업로드할 수 있습니다.`,
+  imageUploadLimit:
+    Limitation.image.upload.maxLength === 1
+      ? "이미지 파일 업로드는 1장만 가능합니다"
+      : `이미지 파일 업로드는 최대${Limitation.image.upload.maxLength}장까지 가능합니다.`,
+  invalidImageExtension: "올바른 형식의 이미지가 아닙니다.",
+  notAllowedImageExtensions: `이미지 파일 업로드는 ${Limitation.image.extension.toString()} 확장자만 가능합니다`,
   unauthorized: "로그인 후 다시 이용해주세요",
   failToUploadImage:
     "이미지 업로드 중 오류가 발생하였습니다. 다시 시도해주세요.",
   failToResetImage:
     "이미지 초기화 중 오류가 발생하였습니다. 다시 시도해주세요.",
+  failToUploadIntroduction:
+    "자기소개글 수정 중 오류가 발생하였습니다. 다시 시도해주세요.",
+  failToVote: "투표 진행 중 오류가 발생하였습니다. 다시 시도해주세요.",
+  failToSearchLocation: "장소 검색 중 오류가 발생하였습니다.",
   emptyCookie: "쿠키가 비어있습니다.",
   deleteAnswer: "답변 삭제 중 오류가 발생하였습니다.",
   deleteQuestion: "질문 삭제 중 오류가 발생하였습니다.",
+  deleteCodingMeeting: "모각코 게시물 삭제 중 오류가 발생하였습니다.",
   updateAnswer: "답변 수정 중 오류가 발생하였습니다.",
   tryAgain: "잠시 후 다시 시도해주세요.",
   saySorry: "이용에 불편을 드려 죄송해요.",
@@ -29,6 +49,8 @@ export const errorMessage = {
   preventSpecialCharacter: `문자와 숫자만 입력 가능합니다.`,
   preventDuplicateValue: "이미 입력된 값입니다.",
   voteForMe: "자신의 답변에는 투표할 수 없습니다.",
+  timeError: "종료 시간은 시작 시간보다 앞설 수 없습니다.",
+  sameTime: "종료 시간은 시작 시간과 동일할 수 없습니다.",
 } as const
 
 export const successMessage = {

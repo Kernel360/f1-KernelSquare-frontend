@@ -27,7 +27,7 @@ const ProfileImage = ({ user_id, image_url }: ProfileImageProps) => {
         type="file"
         ref={imageUploadRef}
         className="hidden"
-        accept="image/*"
+        accept=".png, .jpeg, .svg, .gif"
         onChange={(e) => handleImageChange(e, user_id)}
       />
       {isMyPage && (

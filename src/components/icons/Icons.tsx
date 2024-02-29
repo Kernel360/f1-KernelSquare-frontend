@@ -1,5 +1,4 @@
 import { IconBaseProps } from "react-icons"
-import { IoSearchOutline } from "react-icons/io5"
 import { IoIosNotifications } from "react-icons/io"
 import { FaCircle, FaRegCircle, FaUserCircle } from "react-icons/fa"
 import { LuCode2, LuInfo, LuSearchCode } from "react-icons/lu"
@@ -13,10 +12,14 @@ import {
   BiSolidRightArrow,
   BiSolidUpArrow,
 } from "react-icons/bi"
+import { GoChevronLeft } from "react-icons/go"
 import { BiSolidDownArrow } from "react-icons/bi"
 import { TbPencilPlus } from "react-icons/tb"
 import { RiArrowUpSLine } from "react-icons/ri"
 import { MdClose } from "react-icons/md"
+import { MdComputer } from "react-icons/md"
+import { FaMapMarkerAlt } from "react-icons/fa"
+import { IoSearchOutline } from "react-icons/io5"
 
 type IconsKey =
   | "Search"
@@ -26,10 +29,18 @@ type IconsKey =
   | "PostQuestion"
   | "ScrollToTop"
   | "Search"
+  | "PlainSearch"
   | "Close"
   | "Info"
-type NavigationIconsKey = "QnA" | "Chat" | "Notice" | "FaQ" | "MyPage"
-type DirectionIconsKey = "Up" | "Down" | "Left" | "Right"
+  | "MapMarker"
+type NavigationIconsKey =
+  | "QnA"
+  | "Chat"
+  | "CodingMeetings"
+  | "Notice"
+  | "FaQ"
+  | "MyPage"
+type DirectionIconsKey = "Up" | "Down" | "Left" | "Right" | "LeftLine"
 type CircleIconsKey = "Line" | "Fill"
 export type Icon = (props: IconBaseProps) => JSX.Element
 
@@ -55,11 +66,17 @@ export const Icons: Record<IconsKey, Icon> = {
   Search(props) {
     return <LuSearchCode {...props} />
   },
+  PlainSearch(props) {
+    return <IoSearchOutline {...props} />
+  },
   Close(props) {
     return <MdClose {...props} />
   },
   Info(props) {
     return <LuInfo {...props} />
+  },
+  MapMarker(props) {
+    return <FaMapMarkerAlt {...props} />
   },
 }
 
@@ -69,6 +86,9 @@ export const NavigationIcons: Record<NavigationIconsKey, Icon> = {
   },
   Chat(props) {
     return <HiOutlineChatBubbleLeftRight {...props} />
+  },
+  CodingMeetings(props) {
+    return <MdComputer {...props} />
   },
   Notice(props) {
     return <AiOutlineNotification {...props} />
@@ -90,6 +110,9 @@ export const DirectionIcons: Record<DirectionIconsKey, Icon> = {
   },
   Left(props) {
     return <BiSolidLeftArrow {...props} />
+  },
+  LeftLine(props) {
+    return <GoChevronLeft {...props} />
   },
   Right(props) {
     return <BiSolidRightArrow {...props} />

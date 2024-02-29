@@ -7,6 +7,7 @@ import UserProfileGuardModal from "./UserProfileGuardModal"
 import MyPageGuardModal from "./MyPageGuardModal"
 import UpdateQuestionGuardModal from "./UpdateQustionGuardModal"
 import { useClientSession } from "@/hooks/useClientSession"
+import UpdateCodingMeetingGuardModal from "./UpdateCodingMeetingGuardModal"
 
 type AuthGuardModalPages =
   | "question"
@@ -15,17 +16,29 @@ type AuthGuardModalPages =
   | "signup"
   | "userProfile"
   | "profile"
+  | "updateCodingMeeting:Unauthorized"
+  | "updateCodingMeeting:Forbidden"
 
 type AuthGuardPayloadKey = Extract<
   AuthGuardModalPages,
-  "updateQuestion:Unauthorized" | "updateQuestion:Forbidden"
+  | "updateQuestion:Unauthorized"
+  | "updateQuestion:Forbidden"
+  | "updateCodingMeeting:Unauthorized"
+  | "updateCodingMeeting:Forbidden"
 >
+
+type QuestionPayload = { questionId: number }
+type CodingMeetingPayload = { coding_meeting_token: string }
 
 type AuthGuardPayload<P extends AuthGuardPayloadKey> =
   P extends "updateQuestion:Unauthorized"
-    ? { questionId: number }
+    ? QuestionPayload
     : P extends "updateQuestion:Forbidden"
-    ? { questionId: number }
+    ? QuestionPayload
+    : P extends "updateCodingMeeting:Unauthorized"
+    ? CodingMeetingPayload
+    : P extends "updateCodingMeeting:Forbidden"
+    ? CodingMeetingPayload
     : {}
 
 type AuthGuardModalProps<T extends AuthGuardModalPages> = {
@@ -38,7 +51,19 @@ type AuthGuardModalProps<T extends AuthGuardModalPages> = {
 const sholudNotResetSessionPaths: Array<AuthGuardModalPages> = [
   "signup",
   "updateQuestion:Forbidden",
+  "updateCodingMeeting:Forbidden",
 ]
+
+const isUpdateQuestionPayload = (
+  payload: any,
+): payload is { questionId: number } =>
+  (payload as { questionId?: number }).questionId !== undefined
+
+const isUpdateCodingMeetingPayload = (
+  payload: any,
+): payload is { coding_meeting_token: string } =>
+  (payload as { coding_meeting_token?: string }).coding_meeting_token !==
+  undefined
 
 function AuthGuardModal<T extends AuthGuardModalPages>({
   page,
@@ -51,25 +76,47 @@ function AuthGuardModal<T extends AuthGuardModalPages>({
       case "question":
         return <AskQustionGuardModal />
       case "updateQuestion:Unauthorized":
-        return (
-          <UpdateQuestionGuardModal
-            guardType="Unauthorized"
-            questionId={payload!.questionId}
-          />
-        )
+        if (isUpdateQuestionPayload(payload)) {
+          return (
+            <UpdateQuestionGuardModal
+              guardType="Unauthorized"
+              questionId={payload!.questionId}
+            />
+          )
+        }
       case "updateQuestion:Forbidden":
-        return (
-          <UpdateQuestionGuardModal
-            guardType="Forbidden"
-            questionId={payload!.questionId}
-          />
-        )
+        if (isUpdateQuestionPayload(payload)) {
+          return (
+            <UpdateQuestionGuardModal
+              guardType="Forbidden"
+              questionId={payload!.questionId}
+            />
+          )
+        }
       case "signup":
         return <SignupGuardModal />
       case "userProfile":
         return <UserProfileGuardModal />
       case "profile":
         return <MyPageGuardModal />
+      case "updateCodingMeeting:Unauthorized":
+        if (isUpdateCodingMeetingPayload(payload)) {
+          return (
+            <UpdateCodingMeetingGuardModal
+              guardType="Unauthorized"
+              coding_meeting_token={payload!.coding_meeting_token}
+            />
+          )
+        }
+      case "updateCodingMeeting:Forbidden":
+        if (isUpdateCodingMeetingPayload(payload)) {
+          return (
+            <UpdateCodingMeetingGuardModal
+              guardType="Forbidden"
+              coding_meeting_token={payload!.coding_meeting_token}
+            />
+          )
+        }
       default:
         return null
     }
