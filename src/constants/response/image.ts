@@ -1,5 +1,11 @@
 import { HttpStatusCode } from "axios"
-import { ApiStatus } from "./api"
+import { ApiStatus, Status } from "./api"
+
+type ImageExpandStatusType = {
+  BadExtension?: Status
+  SizeOverflow?: Status
+  InvalidCategory?: Status
+}
 
 export const ImageApiStatus = {
   /**
@@ -34,6 +40,27 @@ export const ImageApiStatus = {
     InternalServerError: {
       Code: 2401,
       HttpStatus: HttpStatusCode.InternalServerError,
+    },
+    /**
+     * (이미지 업로드) 유효하지 않는 파일 확장자
+     */
+    BadExtension: {
+      Code: 2402,
+      HttpStatus: HttpStatusCode.BadRequest,
+    },
+    /**
+     * (이미지 업로드) 파일 크기 초과
+     */
+    SizeOverflow: {
+      Code: 2403,
+      HttpStatus: HttpStatusCode.BadRequest,
+    },
+    /**
+     * (이미지 업로드) 유효하지 않은 카테고리
+     */
+    InvalidCategory: {
+      Code: 2410,
+      HttpStatus: HttpStatusCode.BadRequest,
     },
   },
   /**
@@ -88,4 +115,4 @@ export const ImageApiStatus = {
       HttpStatus: HttpStatusCode.InternalServerError,
     },
   },
-} satisfies Record<string, ApiStatus>
+} satisfies Record<string, ApiStatus & ImageExpandStatusType>

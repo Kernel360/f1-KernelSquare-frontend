@@ -31,10 +31,7 @@ import { revalidatePage } from "@/util/actions/revalidatePage"
 import { replaceAllMarkdownImageLink } from "@/util/editor"
 import { useDeleteImage } from "@/hooks/image/useDeleteImage"
 import { useToastUiQuestionEditor } from "@/hooks/editor/useToastuiQuestionEditor"
-import {
-  MAXIMUM_UPLOAD_IMAGE_LENGTH,
-  useToastUiEditorImageUploadHook,
-} from "@/hooks/useToastUiEditorImageUploadHook"
+import { useToastUiEditorImageUploadHook } from "@/hooks/useToastUiEditorImageUploadHook"
 import { useSelectTagList } from "@/hooks/useSelectTagList"
 import type { FieldErrors } from "react-hook-form"
 import type {
@@ -44,6 +41,8 @@ import type {
 } from "./AskQuestionPageControl"
 import { useResetRecoilState } from "recoil"
 import { searchTagAtom } from "@/recoil/atoms/tag"
+import Limitation from "@/constants/limitation"
+import { errorMessage } from "@/constants/message"
 
 export interface QuestionEditorInitialValues {
   title: string
@@ -82,9 +81,6 @@ function AskQuestionForm({
   question_id,
   editMode,
 }: AskQustionFormProps) {
-  // 실제 연동시 잘되는지 보기 위한 용도
-  // 삭제 될 수 있음
-  console.log({ editMode, initialValues })
   const { user } = useClientSession()
 
   const { register, setValue, setFocus, handleSubmit } =
@@ -146,19 +142,41 @@ function AskQuestionForm({
 
         toast.error("이미지 업로드에 실패했습니다", {
           position: "top-center",
+          toastId: "imageUploadError",
         })
       },
       onError({ errorCase }) {
         if (errorCase === "isMaximum") {
-          toast.error(
-            `이미지 파일 업로드는 최대${MAXIMUM_UPLOAD_IMAGE_LENGTH}장 가능합니다`,
-            { position: "top-center" },
-          )
+          toast.error(errorMessage.imageUploadLimit, {
+            position: "top-center",
+            toastId: "imageLengthError",
+          })
 
           return
         }
 
-        toast.error("이미지 업로드에 실패했습니다", { position: "top-center" })
+        if (errorCase === "isMaximumSize") {
+          toast.error(errorMessage.imageLimitOver, {
+            position: "top-center",
+            toastId: "imageSizeError",
+          })
+
+          return
+        }
+
+        if (errorCase === "notAllowedExtension") {
+          toast.error(errorMessage.notAllowedImageExtensions, {
+            position: "top-center",
+            toastId: "imageExtensionError",
+          })
+
+          return
+        }
+
+        toast.error("이미지 업로드에 실패했습니다", {
+          position: "top-center",
+          toastId: "imageError",
+        })
       },
     })
 
@@ -214,7 +232,10 @@ function AskQuestionForm({
         return
       }
 
-      toast.error("질문 생성에 실패했습니다", { position: "bottom-center" })
+      toast.error("질문 생성에 실패했습니다", {
+        position: "bottom-center",
+        toastId: "createQuestionError",
+      })
 
       return
     }
@@ -272,12 +293,30 @@ function AskQuestionForm({
       return
     }
 
-    toast.error("질문 수정에 실패했습니다", { position: "bottom-center" })
+    toast.error("질문 수정에 실패했습니다", {
+      position: "bottom-center",
+      toastId: "updateQuestionError",
+    })
   }
 
   const onInvalid = async (errors: FieldErrors<AskQuestionFormData>) => {
-    if (errors.title?.type === "required") {
-      toast.error("제목을 입력해주세요", { position: "top-center" })
+    // title
+    if (errors?.title) {
+      const titleErrorMessage = ((type: typeof errors.title.type) => {
+        switch (type) {
+          case "required":
+            return errorMessage.notitle
+          case "minLength":
+            return errorMessage.underTitleLimit
+          case "maxLength":
+            return errorMessage.overTitleLimit
+        }
+      })(errors.title.type)
+
+      toast.error(titleErrorMessage, {
+        position: "top-center",
+        toastId: "questionTitleToast",
+      })
 
       window.scroll({
         top: 0,
@@ -291,8 +330,23 @@ function AskQuestionForm({
       return
     }
 
-    if (errors.content?.type === "required") {
-      toast.error("질문을 입력해주세요", { position: "top-center" })
+    // content
+    if (errors?.content) {
+      const contentErrorMessage = ((type: typeof errors.content.type) => {
+        switch (type) {
+          case "required":
+            return errorMessage.noContent
+          case "minLength":
+            return errorMessage.underContentLimit
+          case "maxLength":
+            return errorMessage.overContentLimit
+        }
+      })(errors.content.type)
+
+      toast.error(contentErrorMessage, {
+        position: "top-center",
+        toastId: "questionContentToast",
+      })
 
       setTimeout(() => {
         editorRef.current?.getInstance().focus()
@@ -355,6 +409,8 @@ function AskQuestionForm({
             placeholder="제목"
             {...register("title", {
               required: true,
+              minLength: Limitation.title_limit_under,
+              maxLength: Limitation.title_limit_over,
               disabled: !loaded,
               onChange(event) {
                 updateQuestionEditorState({
@@ -399,6 +455,8 @@ function AskQuestionForm({
             spellCheck="false"
             {...register("content", {
               required: true,
+              minLength: Limitation.content_limit_under,
+              maxLength: Limitation.content_limit_over,
             })}
           />
         </div>

@@ -1,5 +1,7 @@
 export type LayoutMetaKey =
   | "/"
+  | "qna"
+  | "coding-meetings"
   | "question"
   | "updateQuestion"
   | "signup"
@@ -24,8 +26,26 @@ export const NOTMATCH_SEGMENT = "__DEFAULT__"
 
 export const layoutMeta = {
   "/": {
+    title: "홈",
+    description: "커널 스퀘어에 오신 것을 환영합니다",
+    containLayout: {
+      header: false,
+      navigation: false,
+      footer: false,
+    },
+  },
+  qna: {
     title: "개발자 Q&A",
-    description: "Q&A",
+    description: "커널 스퀘어 개발자 Q&A",
+    containLayout: {
+      header: true,
+      navigation: true,
+      footer: false,
+    },
+  },
+  "coding-meetings": {
+    title: "모각코",
+    description: "모여서 각자 코딩",
     containLayout: {
       header: true,
       navigation: true,

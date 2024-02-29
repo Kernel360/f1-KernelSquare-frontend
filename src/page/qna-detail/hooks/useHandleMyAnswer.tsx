@@ -40,7 +40,7 @@ const useHandleMyAnswer = ({ answerId, questionId }: AnswerProps) => {
   )
   const queryClient = useQueryClient()
   const { openModal } = useModal()
-  const { checkNullValue } = useQnADetail({ questionId })
+  const { checkNullValue } = useQnADetail()
   const { deleteImage } = useDeleteImage()
   const { updateAnswer } = answerQueries.useUpdateAnswer()
   const { deleteAnswer } = answerQueries.useDeleteAnswer()
@@ -48,6 +48,7 @@ const useHandleMyAnswer = ({ answerId, questionId }: AnswerProps) => {
   const handleEditValue = ({ submitValue, answer }: EditValueProps) => {
     if (checkNullValue(submitValue)) {
       toast.error(errorMessage.noContent, {
+        toastId: "emptyAnswerContent",
         position: "top-center",
         autoClose: 1000,
       })
@@ -64,6 +65,7 @@ const useHandleMyAnswer = ({ answerId, questionId }: AnswerProps) => {
       {
         onSuccess: () => {
           toast.success(successMessage.updateAnswer, {
+            toastId: "successToUpdateAnswer",
             position: "top-center",
           })
           setIsAnswerEditMode(false)
@@ -72,15 +74,15 @@ const useHandleMyAnswer = ({ answerId, questionId }: AnswerProps) => {
           })
         },
         onError: () =>
-          toast.error(errorMessage.updateAnswer, { position: "top-center" }),
+          toast.error(errorMessage.updateAnswer, {
+            toastId: "failToUpdateAnswer",
+            position: "top-center",
+          }),
       },
     )
   }
 
-  const handleDeleteValue = async ({
-    answer,
-    successModal,
-  }: DeleteValueProps) => {
+  const handleDeleteValue = async ({ answer }: DeleteValueProps) => {
     const onSuccess = async () => {
       try {
         deleteAnswer(
@@ -90,6 +92,7 @@ const useHandleMyAnswer = ({ answerId, questionId }: AnswerProps) => {
           {
             onSuccess: () => {
               toast.success(successMessage.deleteAnswer, {
+                toastId: "successToDeleteAnswer",
                 position: "top-center",
               })
 
@@ -110,6 +113,7 @@ const useHandleMyAnswer = ({ answerId, questionId }: AnswerProps) => {
     }
     const onCancel = () => {
       toast.error(notificationMessage.cancleDeleteAnswer, {
+        toastId: "cancleDeleteAnswer",
         position: "top-center",
       })
     }

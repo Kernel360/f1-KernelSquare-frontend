@@ -62,7 +62,7 @@ const Search = () => {
             개의 검색 결과가 있습니다.
           </div>
         </div>
-        <div className="flex justify-between w-[95%] m-auto">
+        {/* <div className="flex justify-between w-[95%] m-auto">
           <div className="flex">
             <div className="pr-[15px] border-r-[1px] border-r-slate-400 cursor-pointer hover:text-primary hover:font-bold">
               최신순
@@ -85,7 +85,7 @@ const Search = () => {
               </label>
             </div>
           </div>
-        </div>
+        </div> */}
         <QnAList questions={searchResults} keyword={keyword} isSearch={true} />
       </div>
     </div>

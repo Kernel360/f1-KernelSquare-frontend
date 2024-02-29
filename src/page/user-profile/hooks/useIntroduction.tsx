@@ -29,6 +29,23 @@ const useIntroduction = () => {
   const handleSubmitIntroduction = (introduction: string) => {
     if (!user) {
       toast.error(errorMessage.unauthorized, {
+        toastId: "unauthorizedToChangeIntroduction",
+        position: "top-center",
+        autoClose: 1000,
+      })
+      return
+    }
+    if (introduction.length < 10) {
+      toast.error(errorMessage.introductionLimitUnder, {
+        toastId: "introductionLimitUnder",
+        position: "top-center",
+        autoClose: 1000,
+      })
+      return
+    }
+    if (introduction.length > 1000) {
+      toast.error(errorMessage.introductionLimitOver, {
+        toastId: "introductionLimitOver",
         position: "top-center",
         autoClose: 1000,
       })
@@ -44,6 +61,7 @@ const useIntroduction = () => {
         {
           onSuccess: () => {
             toast.success(successMessage.editIntroduction, {
+              toastId: "successToEditIntroduction",
               position: "top-center",
               autoClose: 1000,
             })
@@ -55,12 +73,18 @@ const useIntroduction = () => {
         },
       )
     } catch (err) {
+      toast.error(errorMessage.failToUploadIntroduction, {
+        toastId: "failToEditIntroduction",
+        position: "top-center",
+        autoClose: 1000,
+      })
       throw new Error("자기소개 업데이트 중 에러가 발생하였습니다.")
     }
   }
 
   const handleCancleEditIntroduction = () =>
     toast.error(notificationMessage.cancleEditIntroduction, {
+      toastId: "cancleEditIntroduction",
       position: "top-center",
     })
 
