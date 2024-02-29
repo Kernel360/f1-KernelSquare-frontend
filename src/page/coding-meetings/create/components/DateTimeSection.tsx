@@ -56,6 +56,17 @@ const DateTimeSection = ({ initialDateTime }: DateTimeSectionProps) => {
             ? "0" + String(end.get("minute"))
             : end.get("minute") + "",
       })
+    } else {
+      setStartTime({
+        range: "",
+        hour: "",
+        minute: "",
+      })
+      setEndTime({
+        range: "",
+        hour: "",
+        minute: "",
+      })
     }
   }, [])
 
