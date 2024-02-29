@@ -12,7 +12,7 @@ function DetailCodingMeetingTime({
   endTime,
 }: DetailCodingMeetingTime) {
   return (
-    <span className="font-medium text-base">
+    <span className="font-medium">
       {getCollapsedDate({
         start: startTime,
         end: endTime,

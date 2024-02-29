@@ -17,7 +17,12 @@ interface CodingMeetingsDetailPageProps {
 
 const DetailCodingMeetingTime = dynamic(
   () => import("@/page/coding-meetings/detail/DetailTime"),
-  { ssr: false, loading: () => <Skeleton className="w-12 h-6" /> },
+  {
+    ssr: false,
+    loading(loadingProps) {
+      return <Skeleton className="w-12 h-6 shrink-0 rounded-lg" />
+    },
+  },
 )
 
 const CodingMeetingsDetailPage = ({
