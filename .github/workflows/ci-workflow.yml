@@ -36,6 +36,7 @@ jobs:
             NEXT_PUBLIC_CRYPTO_IV_SECRET=${{ secrets.NEXT_PUBLIC_CRYPTO_IV_SECRET }}
             NEXT_PUBLIC_CRYPTO_IV_LENGTH=${{ secrets.NEXT_PUBLIC_CRYPTO_IV_LENGTH }}
             SENTRY_AUTH_TOKEN=${{ secrets.SENTRY_AUTH_TOKEN }}
+            NEXT_PUBLIC_KAKAO_MAP=${{ secrets.NEXT_PUBLIC_KAKAO_MAP }}
   notify:
     needs: build
     if: github.repository == 'KernelSquare/Frontend'
