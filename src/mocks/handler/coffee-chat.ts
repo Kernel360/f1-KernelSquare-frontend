@@ -200,7 +200,7 @@ export const coffeeChatHandler = [
   http.post<PathParams, EnterChatRoomRequest, EnterChatRoomResponse>(
     `${process.env.NEXT_PUBLIC_SERVER}${RouteMap.coffeeChat.enterCoffeeChatRoom}`,
     async ({ request }) => {
-      const { member_id, room_id, article_title } = await request.json()
+      const { article_title, reservation_id } = await request.json()
 
       const { Code, HttpStatus } = ApiStatus.CoffeeChat.enterChatRoom.Ok
 

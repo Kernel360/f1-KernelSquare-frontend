@@ -47,6 +47,7 @@ function CoffeeChatDetailPage({
             articleTitle={coffeeChatDetailPayload.title}
             roomId={matchRoom ? matchRoom.room_id : null}
             startTime={matchRoom?.start_time || null}
+            reservation_id={matchRoom?.reservation_id ?? -1}
           />
         )}
       </div>
