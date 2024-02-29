@@ -387,11 +387,6 @@ export class RouteMap {
         coding_meeting_token ?? ":coding_meeting_token"
       }`
     },
-    getCodingMeetingDetail(coding_meeting_token?: string) {
-      return `${RouteMap.routeGroupBaseURL.codingMeetings}/${
-        coding_meeting_token ?? ":coding_meeting_token"
-      }`
-    },
     closeCodingMeeting(coding_meeting_token?: string) {
       return `${RouteMap.routeGroupBaseURL.codingMeetings}/${
         coding_meeting_token ?? ":coding_meeting_token"
