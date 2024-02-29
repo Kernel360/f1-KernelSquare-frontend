@@ -142,7 +142,6 @@ const CreateCodingMeetingPage = ({
       coding_meeting_start_time: formatTime(getTime(startTime)),
       coding_meeting_end_time: formatTime(getTime(endTime)),
     }
-    console.log("create", payload)
 
     if (editMode === "create") {
       createCodingMeetingPost(payload, {

@@ -77,6 +77,10 @@ const LocationDialog = () => {
     setSelectedPlace(undefined)
   }
 
+  useLayoutEffect(() => {
+    resetHistory()
+  }, [])
+
   useEffect(() => {
     if (!selectedPlace) return
     const element = document.getElementById(selectedPlace?.content)

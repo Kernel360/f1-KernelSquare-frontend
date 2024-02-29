@@ -21,6 +21,7 @@ const HashTagsSection = ({ initialHashTags }: HashTagsSectionProps) => {
 
   useLayoutEffect(() => {
     if (initialHashTags) setHashtags(initialHashTags)
+    else setHashtags([])
   }, [])
 
   // 해시태그 추가
