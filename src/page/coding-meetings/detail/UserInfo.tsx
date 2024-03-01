@@ -23,8 +23,8 @@ function UserInfo({ user }: UserInfoProps) {
     }
   return (
     <div
-      className={`cursor-pointer inline-flex align-top flex-shrink-0 outline outline-2 outline-offset-2 outline-transparent rounded-lg ${
-        loginUser ? "hover:outline-primary" : ""
+      className={`inline-flex align-top flex-shrink-0 outline outline-2 outline-offset-2 outline-transparent rounded-lg ${
+        loginUser ? "cursor-pointer hover:outline-primary" : "cursor-default"
       }`}
       {...(loginUser && {
         onClick: goToUserProfile(user.member_id),
@@ -32,7 +32,10 @@ function UserInfo({ user }: UserInfoProps) {
       })}
     >
       <div className="flex gap-2 items-center">
-        <Profile profileImage={user.member_profile_url} />
+        <Profile
+          profileImage={user.member_profile_url}
+          className={loginUser ? "cursor-pointer" : "cursor-default"}
+        />
         <span className="font-semibold text-sm">{user.member_nickname}</span>
         <div className="flex gap-1 items-center">
           <div className="relative w-4 h-4">
