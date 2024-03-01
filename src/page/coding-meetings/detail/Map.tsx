@@ -23,7 +23,7 @@ function DetailMap({ x, y, placeName }: DetailMapProps) {
       level={3}
       style={{
         width: "100%",
-        height: "inherit",
+        height: "100%",
       }}
     >
       <MapMarker position={{ lat: Number(x), lng: Number(y) }} />
