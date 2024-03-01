@@ -62,6 +62,7 @@ function DetailComments({ author, token }: DetailCommentsProps) {
   const {
     register,
     handleSubmit,
+    setValue,
     formState: { isSubmitting },
   } = useForm<CommentFormData>()
 
@@ -79,6 +80,8 @@ function DetailComments({ author, token }: DetailCommentsProps) {
       queryClient.invalidateQueries({
         queryKey: ["coding-meeting", "comment", token],
       })
+
+      setValue("comment", "")
     } catch (error) {
       const toastId = "commentError"
 

@@ -5,22 +5,43 @@ import DetailMenu from "./DetailMenu"
 import Spacing from "@/components/shared/Spacing"
 import DetailSection from "./Section"
 import Link from "next/link"
-import DetailMap from "./Map"
 import HashTag from "@/components/shared/tag/HashTag"
 import DetailComments from "./Comments"
 import dynamic from "next/dynamic"
-import Skeleton from "react-loading-skeleton"
+import MapContainer from "./kakao-map/MapContainer"
+import { Icons } from "@/components/icons/Icons"
 
 interface CodingMeetingsDetailPageProps {
   detail: CodingMeetingDetailPayload
 }
+
+const DetailMap = dynamic(
+  () => import("@/page/coding-meetings/detail/kakao-map/Map"),
+  {
+    ssr: false,
+    loading(loadingProps) {
+      return (
+        <div className="absolute left-0 top-0 z-[2] w-full h-full flex flex-col justify-center items-center bg-white">
+          <div className="w-8 h-8 flex justify-center items-center rounded-full border border-[#828282]">
+            <Icons.MapMarker className="text-[#828282]" />
+          </div>
+          <div className="mt-5 text-sm text-[#828282]">카카오 맵 로드 중</div>
+        </div>
+      )
+    },
+  },
+)
 
 const DetailCodingMeetingTime = dynamic(
   () => import("@/page/coding-meetings/detail/DetailTime"),
   {
     ssr: false,
     loading(loadingProps) {
-      return <Skeleton className="w-12 h-6 shrink-0 rounded-lg" />
+      return (
+        <div className="flex items-center h-5 text-sm text-[#828282]">
+          한국 시간(KST)으로 변환 중
+        </div>
+      )
     },
   },
 )
@@ -80,11 +101,13 @@ const CodingMeetingsDetailPage = ({
               </DetailSection>
             </div>
             <div className="relative border border-colorsGray rounded-lg overflow-hidden mt-6 tablet:mt-0 w-full aspect-[1.114/1] tablet:w-auto tablet:aspect-[1.116/1] tablet:h-[323px] lg:!h-[431px]">
-              <DetailMap
-                x={detail.coding_meeting_location_latitude}
-                y={detail.coding_meeting_location_longitude}
-                placeName={detail.coding_meeting_location_place_name}
-              />
+              <MapContainer>
+                <DetailMap
+                  x={detail.coding_meeting_location_latitude}
+                  y={detail.coding_meeting_location_longitude}
+                  placeName={detail.coding_meeting_location_place_name}
+                />
+              </MapContainer>
             </div>
           </div>
           <DetailSection className="mt-8 tablet:mt-6" title="소개글">
