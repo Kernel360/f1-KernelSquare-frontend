@@ -5,6 +5,7 @@ import { APIResponse } from "@/interfaces/dto/api-response"
 import { notFound } from "next/navigation"
 import { getCodingMeetingDetail } from "@/service/coding-meetings"
 import DetailHeader from "@/page/coding-meetings/detail/DetailHeader"
+import ScrollTopButton from "@/page/coding-meetings/main/ScrollTopButton"
 
 export interface CodingMeetingsDetailPageProps {
   params: {
@@ -32,6 +33,7 @@ export default async function CodingMeetingsDetailPage({
           <CodingMeetingsDetail detail={detailResponse.data.data!} />
         </div>
         <aside className="bg-transparent min-h-screen hidden lg:block lg:w-32" />
+        <ScrollTopButton />
       </div>
     )
   } catch (error) {
