@@ -77,7 +77,7 @@ function CodingMeetingList({ codingMeetings }: CodingMeetingListProps) {
                   <h3 className="w-fit">
                     <Link
                       href={detailHref(coding_meeting_token)}
-                      className="max-w-full line-clamp-2 text-ellipsis text-blue-400"
+                      className="max-w-full break-all line-clamp-2 text-ellipsis text-blue-400"
                     >
                       {coding_meeting_title}
                     </Link>
