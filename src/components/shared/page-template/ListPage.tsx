@@ -3,6 +3,13 @@
 import CodingMeetingInfoArea from "@/page/coding-meetings/main/info-area/InfoArea"
 import ListLoading from "../animation/ListLoading"
 import CodingMeetingTabs from "@/page/coding-meetings/main/Tab"
+import { Icons } from "@/components/icons/Icons"
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/PopOver"
+import { PopoverClose } from "@radix-ui/react-popover"
 
 interface ListPageProps {
   section: "qna" | "codingMeetings"
@@ -27,14 +34,47 @@ export default ListPage
 
 function Title({ section }: { section: ListPageProps["section"] }) {
   const title = {
-    qna: "개발자 Q&A",
-    codingMeetings: "모각코",
+    qna: <h3>개발자 Q&A</h3>,
+    codingMeetings: (
+      <section className="w-full flex shrink-0 items-center gap-1">
+        <h4 className="mb-1">모각코</h4>
+        <Popover>
+          <PopoverTrigger>
+            <Icons.Info className="text-base" />
+          </PopoverTrigger>
+          <PopoverContent
+            hideWhenDetached={true}
+            side="right"
+            align="start"
+            sticky="always"
+            alignOffset={4}
+            className="w-36 border border-[#828282] bg-white rounded-lg text-base p-4"
+          >
+            <section className="relative">
+              <PopoverClose className="absolute -top-2 -right-2">
+                <Icons.Close className="text-sm" />
+              </PopoverClose>
+              <h4 className="font-bold text-xs">모각코?</h4>
+              <article className="text-sm">
+                모각코는
+                <br />
+                <span className="text-primary">모여서 각자 코딩</span>의
+                줄임말로,
+                <br />
+                여러 사람이 같은 공간에 모여 각자의 코딩 공부나 프로젝트를
+                진행하는 활동이에요.
+              </article>
+            </section>
+          </PopoverContent>
+        </Popover>
+      </section>
+    ),
   } satisfies Record<typeof section, React.ReactNode>
 
   return (
-    <h3 className="text-[#333333] text-[32px] font-semibold mb-6 tablet:mb-8 lg:mb-12">
+    <section className="text-[#333333] text-[32px] font-semibold mb-6 tablet:mb-8 lg:mb-12">
       {title[section]}
-    </h3>
+    </section>
   )
 }
 
