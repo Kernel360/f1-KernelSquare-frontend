@@ -11,11 +11,10 @@ import {
   leaveRoomEventName,
 } from "@/page/coffee-chat/chat/ChatRoomHeader"
 import { useRouter, useSearchParams } from "next/navigation"
-import { CompatClient, ActivationState } from "@stomp/stompjs"
+import { CompatClient } from "@stomp/stompjs"
 import dayjs from "dayjs"
 import { revalidatePage } from "@/util/actions/revalidatePage"
 
-export const connectSuccessEventname = "kernel-ws-connect-success"
 export interface ConnectSuccessDetail {
   stomp: CompatClient
 }
@@ -25,6 +24,8 @@ interface SocketConnectionProps {
   roomKey: string
   user: NonNullable<SessionPayload>
 }
+
+export const connectSuccessEventname = "kernel-ws-connect-success"
 
 function SocketConnection({ serverUrl, roomKey, user }: SocketConnectionProps) {
   const { replace } = useRouter()

@@ -31,8 +31,6 @@ interface MessagesProps {
 function Messages({ roomKey, user }: MessagesProps) {
   const { messages } = useRecoilValue(RoomAtomFamily({ roomKey }))
 
-  console.log({ messages })
-
   useEffect(() => {
     const scrollingElement = document.scrollingElement
 
