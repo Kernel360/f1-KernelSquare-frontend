@@ -56,32 +56,41 @@ function SocketConnection({ serverUrl, roomKey, user }: SocketConnectionProps) {
         }, 0)
 
         stomp.connect({}, () => {
-          stomp.subscribe(`/topic/chat/room/${roomKey}`, (message) => {
-            const payload = JSON.parse(message.body)
+          stomp.disconnectHeaders = {
+            memberId: `${user.member_id}`,
+            roomKey,
+          }
 
-            if (payload.type === "EXPIRE") {
-              stomp.send(
-                `/app/chat/message`,
-                {},
-                JSON.stringify({
-                  type: "LEAVE",
-                  room_key: roomKey,
-                  sender: user.nickname,
-                  send_time: dayjs().format("YYYY-MM-DDTHH:mm:ss"),
-                }),
-              )
-            }
+          stomp.subscribe(
+            `/topic/chat/room/${roomKey}`,
+            (message) => {
+              const payload = JSON.parse(message.body)
 
-            setRoom((prev) => ({
-              ...prev,
-              messages: [
-                ...prev.messages,
-                {
-                  ...payload,
-                },
-              ],
-            }))
-          })
+              if (payload.type === "EXPIRE") {
+                stomp.send(
+                  `/app/chat/message`,
+                  {},
+                  JSON.stringify({
+                    type: "LEAVE",
+                    room_key: roomKey,
+                    sender: user.nickname,
+                    send_time: dayjs().format("YYYY-MM-DDTHH:mm:ss"),
+                  }),
+                )
+              }
+
+              setRoom((prev) => ({
+                ...prev,
+                messages: [
+                  ...prev.messages,
+                  {
+                    ...payload,
+                  },
+                ],
+              }))
+            },
+            { memberId: `${user.member_id}` },
+          )
 
           stomp.send(
             `/app/chat/message`,
