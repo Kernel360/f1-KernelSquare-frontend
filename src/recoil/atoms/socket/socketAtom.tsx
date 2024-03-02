@@ -13,7 +13,7 @@ export interface MessagePayload {
   sender: string
   sender_image_url: string | null
   message: string
-  send_time?: string
+  send_time: string
   member_list: Array<ChatRoomMember>
 }
 

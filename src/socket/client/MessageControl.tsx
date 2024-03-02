@@ -74,7 +74,7 @@ function MessageControl({ roomKey, user }: MessageControlProps) {
           room_key: roomKey,
           sender: user.nickname,
           message,
-          send_time: dayjs().format("YYYY-MM-DDTHH:mm:ss"),
+          send_time: dayjs().utc().format(),
         }),
       )
     }

@@ -20,7 +20,7 @@ import { IoClose } from "react-icons/io5"
 import { debounce, throttle } from "lodash-es"
 import { useRouter, useSearchParams } from "next/navigation"
 import { PopupMessage } from "@/page/coffee-chat/chat/ChatRoomHeader"
-import dayjs from "dayjs"
+import { getKorDayjs } from "@/util/getDate"
 import type { SessionPayload } from "@/recoil/atoms/user"
 
 interface MessagesProps {
@@ -179,12 +179,13 @@ Messages.Message = function Message({
   )
 }
 
-// [TODO]서버 DB에 시간이 원하는 포멧의 시간으로 저장될 수 있도록 협의하여 수정할 예정
+// [TODO] 서버에서 유효한 ISO 포멧으로 오지 않을 경우, 수정될 수 있음
+// (지금은 서버에서 유효한 ISO 포멧으로 와서, 정상적으로 변환 될 것이라고 가정하고 구현)
 Messages.Time = function MessageTime({ formatTime }: { formatTime: string }) {
   return (
     <div className="flex shrink-0 self-end">
       <span className="text-secondary text-[10px] font-bold">
-        {dayjs(formatTime.replace("Z", "")).format("Ahh:mm")}
+        {getKorDayjs(formatTime).format("Ahh:mm")}
       </span>
     </div>
   )

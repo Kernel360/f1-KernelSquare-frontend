@@ -13,7 +13,10 @@ import {
 import { useRouter, useSearchParams } from "next/navigation"
 import { CompatClient } from "@stomp/stompjs"
 import dayjs from "dayjs"
+import utc from "dayjs/plugin/utc"
 import { revalidatePage } from "@/util/actions/revalidatePage"
+
+dayjs.extend(utc)
 
 export interface ConnectSuccessDetail {
   stomp: CompatClient
@@ -75,7 +78,7 @@ function SocketConnection({ serverUrl, roomKey, user }: SocketConnectionProps) {
                     type: "LEAVE",
                     room_key: roomKey,
                     sender: user.nickname,
-                    send_time: dayjs().format("YYYY-MM-DDTHH:mm:ss"),
+                    send_time: dayjs().utc().format(),
                   }),
                 )
               }
@@ -100,7 +103,7 @@ function SocketConnection({ serverUrl, roomKey, user }: SocketConnectionProps) {
               type: "ENTER",
               room_key: roomKey,
               sender: user.nickname,
-              send_time: dayjs().format("YYYY-MM-DDTHH:mm:ss"),
+              send_time: dayjs().utc().format(),
             }),
           )
         })
@@ -129,7 +132,7 @@ function SocketConnection({ serverUrl, roomKey, user }: SocketConnectionProps) {
           type: "LEAVE",
           room_key: roomKey,
           sender: user.nickname,
-          send_time: dayjs().format("YYYY-MM-DDTHH:mm:ss"),
+          send_time: dayjs().utc().format(),
         }),
       )
       ;(window.opener.postMessage as typeof window.postMessage)(
@@ -154,7 +157,7 @@ function SocketConnection({ serverUrl, roomKey, user }: SocketConnectionProps) {
             type: "LEAVE",
             room_key: roomKey,
             sender: user.nickname,
-            send_time: dayjs().format("YYYY-MM-DDTHH:mm:ss"),
+            send_time: dayjs().utc().format(),
           }),
         )
 
