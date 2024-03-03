@@ -58,7 +58,7 @@ const useHandleQuestion = () => {
         queryClient.invalidateQueries({
           queryKey: [queryKey.question],
         })
-        router.replace("/")
+        router.replace("/qna")
       } catch (err) {
         console.error(err)
       }
