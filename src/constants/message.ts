@@ -11,6 +11,8 @@ export const errorMessage = {
   noHeadCnt: "모임 인원을 설정해주세요",
   underContentLimit: `본문 내용은 최소 ${Limitation.content_limit_under}자 이상이어야 합니다.`,
   overContentLimit: `본문 내용은 최대 ${Limitation.content_limit_over}자 이하이어야 합니다.`,
+  underAnswerLimit: `댓글 내용은 최소 ${Limitation.answer_limit_under}자 이상이어야 합니다.`,
+  overAnswerLimit: `댓글 내용은 최대 ${Limitation.answer_limit_over}자 이하이어야 합니다.`,
   introductionLimitOver: `최대 ${Limitation.introduction_limit_over}자까지 입력 가능합니다.`,
   introductionLimitUnder: `최소 ${Limitation.introduction_limit_under}자 이상 입력해야 합니다.`,
   imageLimitOver: `${Limitation.image.stringifyedSize} 이하의 이미지만 업로드할 수 있습니다.`,

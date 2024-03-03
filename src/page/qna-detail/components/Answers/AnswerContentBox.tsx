@@ -16,6 +16,7 @@ import type { Answer } from "@/interfaces/answer"
 import { findImageLinkUrlFromMarkdown } from "@/util/editor"
 import { UpdateAnswerRequest } from "@/interfaces/dto/answer/update-answer.dto"
 import { deleteImages } from "@/service/images"
+import Limitation from "@/constants/limitation"
 
 export type EditAnswerProps = {
   answer: Answer
@@ -54,6 +55,22 @@ const AnswerContentBox: React.FC<EditAnswerProps> = ({ answer }) => {
     if (!submitValue || checkNullValue(submitValue)) {
       toast.error(errorMessage.noContent, {
         toastId: "emptyAnswerContent",
+        position: "top-center",
+        autoClose: 1000,
+      })
+      return
+    }
+    if (submitValue.length < Limitation.answer_limit_under) {
+      toast.error(errorMessage.underAnswerLimit, {
+        toastId: "underAnswerLimit",
+        position: "top-center",
+        autoClose: 1000,
+      })
+      return
+    }
+    if (submitValue.length > Limitation.answer_limit_over) {
+      toast.error(errorMessage.overAnswerLimit, {
+        toastId: "overAnswerLimit",
         position: "top-center",
         autoClose: 1000,
       })

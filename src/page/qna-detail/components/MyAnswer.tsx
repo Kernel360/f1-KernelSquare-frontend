@@ -8,9 +8,15 @@ import Button from "@/components/shared/button/Button"
 import CreateAnswerAnime from "@/components/shared/animation/CreateAnswerAnime"
 import useModal from "@/hooks/useModal"
 import LoginForm from "@/components/form/LoginForm"
-import { buttonMessage, notificationMessage } from "@/constants/message"
+import {
+  buttonMessage,
+  errorMessage,
+  notificationMessage,
+} from "@/constants/message"
 import useQnADetail from "../hooks/useQnADetail"
 import { Answer } from "@/interfaces/answer"
+import { toast } from "react-toastify"
+import Limitation from "@/constants/limitation"
 
 export interface MyAnswerProps {
   questionId: number
@@ -24,14 +30,42 @@ const MdEditor = dynamic(() => import("../components/Markdown/MdEditor"), {
 
 const MyAnswer: React.FC<MyAnswerProps> = ({ questionId, list, nickname }) => {
   const { openModal } = useModal()
-  const { user, handleSubmitValue, handleCheckAbilityToWriteAnswer } =
-    useQnADetail()
+  const {
+    user,
+    handleSubmitValue,
+    handleCheckAbilityToWriteAnswer,
+    checkNullValue,
+  } = useQnADetail()
 
   const { handleSubmit } = useForm()
   const editorRef = useRef<Editor>(null)
 
   const handleSubmitAnswer = async () => {
     const submitValue = editorRef.current?.getInstance().getMarkdown()
+    if (!submitValue || checkNullValue(submitValue)) {
+      toast.error(errorMessage.noContent, {
+        toastId: "emptyAnswerContent",
+        position: "top-center",
+        autoClose: 1000,
+      })
+      return
+    }
+    if (submitValue.length < Limitation.answer_limit_under) {
+      toast.error(errorMessage.underAnswerLimit, {
+        toastId: "underAnswerLimit",
+        position: "top-center",
+        autoClose: 1000,
+      })
+      return
+    }
+    if (submitValue.length > Limitation.answer_limit_over) {
+      toast.error(errorMessage.overAnswerLimit, {
+        toastId: "overAnswerLimit",
+        position: "top-center",
+        autoClose: 1000,
+      })
+      return
+    }
     handleSubmitValue({ questionId, submitValue })
   }
 
