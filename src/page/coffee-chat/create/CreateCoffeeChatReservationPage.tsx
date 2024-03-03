@@ -46,7 +46,7 @@ function CreateCoffeeChatReservationPage({
 
   const { user } = useClientSession()
 
-  const { register, setFocus, handleSubmit } = useForm<CoffeeChatFormData>(
+  const { register, handleSubmit } = useForm<CoffeeChatFormData>(
     initialValues
       ? {
           defaultValues: {
@@ -73,7 +73,12 @@ function CreateCoffeeChatReservationPage({
       })
     if (data.title.length < Limitation.title_limit_under)
       return toast.error(errorMessage.underTitleLimit, {
-        toastId: "emptyCoffeeChatTitle",
+        toastId: "underCoffeeChatTitleLimit",
+        position: "top-center",
+      })
+    if (data.title.length > Limitation.title_limit_over)
+      return toast.error(errorMessage.overTitleLimit, {
+        toastId: "overCoffeeChatTitleLimit",
         position: "top-center",
       })
     if (
