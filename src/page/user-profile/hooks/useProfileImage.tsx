@@ -112,9 +112,9 @@ const useProfileImage = (image_url: string | null) => {
 
       // 파일 확장자 제한
       if (
-        !file.type.includes("png") ||
-        !file.type.includes("svg") ||
-        !file.type.includes("jpeg") ||
+        !file.type.includes("png") &&
+        !file.type.includes("svg") &&
+        !file.type.includes("jpeg") &&
         !file.type.includes("gif")
       ) {
         toast.error(errorMessage.invalidImageExtension, {
