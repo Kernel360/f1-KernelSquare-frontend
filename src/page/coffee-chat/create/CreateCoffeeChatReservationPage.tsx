@@ -81,15 +81,28 @@ function CreateCoffeeChatReservationPage({
         toastId: "overCoffeeChatTitleLimit",
         position: "top-center",
       })
-    if (
-      !editorRef.current?.getInstance().getMarkdown() ||
-      editorRef.current?.getInstance().getMarkdown().length <
-        Limitation.content_limit_under
-    )
-      return toast.error(errorMessage.underContentLimit, {
+    if (!editorRef.current?.getInstance().getMarkdown())
+      return toast.error(errorMessage.noContent, {
         toastId: "emptyCoffeeChatContent",
         position: "top-center",
       })
+    if (
+      editorRef.current?.getInstance().getMarkdown().length <
+      Limitation.content_limit_under
+    )
+      return toast.error(errorMessage.underContentLimit, {
+        toastId: "underCoffeeChatContent",
+        position: "top-center",
+      })
+    if (
+      editorRef.current?.getInstance().getMarkdown().length >
+      Limitation.content_limit_over
+    )
+      return toast.error(errorMessage.overContentLimit, {
+        toastId: "overCoffeeChatContent",
+        position: "top-center",
+      })
+
     if (timeCount === 0)
       return toast.error(errorMessage.undertimeCntLimit, {
         toastId: "emptyCoffeeChatTime",
