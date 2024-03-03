@@ -1,6 +1,6 @@
 "use client"
 
-import { useLayoutEffect, useState } from "react"
+import { useLayoutEffect } from "react"
 import CodingMeetingSection from "./CodingMeetingSection"
 import CustomCalendar from "./CustomCalendar/CustomCalendar"
 import {
@@ -55,6 +55,17 @@ const DateTimeSection = ({ initialDateTime }: DateTimeSectionProps) => {
           String(end.get("minute")).length === 1
             ? "0" + String(end.get("minute"))
             : end.get("minute") + "",
+      })
+    } else {
+      setStartTime({
+        range: "",
+        hour: "",
+        minute: "",
+      })
+      setEndTime({
+        range: "",
+        hour: "",
+        minute: "",
       })
     }
   }, [])

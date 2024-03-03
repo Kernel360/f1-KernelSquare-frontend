@@ -26,12 +26,6 @@ function ScrollTopButton() {
       return throttle((e: Event) => {
         const currentScrollY = window.scrollY
 
-        if (document.body.clientWidth >= 480) {
-          prevScrollY = currentScrollY
-
-          return
-        }
-
         if (currentScrollY === 0) {
           debounceHandleShow.cancel()
 
@@ -64,14 +58,14 @@ function ScrollTopButton() {
 
   return (
     <div
-      className={`fixed right-2 bottom-9 z-10 transition-opacity ease-in-out ${
+      className={`fixed right-2 bottom-9 z-10 transition-opacity ease-in-out lg:right-20 ${
         show
           ? "pointer-events-auto opacity-100"
           : "pointer-events-none opacity-0"
       }`}
     >
       <button
-        className="shadow-[0_0_8px_0_rgba(0,0,0,.16)] flex flex-col justify-center items-center editor:hidden w-12 h-12 font-bold rounded-full outline-none box-border p-2 cursor-pointer bg-secondary"
+        className="shadow-[0_0_8px_0_rgba(0,0,0,.16)] flex flex-col justify-center items-center w-12 h-12 lg:w-16 lg:h-16 font-bold rounded-full outline-none box-border p-2 cursor-pointer bg-secondary"
         onClick={scrollToTop}
       >
         <IoIosArrowUp className="text-white text-xl shrink-0 -mt-1" />

@@ -32,6 +32,7 @@ import { LocationForSubmit } from "@/recoil/atoms/coding-meeting/mapData"
 import Limitation from "@/constants/limitation"
 import type { CodingMeetingDetailPayload } from "@/interfaces/dto/coding-meeting/get-coding-meeting-detail.dto"
 import NotFound from "@/app/not-found"
+import { revalidatePage } from "@/util/actions/revalidatePage"
 
 interface CreateCodingMeetingPageProps {
   editMode: "create" | "update"
@@ -142,7 +143,6 @@ const CreateCodingMeetingPage = ({
       coding_meeting_start_time: formatTime(getTime(startTime)),
       coding_meeting_end_time: formatTime(getTime(endTime)),
     }
-    console.log("create", payload)
 
     if (editMode === "create") {
       createCodingMeetingPost(payload, {
@@ -185,7 +185,7 @@ const CreateCodingMeetingPage = ({
           queryClient.invalidateQueries({
             queryKey: ["codingMeeting"],
           })
-
+          revalidatePage("/coding-meetings/[token]", "page")
           replace(`/coding-meetings/${coding_meeting_token}`)
 
           setHash_tags([])
@@ -346,7 +346,7 @@ const CreateCodingMeetingPage = ({
             className="p-5 py-3 my-10"
             type="submit"
           >
-            모각코 개설하기
+            {editMode === "update" ? "모각코 수정하기" : "모각코 개설하기"}
           </Button>
         </div>
       </form>

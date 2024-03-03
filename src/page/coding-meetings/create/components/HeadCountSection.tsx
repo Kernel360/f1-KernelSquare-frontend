@@ -19,6 +19,7 @@ const HeadCountSection = ({ initialCnt }: HeadCountSectionProps) => {
 
   useLayoutEffect(() => {
     if (initialCnt) setHeadCount(initialCnt)
+    else setHeadCount("0")
   }, [])
 
   return (
