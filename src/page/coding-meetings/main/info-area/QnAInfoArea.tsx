@@ -69,7 +69,7 @@ function AreaButton({ logined }: { logined: boolean }) {
 
   const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
     if (logined) {
-      push(`/coding-meetings/create`)
+      push(`/question`)
 
       return
     }
