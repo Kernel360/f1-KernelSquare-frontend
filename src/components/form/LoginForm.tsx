@@ -150,7 +150,7 @@ function LoginForm() {
           className="px-2 py-4 text-base font-semibold text-white disabled:bg-[#E0E0E0] disabled:text-[#BDBDBD] disabled:pointer-events-none"
           disabled={!isValid || isSubmitting}
         >
-          로그인
+          {isSubmitting ? "로그인 중" : "로그인"}
         </Button>
       </div>
       <Spacing size={24} />
