@@ -97,9 +97,20 @@ const TimeOptions = ({ reservation, cate, date }: TimeOptionsProps) => {
                 revalidatePage("/chat/[id]", "page")
               }, 0)
             },
-            onError: (res) => {
-              toast.error(res.message, {
-                toastId: "failToDeleteReservation",
+            onError: (error: Error | AxiosError<APIResponse>) => {
+              if (error instanceof AxiosError) {
+                const { response } = error as AxiosError<APIResponse>
+
+                toast.error(response?.data.msg ?? errorMessage.failToReserve, {
+                  toastId: "failToCancleReservation",
+                  position: "top-center",
+                  autoClose: 1000,
+                })
+                return
+              }
+
+              toast.error(errorMessage.failToCancleReservation, {
+                toastId: "failToCancleReservation",
                 position: "top-center",
                 autoClose: 1000,
               })
