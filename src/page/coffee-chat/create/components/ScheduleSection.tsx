@@ -5,7 +5,7 @@ import CoffeeChatSection from "./CoffeeChatSection"
 import { DirectionIcons, Icons } from "@/components/icons/Icons"
 import TimeOptions from "./TimeOptions"
 import { AM, PM } from "@/constants/timeOptions"
-import { useEffect, useState } from "react"
+import { useEffect, useLayoutEffect, useState } from "react"
 import { TimeZone } from "../CreateCoffeeChatReservationPage.types"
 import { twJoin } from "tailwind-merge"
 import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil"
@@ -40,6 +40,10 @@ const ScheduleSection = () => {
 
   // // 오전 or 오후
   const [timeZone, setTimeZone] = useState<TimeZone>(TimeZone.AM)
+
+  useLayoutEffect(() => {
+    setTimeZone(TimeZone.AM)
+  }, [])
 
   // 오전, 오후 선택 화살표 스타일
   const ArrowClassName = (disabled: boolean) =>

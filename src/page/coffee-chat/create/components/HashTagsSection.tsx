@@ -1,6 +1,6 @@
 "use client"
 
-import { useRef } from "react"
+import { useLayoutEffect, useRef } from "react"
 import CoffeeChatSection from "./CoffeeChatSection"
 import { toast } from "react-toastify"
 import { errorMessage } from "@/constants/message"
@@ -17,6 +17,10 @@ const HashTagsSection = () => {
 
   // 제출된 해시태그
   const [hashtags, setHashtags] = useRecoilState(HashTagList)
+
+  useLayoutEffect(() => {
+    setHashtags([])
+  }, [])
   // 해시태그 추가
   const handleAddHashTags = () => {
     // 빈 값 방지
