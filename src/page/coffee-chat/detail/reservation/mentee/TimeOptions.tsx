@@ -22,6 +22,7 @@ import { useQueryClient } from "@tanstack/react-query"
 import queryKey from "@/constants/queryKey"
 import { AxiosError } from "axios"
 import { APIResponse } from "@/interfaces/dto/api-response"
+import { revalidatePage } from "@/util/actions/revalidatePage"
 
 type TimeOptionsProps = {
   selectedDay: string
@@ -89,9 +90,12 @@ const TimeOptions = ({ reservation, cate, date }: TimeOptionsProps) => {
                 position: "top-center",
                 autoClose: 1000,
               })
-              queryClient.resetQueries({
-                queryKey: [queryKey.chat],
-              })
+              setTimeout(() => {
+                queryClient.resetQueries({
+                  queryKey: [queryKey.chat],
+                })
+                revalidatePage("/chat/[id]", "page")
+              }, 0)
             },
             onError: (res) => {
               toast.error(res.message, {
@@ -143,9 +147,12 @@ const TimeOptions = ({ reservation, cate, date }: TimeOptionsProps) => {
                 position: "top-center",
                 autoClose: 1000,
               })
-              queryClient.resetQueries({
-                queryKey: [queryKey.chat],
-              })
+              setTimeout(() => {
+                queryClient.resetQueries({
+                  queryKey: [queryKey.chat],
+                })
+                revalidatePage("/chat/[id]", "page")
+              }, 0)
             },
             onError: (error: Error | AxiosError<APIResponse>) => {
               if (error instanceof AxiosError) {
