@@ -5,17 +5,20 @@ import { useSetRecoilState } from "recoil"
 import { introductionEditorLoadedAtomFamily } from "@/recoil/atoms/introductionEditor"
 import type { Editor } from "@toast-ui/react-editor"
 import type { RefObject } from "react"
+import type { EditorType } from "@toast-ui/editor"
 
 interface EditorProps {
   previous?: string
   editorRef: RefObject<Editor>
   userId: number
+  onChange?: (editorType: EditorType) => void
 }
 
 const MdEditorContainer: React.FC<EditorProps> = ({
   previous,
   editorRef,
   userId,
+  onChange,
 }) => {
   const setLoaded = useSetRecoilState(
     introductionEditorLoadedAtomFamily(userId),
@@ -28,6 +31,7 @@ const MdEditorContainer: React.FC<EditorProps> = ({
           ref={editorRef}
           initialValue={previous}
           isImage={false}
+          onChange={onChange}
           setLoaded={setLoaded}
           placeholder="자기소개를 작성해주세요"
         />

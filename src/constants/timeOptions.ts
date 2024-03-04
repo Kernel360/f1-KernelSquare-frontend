@@ -52,6 +52,19 @@ export const PM = [
   "23:30",
 ]
 
-const hours = Array.from({ length: 24 }, (_, i) => i + "")
-const minutes = ["00", "30"]
+const hours = [
+  "00",
+  "01",
+  "02",
+  "03",
+  "04",
+  "05",
+  "06",
+  "07",
+  "08",
+  "09",
+  "10",
+  "11",
+] as const
+const minutes = ["00", "30"] as const
 export const timeSelect = { hours, minutes }
