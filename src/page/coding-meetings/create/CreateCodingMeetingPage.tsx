@@ -274,8 +274,9 @@ const CreateCodingMeetingPage = ({
 
   const TItleInputClass = twJoin([
     "text-base placeholder:text-base",
-    (watch("title")?.length < Limitation.title_limit_under ||
-      watch("title")?.length > Limitation.title_limit_over) &&
+    watch("title") &&
+      (watch("title")?.length < Limitation.title_limit_under ||
+        watch("title")?.length > Limitation.title_limit_over) &&
       "focus:border-danger border-danger",
   ])
 
@@ -312,12 +313,13 @@ const CreateCodingMeetingPage = ({
               })}
             />
             <div>
-              {(watch("title")?.length < Limitation.title_limit_under ||
-                watch("title")?.length > Limitation.title_limit_over) && (
-                <Input.ErrorMessage className="text-md">
-                  {"제목은 5자 이상 100자 이하여야 합니다."}
-                </Input.ErrorMessage>
-              )}
+              {watch("title") &&
+                (watch("title")?.length < Limitation.title_limit_under ||
+                  watch("title")?.length > Limitation.title_limit_over) && (
+                  <Input.ErrorMessage className="text-md">
+                    {"제목은 5자 이상 100자 이하여야 합니다."}
+                  </Input.ErrorMessage>
+                )}
             </div>
           </div>
         </CodingMeetingSection>
