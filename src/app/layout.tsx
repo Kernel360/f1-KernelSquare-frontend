@@ -12,6 +12,7 @@ import MSW from "@/msw/MSW"
 import "@toast-ui/editor/dist/toastui-editor.css"
 import ToastContainer from "@/components/shared/toast/ToastContainer"
 import ScrollTop from "@/components/shared/ScrollTop"
+import ToastDismissEventListener from "@/components/layout/ToastDismissListener"
 
 export const dynamic = "force-dynamic"
 
@@ -43,6 +44,7 @@ export default function RootLayout({
             <Layout>{children}</Layout>
             <Modal />
             <ToastContainer limit={1} />
+            <ToastDismissEventListener />
           </ReactQueryProvider>
         </RecoilProvider>
       </body>
