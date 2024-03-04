@@ -311,7 +311,20 @@ export const codingMeetingHandler = [
     `${
       process.env.NEXT_PUBLIC_SERVER
     }${RouteMap.codingMeeting.deleteCodingMeeting()}`,
-    async ({ params }) => {
+    async ({ request, params }) => {
+      const header = request.headers
+      const token = header.get("Authorization")
+
+      if (!token) {
+        return HttpResponse.json(
+          {
+            code: -1,
+            msg: "로그인 필요",
+          },
+          { status: HttpStatusCode.Unauthorized },
+        )
+      }
+
       const targetPost = mockCodingMeetings.findIndex(
         (post) => post.coding_meeting_token === params.coding_meeting_token,
       )
@@ -412,8 +425,21 @@ export const codingMeetingHandler = [
     `${
       process.env.NEXT_PUBLIC_SERVER
     }${RouteMap.codingMeeting.closeCodingMeeting()}`,
-    async ({ params }) => {
+    async ({ request, params }) => {
       // 모각코 마감
+      const header = request.headers
+      const token = header.get("Authorization")
+
+      if (!token) {
+        return HttpResponse.json(
+          {
+            code: -1,
+            msg: "로그인 필요",
+          },
+          { status: HttpStatusCode.Unauthorized },
+        )
+      }
+
       const codingMeetingToken = params.coding_meeting_token
 
       const targetCodingMeeting = mockCodingMeetings.find(
@@ -597,6 +623,19 @@ export const codingMeetingHandler = [
     }${RouteMap.codingMeeting.updateCodingMeetingComment()}`,
     async ({ request, params }) => {
       // 댓글 업데이트
+      const header = request.headers
+      const token = header.get("Authorization")
+
+      if (!token) {
+        return HttpResponse.json(
+          {
+            code: -1,
+            msg: "로그인 필요",
+          },
+          { status: HttpStatusCode.Unauthorized },
+        )
+      }
+
       const { coding_meeting_comment_content } = await request.json()
       const codingMeetingCommentToken = params.coding_meeting_comment_token
 
@@ -648,8 +687,21 @@ export const codingMeetingHandler = [
     `${
       process.env.NEXT_PUBLIC_SERVER
     }${RouteMap.codingMeeting.deleteCodingMeetingComment()}`,
-    async ({ params }) => {
+    async ({ request, params }) => {
       // 댓글 삭제
+      const header = request.headers
+      const token = header.get("Authorization")
+
+      if (!token) {
+        return HttpResponse.json(
+          {
+            code: -1,
+            msg: "로그인 필요",
+          },
+          { status: HttpStatusCode.Unauthorized },
+        )
+      }
+
       const codingMeetingCommentToken = params.coding_meeting_comment_token
 
       let targetCommentIndex = -1

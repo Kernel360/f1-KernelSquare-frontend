@@ -52,7 +52,6 @@ export const PM = [
   "23:30",
 ]
 
-const range = ["오전", "오후"]
-const hours = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"]
+const hours = Array.from({ length: 24 }, (_, i) => i + "")
 const minutes = ["00", "30"]
-export const timeSelect = { range, hours, minutes }
+export const timeSelect = { hours, minutes }

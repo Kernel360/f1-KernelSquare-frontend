@@ -127,7 +127,9 @@ ProgressModal.Success = function ProgressModalSuccess({
     <ProgressModal.StepContentWrapper>
       <p className="text-success font-bold">가입을 성공했어요</p>
       <Lottie className="w-20" animationData={checkSuccess} loop={false} />
-      <p className="text-secondary font-semibold mt-2">홈으로 이동 중이에요</p>
+      <p className="text-secondary font-semibold mt-2">
+        Q&A 페이지로 이동 중이에요
+      </p>
     </ProgressModal.StepContentWrapper>
   )
 }

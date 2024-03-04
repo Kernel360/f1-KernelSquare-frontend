@@ -25,6 +25,8 @@ import PasswordInput from "./components/PasswordInput"
 import { sleep } from "@/util/sleep"
 import { useProgressModal } from "@/hooks/useProgressModal"
 import { toast } from "react-toastify"
+import Logo from "@/components/icons/Logo"
+import Link from "next/link"
 
 interface SignupHookFormData extends SignupFormData {
   passwordCheck: string
@@ -36,8 +38,6 @@ interface GuidelineOpen {
   password: boolean
   passwordCheck: boolean
 }
-
-// [TODO] 이미지 업로드
 
 function Signup() {
   const { replace } = useRouter()
@@ -181,7 +181,7 @@ function Signup() {
       setStep("success")
 
       // 성공 화면 렌더링 후 3초정도 지난 뒤에 홈으로 이동
-      sleep(3000).then(() => replace("/"))
+      sleep(3000).then(() => replace(`/qna?page=0`))
     } catch (error) {
       setStep("fail")
     }
@@ -230,7 +230,16 @@ function Signup() {
   return (
     <div className="flex w-full h-full min-h-[100dvh] justify-center items-center box-border p-4">
       <form className="border p-4 rounded-lg" onSubmit={handleSubmit(onSubmit)}>
-        <h3 className="text-3xl font-bold text-center">회원가입</h3>
+        {/* <h3 className="text-3xl font-bold text-center">회원가입</h3> */}
+        <section className="w-full flex justify-center items-center">
+          <Link href={"/"} className="flex gap-2 items-center">
+            <Logo className="text-[40px]" />
+            <h3 className="text-center text-2xl font-bold text-secondary">
+              <span className="font-bold">KERNEL</span>&nbsp;
+              <span className="font-bold">SQUARE</span>
+            </h3>
+          </Link>
+        </section>
         <Spacing size={14} />
         {/* email field */}
         <DuplicateFieldLabel field="email" renderFieldName="이메일">
@@ -312,7 +321,7 @@ function Signup() {
           id="nickname"
           autoComplete="off"
           spellCheck="false"
-          placeholder="zl존"
+          placeholder="닉네임"
           fullWidth
           trigger={trigger}
           error={!!errors.nickname}
@@ -492,12 +501,12 @@ function Signup() {
             {isSubmitting ? "가입 진행 중" : "가입하기"}
           </Button>
         </div>
-        <Spacing size={12} />
+        {/* <Spacing size={12} /> */}
         {/* social signup */}
-        <LabelDivider label={"간편 회원가입"} />
+        {/* <LabelDivider label={"간편 회원가입"} />
         <div className="flex w-full justify-center items-center gap-2">
           <SocialButton social="github" action="signup" />
-        </div>
+        </div> */}
       </form>
       <ProgressModalView />
     </div>

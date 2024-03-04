@@ -459,7 +459,7 @@ export const coffeeChatHandler = [
     async ({ params }) => {
       const reservationId = Number(params.id)
 
-      const targetReservation = MockReservations.find(
+      const targetReservation = MockReservations.findIndex(
         (res) => res.reservation_id === reservationId,
       )
 

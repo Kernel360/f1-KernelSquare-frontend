@@ -10,6 +10,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/PopOver"
 import { PopoverClose } from "@radix-ui/react-popover"
+import QnAInfoArea from "@/page/coding-meetings/main/info-area/QnAInfoArea"
 
 interface ListPageProps {
   section: "qna" | "codingMeetings"
@@ -86,6 +87,7 @@ ListPage.InfoArea = function InfoArea({
   const Info = () => {
     switch (section) {
       case "qna":
+        return <QnAInfoArea />
       case "codingMeetings":
         return <CodingMeetingInfoArea />
     }
