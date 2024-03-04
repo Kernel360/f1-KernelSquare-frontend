@@ -11,7 +11,7 @@ type PromiseFunc = () => Promise<void>
 
 interface ConfirmModalProps {
   onSuccess: BasicFunc | PromiseFunc
-  onCancel: BasicFunc | PromiseFunc
+  onCancel?: BasicFunc | PromiseFunc
   situation: MessageKey
 }
 
@@ -45,7 +45,7 @@ ConfirmModal.ModalContent = function ConfirmModal({
     closeModal()
   }
   const handleCancle = () => {
-    onCancel()
+    if (onCancel) onCancel()
     closeModal()
   }
 

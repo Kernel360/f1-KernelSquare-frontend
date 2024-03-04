@@ -42,7 +42,7 @@ const AnswerList: React.FC<AnswerProps> = ({
               className="mr-3"
               onChange={handleIsChecked}
             />
-            <label htmlFor="My Answer">내 답변 보기</label>
+            <label htmlFor="My Answer">내 답변만 보기</label>
           </div>
         </div>
         <div className="max-w-full box-border border border-colorsGray rounded-lg p-10 my-5">

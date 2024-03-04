@@ -16,6 +16,8 @@ import type { Answer } from "@/interfaces/answer"
 import { findImageLinkUrlFromMarkdown } from "@/util/editor"
 import { UpdateAnswerRequest } from "@/interfaces/dto/answer/update-answer.dto"
 import { deleteImages } from "@/service/images"
+import Limitation from "@/constants/limitation"
+import TextCounter from "@/components/shared/TextCounter"
 
 export type EditAnswerProps = {
   answer: Answer
@@ -30,12 +32,13 @@ const MdEditor = dynamic(() => import("../Markdown/MdEditor"), {
 })
 
 export interface AnswerFormData {
-  content: string
+  answer: string
 }
 
 const AnswerContentBox: React.FC<EditAnswerProps> = ({ answer }) => {
   const editorRef = useRef<Editor>(null)
-  const { handleSubmit } = useForm<AnswerFormData>()
+  const { handleSubmit, register, setValue, getValues, watch } =
+    useForm<AnswerFormData>()
   const { isAnswerEditMode, setIsAnswerEditMode } = useHandleMyAnswer({
     answerId: Number(answer.answer_id),
     questionId: Number(answer.question_id),
@@ -52,8 +55,24 @@ const AnswerContentBox: React.FC<EditAnswerProps> = ({ answer }) => {
     const previousImage = answer.answer_image_url
     const submitValue = editorRef.current?.getInstance().getMarkdown()
     if (!submitValue || checkNullValue(submitValue)) {
-      toast.error(errorMessage.noContent, {
+      toast.error(errorMessage.noAnswerContent, {
         toastId: "emptyAnswerContent",
+        position: "top-center",
+        autoClose: 1000,
+      })
+      return
+    }
+    if (submitValue.length < Limitation.answer_limit_under) {
+      toast.error(errorMessage.underAnswerLimit, {
+        toastId: "underAnswerLimit",
+        position: "top-center",
+        autoClose: 1000,
+      })
+      return
+    }
+    if (submitValue.length > Limitation.answer_limit_over) {
+      toast.error(errorMessage.overAnswerLimit, {
+        toastId: "overAnswerLimit",
         position: "top-center",
         autoClose: 1000,
       })
@@ -111,12 +130,29 @@ const AnswerContentBox: React.FC<EditAnswerProps> = ({ answer }) => {
           previous={answer.content}
           editorRef={editorRef}
           answerId={answer.answer_id}
+          onChange={() => {
+            setValue(
+              "answer",
+              editorRef.current?.getInstance().getMarkdown() ?? "",
+            )
+          }}
         />
+        <TextCounterBox text={watch("answer")} />
         <div className="flex justify-center my-5">
-          <Button buttonTheme="primary" className="p-2 w-[100px]" type="submit">
+          <Button
+            disabled={
+              !watch("answer") ||
+              watch("answer").length < Limitation.answer_limit_under ||
+              watch("answer").length > Limitation.answer_limit_over
+            }
+            buttonTheme="primary"
+            className="p-2 w-[100px] disabled:bg-colorsGray disabled:text-colorsDarkGray"
+            type="submit"
+          >
             저장하기
           </Button>
         </div>
+        <input hidden className="hidden" {...register("answer")} />
       </form>
     </Wrapper>
   )
@@ -127,3 +163,19 @@ export default AnswerContentBox
 const Wrapper: React.FC<PropsWithChildren> = ({ children }) => (
   <div className="w-[90%]">{children}</div>
 )
+
+type TextCounterBoxProps = {
+  text: string | undefined
+}
+
+const TextCounterBox = ({ text }: TextCounterBoxProps) => {
+  if (!text) return
+  return (
+    <TextCounter
+      text={text ?? ""}
+      min={Limitation.answer_limit_under}
+      max={Limitation.answer_limit_over}
+      className="text-lg block text-right h-5 py-2"
+    />
+  )
+}

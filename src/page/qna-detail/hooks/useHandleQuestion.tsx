@@ -38,6 +38,7 @@ const useHandleQuestion = () => {
     const onSuccess = async () => {
       try {
         const imageUrl = findImageLinkUrlFromMarkdown(question.content)
+        console.log(imageUrl)
 
         deleteQuestion({
           questionId: question.id,
@@ -50,15 +51,11 @@ const useHandleQuestion = () => {
             })
           },
         })
-        if (imageUrl)
-          for (let image of imageUrl) {
-            const url = image.split("(")[1].split(")")[0]
-            deleteImage(url)
-          }
+        if (imageUrl) deleteImage(imageUrl[0])
         queryClient.invalidateQueries({
           queryKey: [queryKey.question],
         })
-        router.replace("/")
+        router.replace("/qna")
       } catch (err) {
         console.error(err)
       }

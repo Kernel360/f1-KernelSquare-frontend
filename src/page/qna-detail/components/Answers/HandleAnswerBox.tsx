@@ -15,12 +15,13 @@ const HandleAnswerBox: React.FC<HandleAnswerProps> = ({
   createdby,
 }) => {
   const isMyAnswer = createdby === answer.created_by
-  const { handleEditMode, handleDeleteValue } = useHandleMyAnswer({
-    answerId: Number(answer.answer_id),
-    questionId: Number(answer.question_id),
-  })
+  const { handleEditMode, handleDeleteValue, isAnswerEditMode } =
+    useHandleMyAnswer({
+      answerId: Number(answer.answer_id),
+      questionId: Number(answer.question_id),
+    })
 
-  if (isMyAnswer)
+  if (isMyAnswer && !isAnswerEditMode)
     return (
       <div className="flex flex-wrap justify-end my-4">
         <div
