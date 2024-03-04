@@ -65,6 +65,6 @@ const hours = [
   "09",
   "10",
   "11",
-] as const
-const minutes = ["00", "30"] as const
+]
+const minutes = ["00", "30"]
 export const timeSelect = { hours, minutes }
