@@ -272,7 +272,7 @@ const CreateCodingMeetingPage = ({
     }
   }
 
-  const TItleInputClass = twJoin([
+  const TitleInputClass = twJoin([
     "text-base placeholder:text-base",
     watch("title") &&
       (watch("title")?.length < Limitation.title_limit_under ||
@@ -304,7 +304,7 @@ const CreateCodingMeetingPage = ({
               spellCheck="false"
               autoComplete="off"
               fullWidth
-              className={TItleInputClass}
+              className={TitleInputClass}
               placeholder="제목을 입력해주세요"
               {...register("title", {
                 required: true,
