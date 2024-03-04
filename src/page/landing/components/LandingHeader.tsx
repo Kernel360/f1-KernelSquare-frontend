@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation"
 const LandingHeader = () => {
   const router = useRouter()
   return (
-    <div className="w-full absolute top-0 py-5 flex justify-around items-center text-white text-xl bg-transparent">
+    <div className="w-full absolute top-0 py-5 flex justify-around items-center text-white text-xl bg-transparent z-[2]">
       <div className="cursor-pointer" onClick={() => router.push("/qna")}>
         개발자 Q&A
       </div>

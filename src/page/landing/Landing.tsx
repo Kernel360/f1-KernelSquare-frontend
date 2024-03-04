@@ -3,7 +3,7 @@ import LandingSearchBar from "./components/LandingSearchBar"
 
 const LandingPage: React.FC = () => {
   return (
-    <div className="w-full h-screen">
+    <>
       <video
         width={"100%"}
         height={"100vh"}
@@ -17,7 +17,7 @@ const LandingPage: React.FC = () => {
         <source src="/video/landing_video.mp4" type="video/mp4" />
       </video>
       <LandingHeader />
-      <div className="absolute w-full flex-col items-center justify-center top-[40%] text-center">
+      <div className="absolute left-0 top-0 w-full h-full flex flex-col items-center justify-center text-center">
         <div className="font-bold text-5xl text-white">
           지속 가능한 개발자 커뮤니티,
         </div>
@@ -26,7 +26,7 @@ const LandingPage: React.FC = () => {
         </div>
         <LandingSearchBar />
       </div>
-    </div>
+    </>
   )
 }
 
