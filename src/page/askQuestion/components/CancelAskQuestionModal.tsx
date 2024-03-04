@@ -7,6 +7,7 @@ import { useToastUiQuestionEditor } from "@/hooks/editor/useToastuiQuestionEdito
 import { DELETE_IMAGE_LOCAL_STORAGE_KEY } from "@/constants/editor"
 import { useResetRecoilState } from "recoil"
 import { searchTagAtom } from "@/recoil/atoms/tag"
+import { useQueryClient } from "@tanstack/react-query"
 import type { EditMode } from "./AskQuestionPageControl"
 
 interface CancelAskQuestionModalProps {
@@ -19,6 +20,8 @@ function CancelAskQuestionModal({
   editMode,
 }: CancelAskQuestionModalProps) {
   const { replace } = useRouter()
+
+  const queryClient = useQueryClient()
 
   const { cancelQuestionSubmit } = useToastUiQuestionEditor({
     uniqueKey: editMode,
@@ -33,9 +36,13 @@ function CancelAskQuestionModal({
       clearTagSearch()
     } catch (error) {
     } finally {
+      queryClient.invalidateQueries({
+        queryKey: ["question", "list"],
+      })
+
       queueMicrotask(() => {
         editMode === "create"
-          ? replace("/")
+          ? replace(`/qna?page=0`)
           : replace(`/question/${questionId}`)
       })
     }
