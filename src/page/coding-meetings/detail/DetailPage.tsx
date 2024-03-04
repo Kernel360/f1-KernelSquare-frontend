@@ -6,10 +6,11 @@ import Spacing from "@/components/shared/Spacing"
 import DetailSection from "./Section"
 import Link from "next/link"
 import HashTag from "@/components/shared/tag/HashTag"
-import DetailComments from "./Comments"
+import DetailComments from "./comment/Comments"
 import dynamic from "next/dynamic"
 import MapContainer from "./kakao-map/MapContainer"
 import { Icons } from "@/components/icons/Icons"
+import CodingMeetingClose from "./modal/CodingMeetingClose"
 
 interface CodingMeetingsDetailPageProps {
   detail: CodingMeetingDetailPayload
@@ -64,14 +65,15 @@ const CodingMeetingsDetailPage = ({
           <h3 className="font-semibold text-xl lg:text-2xl">
             {detail.coding_meeting_title}
           </h3>
-          <DetailMenu
-            token={detail.coding_meeting_token}
-            author={author}
-            closed={detail.coding_meeting_closed}
-          />
+          <DetailMenu token={detail.coding_meeting_token} author={author} />
         </section>
-        <section className="mt-6 mb-4">
+        <section className="w-full flex justify-between items-center mt-6 mb-4">
           <UserInfo user={author} />
+          <CodingMeetingClose
+            meetingToken={detail.coding_meeting_token}
+            closed={detail.coding_meeting_closed}
+            author={author}
+          />
         </section>
         <hr className="bg-[#E8E8E8] mb-6" />
         <div>

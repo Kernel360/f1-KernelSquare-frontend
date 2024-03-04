@@ -26,7 +26,7 @@ function LoginForm() {
   const {
     register,
     handleSubmit,
-    formState: { errors, isValid },
+    formState: { errors, isValid, isSubmitting },
   } = useForm<LoginFormData>()
   const setUserAtom = useSetRecoilState(userAtom)
 
@@ -35,7 +35,7 @@ function LoginForm() {
   const validator = new Validator()
 
   const linkClassNames = twJoin([
-    "flex justify-center items-center text-sm text-primary underline underline-offset-4",
+    "flex justify-center items-center font-semibold text-primary underline underline-offset-4",
   ])
 
   const onSubmit = async (data: LoginFormData) => {
@@ -98,15 +98,16 @@ function LoginForm() {
       onSubmit={handleSubmit(onSubmit, onInvalid)}
       className="w-full sm:w-[320px]"
     >
-      <div className="w-full flex gap-1 justify-center items-center">
+      <div className="w-full flex gap-2 justify-center items-center">
         <Logo className="text-[40px]" />
-        <h3 className="text-center text-3xl font-bold text-secondary">
-          KernelSquare
+        <h3 className="text-center text-2xl font-bold text-secondary">
+          <span className="font-bold">KERNEL</span>&nbsp;
+          <span className="font-bold">SQUARE</span>
         </h3>
       </div>
       <Spacing size={24} />
       <Input
-        className="px-2"
+        className="px-4 py-3.5 h-12 box-border placeholder:font-medium placeholder:text-base"
         fullWidth
         placeholder="이메일"
         autoComplete="off"
@@ -125,6 +126,10 @@ function LoginForm() {
       <PasswordField
         placeholder="비밀번호"
         fullWidth
+        classNames={{
+          wrapper: "pl-4 pr-2 py-3.5 h-12 box-border",
+          input: "p-0 placeholder:font-medium placeholder:text-base",
+        }}
         error={!!errors.password}
         errorMessage={errors.password?.message}
         {...register("password", {
@@ -142,27 +147,29 @@ function LoginForm() {
           type="submit"
           fullWidth
           buttonTheme="primary"
-          className="disabled:bg-colorsGray"
-          disabled={!isValid}
+          className="px-2 py-4 text-base font-semibold text-white disabled:bg-[#E0E0E0] disabled:text-[#BDBDBD] disabled:pointer-events-none"
+          disabled={!isValid || isSubmitting}
         >
           로그인
         </Button>
       </div>
       <Spacing size={24} />
       {/* helper menu */}
-      <div className="flex w-full justify-center items-center">
-        <span className="text-sm">처음이신가요?&nbsp;&nbsp;</span>
+      <div className="flex w-full justify-center items-center gap-6">
+        <span className="font-medium text-[#656565]">
+          커널 스퀘어가 처음이신가요?
+        </span>
         <Link href="/signup" className={linkClassNames} onClick={handleClose}>
           회원가입
         </Link>
       </div>
       <Spacing size={24} />
-      <LabelDivider label={"간편 로그인"} />
-      <Spacing size={12} />
+      {/* <LabelDivider label={"간편 로그인"} />
+      <Spacing size={12} /> */}
       {/* social login button */}
-      <div className="flex w-full justify-center gap-2">
+      {/* <div className="flex w-full justify-center gap-2">
         <SocialButton social="github" action="login" />
-      </div>
+      </div> */}
     </form>
   )
 }

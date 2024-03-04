@@ -96,8 +96,9 @@ export async function deleteCodingMeeting({
     if (err instanceof AxiosError) {
       const { response } = err as AxiosError<APIResponse>
 
-      console.log({ response: response?.data })
+      throw err
     }
+
     throw new Error(errorMessage.deleteCodingMeeting)
   }
 }
