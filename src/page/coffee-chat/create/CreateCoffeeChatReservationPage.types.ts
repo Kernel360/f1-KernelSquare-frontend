@@ -10,6 +10,7 @@ export interface CoffeeChatEditorInitialValues {
 
 export interface CoffeeChatFormData {
   title: string
+  content: string
 }
 
 export type SubmitAskQuestionData = CoffeeChatFormData

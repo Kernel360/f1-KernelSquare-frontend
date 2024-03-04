@@ -30,6 +30,8 @@ import { useGetScheduleList } from "./hooks/useGetScheduleList"
 import Limitation from "@/constants/limitation"
 import { AxiosError } from "axios"
 import { APIResponse } from "@/interfaces/dto/api-response"
+import { twJoin } from "tailwind-merge"
+import TextCounter from "@/components/shared/TextCounter"
 
 const MdEditor = dynamic(() => import("./components/MdEditor"), {
   ssr: false,
@@ -48,15 +50,17 @@ function CreateCoffeeChatReservationPage({
 
   const { user } = useClientSession()
 
-  const { register, handleSubmit } = useForm<CoffeeChatFormData>(
-    initialValues
-      ? {
-          defaultValues: {
-            title: initialValues.title,
-          },
-        }
-      : {},
-  )
+  const { register, handleSubmit, watch, setValue, getValues } =
+    useForm<CoffeeChatFormData>(
+      initialValues
+        ? {
+            defaultValues: {
+              title: initialValues.title,
+              content: initialValues.content,
+            },
+          }
+        : {},
+    )
 
   const editorRef = useRef<Editor>(null)
 
@@ -170,6 +174,14 @@ function CreateCoffeeChatReservationPage({
 
   if (!user) return
 
+  const TitleInputClass = twJoin([
+    "rounded-none border-r-0 border-l-0 border-t-0 text-3xl placeholder:text-3xl",
+    watch("title") &&
+      (watch("title")?.length < Limitation.title_limit_under ||
+        watch("title")?.length > Limitation.title_limit_over) &&
+      "focus:border-danger border-danger",
+  ])
+
   return (
     <div className="w-[80%] m-auto">
       <form
@@ -183,12 +195,23 @@ function CreateCoffeeChatReservationPage({
             spellCheck="false"
             autoComplete="off"
             fullWidth
-            className="rounded-none border-r-0 border-l-0 border-t-0 text-3xl placeholder:text-3xl"
+            className={TitleInputClass}
             placeholder="제목"
             {...register("title", {
               required: true,
+              minLength: Limitation.title_limit_under,
+              maxLength: Limitation.title_limit_over,
             })}
           />
+          <div>
+            {watch("title") &&
+              (watch("title")?.length < Limitation.title_limit_under ||
+                watch("title")?.length > Limitation.title_limit_over) && (
+                <Input.ErrorMessage className="text-md">
+                  {"제목은 5자 이상 100자 이하여야 합니다."}
+                </Input.ErrorMessage>
+              )}
+          </div>
         </CoffeeChatSection>
         <Spacing size={20} />
         <CoffeeChatSection>
@@ -200,7 +223,14 @@ function CreateCoffeeChatReservationPage({
               previous=""
               editorRef={editorRef}
               userId={user?.member_id}
+              onChange={() => {
+                setValue(
+                  "content",
+                  editorRef.current?.getInstance().getMarkdown() ?? "",
+                )
+              }}
             />
+            <TextCounterBox text={watch("content")} />
           </div>
         </CoffeeChatSection>
         <Spacing size={20} />
@@ -209,16 +239,43 @@ function CreateCoffeeChatReservationPage({
         <ScheduleSection />
         <div className="flex justify-center">
           <Button
+            disabled={
+              !user ||
+              timeCount === 0 ||
+              !watch("content") ||
+              watch("content").length < Limitation.content_limit_under ||
+              watch("content").length > Limitation.content_limit_over ||
+              !getValues("title") ||
+              getValues("title").length < Limitation.title_limit_under ||
+              getValues("title").length > Limitation.title_limit_over
+            }
             buttonTheme="primary"
-            className="p-5 py-3 my-10"
+            className="p-5 py-3 my-10 disabled:bg-colorsGray disabled:text-colorsDarkGray"
             type="submit"
           >
             멘토링 개설하기
           </Button>
         </div>
+        <input hidden className="hidden" {...register("content")} />
       </form>
     </div>
   )
 }
 
 export default CreateCoffeeChatReservationPage
+
+type TextCounterBoxProps = {
+  text: string | undefined
+}
+
+const TextCounterBox = ({ text }: TextCounterBoxProps) => {
+  if (!text) return
+  return (
+    <TextCounter
+      text={text ?? ""}
+      min={Limitation.content_limit_under}
+      max={Limitation.content_limit_over}
+      className="text-lg block text-right h-2 mr-5"
+    />
+  )
+}
