@@ -7,6 +7,9 @@ import { getCodingMeetingDetail } from "@/service/coding-meetings"
 import DetailHeader from "@/page/coding-meetings/detail/DetailHeader"
 import ScrollTopButton from "@/page/coding-meetings/main/ScrollTopButton"
 
+export const dynamic = "force-dynamic"
+export const revalidate = 0
+
 export interface CodingMeetingsDetailPageProps {
   params: {
     token: string

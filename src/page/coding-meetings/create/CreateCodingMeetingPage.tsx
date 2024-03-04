@@ -33,6 +33,7 @@ import Limitation from "@/constants/limitation"
 import type { CodingMeetingDetailPayload } from "@/interfaces/dto/coding-meeting/get-coding-meeting-detail.dto"
 import NotFound from "@/app/not-found"
 import { revalidatePage } from "@/util/actions/revalidatePage"
+import queryKey from "@/constants/queryKey"
 
 interface CreateCodingMeetingPageProps {
   editMode: "create" | "update"
@@ -57,8 +58,9 @@ const CreateCodingMeetingPage = ({
   const [endTime, setEndTime] = useRecoilState(EndTime)
   const [location, setLocation] = useRecoilState(LocationForSubmit)
   const queryClient = useQueryClient()
-  const { replace } = useRouter()
+  const { replace, push } = useRouter()
   const { user } = useClientSession()
+
   const { register, handleSubmit } = useForm<CodingMeetingFormData>(
     initialValues
       ? {
@@ -148,7 +150,7 @@ const CreateCodingMeetingPage = ({
       createCodingMeetingPost(payload, {
         onSuccess: (res) => {
           queryClient.invalidateQueries({
-            queryKey: ["codingMeeting"],
+            queryKey: [queryKey.codingMeeting],
           })
 
           replace(`/coding-meetings/${res.data.data?.coding_meeting_token}`)
@@ -181,27 +183,31 @@ const CreateCodingMeetingPage = ({
         coding_meeting_token,
       }
       updateCodingMeeting(editPayload, {
-        onSuccess: (res) => {
-          queryClient.invalidateQueries({
-            queryKey: ["codingMeeting"],
+        onSuccess: async (res) => {
+          queryClient.resetQueries({
+            queryKey: [queryKey.codingMeeting],
           })
-          revalidatePage("/coding-meetings/[token]", "page")
-          replace(`/coding-meetings/${coding_meeting_token}`)
 
-          setHash_tags([])
-          setHead_cnt("3")
-          setDay(new Date())
-          setStartTime({
-            range: "",
-            hour: "",
-            minute: "",
-          })
-          setEndTime({
-            range: "",
-            hour: "",
-            minute: "",
-          })
-          setLocation(undefined)
+          await revalidatePage("/coding-meetings/[token]", "page")
+
+          setTimeout(() => {
+            replace(`/coding-meetings/${coding_meeting_token}`)
+
+            setHash_tags([])
+            setHead_cnt("3")
+            setDay(new Date())
+            setStartTime({
+              range: "",
+              hour: "",
+              minute: "",
+            })
+            setEndTime({
+              range: "",
+              hour: "",
+              minute: "",
+            })
+            setLocation(undefined)
+          }, 0)
         },
       })
     }
