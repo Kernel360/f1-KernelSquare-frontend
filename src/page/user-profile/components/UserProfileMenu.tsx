@@ -69,7 +69,7 @@ function UserProfileMenu({ userPayload }: UserProfileMenuProps) {
       />
       <Spacing size={16} />
       {/* menu content */}
-      <UserProfileSection className="bg-white border-none shadow-none p-0">
+      <UserProfileSection className="bg-white border-none shadow-none p-0 sticky">
         <MenuContent />
       </UserProfileSection>
     </>
