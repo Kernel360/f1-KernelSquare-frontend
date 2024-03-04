@@ -6,6 +6,7 @@ export const errorMessage = {
   underTitleLimit: `제목은 최소 ${Limitation.title_limit_under}자 이상이어야 합니다.`,
   overTitleLimit: `제목은 최대 ${Limitation.title_limit_over}자 이하이어야 합니다.`,
   noContent: "본문 내용을 작성해주세요",
+  noAnswerContent: "답변 내용을 작성해주세요",
   noTime: "정확한 시간대를 설정해주세요",
   noLocation: "모임 위치를 설정해주세요",
   noHeadCnt: "모임 인원을 설정해주세요",
