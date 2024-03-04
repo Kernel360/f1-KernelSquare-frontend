@@ -2,7 +2,7 @@
 
 import CreateAnswerAnime from "@/components/shared/animation/CreateAnswerAnime"
 import LightBulb from "@/components/shared/animation/LightBulb"
-import Button from "@/components/shared/button/Button"
+import { Button } from "@/components/ui/button"
 import { useClientSession } from "@/hooks/useClientSession"
 import {
   CodingMeetingAuthor,
@@ -12,14 +12,12 @@ import {
 import { GetCodingMeetingCommentListPayload } from "@/interfaces/dto/coding-meeting/comment/get-coding-meeting-comment-list.dto"
 import {
   createCodingMeetingComment,
-  deleteCodingMeetingComment,
   getCodingMeetingComments,
-  updateCodingMeetingComment,
 } from "@/service/coding-meetings"
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
+import { useQuery, useQueryClient } from "@tanstack/react-query"
 import { FieldErrors, useForm } from "react-hook-form"
 import { twMerge } from "tailwind-merge"
-import UserInfo from "./UserInfo"
+import UserInfo from "../UserInfo"
 import { getKorRelativeTime } from "@/util/getDate"
 import dayjs from "dayjs"
 import Skeleton from "react-loading-skeleton"
@@ -27,11 +25,15 @@ import { toast } from "react-toastify"
 import { AxiosError, HttpStatusCode } from "axios"
 import { APIResponse } from "@/interfaces/dto/api-response"
 import { revalidatePage } from "@/util/actions/revalidatePage"
-import { RxDividerVertical } from "react-icons/rx"
-import { useRef, useState } from "react"
+import { useRef } from "react"
 import { FaRegCommentDots } from "react-icons/fa"
 import useModal from "@/hooks/useModal"
 import LoginForm from "@/components/form/LoginForm"
+import CommentControl from "./CommentControl"
+import CommentContent from "./CommentContent"
+import { useRecoilValue } from "recoil"
+import { codingMeetingEditCommentAtom } from "@/recoil/atoms/coding-meeting/comment"
+import TextLengthIndicator from "./TextLengthIndicator"
 
 interface DetailCommentsProps {
   author: CodingMeetingAuthor
@@ -40,6 +42,17 @@ interface DetailCommentsProps {
 
 interface CommentFormData {
   comment: string
+}
+
+export interface CommentUpdateFormData {
+  commentForUpdate: string
+}
+
+export const commentFormMessages = {
+  required: "댓글을 작성해주세요.",
+  minLength: "댓글은 최소 10자 이상이어야 합니다.",
+  maxLength: "댓글은 최대 10000자까지 작성가능합니다.",
+  isEqual: "댓글 내용이 이전과 동일합니다.",
 }
 
 function DetailComments({ author, token }: DetailCommentsProps) {
@@ -59,12 +72,25 @@ function DetailComments({ author, token }: DetailCommentsProps) {
     },
   })
 
+  const codingMeetingEditComment = useRecoilValue(codingMeetingEditCommentAtom)
+  const isCommentEditing = !!codingMeetingEditComment.editingCommentToken
+
   const {
     register,
     handleSubmit,
     setValue,
-    formState: { isSubmitting },
+    watch,
+    trigger,
+    formState: { isSubmitting, isValid },
   } = useForm<CommentFormData>()
+
+  const formRef = useRef<HTMLFormElement>(null)
+  const submitBtnRef = useRef<HTMLButtonElement>(null)
+
+  const disableCase = {
+    input: !user || isSubmitting || isCommentEditing,
+    button: !user || !isValid || isSubmitting || isCommentEditing,
+  }
 
   const onSubmit = async ({ comment }: CommentFormData) => {
     if (!user || isSubmitting) return
@@ -82,6 +108,7 @@ function DetailComments({ author, token }: DetailCommentsProps) {
       })
 
       setValue("comment", "")
+      trigger("comment")
     } catch (error) {
       const toastId = "commentError"
 
@@ -118,12 +145,15 @@ function DetailComments({ author, token }: DetailCommentsProps) {
     const toastId = "commentError"
 
     if (errors.comment?.type === "required") {
-      toast.error("댓글을 작성해주세요.", { position: "top-center", toastId })
+      toast.error(commentFormMessages.required, {
+        position: "top-center",
+        toastId,
+      })
       return
     }
 
     if (errors.comment?.type === "minLength") {
-      toast.error("댓글은 최소 10자 이상이어야 합니다.", {
+      toast.error(commentFormMessages.minLength, {
         position: "top-center",
         toastId,
       })
@@ -131,7 +161,7 @@ function DetailComments({ author, token }: DetailCommentsProps) {
     }
 
     if (errors.comment?.type === "maxLength") {
-      toast.error("댓글은 최대 10000자까지 작성가능합니다.", {
+      toast.error(commentFormMessages.maxLength, {
         position: "top-center",
         toastId,
       })
@@ -158,23 +188,38 @@ function DetailComments({ author, token }: DetailCommentsProps) {
       ) : (
         <>
           <form
+            ref={formRef}
             onSubmit={handleSubmit(onSubmit, onInvalid)}
-            className="w-full flex flex-wrap justify-center items-center gap-4 mb-[22px]"
+            className="relative w-full flex gap-4 justify-center items-center mb-[22px]"
           >
-            <input
-              {...register("comment", {
-                required: true,
-                minLength: 10,
-                maxLength: 10000,
-              })}
-              className="box-border flex-1 px-4 py-3 placeholder:text-[#BDBDBD] border border-[#E0E0E0] rounded-lg"
-              placeholder="댓글을 입력해주세요"
-              autoComplete="off"
-            />
+            <div className="w-full flex flex-col flex-1">
+              <textarea
+                {...register("comment", {
+                  required: true,
+                  minLength: {
+                    value: 10,
+                    message: commentFormMessages.minLength,
+                  },
+                  maxLength: {
+                    value: 10000,
+                    message: commentFormMessages.maxLength,
+                  },
+                })}
+                rows={1}
+                disabled={disableCase.input}
+                className="resize-none w-full box-border px-4 py-3 placeholder:text-[#BDBDBD] border border-[#E0E0E0] rounded-lg"
+                placeholder={"댓글을 입력해주세요"}
+                autoComplete="off"
+              />
+            </div>
             <Button
-              disabled={!user || isSubmitting}
-              type="submit"
-              buttonTheme="primary"
+              ref={submitBtnRef}
+              disabled={disableCase.button}
+              type="button"
+              onClick={() => {
+                formRef.current?.requestSubmit()
+              }}
+              // buttonTheme="primary"
               className="w-[87px] h-[49px] disabled:bg-colorsGray disabled:text-colorsDarkGray"
             >
               <div className="flex justify-center items-center flex-shrink-0 gap-1">
@@ -182,6 +227,13 @@ function DetailComments({ author, token }: DetailCommentsProps) {
                 <span className="text-white text-sm">댓글 작성</span>
               </div>
             </Button>
+            <TextLengthIndicator
+              classNames={{
+                wrapper: "absolute left-0 -bottom-6",
+              }}
+              text={watch("comment")}
+              isEditTarget={!isCommentEditing && !!watch("comment")}
+            />
           </form>
           <div>
             <CommentList author={author} comments={comments ?? []} />
@@ -212,7 +264,7 @@ function Info() {
       </div>
       <Button
         className="px-6 py-4"
-        buttonTheme="primary"
+        // buttonTheme="primary"
         onClick={() => {
           openModal({
             content: <LoginForm />,
@@ -283,54 +335,7 @@ function Comment({
   author: CodingMeetingAuthor
   comment: CodingMeetingComment
 }) {
-  const { user } = useClientSession()
-
-  const queryClient = useQueryClient()
-
-  const textAreaRef = useRef<HTMLTextAreaElement>(null)
-
-  const [isCommentEditing, setIsCommentEditing] = useState(false)
-
-  const { mutate: updateComment, status: updateCommentStatus } = useMutation({
-    mutationFn: (content: string) =>
-      updateCodingMeetingComment({
-        coding_meeting_comment_token: comment.coding_meeting_comment_token,
-        coding_meeting_comment_content: content,
-      }),
-    onSuccess() {
-      setIsCommentEditing(false)
-
-      queryClient.invalidateQueries({
-        queryKey: ["coding-meeting", "comment"],
-      })
-    },
-    onError(error) {
-      toast.error("댓글 수정 실패", {
-        position: "top-center",
-        toastId: "updateCommentFail",
-      })
-    },
-  })
-
-  const { mutate: deleteComment, status: deleteCommentStatus } = useMutation({
-    mutationFn: () =>
-      deleteCodingMeetingComment({
-        coding_meeting_comment_token: comment.coding_meeting_comment_token,
-      }),
-    onSuccess() {
-      setIsCommentEditing(false)
-
-      queryClient.invalidateQueries({
-        queryKey: ["coding-meeting", "comment"],
-      })
-    },
-    onError(error) {
-      toast.error("댓글 삭제 실패", {
-        position: "top-center",
-        toastId: "updateCommentFail",
-      })
-    },
-  })
+  const textareaRef = useRef<HTMLTextAreaElement>(null)
 
   const commentAuthor: CodingMeetingCommentAuthor = {
     member_id: comment.member_id,
@@ -340,52 +345,7 @@ function Comment({
     member_level_image_url: comment.member_level_image_url,
   }
 
-  const validateContent = (content: string) => {
-    const toastId = "updateCommentError"
-
-    if (!content.length) {
-      toast.error("내용을 입력해주세요", { position: "top-center", toastId })
-
-      return false
-    }
-
-    if (content.length < 10) {
-      toast.error("댓글은 최소 10자 이상이어야 합니다.", {
-        position: "top-center",
-        toastId,
-      })
-
-      return false
-    }
-
-    if (content.length > 10000) {
-      toast.error("내용은 최대 10000자까지 입력가능합니다", {
-        position: "top-center",
-        toastId,
-      })
-
-      return false
-    }
-
-    return true
-  }
-
-  const onSubmit = (type: "update" | "delete") => {
-    const value = textAreaRef.current?.value ?? ""
-
-    if (type === "update") {
-      if (!validateContent(value)) return
-
-      updateComment(value)
-
-      return
-    }
-
-    deleteComment()
-  }
-
   const isAuthor = author.member_nickname === comment.member_nickname
-  const isCommentAuthor = user?.nickname === commentAuthor.member_nickname
 
   return (
     <li className="w-full flex flex-col box-border px-6 py-6 pb-[34px]">
@@ -409,77 +369,9 @@ function Comment({
             </span>
           </div>
         </div>
-        {isCommentAuthor && (
-          <div className="flex text-sm font-semibold items-center">
-            {isCommentEditing ? (
-              <>
-                <Button
-                  className="px-4 py-2 text-[#828282] shrink-0 disabled:bg-colorsGray"
-                  disabled={
-                    updateCommentStatus === "pending" ||
-                    deleteCommentStatus === "pending"
-                  }
-                  onClick={() => onSubmit("update")}
-                >
-                  수정
-                </Button>
-                <RxDividerVertical className="text-[#E0E0E0] shrink-0" />
-                <Button
-                  className="px-4 py-2 text-[#EB5757] shrink-0 disabled:bg-colorsGray"
-                  onClick={() => {
-                    setIsCommentEditing(false)
-
-                    if (textAreaRef.current) {
-                      textAreaRef.current.value =
-                        comment.coding_meeting_comment_content
-                    }
-                  }}
-                  disabled={
-                    updateCommentStatus === "pending" ||
-                    deleteCommentStatus === "pending"
-                  }
-                >
-                  취소하기
-                </Button>
-              </>
-            ) : (
-              <>
-                <Button
-                  className="px-4 py-2 text-[#828282] shrink-0"
-                  onClick={() => setIsCommentEditing(true)}
-                >
-                  수정하기
-                </Button>
-                <RxDividerVertical className="text-[#E0E0E0] shrink-0" />
-                <Button
-                  className="px-4 py-2 text-[#EB5757] shrink-0"
-                  onClick={() => onSubmit("delete")}
-                >
-                  삭제하기
-                </Button>
-              </>
-            )}
-          </div>
-        )}
+        <CommentControl comment={comment} textarea={textareaRef.current} />
       </div>
-      <div className="relative mt-4">
-        <div
-          className={`${
-            isCommentEditing ? "hidden" : "opacity-100 pointer-events-auto"
-          }`}
-        >
-          {comment.coding_meeting_comment_content}
-        </div>
-        <textarea
-          ref={textAreaRef}
-          className={`w-full resize-none ${
-            isCommentEditing
-              ? "opacity-100 z-[2] border border-[#828282] rounded-lg"
-              : "hidden"
-          }`}
-          defaultValue={comment.coding_meeting_comment_content}
-        />
-      </div>
+      <CommentContent ref={textareaRef} comment={comment} />
     </li>
   )
 }

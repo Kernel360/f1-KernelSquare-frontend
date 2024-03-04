@@ -23,7 +23,8 @@ function QnAList({ questions }: QnAListProps) {
   const { user } = useClientSession()
 
   const searchParams = useSearchParams()
-  const page = searchParams.get("page") ?? 0
+  const page = searchParams.get("page") ?? "0"
+  const size = searchParams.get("size") ?? "5"
 
   const { push } = useRouter()
 
@@ -131,13 +132,40 @@ function QnAList({ questions }: QnAListProps) {
       </ul>
       <Spacing size={32} />
       <Pagination
-        previousLabel="이전"
-        nextLabel="다음"
         disabledClassName="hidden"
         forcePage={Number(page)}
         pageCount={questions.pagination.total_page}
         onPageChange={({ selected }) => {
           push(`?page=${selected}`)
+        }}
+        onSkip={({ type, pageCount }) => {
+          const searchParams = new URLSearchParams()
+
+          const pageNumber = Number(page)
+
+          if (type === "prevSkip") {
+            if (pageCount > 10 && pageNumber - 10 >= 0) {
+              searchParams.set("page", `${pageNumber - 10}`)
+              searchParams.set("size", size)
+
+              push(`/qna?${searchParams.toString()}`)
+
+              return
+            }
+
+            return
+          }
+
+          if (type === "nextSkip") {
+            if (pageCount > 10 && pageCount - 1 - pageNumber >= 10) {
+              searchParams.set("page", `${pageNumber + 10}`)
+              searchParams.set("size", size)
+
+              push(`/qna?${searchParams.toString()}`)
+            }
+
+            return
+          }
         }}
       />
     </div>

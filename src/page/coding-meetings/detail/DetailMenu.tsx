@@ -6,18 +6,20 @@ import { useClientSession } from "@/hooks/useClientSession"
 import useModal from "@/hooks/useModal"
 import { CodingMeetingAuthor } from "@/interfaces/coding-meetings"
 import { APIResponse } from "@/interfaces/dto/api-response"
+import { codingMeetingEditCommentAtom } from "@/recoil/atoms/coding-meeting/comment"
 import {
   closeCodingMeeting,
   deleteCodingMeeting,
 } from "@/service/coding-meetings"
 import { revalidatePage } from "@/util/actions/revalidatePage"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
-import { AxiosError } from "axios"
+import { AxiosError, HttpStatusCode } from "axios"
 import { useRouter } from "next/navigation"
 import Dropdown from "rc-dropdown"
 import Menu, { MenuItem } from "rc-menu"
 import { MdMoreVert } from "react-icons/md"
 import { toast } from "react-toastify"
+import { useResetRecoilState } from "recoil"
 import { twMerge } from "tailwind-merge"
 
 interface DetailMenuProps {
@@ -133,6 +135,11 @@ function DetailConfirmModal({
 }
 
 function DeleteModal({ token }: { token: string }) {
+  const { clientSessionReset } = useClientSession()
+  const resetCodingMeetingEditComment = useResetRecoilState(
+    codingMeetingEditCommentAtom,
+  )
+
   const { replace } = useRouter()
 
   const queryClient = useQueryClient()
@@ -152,11 +159,29 @@ function DeleteModal({ token }: { token: string }) {
 
       replace("/coding-meetings")
     },
-    onError(error) {
+    async onError(error) {
+      closeModal()
+
       if (error instanceof AxiosError) {
         const { response } = error as AxiosError<APIResponse>
 
-        toast.error(response?.data.msg ?? "삭제 요청이 실패했습니다", {
+        if (response?.status === HttpStatusCode.Unauthorized) {
+          resetCodingMeetingEditComment()
+
+          await clientSessionReset()
+          revalidatePage("*")
+
+          setTimeout(() => {
+            toast.error("로그인 후 모각코 삭제가 가능합니다", {
+              position: "top-center",
+              toastId: "delteServerErrorToast",
+            })
+          }, 0)
+
+          return
+        }
+
+        toast.error(response?.data.msg ?? "모각코 삭제 요청이 실패했습니다", {
           position: "top-center",
           toastId: "delteServerErrorToast",
         })
@@ -164,7 +189,7 @@ function DeleteModal({ token }: { token: string }) {
         return
       }
 
-      toast.error("삭제 요청이 실패했습니다", {
+      toast.error("모각코 삭제 요청이 실패했습니다", {
         position: "top-center",
         toastId: "deleteErrorToast",
       })
@@ -208,6 +233,11 @@ function DeleteModal({ token }: { token: string }) {
 }
 
 function CloseModal({ token }: { token: string }) {
+  const { clientSessionReset } = useClientSession()
+  const resetCodingMeetingEditComment = useResetRecoilState(
+    codingMeetingEditCommentAtom,
+  )
+
   const queryClient = useQueryClient()
 
   const { closeModal } = useModal()
@@ -225,11 +255,29 @@ function CloseModal({ token }: { token: string }) {
 
       revalidatePage(`/coding-meetings/[token]`, "page")
     },
-    onError(error) {
+    async onError(error) {
+      closeModal()
+
       if (error instanceof AxiosError) {
         const { response } = error as AxiosError<APIResponse>
 
-        toast.error(response?.data.msg ?? "마감요청이 실패했습니다", {
+        if (response?.status === HttpStatusCode.Unauthorized) {
+          resetCodingMeetingEditComment()
+
+          await clientSessionReset()
+          revalidatePage("*")
+
+          setTimeout(() => {
+            toast.error("로그인 후 모집 마감이 가능합니다.", {
+              position: "top-center",
+              toastId: "closeServerErrorToast",
+            })
+          }, 0)
+
+          return
+        }
+
+        toast.error(response?.data.msg ?? "모집 마감이 실패했습니다", {
           position: "top-center",
           toastId: "closeServerErrorToast",
         })
@@ -237,7 +285,7 @@ function CloseModal({ token }: { token: string }) {
         return
       }
 
-      toast.error("마감 요청이 실패했습니다", {
+      toast.error("모집 마감이 실패했습니다", {
         position: "top-center",
         toastId: "closeErrorToast",
       })

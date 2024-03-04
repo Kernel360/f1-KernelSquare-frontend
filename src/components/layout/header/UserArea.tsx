@@ -129,9 +129,9 @@ function LoginedUserArea({ user }: { user: LoginUserPayload }) {
       <Dropdown trigger={["click"]} overlay={DropDownMenu}>
         <Profile profileImage={user?.image_url} />
       </Dropdown>
-      <Button className="p-0">
+      {/* <Button className="p-0">
         <Icons.Notification className="text-2xl text-colorsGray" />
-      </Button>
+      </Button> */}
     </div>
   )
 }
