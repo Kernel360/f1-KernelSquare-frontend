@@ -12,13 +12,20 @@ import Button from "@/components/shared/button/Button"
 import { toast } from "react-toastify"
 import { errorMessage } from "@/constants/message"
 import Limitation from "@/constants/limitation"
+import { useLayoutEffect } from "react"
 
 const TimeOptions = ({ date }: TimeOptionsProps) => {
   const selectedDate = useRecoilValue(SelectedDate)
   const [schedulelist, setSchedulelist] = useRecoilState(
     ScheduleListAtomFamily(selectedDate),
   )
-  const timeCount = useRecoilValue(TimeCount)
+  const [timeCount, setTimeCount] = useRecoilState(TimeCount)
+  useLayoutEffect(() => {
+    setSchedulelist({
+      schedule: [],
+    })
+    setTimeCount(0)
+  }, [])
   const handleRegister = (time: string) => {
     if (schedulelist.schedule.includes(time)) {
       setSchedulelist({

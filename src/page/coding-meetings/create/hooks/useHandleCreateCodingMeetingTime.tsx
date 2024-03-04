@@ -21,10 +21,8 @@ const useHandleCreateCodingMeetingTime = () => {
   const formatMinute = (minute: number | string) =>
     String(minute).length === 1 ? "0" + String(minute) : minute + ""
 
-  const formatTime = ({ hour, minute }: Time) => {
-    if (hour && hour.length === 1) hour = "0" + hour
-    return `${hour}:${minute}`
-  }
+  const formatTime = ({ hour, minute }: Time) => `${hour}:${minute}`
+
   const formatByUTC = (time: string) => {
     dayjs.extend(utc)
     return dayjs(`${formattedDay} ${time}`).utc().format().slice(0, -1)

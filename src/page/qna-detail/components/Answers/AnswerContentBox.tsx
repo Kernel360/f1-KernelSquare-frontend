@@ -37,8 +37,7 @@ export interface AnswerFormData {
 
 const AnswerContentBox: React.FC<EditAnswerProps> = ({ answer }) => {
   const editorRef = useRef<Editor>(null)
-  const { handleSubmit, register, setValue, getValues, watch } =
-    useForm<AnswerFormData>()
+  const { handleSubmit, register, setValue, watch } = useForm<AnswerFormData>()
   const { isAnswerEditMode, setIsAnswerEditMode } = useHandleMyAnswer({
     answerId: Number(answer.answer_id),
     questionId: Number(answer.question_id),

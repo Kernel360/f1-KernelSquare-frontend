@@ -8,6 +8,8 @@ import Button from "@/components/shared/button/Button"
 import UserProfileMenu from "../UserProfileMenu"
 import dynamic from "next/dynamic"
 import { Editor } from "@toast-ui/react-editor"
+import TextCounter from "@/components/shared/TextCounter"
+import Limitation from "@/constants/limitation"
 
 const MdEditor = dynamic(() => import("./MdEditor"), {
   ssr: false,
@@ -30,7 +32,9 @@ function Introduction({ introduction, userId }: IntroductionProps) {
     handleSubmitIntroduction,
     isIntroductionEditMode,
   } = useIntroduction()
-  const { handleSubmit } = useForm<{ introduction: string }>()
+  const { handleSubmit, watch, register, setValue } = useForm<{
+    introduction: string
+  }>()
 
   const onsubmit = () => {
     const introduction = editorRef.current?.getInstance().getMarkdown()
@@ -46,7 +50,14 @@ function Introduction({ introduction, userId }: IntroductionProps) {
               previous={introduction}
               editorRef={editorRef}
               userId={userId!}
+              onChange={() => {
+                setValue(
+                  "introduction",
+                  editorRef.current?.getInstance().getMarkdown() ?? "",
+                )
+              }}
             />
+            <TextCounterBox text={watch("introduction")} />
             <div className="flex justify-center mt-[20px]">
               <Button
                 buttonTheme="third"
@@ -55,10 +66,22 @@ function Introduction({ introduction, userId }: IntroductionProps) {
               >
                 {buttonMessage.cancle}
               </Button>
-              <Button buttonTheme="primary" className="w-[70px]" type="submit">
+              <Button
+                buttonTheme="primary"
+                className="w-[70px] disabled:bg-colorsGray disabled:text-colorsDarkGray"
+                type="submit"
+                disabled={
+                  !watch("introduction") ||
+                  watch("introduction").length <
+                    Limitation.introduction_limit_under ||
+                  watch("introduction").length >
+                    Limitation.introduction_limit_over
+                }
+              >
                 {buttonMessage.save}
               </Button>
             </div>
+            <input hidden className="hidden" {...register("introduction")} />
           </form>
         </div>{" "}
       </UserProfileMenu.MenuContentWrapper>
@@ -77,3 +100,19 @@ function Introduction({ introduction, userId }: IntroductionProps) {
 }
 
 export default Introduction
+
+type TextCounterBoxProps = {
+  text: string | undefined
+}
+
+const TextCounterBox = ({ text }: TextCounterBoxProps) => {
+  if (!text) return
+  return (
+    <TextCounter
+      text={text ?? ""}
+      min={Limitation.introduction_limit_under}
+      max={Limitation.introduction_limit_over}
+      className="text-lg block text-right h-5 py-2 font-light"
+    />
+  )
+}
