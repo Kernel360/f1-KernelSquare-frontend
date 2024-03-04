@@ -42,7 +42,7 @@ function CoffeeChatDetailPage({
       <CoffeeChatDetailContent content={coffeeChatDetailPayload.content} />
       <Spacing size={32} />
       <div className="w-full flex justify-center items-center">
-        {isMentee && (
+        {user && isMentee && (
           <EnterCoffeeChat
             articleTitle={coffeeChatDetailPayload.title}
             roomId={matchRoom ? matchRoom.room_id : null}

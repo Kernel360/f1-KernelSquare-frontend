@@ -40,7 +40,7 @@ export default function KakaoMapPage({ keyword }: { keyword: string }) {
       ps.keywordSearch(keyword, (data, status, _pagination) => {
         if (status === kakao.maps.services.Status.OK) {
           // 검색된 장소 위치를 기준으로 지도 범위를 재설정하기위해
-          // LatLngBounds 객체에 좌표를 추가합니다
+          // LatLngBounds 객체에 좌표를 추가합니다.
           const bounds = new kakao.maps.LatLngBounds()
           let markers: Marker[] = []
           setMapData(data)
