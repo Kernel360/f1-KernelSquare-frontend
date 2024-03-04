@@ -43,6 +43,8 @@ export const errorMessage = {
   duplicatedVote: "답변에 대한 투표는 한 번만 진행할 수 있습니다.",
   failToReserve: "커피챗 예약 중 오류가 발생하였습니다. 다시 시도해주세요.",
   failToCancleReservation: "커피챗 예약 취소 중 오류가 발생하였습니다.",
+  failToCreateCodingMeeting: "모각코 생성 중 오류가 발생하였습니다.",
+  failToUpdateCodingMeeting: "모각코 수정 중 오류가 발생하였습니다.",
   alreadyReserved: "이미 예약된 시간대입니다.",
   alreadySelected: "이미 선택된 시간대입니다.",
   youAlreadyReserved: "이미 동일한 멘토링을 예약하셨습니다.",

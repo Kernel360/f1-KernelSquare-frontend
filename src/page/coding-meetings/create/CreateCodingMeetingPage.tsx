@@ -28,6 +28,10 @@ import NotFound from "@/app/not-found"
 import { revalidatePage } from "@/util/actions/revalidatePage"
 import queryKey from "@/constants/queryKey"
 import useHandleCreateCodingMeetingTime from "./hooks/useHandleCreateCodingMeetingTime"
+import { AxiosError } from "axios"
+import { APIResponse } from "@/interfaces/dto/api-response"
+import TextCounter from "@/components/shared/TextCounter"
+import { twJoin } from "tailwind-merge"
 
 interface CreateCodingMeetingPageProps {
   editMode: "create" | "update"
@@ -61,16 +65,17 @@ const CreateCodingMeetingPage = ({
     formattedEndTime,
   } = useHandleCreateCodingMeetingTime()
 
-  const { register, handleSubmit } = useForm<CodingMeetingFormData>(
-    initialValues
-      ? {
-          defaultValues: {
-            title: initialValues.coding_meeting_title,
-            content: initialValues.coding_meeting_content,
-          },
-        }
-      : {},
-  )
+  const { register, handleSubmit, watch, getValues } =
+    useForm<CodingMeetingFormData>(
+      initialValues
+        ? {
+            defaultValues: {
+              title: initialValues.coding_meeting_title,
+              content: initialValues.coding_meeting_content,
+            },
+          }
+        : {},
+    )
 
   const { createCodingMeetingPost } =
     CodingMeetingQueries.useCreateCodingMeeting()
@@ -133,8 +138,6 @@ const CreateCodingMeetingPage = ({
       coding_meeting_end_time: formatByUTC(formatTime(endTime)),
     }
 
-    console.log(`[${editMode}]`, payload)
-
     if (editMode === "create") {
       createCodingMeetingPost(payload, {
         onSuccess: (res) => {
@@ -148,6 +151,27 @@ const CreateCodingMeetingPage = ({
           setHead_cnt("3")
           resetDateTimes()
           setLocation(undefined)
+        },
+        onError: (error: Error | AxiosError<APIResponse>) => {
+          if (error instanceof AxiosError) {
+            const { response } = error as AxiosError<APIResponse>
+
+            toast.error(
+              response?.data.msg ?? errorMessage.failToCreateCodingMeeting,
+              {
+                toastId: "failToCreateCodingMeeting",
+                position: "top-center",
+                autoClose: 1000,
+              },
+            )
+            return
+          }
+
+          toast.error(errorMessage.failToCreateCodingMeeting, {
+            toastId: "failToCreateCodingMeeting",
+            position: "top-center",
+            autoClose: 1000,
+          })
         },
       })
     }
@@ -177,6 +201,27 @@ const CreateCodingMeetingPage = ({
             resetDateTimes()
             setLocation(undefined)
           }, 0)
+        },
+        onError: (error: Error | AxiosError<APIResponse>) => {
+          if (error instanceof AxiosError) {
+            const { response } = error as AxiosError<APIResponse>
+
+            toast.error(
+              response?.data.msg ?? errorMessage.failToUpdateCodingMeeting,
+              {
+                toastId: "failToUpdateCodingMeeting",
+                position: "top-center",
+                autoClose: 1000,
+              },
+            )
+            return
+          }
+
+          toast.error(errorMessage.failToUpdateCodingMeeting, {
+            toastId: "failToUpdateCodingMeeting",
+            position: "top-center",
+            autoClose: 1000,
+          })
         },
       })
     }
@@ -227,6 +272,13 @@ const CreateCodingMeetingPage = ({
     }
   }
 
+  const TItleInputClass = twJoin([
+    "text-base placeholder:text-base",
+    (watch("title")?.length < Limitation.title_limit_under ||
+      watch("title")?.length > Limitation.title_limit_over) &&
+      "focus:border-danger border-danger",
+  ])
+
   return (
     <div className="w-[80%] m-auto">
       <div
@@ -245,19 +297,29 @@ const CreateCodingMeetingPage = ({
           <CodingMeetingSection.Label htmlFor="title">
             제목
           </CodingMeetingSection.Label>
-          <Input
-            id="title"
-            spellCheck="false"
-            autoComplete="off"
-            fullWidth
-            className="text-base placeholder:text-base"
-            placeholder="제목을 입력해주세요"
-            {...register("title", {
-              required: true,
-              minLength: Limitation.title_limit_under,
-              maxLength: Limitation.title_limit_over,
-            })}
-          />
+          <div className="w-full">
+            <Input
+              id="title"
+              spellCheck="false"
+              autoComplete="off"
+              fullWidth
+              className={TItleInputClass}
+              placeholder="제목을 입력해주세요"
+              {...register("title", {
+                required: true,
+                minLength: Limitation.title_limit_under,
+                maxLength: Limitation.title_limit_over,
+              })}
+            />
+            <div>
+              {(watch("title")?.length < Limitation.title_limit_under ||
+                watch("title")?.length > Limitation.title_limit_over) && (
+                <Input.ErrorMessage className="text-md">
+                  {"제목은 5자 이상 100자 이하여야 합니다."}
+                </Input.ErrorMessage>
+              )}
+            </div>
+          </div>
         </CodingMeetingSection>
         <Spacing size={10} />
         <LocationSection
@@ -314,11 +376,32 @@ const CreateCodingMeetingPage = ({
             />
           </div>
         </CodingMeetingSection>
+        <div>
+          <TextCounter
+            text={watch("content") ?? ""}
+            min={Limitation.content_limit_under}
+            max={Limitation.content_limit_over}
+            className="text-lg block text-right h-2 mr-5"
+          />
+        </div>
         <Spacing size={10} />
         <div className="flex float-right mr-5">
           <Button
+            disabled={
+              !user ||
+              !location ||
+              head_cnt === "0" ||
+              !startTime ||
+              !endTime ||
+              !watch("content") ||
+              watch("content").length < Limitation.answer_limit_under ||
+              watch("content").length > Limitation.answer_limit_over ||
+              !getValues("title") ||
+              getValues("title").length < Limitation.title_limit_under ||
+              getValues("title").length > Limitation.title_limit_over
+            }
             buttonTheme="primary"
-            className="p-5 py-3 my-10"
+            className="p-5 py-3 my-10 disabled:bg-colorsGray disabled:text-colorsDarkGray"
             type="submit"
           >
             {editMode === "update" ? "모각코 수정하기" : "모각코 개설하기"}
