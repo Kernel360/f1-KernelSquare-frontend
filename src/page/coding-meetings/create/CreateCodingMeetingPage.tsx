@@ -282,7 +282,7 @@ const CreateCodingMeetingPage = ({
   return (
     <div className="w-[80%] m-auto">
       <div
-        className="flex text-[#828282] items-center mt-10 cursor-pointer"
+        className="flex text-[#828282] items-center mt-10 cursor-pointer w-[10%]"
         onClick={goToListPage}
       >
         <DirectionIcons.LeftLine className="text-2xl" />
