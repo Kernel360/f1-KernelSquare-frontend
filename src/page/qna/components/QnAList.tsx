@@ -24,7 +24,7 @@ function QnAList({ questions }: QnAListProps) {
 
   const searchParams = useSearchParams()
   const page = searchParams.get("page") ?? "0"
-  const size = searchParams.get("size") ?? "5"
+  const size = searchParams.get("size") ?? "10"
 
   const { push } = useRouter()
 
@@ -44,7 +44,7 @@ function QnAList({ questions }: QnAListProps) {
 
   return (
     <div className="py-4 w-[calc(100%-12px)] sm:w-[calc(100%-22px)] lg:w-[calc(100%-42px)] mx-auto">
-      <ul className="flex flex-col gap-8">
+      <ul className="flex flex-col gap-4">
         {questions.list.map(
           ({
             id,

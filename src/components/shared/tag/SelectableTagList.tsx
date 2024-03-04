@@ -18,6 +18,8 @@ import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io"
 import { debounce } from "lodash-es"
 import ContentLoading from "../animation/ContentLoading"
 import Skeleton from "react-loading-skeleton"
+import RowInput from "../input/RowInput"
+import { IoSearchOutline } from "react-icons/io5"
 
 interface TagState {
   renderTagList: Array<TechTag>
@@ -90,11 +92,12 @@ SelectableTagList.Search = function SelectableTagListSearch() {
   const debounceChange = debounce(handleChange, 400)
 
   return (
-    <Input
+    <RowInput
       ref={inputRef}
+      placeholder="관련 있는 기술 스택을 검색해 보세요"
       onChange={debounceChange}
-      placeholder="관련있는 기술 스택을 검색해보세요"
-      className="rounded-none border-l-0 border-r-0 border-t-0"
+      sideField={<IoSearchOutline />}
+      classNames={{ wrapper: "!border-colorsGray mt-4", input: "py-1" }}
     />
   )
 }

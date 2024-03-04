@@ -1,11 +1,11 @@
 "use client"
 
 import { codingMeetingEditCommentAtom } from "@/recoil/atoms/coding-meeting/comment"
-import { useRecoilValue } from "recoil"
+import { useRecoilState } from "recoil"
 import { CodingMeetingComment } from "@/interfaces/coding-meetings"
 import { twMerge } from "tailwind-merge"
 import { ForwardedRef, forwardRef } from "react"
-import TextLengthIndicator from "./TextLengthIndicator"
+import TextCounter from "@/components/shared/TextCounter"
 
 interface CommentContentProps {
   comment: CodingMeetingComment
@@ -15,7 +15,8 @@ function CommentContent(
   { comment }: CommentContentProps,
   ref: ForwardedRef<HTMLTextAreaElement>,
 ) {
-  const codingMeetingEditComment = useRecoilValue(codingMeetingEditCommentAtom)
+  const [codingMeetingEditComment, setCodingMeetionEditComment] =
+    useRecoilState(codingMeetingEditCommentAtom)
 
   const editingCommentToken = codingMeetingEditComment.editingCommentToken
   const isEditTargetComment = !editingCommentToken
@@ -42,11 +43,19 @@ function CommentContent(
       <textarea
         ref={ref}
         className={textareaClassNames}
+        onChange={(e) =>
+          setCodingMeetionEditComment((prev) => ({
+            ...prev,
+            comment: e.currentTarget.value,
+          }))
+        }
         defaultValue={comment.coding_meeting_comment_content}
       />
-      <TextLengthIndicator
-        text={(ref as React.RefObject<HTMLTextAreaElement>).current?.value}
-        isEditTarget={
+      <TextCounter
+        min={10}
+        max={10000}
+        text={codingMeetingEditComment.comment}
+        target={
           codingMeetingEditComment.editingCommentToken ===
           comment.coding_meeting_comment_token
         }

@@ -33,7 +33,7 @@ import CommentControl from "./CommentControl"
 import CommentContent from "./CommentContent"
 import { useRecoilValue } from "recoil"
 import { codingMeetingEditCommentAtom } from "@/recoil/atoms/coding-meeting/comment"
-import TextLengthIndicator from "./TextLengthIndicator"
+import TextCounter from "@/components/shared/TextCounter"
 
 interface DetailCommentsProps {
   author: CodingMeetingAuthor
@@ -219,7 +219,6 @@ function DetailComments({ author, token }: DetailCommentsProps) {
               onClick={() => {
                 formRef.current?.requestSubmit()
               }}
-              // buttonTheme="primary"
               className="w-[87px] h-[49px] disabled:bg-colorsGray disabled:text-colorsDarkGray"
             >
               <div className="flex justify-center items-center flex-shrink-0 gap-1">
@@ -227,12 +226,12 @@ function DetailComments({ author, token }: DetailCommentsProps) {
                 <span className="text-white text-sm">댓글 작성</span>
               </div>
             </Button>
-            <TextLengthIndicator
-              classNames={{
-                wrapper: "absolute left-0 -bottom-6",
-              }}
-              text={watch("comment")}
-              isEditTarget={!isCommentEditing && !!watch("comment")}
+            <TextCounter
+              className="absolute left-0 -bottom-6"
+              min={10}
+              max={10000}
+              text={watch("comment") ?? ""}
+              target={!isCommentEditing && !!watch("comment")}
             />
           </form>
           <div>
@@ -264,7 +263,6 @@ function Info() {
       </div>
       <Button
         className="px-6 py-4"
-        // buttonTheme="primary"
         onClick={() => {
           openModal({
             content: <LoginForm />,

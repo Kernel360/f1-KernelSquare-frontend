@@ -39,8 +39,6 @@ interface GuidelineOpen {
   passwordCheck: boolean
 }
 
-// [TODO] 이미지 업로드
-
 function Signup() {
   const { replace } = useRouter()
 
@@ -183,7 +181,7 @@ function Signup() {
       setStep("success")
 
       // 성공 화면 렌더링 후 3초정도 지난 뒤에 홈으로 이동
-      sleep(3000).then(() => replace("/"))
+      sleep(3000).then(() => replace(`/qna?page=0`))
     } catch (error) {
       setStep("fail")
     }
@@ -323,7 +321,7 @@ function Signup() {
           id="nickname"
           autoComplete="off"
           spellCheck="false"
-          placeholder="zl존"
+          placeholder="닉네임"
           fullWidth
           trigger={trigger}
           error={!!errors.nickname}

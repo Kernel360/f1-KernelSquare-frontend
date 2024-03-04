@@ -7,7 +7,7 @@ import QnAList from "./QnAList"
 import { AxiosError } from "axios"
 import { APIResponse } from "@/interfaces/dto/api-response"
 import { ApiStatus } from "@/constants/response/api"
-import QnAListMenu from "./QnAListMenu"
+import ListLoading from "@/components/shared/animation/ListLoading"
 
 function QuestionListContainer() {
   const searchParams = useSearchParams()
@@ -19,7 +19,7 @@ function QuestionListContainer() {
     error,
   } = useQuery({
     queryKey: ["question", "list", page],
-    queryFn: () => getQuestionList({ page: Number(page) }),
+    queryFn: () => getQuestionList({ page: Number(page), size: 10 }),
     placeholderData: keepPreviousData,
     staleTime: 1000 * 60 * 5,
     select(payload) {
@@ -28,7 +28,7 @@ function QuestionListContainer() {
   })
 
   if (isPending) {
-    return <QnAList.Loading />
+    return <QnAListLoading />
   }
 
   if (error) {
@@ -51,12 +51,32 @@ function QuestionListContainer() {
 
   return (
     <div className="relative box-border flex-1">
-      <div className="flex justify-end mt-8 w-[calc(100%-12px)] sm:w-[calc(100%-22px)] lg:w-[calc(100%-42px)] mx-auto">
-        <QnAListMenu />
-      </div>
       <QnAList questions={questions} />
     </div>
   )
 }
 
 export default QuestionListContainer
+
+function QnAListLoading() {
+  return (
+    <div className="relative">
+      <h3 className="absolute w-full top-6 flex justify-center items-center">
+        <span className="inline-flex align-top justify-center items-center w-max break-all text-sm box-border px-2 py-0.5 rounded-lg border border-colorsGray bg-colorsLightGray">
+          Q&A 리스트
+        </span>
+        &nbsp;를 로딩하고 있어요
+      </h3>
+      <div className="h-full">
+        <ListLoading
+          style={{
+            width: "calc(100% - 80px)",
+            maxWidth: "300px",
+            margin: "0 auto",
+            opacity: "0.5",
+          }}
+        />
+      </div>
+    </div>
+  )
+}

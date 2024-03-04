@@ -26,7 +26,7 @@ function LoginForm() {
   const {
     register,
     handleSubmit,
-    formState: { errors, isValid },
+    formState: { errors, isValid, isSubmitting },
   } = useForm<LoginFormData>()
   const setUserAtom = useSetRecoilState(userAtom)
 
@@ -148,7 +148,7 @@ function LoginForm() {
           fullWidth
           buttonTheme="primary"
           className="px-2 py-4 text-base font-semibold text-white disabled:bg-[#E0E0E0] disabled:text-[#BDBDBD] disabled:pointer-events-none"
-          disabled={!isValid}
+          disabled={!isValid || isSubmitting}
         >
           로그인
         </Button>
