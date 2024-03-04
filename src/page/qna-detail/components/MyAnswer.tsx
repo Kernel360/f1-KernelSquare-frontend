@@ -2,15 +2,23 @@
 
 import dynamic from "next/dynamic"
 import { PropsWithChildren, useRef } from "react"
-import { useForm } from "react-hook-form"
+import { FieldErrors, useForm } from "react-hook-form"
 import { Editor } from "@toast-ui/react-editor"
 import Button from "@/components/shared/button/Button"
 import CreateAnswerAnime from "@/components/shared/animation/CreateAnswerAnime"
 import useModal from "@/hooks/useModal"
 import LoginForm from "@/components/form/LoginForm"
-import { buttonMessage, notificationMessage } from "@/constants/message"
+import {
+  buttonMessage,
+  errorMessage,
+  notificationMessage,
+} from "@/constants/message"
 import useQnADetail from "../hooks/useQnADetail"
 import { Answer } from "@/interfaces/answer"
+import { toast } from "react-toastify"
+import Limitation from "@/constants/limitation"
+import TextCounter from "@/components/shared/TextCounter"
+import type { AnswerFormData } from "./Answers/AnswerContentBox"
 
 export interface MyAnswerProps {
   questionId: number
@@ -24,14 +32,42 @@ const MdEditor = dynamic(() => import("../components/Markdown/MdEditor"), {
 
 const MyAnswer: React.FC<MyAnswerProps> = ({ questionId, list, nickname }) => {
   const { openModal } = useModal()
-  const { user, handleSubmitValue, handleCheckAbilityToWriteAnswer } =
-    useQnADetail()
+  const {
+    user,
+    handleSubmitValue,
+    handleCheckAbilityToWriteAnswer,
+    checkNullValue,
+  } = useQnADetail()
 
-  const { handleSubmit } = useForm()
+  const { register, setValue, handleSubmit, watch } = useForm<AnswerFormData>()
   const editorRef = useRef<Editor>(null)
 
   const handleSubmitAnswer = async () => {
     const submitValue = editorRef.current?.getInstance().getMarkdown()
+    if (!submitValue || checkNullValue(submitValue)) {
+      toast.error(errorMessage.noAnswerContent, {
+        toastId: "emptyAnswerContent",
+        position: "top-center",
+        autoClose: 1000,
+      })
+      return
+    }
+    if (submitValue.length < Limitation.answer_limit_under) {
+      toast.error(errorMessage.underAnswerLimit, {
+        toastId: "underAnswerLimit",
+        position: "top-center",
+        autoClose: 1000,
+      })
+      return
+    }
+    if (submitValue.length > Limitation.answer_limit_over) {
+      toast.error(errorMessage.overAnswerLimit, {
+        toastId: "overAnswerLimit",
+        position: "top-center",
+        autoClose: 1000,
+      })
+      return
+    }
     handleSubmitValue({ questionId, submitValue })
   }
 
@@ -58,18 +94,36 @@ const MyAnswer: React.FC<MyAnswerProps> = ({ questionId, list, nickname }) => {
     handleCheckAbilityToWriteAnswer(list, nickname) && (
       <Container>
         <div>
-          <Title title="My Answer" />
+          <div className="flex items-center gap-2">
+            <Title title="My Answer" />
+            <TextCounterBox text={watch("answer")} />
+          </div>
           <form onSubmit={handleSubmit(handleSubmitAnswer)}>
-            <MdEditor editorRef={editorRef} previous="" />
+            <MdEditor
+              editorRef={editorRef}
+              previous=""
+              onChange={() => {
+                setValue(
+                  "answer",
+                  editorRef.current?.getInstance().getMarkdown() ?? "",
+                )
+              }}
+            />
             <div className="flex justify-center my-[20px]">
               <Button
+                disabled={
+                  !watch("answer") ||
+                  watch("answer").length < Limitation.answer_limit_under ||
+                  watch("answer").length > Limitation.answer_limit_over
+                }
                 buttonTheme="primary"
-                className="w-[200px] h-[50px] text-lg"
+                className="w-[200px] h-[50px] text-lg disabled:bg-colorsGray disabled:text-colorsDarkGray"
                 type="submit"
               >
                 {buttonMessage.postMyAnswer}
               </Button>
             </div>
+            <input hidden className="hidden" {...register("answer")} />
           </form>
         </div>
       </Container>
@@ -88,3 +142,19 @@ const Container = ({ children }: PropsWithChildren) => (
     {children}
   </div>
 )
+
+type TextCounterBoxProps = {
+  text: string | undefined
+}
+
+const TextCounterBox = ({ text }: TextCounterBoxProps) => {
+  if (!text) return
+  return (
+    <TextCounter
+      text={text ?? ""}
+      min={Limitation.answer_limit_under}
+      max={Limitation.answer_limit_over}
+      className="text-lg"
+    />
+  )
+}

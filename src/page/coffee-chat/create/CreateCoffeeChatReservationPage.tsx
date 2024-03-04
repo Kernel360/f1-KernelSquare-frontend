@@ -28,6 +28,8 @@ import dynamic from "next/dynamic"
 import { TimeCount } from "@/recoil/atoms/coffee-chat/schedule"
 import { useGetScheduleList } from "./hooks/useGetScheduleList"
 import Limitation from "@/constants/limitation"
+import { AxiosError } from "axios"
+import { APIResponse } from "@/interfaces/dto/api-response"
 
 const MdEditor = dynamic(() => import("./components/MdEditor"), {
   ssr: false,
@@ -46,7 +48,7 @@ function CreateCoffeeChatReservationPage({
 
   const { user } = useClientSession()
 
-  const { register, setFocus, handleSubmit } = useForm<CoffeeChatFormData>(
+  const { register, handleSubmit } = useForm<CoffeeChatFormData>(
     initialValues
       ? {
           defaultValues: {
@@ -73,18 +75,36 @@ function CreateCoffeeChatReservationPage({
       })
     if (data.title.length < Limitation.title_limit_under)
       return toast.error(errorMessage.underTitleLimit, {
-        toastId: "emptyCoffeeChatTitle",
+        toastId: "underCoffeeChatTitleLimit",
         position: "top-center",
       })
-    if (
-      !editorRef.current?.getInstance().getMarkdown() ||
-      editorRef.current?.getInstance().getMarkdown().length <
-        Limitation.content_limit_under
-    )
-      return toast.error(errorMessage.underContentLimit, {
+    if (data.title.length > Limitation.title_limit_over)
+      return toast.error(errorMessage.overTitleLimit, {
+        toastId: "overCoffeeChatTitleLimit",
+        position: "top-center",
+      })
+    if (!editorRef.current?.getInstance().getMarkdown())
+      return toast.error(errorMessage.noContent, {
         toastId: "emptyCoffeeChatContent",
         position: "top-center",
       })
+    if (
+      editorRef.current?.getInstance().getMarkdown().length <
+      Limitation.content_limit_under
+    )
+      return toast.error(errorMessage.underContentLimit, {
+        toastId: "underCoffeeChatContent",
+        position: "top-center",
+      })
+    if (
+      editorRef.current?.getInstance().getMarkdown().length >
+      Limitation.content_limit_over
+    )
+      return toast.error(errorMessage.overContentLimit, {
+        toastId: "overCoffeeChatContent",
+        position: "top-center",
+      })
+
     if (timeCount === 0)
       return toast.error(errorMessage.undertimeCntLimit, {
         toastId: "emptyCoffeeChatTime",
@@ -107,6 +127,26 @@ function CreateCoffeeChatReservationPage({
           replace(`/chat/${res.data.data?.reservation_article_id}`)
 
           setHash_tags([])
+        },
+        onError: (error: Error | AxiosError<APIResponse>) => {
+          if (error instanceof AxiosError) {
+            const { response } = error as AxiosError<APIResponse>
+
+            toast.error(
+              response?.data.msg ?? errorMessage.failToCreateCoffeeChat,
+              {
+                toastId: "failToCreateCoffeeChat",
+                position: "top-center",
+                autoClose: 1000,
+              },
+            )
+            return
+          }
+          toast.error(errorMessage.failToCreateCoffeeChat, {
+            toastId: "failToCreateCoffeeChat",
+            position: "top-center",
+            autoClose: 1000,
+          })
         },
       },
     )

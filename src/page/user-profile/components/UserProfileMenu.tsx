@@ -53,11 +53,11 @@ function UserProfileMenu({ userPayload }: UserProfileMenuProps) {
           {
             label: "Introduction",
             content: (
-              <div className="flex w-full h-full justify-center mt-2">
+              <div className="flex w-full h-full justify-center items-center">
                 <Button>README.md</Button>
                 {isMyPage && (
                   <Icons.EditIntro
-                    className="ml-[2px] text-[16px] mt-[6px] hrink-0 cursor-pointer"
+                    className="ml-[2px] text-[16px] mt-[6px] shrink-0 cursor-pointer"
                     onClick={handleIntroductionEditMode}
                   />
                 )}
@@ -69,7 +69,7 @@ function UserProfileMenu({ userPayload }: UserProfileMenuProps) {
       />
       <Spacing size={16} />
       {/* menu content */}
-      <UserProfileSection className="bg-white border-none shadow-none p-0">
+      <UserProfileSection className="bg-white border-none shadow-none p-0 sticky">
         <MenuContent />
       </UserProfileSection>
     </>
