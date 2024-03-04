@@ -22,6 +22,7 @@ function CoffeeChatDetailPage({
         return dateTime.mentee_nickname === user?.nickname
       }) ?? null
     : null
+  console.log("match", matchRoom)
 
   const isMentee =
     !user?.roles.includes("ROLE_MENTOR") ||
@@ -42,7 +43,7 @@ function CoffeeChatDetailPage({
       <CoffeeChatDetailContent content={coffeeChatDetailPayload.content} />
       <Spacing size={32} />
       <div className="w-full flex justify-center items-center">
-        {user && isMentee && (
+        {user && isMentee && matchRoom && (
           <EnterCoffeeChat
             articleTitle={coffeeChatDetailPayload.title}
             roomId={matchRoom ? matchRoom.room_id : null}
