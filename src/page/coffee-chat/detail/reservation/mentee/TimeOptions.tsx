@@ -20,6 +20,8 @@ import { CoffeeChatQueries } from "@/react-query/coffee-chat"
 import { useParams } from "next/navigation"
 import { useQueryClient } from "@tanstack/react-query"
 import queryKey from "@/constants/queryKey"
+import { AxiosError } from "axios"
+import { APIResponse } from "@/interfaces/dto/api-response"
 
 type TimeOptionsProps = {
   selectedDay: string
@@ -75,6 +77,7 @@ const TimeOptions = ({ reservation, cate, date }: TimeOptionsProps) => {
         toastId: "unauthorizedToRegister",
         position: "top-center",
       })
+    // 본인이 예약한 커피챗 일정을 클릭했을 경우 예약 삭제를 원하는 것으로 간주
     if (isAlreadyReservedByMe && nickname === user.nickname) {
       const confirmToDelete = () => {
         deleteCoffeeChatReservation(
@@ -86,7 +89,7 @@ const TimeOptions = ({ reservation, cate, date }: TimeOptionsProps) => {
                 position: "top-center",
                 autoClose: 1000,
               })
-              queryClient.invalidateQueries({
+              queryClient.resetQueries({
                 queryKey: [queryKey.chat],
               })
             },
@@ -101,30 +104,24 @@ const TimeOptions = ({ reservation, cate, date }: TimeOptionsProps) => {
         )
       }
 
-      const cancleToDelete = () => {
-        toast.error(notificationMessage.cancleReservation, {
-          toastId: "cancleDeleteReservation",
-          position: "top-center",
-        })
-      }
       return openModal({
         containsHeader: false,
         content: (
           <ConfirmModal.ModalContent
             onSuccess={confirmToDelete}
-            onCancel={cancleToDelete}
             situation="deleteCoffeeChat"
           />
         ),
       })
     }
-
+    // 이미 해당 커피챗의 다른 시간을 예약했을 경우
     if (isAlreadyReservedByMe)
       return toast.error(errorMessage.youAlreadyReserved, {
         toastId: "youAlreadyReserved",
         position: "top-center",
       })
 
+    // 다른 사람이 이미 예약한 시간대를 선택했을 경우
     if (nickname && nickname !== user.nickname)
       return toast.error(errorMessage.alreadyReserved, {
         toastId: "othersAlreadyReserved",
@@ -146,12 +143,23 @@ const TimeOptions = ({ reservation, cate, date }: TimeOptionsProps) => {
                 position: "top-center",
                 autoClose: 1000,
               })
-              queryClient.invalidateQueries({
+              queryClient.resetQueries({
                 queryKey: [queryKey.chat],
               })
             },
-            onError: (res) => {
-              toast.error(res.message, {
+            onError: (error: Error | AxiosError<APIResponse>) => {
+              if (error instanceof AxiosError) {
+                const { response } = error as AxiosError<APIResponse>
+
+                toast.error(response?.data.msg ?? errorMessage.failToReserve, {
+                  toastId: "failToCreateReservation",
+                  position: "top-center",
+                  autoClose: 1000,
+                })
+                return
+              }
+
+              toast.error(errorMessage.failToReserve, {
                 toastId: "failToCreateReservation",
                 position: "top-center",
                 autoClose: 1000,
@@ -219,9 +227,7 @@ const TimeOptions = ({ reservation, cate, date }: TimeOptionsProps) => {
     <div className="w-full grid grid-cols-1 sm:grid-rows-4 sm:grid-cols-4 gap-4 shrink-0 m-auto">
       {getList(cate).map((time, i) => (
         <Button
-          className={
-            "inline text-left leading-[30px] p-0 flex items-center px-2"
-          }
+          className={"text-left leading-[30px] p-0 flex items-center px-2"}
           key={time.room_id + i}
           onClick={() => handleRegister(time, time.mentee_nickname)}
         >

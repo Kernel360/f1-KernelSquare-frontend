@@ -31,6 +31,7 @@ export const errorMessage = {
     "자기소개글 수정 중 오류가 발생하였습니다. 다시 시도해주세요.",
   failToVote: "투표 진행 중 오류가 발생하였습니다. 다시 시도해주세요.",
   failToSearchLocation: "장소 검색 중 오류가 발생하였습니다.",
+  failToCreateCoffeeChat: "커피챗 모집글 생성 중 오류가 발생하였습니다.",
   emptyCookie: "쿠키가 비어있습니다.",
   deleteAnswer: "답변 삭제 중 오류가 발생하였습니다.",
   deleteQuestion: "질문 삭제 중 오류가 발생하였습니다.",

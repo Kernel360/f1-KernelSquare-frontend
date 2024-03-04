@@ -28,6 +28,8 @@ import dynamic from "next/dynamic"
 import { TimeCount } from "@/recoil/atoms/coffee-chat/schedule"
 import { useGetScheduleList } from "./hooks/useGetScheduleList"
 import Limitation from "@/constants/limitation"
+import { AxiosError } from "axios"
+import { APIResponse } from "@/interfaces/dto/api-response"
 
 const MdEditor = dynamic(() => import("./components/MdEditor"), {
   ssr: false,
@@ -125,6 +127,26 @@ function CreateCoffeeChatReservationPage({
           replace(`/chat/${res.data.data?.reservation_article_id}`)
 
           setHash_tags([])
+        },
+        onError: (error: Error | AxiosError<APIResponse>) => {
+          if (error instanceof AxiosError) {
+            const { response } = error as AxiosError<APIResponse>
+
+            toast.error(
+              response?.data.msg ?? errorMessage.failToCreateCoffeeChat,
+              {
+                toastId: "failToCreateCoffeeChat",
+                position: "top-center",
+                autoClose: 1000,
+              },
+            )
+            return
+          }
+          toast.error(errorMessage.failToCreateCoffeeChat, {
+            toastId: "failToCreateCoffeeChat",
+            position: "top-center",
+            autoClose: 1000,
+          })
         },
       },
     )
