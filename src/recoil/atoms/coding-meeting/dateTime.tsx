@@ -2,7 +2,6 @@ import { Value } from "@/interfaces/calendar"
 import { atom } from "recoil"
 
 export type Time = {
-  range: string
   hour: string
   minute: string
 }
@@ -10,7 +9,6 @@ export type Time = {
 export const StartTime = atom<Time>({
   key: "coding-meeting-start-time-atom",
   default: {
-    range: "",
     hour: "",
     minute: "",
   },
@@ -19,7 +17,6 @@ export const StartTime = atom<Time>({
 export const EndTime = atom<Time>({
   key: "coding-meeting-end-time-atom",
   default: {
-    range: "",
     hour: "",
     minute: "",
   },

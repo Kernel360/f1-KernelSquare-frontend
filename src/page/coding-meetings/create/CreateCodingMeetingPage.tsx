@@ -7,7 +7,7 @@ import { useQueryClient } from "@tanstack/react-query"
 import { useRouter } from "next/navigation"
 import { FieldErrors, useForm } from "react-hook-form"
 import { toast } from "react-toastify"
-import { useRecoilState } from "recoil"
+import { useRecoilState, useRecoilValue } from "recoil"
 import CodingMeetingSection from "./components/CodingMeetingSection"
 import { Input } from "@/components/shared/input/Input"
 import Spacing from "@/components/shared/Spacing"
@@ -20,20 +20,14 @@ import DateTimeSection from "./components/DateTimeSection"
 import { CodingMeetingQueries } from "@/react-query/coding-meeting"
 import { CodingMeetingHeadCount } from "@/recoil/atoms/coding-meeting/headcount"
 import { DirectionIcons } from "@/components/icons/Icons"
-import {
-  CodingMeetingDay,
-  EndTime,
-  StartTime,
-} from "@/recoil/atoms/coding-meeting/dateTime"
-import dayjs from "dayjs"
-import utc from "dayjs/plugin/utc"
-import type { Time } from "@/recoil/atoms/coding-meeting/dateTime"
+import { EndTime, StartTime } from "@/recoil/atoms/coding-meeting/dateTime"
 import { LocationForSubmit } from "@/recoil/atoms/coding-meeting/mapData"
 import Limitation from "@/constants/limitation"
 import type { CodingMeetingDetailPayload } from "@/interfaces/dto/coding-meeting/get-coding-meeting-detail.dto"
 import NotFound from "@/app/not-found"
 import { revalidatePage } from "@/util/actions/revalidatePage"
 import queryKey from "@/constants/queryKey"
+import useHandleCreateCodingMeetingTime from "./hooks/useHandleCreateCodingMeetingTime"
 
 interface CreateCodingMeetingPageProps {
   editMode: "create" | "update"
@@ -53,13 +47,19 @@ const CreateCodingMeetingPage = ({
 }: CreateCodingMeetingPageProps) => {
   const [hash_tags, setHash_tags] = useRecoilState(CodingMeetingHashTagList)
   const [head_cnt, setHead_cnt] = useRecoilState(CodingMeetingHeadCount)
-  const [day, setDay] = useRecoilState(CodingMeetingDay)
-  const [startTime, setStartTime] = useRecoilState(StartTime)
-  const [endTime, setEndTime] = useRecoilState(EndTime)
+  const startTime = useRecoilValue(StartTime)
+  const endTime = useRecoilValue(EndTime)
   const [location, setLocation] = useRecoilState(LocationForSubmit)
   const queryClient = useQueryClient()
-  const { replace, push } = useRouter()
+  const { replace } = useRouter()
   const { user } = useClientSession()
+  const {
+    resetDateTimes,
+    formatTime,
+    formatByUTC,
+    formattedStartTime,
+    formattedEndTime,
+  } = useHandleCreateCodingMeetingTime()
 
   const { register, handleSubmit } = useForm<CodingMeetingFormData>(
     initialValues
@@ -77,17 +77,6 @@ const CreateCodingMeetingPage = ({
   const { updateCodingMeeting } = CodingMeetingQueries.useUpdateCodingMeeting()
 
   const goToListPage = () => replace("/coding-meetings")
-
-  const DAY = dayjs(day + "").format("YYYY-MM-DD")
-  const getTime = ({ range, hour, minute }: Time) => {
-    if (range === "오후") hour = Number(hour) + 12 + ""
-    if (hour && hour.length === 1) hour = "0" + hour
-    return `${hour}:${minute}`
-  }
-  const formatTime = (time: string) => {
-    dayjs.extend(utc)
-    return dayjs(`${DAY} ${time}`).utc().format().slice(0, -1)
-  }
 
   const onSubmit = async (data: CodingMeetingFormData) => {
     // 사용자 권한 인증
@@ -115,8 +104,6 @@ const CreateCodingMeetingPage = ({
         toastId: "emptyCodingMeetingTime",
         position: "top-center",
       })
-    const formattedStartTime = dayjs(`${DAY} ${getTime(startTime)}`)
-    const formattedEndTime = dayjs(`${DAY} ${getTime(endTime)}`)
     // 종료 시간이 시작 시간보다 빠를 경우
     if (formattedEndTime.isBefore(formattedStartTime))
       return toast.error(errorMessage.timeError, {
@@ -142,9 +129,11 @@ const CreateCodingMeetingPage = ({
       coding_meeting_location_latitude:
         location.coding_meeting_location_latitude,
       coding_meeting_member_upper_limit: Number(head_cnt),
-      coding_meeting_start_time: formatTime(getTime(startTime)),
-      coding_meeting_end_time: formatTime(getTime(endTime)),
+      coding_meeting_start_time: formatByUTC(formatTime(startTime)),
+      coding_meeting_end_time: formatByUTC(formatTime(endTime)),
     }
+
+    console.log(`[${editMode}]`, payload)
 
     if (editMode === "create") {
       createCodingMeetingPost(payload, {
@@ -157,17 +146,7 @@ const CreateCodingMeetingPage = ({
 
           setHash_tags([])
           setHead_cnt("3")
-          setDay(new Date())
-          setStartTime({
-            range: "",
-            hour: "",
-            minute: "",
-          })
-          setEndTime({
-            range: "",
-            hour: "",
-            minute: "",
-          })
+          resetDateTimes()
           setLocation(undefined)
         },
       })
@@ -195,17 +174,7 @@ const CreateCodingMeetingPage = ({
 
             setHash_tags([])
             setHead_cnt("3")
-            setDay(new Date())
-            setStartTime({
-              range: "",
-              hour: "",
-              minute: "",
-            })
-            setEndTime({
-              range: "",
-              hour: "",
-              minute: "",
-            })
+            resetDateTimes()
             setLocation(undefined)
           }, 0)
         },
