@@ -159,18 +159,18 @@ export const mockCoffeeChatReservations: Array<MockCoffeechat> = [
     hash_tag_list: ["홍주광", "알고리즘"],
     date_times: [
       {
-        reservation_id: 15,
-        room_id: 15,
-        start_time: "2024-01-25T11:00:00",
-        mentee_nickname: mockUsers[0].nickname,
-        mentee_image_url: mockUsers[0].image_url!,
-      },
-      {
         reservation_id: 6,
         room_id: 6,
-        start_time: "2024-01-25T19:0:00",
+        start_time: "2024-01-25T11:00:00",
         mentee_nickname: null,
         mentee_image_url: null,
+      },
+      {
+        reservation_id: 15,
+        room_id: 15,
+        start_time: "2024-01-25T19:00:00",
+        mentee_nickname: mockUsers[0].nickname,
+        mentee_image_url: mockUsers[0].image_url!,
       },
     ],
     created_date: "2024-01-22T18:09:02",
