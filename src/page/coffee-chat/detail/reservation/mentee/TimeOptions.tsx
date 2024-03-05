@@ -26,12 +26,11 @@ import { revalidatePage } from "@/util/actions/revalidatePage"
 
 type TimeOptionsProps = {
   selectedDay: string
-  cate: "AM" | "PM"
   reservation: CoffeeChatReservationTime[]
   date: Value
 }
 
-const TimeOptions = ({ reservation, cate, date }: TimeOptionsProps) => {
+const TimeOptions = ({ reservation, date }: TimeOptionsProps) => {
   const { user } = useClientSession()
   const { openModal } = useModal()
   const { createCoffeeChatReservation } =
@@ -41,31 +40,8 @@ const TimeOptions = ({ reservation, cate, date }: TimeOptionsProps) => {
   const params = useParams<{ id: string }>()
   const queryClient = useQueryClient()
 
-  const AM = reservation.filter(
-    ({ start_time }) =>
-      getDate({ date: date + "" }) === getDate({ date: start_time }) &&
-      Number(getHour(start_time)) < 12,
-  )
-
-  const PM = reservation.filter(
-    ({ start_time }) =>
-      getDate({ date: date + "" }) === getDate({ date: start_time }) &&
-      Number(getHour(start_time)) >= 12,
-  )
-
-  const getList = (cate: "AM" | "PM") => {
-    switch (cate) {
-      case "AM":
-        return AM
-      case "PM":
-        return PM
-      default:
-        return AM
-    }
-  }
-
   // 목록에 이미 내가 예약한 커피챗이 있는지 검사
-  const isAlreadyReservedByMe = reservation.some(
+  const isAlreadyReservedByMe = reservation.find(
     (res) => res.mentee_nickname === user?.nickname,
   )
 
@@ -164,6 +140,7 @@ const TimeOptions = ({ reservation, cate, date }: TimeOptionsProps) => {
                 })
                 revalidatePage("/chat/[id]", "page")
               }, 0)
+              window.scrollTo({ top: 0 })
             },
             onError: (error: Error | AxiosError<APIResponse>) => {
               if (error instanceof AxiosError) {
@@ -209,59 +186,68 @@ const TimeOptions = ({ reservation, cate, date }: TimeOptionsProps) => {
   const isReserved = (mentee_nickname: string | null) =>
     twJoin(
       [
-        "w-full flex py-2 rounded justify-center transition-colors break-all text-sm text-secondary font-semibold shadow-sm",
-      ],
-      [
-        mentee_nickname === user?.nickname &&
-          "cursor-default bg-primary text-white px-2 ",
+        "w-[100px] flex py-2 rounded justify-center transition-colors break-all text-sm text-secondary font-semibold",
       ],
       [
         user &&
           isAlreadyReservedByMe &&
-          "cursor-default px-2 border-[1px] border-slate-200",
+          "cursor-default border-[1px] border-colorsGray",
       ],
       [
         mentee_nickname &&
           mentee_nickname !== user?.nickname &&
-          "cursor-default bg-slate-300 px-2",
+          "cursor-default bg-colorsGray",
       ],
-      [!user && "cursor-default border-[1px] border-slate-200 px-6"],
+      [!user && "cursor-default border-[1px] border-colorsGray"],
       [
         user &&
           !mentee_nickname &&
           !isAlreadyReservedByMe &&
-          "border-[1px] border-slate-200 bg-white cursor-pointer bg-colorsLightGray hover:bg-colorsGray px-6 ",
+          "border-[1px] border-slate-200 bg-white cursor-pointer bg-colorsLightGray hover:bg-colorsGray",
       ],
     )
 
-  if (!getList(cate).length)
+  if (
+    !reservation.filter(
+      ({ start_time }) =>
+        getDate({ date: date + "" }) === getDate({ date: start_time }),
+    ).length
+  )
     return (
-      <div className="w-full sm:w-[500px] text-center text-slate-300">
+      <div className="w-full sm:w-[448px] text-center text-slate-300">
         가능한 멘토링 일정이 없습니다.
       </div>
     )
 
   return (
     <div className="w-full grid grid-cols-1 sm:grid-rows-4 sm:grid-cols-4 gap-4 shrink-0 m-auto">
-      {getList(cate).map((time, i) => (
-        <Button
-          className={"text-left leading-[30px] p-0 flex items-center px-2"}
-          key={time.room_id + i}
-          onClick={() => handleRegister(time, time.mentee_nickname)}
-        >
-          <span className={isReserved(time.mentee_nickname)}>
-            {time.mentee_image_url && (
-              <ProfileImage image_url={time.mentee_image_url} />
-            )}
-            {time.mentee_nickname && !time.mentee_image_url && (
-              <div className="w-[20px] h-[20px] mr-1 mt-[2px]">
-                <Icons.UserProfile />
-              </div>
-            )}
-            <div>{getTime(time.start_time)}</div>
-          </span>
-        </Button>
-      ))}
+      {reservation
+        .filter(
+          ({ start_time }) =>
+            getDate({ date: date + "" }) === getDate({ date: start_time }),
+        )
+        .map((time, i) => (
+          <Button
+            className={
+              "text-left p-0 leading-[30px] flex items-center disabled:bg-colorsGray disabled:text-colorsDarkGray rounded"
+            }
+            key={time.room_id + i}
+            onClick={() => handleRegister(time, time.mentee_nickname)}
+            disabled={!!time.mentee_nickname}
+          >
+            <span className={isReserved(time.mentee_nickname)}>
+              {time.mentee_image_url && (
+                <ProfileImage image_url={time.mentee_image_url} />
+              )}
+              {time.mentee_nickname && !time.mentee_image_url && (
+                <div className="w-[20px] h-[20px] mr-1 mt-[2px]">
+                  <Icons.UserProfile />
+                </div>
+              )}
+              <div>{getTime(time.start_time)}</div>
+            </span>
+          </Button>
+        ))}
     </div>
   )
 }
