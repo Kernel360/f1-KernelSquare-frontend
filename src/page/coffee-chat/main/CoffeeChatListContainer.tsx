@@ -65,13 +65,38 @@ function CoffeeChatListContainer() {
     const Portal = portalContainer
       ? createPortal(
           <Pagination
-            previousLabel="이전"
-            nextLabel="다음"
             disabledClassName="hidden"
             forcePage={Number(page)}
             pageCount={coffeeChatList!.pagination.total_page}
             onPageChange={({ selected }) => {
               push(`/chat?page=${selected}`)
+            }}
+            onSkip={({ type, pageCount }) => {
+              const searchParams = new URLSearchParams()
+
+              const pageNumber = Number(page)
+
+              if (type === "prevSkip") {
+                if (pageCount > 10 && pageNumber - 10 >= 0) {
+                  searchParams.set("page", `${pageNumber - 10}`)
+
+                  push(`/chat?${searchParams.toString()}`)
+
+                  return
+                }
+
+                return
+              }
+
+              if (type === "nextSkip") {
+                if (pageCount > 10 && pageCount - 1 - pageNumber >= 10) {
+                  searchParams.set("page", `${pageNumber + 10}`)
+
+                  push(`/chat?${searchParams.toString()}`)
+                }
+
+                return
+              }
             }}
           />,
           portalContainer,
