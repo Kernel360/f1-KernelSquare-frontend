@@ -237,7 +237,7 @@ const TimeOptions = ({ reservation, cate, date }: TimeOptionsProps) => {
   if (!getList(cate).length)
     return (
       <div className="w-full sm:w-[500px] text-center text-slate-300">
-        가능한 시간대가 없습니다.
+        가능한 멘토링 일정이 없습니다.
       </div>
     )
 

@@ -18,7 +18,6 @@ import { DirectionIcons } from "@/components/icons/Icons"
 import { TimeZone } from "@/page/coffee-chat/create/CreateCoffeeChatReservationPage.types"
 import TimeOptions from "./TimeOptions"
 import { FaCalendarAlt } from "react-icons/fa"
-import useReservationForMentee from "./hooks/useReservationForMentee"
 import { revalidatePage } from "@/util/actions/revalidatePage"
 
 interface MenteeProps {
@@ -26,18 +25,11 @@ interface MenteeProps {
   created: string
 }
 
-function ReservationForMentee({ reservation, created }: MenteeProps) {
-  const params = useParams<{ id: string }>()
-  // 데이터 받아오면 시작 날짜로 수정 필요
+function ReservationForMentee({ reservation }: MenteeProps) {
   const [date, setDate] = useState<Value>(new Date(reservation[0].start_time))
-  const [selectedDay, setSelectedDay] = useState<string>(
-    getDate({ date: reservation[0].start_time }),
-  )
 
   // // 오전 or 오후
   const [timeZone, setTimeZone] = useState<TimeZone>(TimeZone.AM)
-  // // 선택된 시간대
-  // const [schedule, setSchedule] = useRecoilState(ScheduleList)
 
   // 오전, 오후 선택 화살표 스타일
   const ArrowClassName = (disabled: boolean) =>
