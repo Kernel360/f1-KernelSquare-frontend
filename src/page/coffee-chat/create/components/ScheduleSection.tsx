@@ -5,10 +5,10 @@ import CoffeeChatSection from "./CoffeeChatSection"
 import { DirectionIcons, Icons } from "@/components/icons/Icons"
 import TimeOptions from "./TimeOptions"
 import { AM, PM } from "@/constants/timeOptions"
-import { useEffect, useLayoutEffect, useState } from "react"
+import { useLayoutEffect, useState } from "react"
 import { TimeZone } from "../CreateCoffeeChatReservationPage.types"
 import { twJoin } from "tailwind-merge"
-import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil"
+import { useRecoilState, useSetRecoilState } from "recoil"
 import {
   CoffeeChatStartDate,
   ScheduleListAtomFamily,
@@ -17,10 +17,11 @@ import {
 } from "@/recoil/atoms/coffee-chat/schedule"
 import CustomCalendar from "./CustomCalendar/CustomCalendar"
 import {
-  HoverCard,
-  HoverCardContent,
-  HoverCardTrigger,
-} from "@/components/ui/HoverCard"
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/PopOver"
+import { PopoverClose } from "@radix-ui/react-popover"
 import {
   Select,
   SelectContent,
@@ -59,7 +60,7 @@ const ScheduleSection = () => {
   return (
     <CoffeeChatSection>
       <div className="w-full align-top max-w-full flex-col md:flex-row md:justify-start md:items-center">
-        <CoffeeChatSection.Label className="block w-max flex items-center">
+        <CoffeeChatSection.Label className="w-max flex items-center">
           <div>멘토링 가능 일시</div>
           {date && <HoverBox />}
         </CoffeeChatSection.Label>
@@ -152,11 +153,11 @@ const ScheduleSection = () => {
                       <TimeOptions date={PM} />
                     </div>
                   )}
-                  <div className="mt-3 text-right flex justify-between ">
+                  <div className="mt-3 text-right flex justify-between items-center">
                     <div>
                       <Button
                         ghost
-                        className="px-3 py-2 hover:text-primary"
+                        className="py-2 hover:text-primary"
                         onClick={handleResetSchedule}
                       >
                         선택 초기화
@@ -188,14 +189,14 @@ export default ScheduleSection
 
 function HoverBox() {
   return (
-    <HoverCard>
-      <HoverCardTrigger className="flex items-center ml-3 cursor-pointer text-slate-300 hover:text-primary">
+    <Popover>
+      <PopoverTrigger className="flex items-center ml-3 cursor-pointer text-slate-400 hover:text-primary">
         <Icons.Info />
-        <div className="font-bold text-[12px] ml-2">
-          커서를 올려 각 기간이 무엇을 의미하는지 확인해보세요
+        <div className="font-bold text-sm ml-2">
+          멘토링 가능 일시 산정 기준 알아보기
         </div>
-      </HoverCardTrigger>
-      <HoverCardContent>
+      </PopoverTrigger>
+      <PopoverContent className="w-auto">
         <div className="text-sm">
           <div className="font-bold">
             🤔 달력에 표시되는 각 기간은 무엇을 의미하나요?
@@ -222,7 +223,7 @@ function HoverBox() {
             <span className="text-primary mx-1">3일</span> 간 진행됩니다.
           </div>
         </div>
-      </HoverCardContent>
-    </HoverCard>
+      </PopoverContent>
+    </Popover>
   )
 }
