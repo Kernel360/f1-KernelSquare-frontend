@@ -23,50 +23,31 @@ import type {
   TimeBoxProps,
 } from "../CreateCodingMeetingPage.types"
 import dayjs from "dayjs"
+import useHandleCreateCodingMeetingTime from "../hooks/useHandleCreateCodingMeetingTime"
+import { formatDay } from "@/util/getDate"
 
 const DateTimeSection = ({ initialDateTime }: DateTimeSectionProps) => {
   const [date, setDate] = useRecoilState(CodingMeetingDay)
   const setStartTime = useSetRecoilState(StartTime)
   const setEndTime = useSetRecoilState(EndTime)
+  const { resetTimes, formatMinute } = useHandleCreateCodingMeetingTime()
 
   useLayoutEffect(() => {
     if (initialDateTime) {
-      const initialDate = dayjs(
-        initialDateTime.coding_meeting_start_time,
-      ).format("YYYY-MM-DD")
+      const initialDate = formatDay(initialDateTime.coding_meeting_start_time)
       const start = dayjs(initialDateTime.coding_meeting_start_time)
       const end = dayjs(initialDateTime.coding_meeting_end_time)
       setDate(new Date(initialDate))
       setStartTime({
-        range: start.format("a"),
-        hour:
-          (start.get("hour") > 12
-            ? start.subtract(12, "hour").get("hour")
-            : start.get("hour")) + "",
-        minute: start.get("minute") + "",
+        hour: start.get("hour") + "",
+        minute: formatMinute(start.get("minute")),
       })
       setEndTime({
-        range: end.format("a"),
-        hour:
-          (end.get("hour") > 12
-            ? end.subtract(12, "hour").get("hour")
-            : end.get("hour")) + "",
-        minute:
-          String(end.get("minute")).length === 1
-            ? "0" + String(end.get("minute"))
-            : end.get("minute") + "",
+        hour: end.get("hour") + "",
+        minute: formatMinute(end.get("minute")),
       })
     } else {
-      setStartTime({
-        range: "",
-        hour: "",
-        minute: "",
-      })
-      setEndTime({
-        range: "",
-        hour: "",
-        minute: "",
-      })
+      resetTimes()
     }
   }, [])
 
@@ -95,21 +76,12 @@ const DateTimeSection = ({ initialDateTime }: DateTimeSectionProps) => {
 export default DateTimeSection
 
 const TimeBox = ({ timeState, setTimeState, suffix }: TimeBoxProps) => {
-  const handleTimeChange = (
-    type: "range" | "hour" | "minute",
-    value: string,
-  ) => {
+  const handleTimeChange = (type: "hour" | "minute", value: string) => {
     setTimeState({ ...timeState, [type]: value })
   }
 
   return (
     <div className="flex items-center gap-2">
-      <SelectBox
-        targetArray={timeSelect.range}
-        placeholder="구분"
-        handler={(value: string) => handleTimeChange("range", value)}
-        defaultValue={timeState.range}
-      />
       <div>
         <SelectBox
           targetArray={timeSelect.hours}

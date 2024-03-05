@@ -28,6 +28,10 @@ import dynamic from "next/dynamic"
 import { TimeCount } from "@/recoil/atoms/coffee-chat/schedule"
 import { useGetScheduleList } from "./hooks/useGetScheduleList"
 import Limitation from "@/constants/limitation"
+import { AxiosError } from "axios"
+import { APIResponse } from "@/interfaces/dto/api-response"
+import { twJoin } from "tailwind-merge"
+import TextCounter from "@/components/shared/TextCounter"
 
 const MdEditor = dynamic(() => import("./components/MdEditor"), {
   ssr: false,
@@ -46,15 +50,17 @@ function CreateCoffeeChatReservationPage({
 
   const { user } = useClientSession()
 
-  const { register, setFocus, handleSubmit } = useForm<CoffeeChatFormData>(
-    initialValues
-      ? {
-          defaultValues: {
-            title: initialValues.title,
-          },
-        }
-      : {},
-  )
+  const { register, handleSubmit, watch, setValue, getValues } =
+    useForm<CoffeeChatFormData>(
+      initialValues
+        ? {
+            defaultValues: {
+              title: initialValues.title,
+              content: initialValues.content,
+            },
+          }
+        : {},
+    )
 
   const editorRef = useRef<Editor>(null)
 
@@ -73,18 +79,36 @@ function CreateCoffeeChatReservationPage({
       })
     if (data.title.length < Limitation.title_limit_under)
       return toast.error(errorMessage.underTitleLimit, {
-        toastId: "emptyCoffeeChatTitle",
+        toastId: "underCoffeeChatTitleLimit",
         position: "top-center",
       })
-    if (
-      !editorRef.current?.getInstance().getMarkdown() ||
-      editorRef.current?.getInstance().getMarkdown().length <
-        Limitation.content_limit_under
-    )
-      return toast.error(errorMessage.underContentLimit, {
+    if (data.title.length > Limitation.title_limit_over)
+      return toast.error(errorMessage.overTitleLimit, {
+        toastId: "overCoffeeChatTitleLimit",
+        position: "top-center",
+      })
+    if (!editorRef.current?.getInstance().getMarkdown())
+      return toast.error(errorMessage.noContent, {
         toastId: "emptyCoffeeChatContent",
         position: "top-center",
       })
+    if (
+      editorRef.current?.getInstance().getMarkdown().length <
+      Limitation.content_limit_under
+    )
+      return toast.error(errorMessage.underContentLimit, {
+        toastId: "underCoffeeChatContent",
+        position: "top-center",
+      })
+    if (
+      editorRef.current?.getInstance().getMarkdown().length >
+      Limitation.content_limit_over
+    )
+      return toast.error(errorMessage.overContentLimit, {
+        toastId: "overCoffeeChatContent",
+        position: "top-center",
+      })
+
     if (timeCount === 0)
       return toast.error(errorMessage.undertimeCntLimit, {
         toastId: "emptyCoffeeChatTime",
@@ -108,6 +132,26 @@ function CreateCoffeeChatReservationPage({
 
           setHash_tags([])
         },
+        onError: (error: Error | AxiosError<APIResponse>) => {
+          if (error instanceof AxiosError) {
+            const { response } = error as AxiosError<APIResponse>
+
+            toast.error(
+              response?.data.msg ?? errorMessage.failToCreateCoffeeChat,
+              {
+                toastId: "failToCreateCoffeeChat",
+                position: "top-center",
+                autoClose: 1000,
+              },
+            )
+            return
+          }
+          toast.error(errorMessage.failToCreateCoffeeChat, {
+            toastId: "failToCreateCoffeeChat",
+            position: "top-center",
+            autoClose: 1000,
+          })
+        },
       },
     )
   }
@@ -130,6 +174,14 @@ function CreateCoffeeChatReservationPage({
 
   if (!user) return
 
+  const TitleInputClass = twJoin([
+    "rounded-none border-r-0 border-l-0 border-t-0 text-3xl placeholder:text-3xl",
+    watch("title") &&
+      (watch("title")?.length < Limitation.title_limit_under ||
+        watch("title")?.length > Limitation.title_limit_over) &&
+      "focus:border-danger border-danger",
+  ])
+
   return (
     <div className="w-[80%] m-auto">
       <form
@@ -143,12 +195,23 @@ function CreateCoffeeChatReservationPage({
             spellCheck="false"
             autoComplete="off"
             fullWidth
-            className="rounded-none border-r-0 border-l-0 border-t-0 text-3xl placeholder:text-3xl"
+            className={TitleInputClass}
             placeholder="제목"
             {...register("title", {
               required: true,
+              minLength: Limitation.title_limit_under,
+              maxLength: Limitation.title_limit_over,
             })}
           />
+          <div>
+            {watch("title") &&
+              (watch("title")?.length < Limitation.title_limit_under ||
+                watch("title")?.length > Limitation.title_limit_over) && (
+                <Input.ErrorMessage className="text-md">
+                  {"제목은 5자 이상 100자 이하여야 합니다."}
+                </Input.ErrorMessage>
+              )}
+          </div>
         </CoffeeChatSection>
         <Spacing size={20} />
         <CoffeeChatSection>
@@ -160,7 +223,14 @@ function CreateCoffeeChatReservationPage({
               previous=""
               editorRef={editorRef}
               userId={user?.member_id}
+              onChange={() => {
+                setValue(
+                  "content",
+                  editorRef.current?.getInstance().getMarkdown() ?? "",
+                )
+              }}
             />
+            <TextCounterBox text={watch("content")} />
           </div>
         </CoffeeChatSection>
         <Spacing size={20} />
@@ -169,16 +239,43 @@ function CreateCoffeeChatReservationPage({
         <ScheduleSection />
         <div className="flex justify-center">
           <Button
+            disabled={
+              !user ||
+              timeCount === 0 ||
+              !watch("content") ||
+              watch("content").length < Limitation.content_limit_under ||
+              watch("content").length > Limitation.content_limit_over ||
+              !getValues("title") ||
+              getValues("title").length < Limitation.title_limit_under ||
+              getValues("title").length > Limitation.title_limit_over
+            }
             buttonTheme="primary"
-            className="p-5 py-3 my-10"
+            className="p-5 py-3 my-10 disabled:bg-colorsGray disabled:text-colorsDarkGray"
             type="submit"
           >
             멘토링 개설하기
           </Button>
         </div>
+        <input hidden className="hidden" {...register("content")} />
       </form>
     </div>
   )
 }
 
 export default CreateCoffeeChatReservationPage
+
+type TextCounterBoxProps = {
+  text: string | undefined
+}
+
+const TextCounterBox = ({ text }: TextCounterBoxProps) => {
+  if (!text) return
+  return (
+    <TextCounter
+      text={text ?? ""}
+      min={Limitation.content_limit_under}
+      max={Limitation.content_limit_over}
+      className="text-lg block text-right h-2 mr-5"
+    />
+  )
+}

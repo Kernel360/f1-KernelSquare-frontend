@@ -15,7 +15,7 @@ const LandingSearchBar = () => {
   })
 
   return (
-    <form onSubmit={handleSearch}>
+    <form onSubmit={handleSearch} className="w-full">
       <Controller
         name="search"
         control={control}

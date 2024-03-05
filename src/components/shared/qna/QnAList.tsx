@@ -23,24 +23,55 @@ function QnAList({ questions, keyword, isSearch }: QnAListProps) {
 
   return (
     <div className="py-4 w-[calc(100%-12px)] sm:w-[calc(100%-22px)] lg:w-[calc(100%-42px)] mx-auto">
-      <ul className="flex flex-col gap-8">
+      <ul className="flex flex-col gap-4">
         {questions.question_list.map((question) => {
           return <OneQnA question={question} key={question.id} />
         })}
       </ul>
       <Spacing size={32} />
       <Pagination
-        previousLabel="이전"
-        nextLabel="다음"
         disabledClassName="hidden"
         forcePage={Number(page)}
         pageCount={questions.pagination.total_page}
         onPageChange={({ selected }) => {
-          push(
-            isSearch
-              ? `?page=${selected}&keyword=${keyword}`
-              : `?page=${selected}`,
-          )
+          const searchParams = new URLSearchParams()
+          if (isSearch) {
+            searchParams.set("keyword", keyword)
+          }
+          searchParams.set("page", `${selected}`)
+
+          push(`?${searchParams.toString()}`)
+        }}
+        onSkip={({ type, pageCount }) => {
+          const searchParams = new URLSearchParams()
+
+          const pageNumber = Number(page)
+
+          if (isSearch) {
+            searchParams.set("keyword", keyword)
+          }
+
+          if (type === "prevSkip") {
+            if (pageCount > 10 && pageNumber - 10 >= 0) {
+              searchParams.set("page", `${pageNumber - 10}`)
+
+              push(`?${searchParams.toString()}`)
+
+              return
+            }
+
+            return
+          }
+
+          if (type === "nextSkip") {
+            if (pageCount > 10 && pageCount - 1 - pageNumber >= 10) {
+              searchParams.set("page", `${pageNumber + 10}`)
+
+              push(`?${searchParams.toString()}`)
+            }
+
+            return
+          }
         }}
       />
     </div>

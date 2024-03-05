@@ -7,7 +7,7 @@ import { useQueryClient } from "@tanstack/react-query"
 import { useRouter } from "next/navigation"
 import { FieldErrors, useForm } from "react-hook-form"
 import { toast } from "react-toastify"
-import { useRecoilState } from "recoil"
+import { useRecoilState, useRecoilValue } from "recoil"
 import CodingMeetingSection from "./components/CodingMeetingSection"
 import { Input } from "@/components/shared/input/Input"
 import Spacing from "@/components/shared/Spacing"
@@ -20,19 +20,18 @@ import DateTimeSection from "./components/DateTimeSection"
 import { CodingMeetingQueries } from "@/react-query/coding-meeting"
 import { CodingMeetingHeadCount } from "@/recoil/atoms/coding-meeting/headcount"
 import { DirectionIcons } from "@/components/icons/Icons"
-import {
-  CodingMeetingDay,
-  EndTime,
-  StartTime,
-} from "@/recoil/atoms/coding-meeting/dateTime"
-import dayjs from "dayjs"
-import utc from "dayjs/plugin/utc"
-import type { Time } from "@/recoil/atoms/coding-meeting/dateTime"
+import { EndTime, StartTime } from "@/recoil/atoms/coding-meeting/dateTime"
 import { LocationForSubmit } from "@/recoil/atoms/coding-meeting/mapData"
 import Limitation from "@/constants/limitation"
 import type { CodingMeetingDetailPayload } from "@/interfaces/dto/coding-meeting/get-coding-meeting-detail.dto"
 import NotFound from "@/app/not-found"
 import { revalidatePage } from "@/util/actions/revalidatePage"
+import queryKey from "@/constants/queryKey"
+import useHandleCreateCodingMeetingTime from "./hooks/useHandleCreateCodingMeetingTime"
+import { AxiosError } from "axios"
+import { APIResponse } from "@/interfaces/dto/api-response"
+import TextCounter from "@/components/shared/TextCounter"
+import { twJoin } from "tailwind-merge"
 
 interface CreateCodingMeetingPageProps {
   editMode: "create" | "update"
@@ -52,40 +51,37 @@ const CreateCodingMeetingPage = ({
 }: CreateCodingMeetingPageProps) => {
   const [hash_tags, setHash_tags] = useRecoilState(CodingMeetingHashTagList)
   const [head_cnt, setHead_cnt] = useRecoilState(CodingMeetingHeadCount)
-  const [day, setDay] = useRecoilState(CodingMeetingDay)
-  const [startTime, setStartTime] = useRecoilState(StartTime)
-  const [endTime, setEndTime] = useRecoilState(EndTime)
+  const startTime = useRecoilValue(StartTime)
+  const endTime = useRecoilValue(EndTime)
   const [location, setLocation] = useRecoilState(LocationForSubmit)
   const queryClient = useQueryClient()
   const { replace } = useRouter()
   const { user } = useClientSession()
-  const { register, handleSubmit } = useForm<CodingMeetingFormData>(
-    initialValues
-      ? {
-          defaultValues: {
-            title: initialValues.coding_meeting_title,
-            content: initialValues.coding_meeting_content,
-          },
-        }
-      : {},
-  )
+  const {
+    resetDateTimes,
+    formatTime,
+    formatByUTC,
+    formattedStartTime,
+    formattedEndTime,
+  } = useHandleCreateCodingMeetingTime()
+
+  const { register, handleSubmit, watch, getValues } =
+    useForm<CodingMeetingFormData>(
+      initialValues
+        ? {
+            defaultValues: {
+              title: initialValues.coding_meeting_title,
+              content: initialValues.coding_meeting_content,
+            },
+          }
+        : {},
+    )
 
   const { createCodingMeetingPost } =
     CodingMeetingQueries.useCreateCodingMeeting()
   const { updateCodingMeeting } = CodingMeetingQueries.useUpdateCodingMeeting()
 
   const goToListPage = () => replace("/coding-meetings")
-
-  const DAY = dayjs(day + "").format("YYYY-MM-DD")
-  const getTime = ({ range, hour, minute }: Time) => {
-    if (range === "오후") hour = Number(hour) + 12 + ""
-    if (hour && hour.length === 1) hour = "0" + hour
-    return `${hour}:${minute}`
-  }
-  const formatTime = (time: string) => {
-    dayjs.extend(utc)
-    return dayjs(`${DAY} ${time}`).utc().format().slice(0, -1)
-  }
 
   const onSubmit = async (data: CodingMeetingFormData) => {
     // 사용자 권한 인증
@@ -113,8 +109,6 @@ const CreateCodingMeetingPage = ({
         toastId: "emptyCodingMeetingTime",
         position: "top-center",
       })
-    const formattedStartTime = dayjs(`${DAY} ${getTime(startTime)}`)
-    const formattedEndTime = dayjs(`${DAY} ${getTime(endTime)}`)
     // 종료 시간이 시작 시간보다 빠를 경우
     if (formattedEndTime.isBefore(formattedStartTime))
       return toast.error(errorMessage.timeError, {
@@ -140,33 +134,44 @@ const CreateCodingMeetingPage = ({
       coding_meeting_location_latitude:
         location.coding_meeting_location_latitude,
       coding_meeting_member_upper_limit: Number(head_cnt),
-      coding_meeting_start_time: formatTime(getTime(startTime)),
-      coding_meeting_end_time: formatTime(getTime(endTime)),
+      coding_meeting_start_time: formatByUTC(formatTime(startTime)),
+      coding_meeting_end_time: formatByUTC(formatTime(endTime)),
     }
 
     if (editMode === "create") {
       createCodingMeetingPost(payload, {
         onSuccess: (res) => {
           queryClient.invalidateQueries({
-            queryKey: ["codingMeeting"],
+            queryKey: [queryKey.codingMeeting],
           })
 
           replace(`/coding-meetings/${res.data.data?.coding_meeting_token}`)
 
           setHash_tags([])
           setHead_cnt("3")
-          setDay(new Date())
-          setStartTime({
-            range: "",
-            hour: "",
-            minute: "",
-          })
-          setEndTime({
-            range: "",
-            hour: "",
-            minute: "",
-          })
+          resetDateTimes()
           setLocation(undefined)
+        },
+        onError: (error: Error | AxiosError<APIResponse>) => {
+          if (error instanceof AxiosError) {
+            const { response } = error as AxiosError<APIResponse>
+
+            toast.error(
+              response?.data.msg ?? errorMessage.failToCreateCodingMeeting,
+              {
+                toastId: "failToCreateCodingMeeting",
+                position: "top-center",
+                autoClose: 1000,
+              },
+            )
+            return
+          }
+
+          toast.error(errorMessage.failToCreateCodingMeeting, {
+            toastId: "failToCreateCodingMeeting",
+            position: "top-center",
+            autoClose: 1000,
+          })
         },
       })
     }
@@ -181,27 +186,42 @@ const CreateCodingMeetingPage = ({
         coding_meeting_token,
       }
       updateCodingMeeting(editPayload, {
-        onSuccess: (res) => {
-          queryClient.invalidateQueries({
-            queryKey: ["codingMeeting"],
+        onSuccess: async (res) => {
+          queryClient.resetQueries({
+            queryKey: [queryKey.codingMeeting],
           })
-          revalidatePage("/coding-meetings/[token]", "page")
-          replace(`/coding-meetings/${coding_meeting_token}`)
 
-          setHash_tags([])
-          setHead_cnt("3")
-          setDay(new Date())
-          setStartTime({
-            range: "",
-            hour: "",
-            minute: "",
+          await revalidatePage("/coding-meetings/[token]", "page")
+
+          setTimeout(() => {
+            replace(`/coding-meetings/${coding_meeting_token}`)
+
+            setHash_tags([])
+            setHead_cnt("3")
+            resetDateTimes()
+            setLocation(undefined)
+          }, 0)
+        },
+        onError: (error: Error | AxiosError<APIResponse>) => {
+          if (error instanceof AxiosError) {
+            const { response } = error as AxiosError<APIResponse>
+
+            toast.error(
+              response?.data.msg ?? errorMessage.failToUpdateCodingMeeting,
+              {
+                toastId: "failToUpdateCodingMeeting",
+                position: "top-center",
+                autoClose: 1000,
+              },
+            )
+            return
+          }
+
+          toast.error(errorMessage.failToUpdateCodingMeeting, {
+            toastId: "failToUpdateCodingMeeting",
+            position: "top-center",
+            autoClose: 1000,
           })
-          setEndTime({
-            range: "",
-            hour: "",
-            minute: "",
-          })
-          setLocation(undefined)
         },
       })
     }
@@ -252,10 +272,18 @@ const CreateCodingMeetingPage = ({
     }
   }
 
+  const TitleInputClass = twJoin([
+    "text-base placeholder:text-base",
+    watch("title") &&
+      (watch("title")?.length < Limitation.title_limit_under ||
+        watch("title")?.length > Limitation.title_limit_over) &&
+      "focus:border-danger border-danger",
+  ])
+
   return (
     <div className="w-[80%] m-auto">
       <div
-        className="flex text-[#828282] items-center mt-10 cursor-pointer"
+        className="flex text-[#828282] items-center mt-10 cursor-pointer w-[10%]"
         onClick={goToListPage}
       >
         <DirectionIcons.LeftLine className="text-2xl" />
@@ -270,19 +298,30 @@ const CreateCodingMeetingPage = ({
           <CodingMeetingSection.Label htmlFor="title">
             제목
           </CodingMeetingSection.Label>
-          <Input
-            id="title"
-            spellCheck="false"
-            autoComplete="off"
-            fullWidth
-            className="text-base placeholder:text-base"
-            placeholder="제목을 입력해주세요"
-            {...register("title", {
-              required: true,
-              minLength: Limitation.title_limit_under,
-              maxLength: Limitation.title_limit_over,
-            })}
-          />
+          <div className="w-full">
+            <Input
+              id="title"
+              spellCheck="false"
+              autoComplete="off"
+              fullWidth
+              className={TitleInputClass}
+              placeholder="제목을 입력해주세요"
+              {...register("title", {
+                required: true,
+                minLength: Limitation.title_limit_under,
+                maxLength: Limitation.title_limit_over,
+              })}
+            />
+            <div>
+              {watch("title") &&
+                (watch("title")?.length < Limitation.title_limit_under ||
+                  watch("title")?.length > Limitation.title_limit_over) && (
+                  <Input.ErrorMessage className="text-md">
+                    {"제목은 5자 이상 100자 이하여야 합니다."}
+                  </Input.ErrorMessage>
+                )}
+            </div>
+          </div>
         </CodingMeetingSection>
         <Spacing size={10} />
         <LocationSection
@@ -339,11 +378,32 @@ const CreateCodingMeetingPage = ({
             />
           </div>
         </CodingMeetingSection>
+        <div>
+          <TextCounter
+            text={watch("content") ?? ""}
+            min={Limitation.content_limit_under}
+            max={Limitation.content_limit_over}
+            className="text-lg block text-right h-2 mr-5"
+          />
+        </div>
         <Spacing size={10} />
         <div className="flex float-right mr-5">
           <Button
+            disabled={
+              !user ||
+              !location ||
+              head_cnt === "0" ||
+              !startTime ||
+              !endTime ||
+              !watch("content") ||
+              watch("content").length < Limitation.answer_limit_under ||
+              watch("content").length > Limitation.answer_limit_over ||
+              !getValues("title") ||
+              getValues("title").length < Limitation.title_limit_under ||
+              getValues("title").length > Limitation.title_limit_over
+            }
             buttonTheme="primary"
-            className="p-5 py-3 my-10"
+            className="p-5 py-3 my-10 disabled:bg-colorsGray disabled:text-colorsDarkGray"
             type="submit"
           >
             {editMode === "update" ? "모각코 수정하기" : "모각코 개설하기"}

@@ -29,17 +29,13 @@ interface PaginationProps
     | "breakClassName"
     | "breakLinkClassName"
     | "breakLabel"
+    | "previousLabel"
+    | "nextLabel"
   > {
   onSkip?: (args: { type: "prevSkip" | "nextSkip"; pageCount: number }) => void
 }
 
-export function Pagination({
-  previousLabel,
-  nextLabel,
-  onClick,
-  onSkip,
-  ...props
-}: PaginationProps) {
+export function Pagination({ onClick, onSkip, ...props }: PaginationProps) {
   const pageButtonWrapperClassNames = (
     type: "page" | "active" | "next" | "prev" | "break",
   ) =>

@@ -28,7 +28,7 @@ UserProfileGuardModal.ModalContent = function AskQuestionModalContent() {
   const { replace } = useRouter()
 
   const onClose = () => {
-    replace("/")
+    replace("/qna")
 
     return
   }
