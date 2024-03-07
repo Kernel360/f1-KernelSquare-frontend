@@ -18,6 +18,7 @@ import { AxiosError } from "axios"
 import { APIResponse } from "@/interfaces/dto/api-response"
 import ConfirmModal from "@/components/shared/confirm-modal/ConfirmModal"
 import { useProgressModal } from "@/hooks/useProgressModal"
+import dayjs from "dayjs"
 
 type EnterChatRoomArea = EnterCoffeeChatProps & {}
 
@@ -30,7 +31,7 @@ function EnterChatRoomArea({
   const wrapperClassNames = twMerge([
     `flex w-full justify-between items-center bg-[#EAF7F0] rounded-md overflow-hidden border border-transparent sm:border-[#E0E0E0]`,
     `p-4`,
-    `sm:p-0 sm:bg-white sm:h-[97px] sm:pr-[34px]`,
+    `sm:p-0 sm:bg-white sm:pr-[2%]`,
   ])
 
   return (
@@ -87,6 +88,16 @@ function LoginedUserArea({
   const queryClient = useQueryClient()
   const { ProgressModalView } = useProgressModal()
   const { openModal } = useModal()
+  const isBeforeDue = () => {
+    const date1 = dayjs(startTime, "YYYY-MM-DD")
+    const date2 = dayjs(new Date(), "YYYY-MM-DD")
+    if (
+      date2.diff(date1, "day") === -1 ||
+      (date2.diff(date1, "day") >= 0 && date2.diff(date1, "day") < 2)
+    )
+      return true
+    return false
+  }
 
   const handleCancleReservation = () => {
     const confirmToDelete = () => {
@@ -133,7 +144,11 @@ function LoginedUserArea({
       content: (
         <ConfirmModal.ModalContent
           onSuccess={confirmToDelete}
-          situation="deleteCoffeeChat"
+          situation={
+            isBeforeDue()
+              ? "deleteCoffeeChatBeforeDue"
+              : "deleteCoffeeChatAfterDue"
+          }
         />
       ),
     })
@@ -155,17 +170,17 @@ function LoginedUserArea({
             <AreaText startTime={startTime} logined={true} />
           </div>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2">
           <EnterCoffeeChatButton
             articleTitle={articleTitle}
             roomId={roomId}
             startTime={startTime}
             reservation_id={reservation_id}
-            className="px-6 py-4 w-max shrink-0 font-semibold text-sm underline bg-transparent sm:bg-primary sm:no-underline sm:text-white"
+            className="font-semibold text-sm bg-transparent bg-primary text-white"
           />
           <Button
             buttonTheme="third"
-            className="px-6 py-4 w-max shrink-0 hover:bg-white cursor-pointer"
+            className="hover:bg-white cursor-pointer"
             onClick={() => handleCancleReservation()}
           >
             취소하기

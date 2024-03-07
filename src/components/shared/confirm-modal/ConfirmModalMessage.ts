@@ -8,7 +8,8 @@ const ConfirmModalMessage = {
   deleteContent: confirmMessage.deleteContent,
   cancleVote: confirmMessage.cancleVote,
   reserveCoffeeChat: confirmMessage.reserveCoffeeChat,
-  deleteCoffeeChat: confirmMessage.deleteCoffeeChat,
+  deleteCoffeeChatBeforeDue: confirmMessage.deleteCoffeeChatBeforeDue,
+  deleteCoffeeChatAfterDue: confirmMessage.deleteCoffeeChatAfterDue,
 } as const
 
 export default ConfirmModalMessage

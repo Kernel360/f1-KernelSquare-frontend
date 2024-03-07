@@ -100,7 +100,7 @@ const TimeOptions = ({ reservation, date }: TimeOptionsProps) => {
         content: (
           <ConfirmModal.ModalContent
             onSuccess={confirmToDelete}
-            situation="deleteCoffeeChat"
+            situation="deleteCoffeeChatBeforeDue"
           />
         ),
       })

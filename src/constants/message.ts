@@ -99,7 +99,8 @@ export const confirmMessage = {
   deleteContent: "정말 삭제하시겠습니까?",
   cancleVote: "투표 기록을 삭제하시겠습니까?",
   reserveCoffeeChat: "해당 일정으로 예약하시겠습니까?",
-  deleteCoffeeChat: `취소 시 패널티가 부여될 수 있습니다.\n그래도 취소하시겠습니까?`,
+  deleteCoffeeChatBeforeDue: `예약된 커피챗을 취소하시겠습니까?`,
+  deleteCoffeeChatAfterDue: `취소 시 패널티가 부여될 수 있습니다.\n그래도 취소하시겠습니까?`,
 } as const
 
 export const loadingMessage = {
