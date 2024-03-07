@@ -86,10 +86,11 @@ export default function KakaoMapPage({ keyword }: { keyword: string }) {
         lat: 37.566826,
         lng: 126.9786567,
       }}
-      style={{
-        width: "400px",
-        height: "300px",
-      }}
+      // style={{
+      //   width: "100%",
+      //   height: "300px",
+      // }}
+      className="w-full sm:w-[400px] h-[300px]"
       level={3}
       onCreate={setMap}
     >

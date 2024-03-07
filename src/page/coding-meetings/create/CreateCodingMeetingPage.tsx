@@ -283,7 +283,7 @@ const CreateCodingMeetingPage = ({
   return (
     <div className="w-[80%] m-auto">
       <div
-        className="flex text-[#828282] items-center mt-10 cursor-pointer w-[10%]"
+        className="flex text-[#828282] items-center mt-10 cursor-pointer w-[100px]"
         onClick={goToListPage}
       >
         <DirectionIcons.LeftLine className="text-2xl" />
@@ -387,7 +387,7 @@ const CreateCodingMeetingPage = ({
           />
         </div>
         <Spacing size={10} />
-        <div className="flex float-right mr-5">
+        <div className="flex flex-col sm:flex-row sm:justify-end sm:items-center w-full p-6 sm:p-0 sm:mr-5">
           <Button
             disabled={
               !user ||
@@ -403,7 +403,7 @@ const CreateCodingMeetingPage = ({
               getValues("title").length > Limitation.title_limit_over
             }
             buttonTheme="primary"
-            className="p-5 py-3 my-10 disabled:bg-colorsGray disabled:text-colorsDarkGray"
+            className="block sm:inline-flex sm:w-[150px] w-full p-5 py-3 my-10 disabled:bg-colorsGray disabled:text-colorsDarkGray"
             type="submit"
           >
             {editMode === "update" ? "모각코 수정하기" : "모각코 개설하기"}

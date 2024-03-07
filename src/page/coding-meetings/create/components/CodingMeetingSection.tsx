@@ -8,7 +8,10 @@ const CodingMeetingSection = ({
   children,
   className,
 }: CodingMeetingSectionProps) => {
-  const classNames = twMerge(["p-6 bg-white flex w-full", className])
+  const classNames = twMerge([
+    "p-6 bg-white flex flex-col sm:flex-row w-full",
+    className,
+  ])
 
   return <section className={classNames}>{children}</section>
 }
@@ -20,7 +23,7 @@ CodingMeetingSection.Label = function CodingMeetingSectionLabel({
 }: CodingMeetingSectionLabelProps) {
   const classNames = twMerge([
     className,
-    "w-[100px] mr-10 text-colorsDarkGray text-lg font-bold",
+    "mr-10 text-colorsDarkGray text-lg font-bold",
   ])
 
   return (
