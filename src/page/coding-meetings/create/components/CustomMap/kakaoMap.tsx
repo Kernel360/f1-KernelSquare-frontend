@@ -1,3 +1,4 @@
+import { Icons } from "@/components/icons/Icons"
 import {
   CodingMeetingMapData,
   Marker,
@@ -21,7 +22,7 @@ declare const window: typeof globalThis & {
 // window.kakao
 
 export default function KakaoMapPage({ keyword }: { keyword: string }) {
-  useKakaoLoader({
+  const [loading, error] = useKakaoLoader({
     appkey: process.env.NEXT_PUBLIC_KAKAO_MAP!,
     libraries: ["services"],
   })
@@ -65,6 +66,20 @@ export default function KakaoMapPage({ keyword }: { keyword: string }) {
 
     handleKeywordSearch()
   }, [map, keyword])
+
+  if (error) throw error
+
+  if (loading) {
+    return (
+      <div className="absolute left-0 top-0 z-[2] w-full h-full flex flex-col justify-center items-center bg-white">
+        <div className="w-8 h-8 flex justify-center items-center rounded-full border border-[#828282]">
+          <Icons.MapMarker className="text-[#828282]" />
+        </div>
+        <div className="mt-5 text-sm text-[#828282]">카카오 맵 로드 중</div>
+      </div>
+    )
+  }
+
   return (
     <Map // 로드뷰를 표시할 Container
       center={{
