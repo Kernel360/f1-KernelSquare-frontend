@@ -7,19 +7,12 @@ import {
 } from "@/recoil/atoms/coding-meeting/mapData"
 import { debounce } from "lodash-es"
 import React, { useState, useEffect } from "react"
-import {
-  Map,
-  MapMarker,
-  MapMarkerProps,
-  useKakaoLoader,
-} from "react-kakao-maps-sdk"
+import { Map, MapMarker, useKakaoLoader } from "react-kakao-maps-sdk"
 import { useRecoilState } from "recoil"
 
 declare const window: typeof globalThis & {
   kakao: any
 }
-
-// window.kakao
 
 export default function KakaoMapPage({ keyword }: { keyword: string }) {
   const [loading, error] = useKakaoLoader({
