@@ -10,6 +10,8 @@ import { useSearchParams } from "next/navigation"
 import Button from "@/components/shared/button/Button"
 import { useEffect } from "react"
 import type { SessionPayload } from "@/recoil/atoms/user"
+import Spacing from "@/components/shared/Spacing"
+import Inner from "@/components/shared/Inner"
 
 interface ChatRoomProps {
   serverUrl: string
@@ -28,7 +30,7 @@ function ChatRoom({
   expiration_time,
 }: ChatRoomProps) {
   return (
-    <>
+    <Inner>
       <ErrorBoundary FallbackComponent={ChatRoomFallback}>
         <ChatRoomHeader
           startDate={getKorDayjs(expiration_time).format("YYYY-MM-DDTHH:mm:ss")}
@@ -36,10 +38,11 @@ function ChatRoom({
           user={user}
         />
         <SocketConnection serverUrl={serverUrl} roomKey={roomKey} user={user} />
+        <Spacing size={36} />
         <Messages roomKey={roomKey} user={user} />
         <MessageControl roomKey={roomKey} user={user} />
       </ErrorBoundary>
-    </>
+    </Inner>
   )
 }
 

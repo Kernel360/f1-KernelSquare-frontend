@@ -19,10 +19,18 @@ function PopupEventListener() {
       if ((e.source as Window).name !== "kernel_chat_window") return
       if (e.origin !== process.env.NEXT_PUBLIC_SITE_URL!) return
 
-      const { type, user } = e.data as PopupMessage
+      const { type, user, popupWindow: popupBrowser } = e.data as PopupMessage
 
       if (type === "loginRequired") {
         clientSessionReset()
+
+        return
+      }
+
+      if (type === "enter") {
+        if (!!popupBrowser && !popupWindow) {
+          setPopupWindow(popupBrowser)
+        }
 
         return
       }

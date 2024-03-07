@@ -15,6 +15,7 @@ export interface LeaveRoomDetail {
 export interface PopupMessage {
   type: "leave" | "enter" | "finished" | "loginRequired"
   user: NonNullable<SessionPayload>
+  popupWindow?: Window | null
 }
 
 interface ChatRoomHeaderProps {
@@ -28,18 +29,9 @@ function ChatRoomHeader({
   user,
   startDate,
 }: ChatRoomHeaderProps) {
-  const portalContainer = document.getElementById("chat-room-header")
-
-  return portalContainer
-    ? createPortal(
-        <Header
-          articleTitle={articleTitle}
-          user={user}
-          startDate={startDate}
-        />,
-        portalContainer,
-      )
-    : null
+  return (
+    <Header articleTitle={articleTitle} user={user} startDate={startDate} />
+  )
 }
 
 export default ChatRoomHeader
@@ -69,17 +61,22 @@ function Header({ articleTitle, user, startDate }: ChatRoomHeaderProps) {
   }
 
   return (
-    <section>
+    <section className="sticky top-0 w-full bg-white z-[2]">
       <div className="w-full flex justify-end items-center gap-2">
         <h4 className="text-sm">남은 시간</h4>
         <ChatTimer startDate={startDate} />
       </div>
-      <div className="w-full flex justify-between items-center px-2 py-1 box-border bg-colorsLightGray font-bold text-secondary">
+      <div className="w-full flex gap-2 justify-between items-center px-2 py-1 box-border bg-colorsLightGray font-bold text-secondary">
         <h3>{articleTitle}</h3>
-        <Button buttonTheme="secondary" onClick={onLeaveRoom}>
+        <Button
+          buttonTheme="secondary"
+          className="shrink-0"
+          onClick={onLeaveRoom}
+        >
           나가기
         </Button>
       </div>
+      <div className="absolute left-0 -bottom-9 h-9 box-border w-full bg-gradient-to-t from-white/0 to-white pointer-events-none" />
     </section>
   )
 }

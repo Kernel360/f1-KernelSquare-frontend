@@ -1,6 +1,6 @@
 "use client"
 
-import Profile from "@/components/shared/Profile"
+import Profile from "@/components/shared/user/Profile"
 import {
   MessagePayload,
   RoomAtomFamily,
@@ -74,6 +74,7 @@ Messages.Message = function Message({
   type,
   message,
   sender,
+  sender_image_url,
   user,
   send_time,
 }: MessagePayload & { user: MessagesProps["user"] }) {
@@ -155,7 +156,7 @@ Messages.Message = function Message({
       <div className={messageWrapperClassNames}>
         <Profile
           className={profileClassNames}
-          profileImage={me ? user.image_url : null}
+          profileImage={me ? user.image_url : sender_image_url ?? null}
         />
         <div className={`flex flex-col`}>
           <div

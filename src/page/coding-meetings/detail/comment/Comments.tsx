@@ -7,7 +7,6 @@ import { useClientSession } from "@/hooks/useClientSession"
 import {
   CodingMeetingAuthor,
   CodingMeetingComment,
-  CodingMeetingCommentAuthor,
 } from "@/interfaces/coding-meetings"
 import { GetCodingMeetingCommentListPayload } from "@/interfaces/dto/coding-meeting/comment/get-coding-meeting-comment-list.dto"
 import {
@@ -17,7 +16,6 @@ import {
 import { useQuery, useQueryClient } from "@tanstack/react-query"
 import { FieldErrors, useForm } from "react-hook-form"
 import { twMerge } from "tailwind-merge"
-import UserInfo from "../UserInfo"
 import { getKorRelativeTime } from "@/util/getDate"
 import dayjs from "dayjs"
 import Skeleton from "react-loading-skeleton"
@@ -34,6 +32,7 @@ import CommentContent from "./CommentContent"
 import { useRecoilValue } from "recoil"
 import { codingMeetingEditCommentAtom } from "@/recoil/atoms/coding-meeting/comment"
 import TextCounter from "@/components/shared/TextCounter"
+import UserInfo, { UserProfileInfo } from "@/components/shared/user/UserInfo"
 
 interface DetailCommentsProps {
   author: CodingMeetingAuthor
@@ -335,12 +334,12 @@ function Comment({
 }) {
   const textareaRef = useRef<HTMLTextAreaElement>(null)
 
-  const commentAuthor: CodingMeetingCommentAuthor = {
-    member_id: comment.member_id,
-    member_nickname: comment.member_nickname,
-    member_profile_url: comment.member_profile_url,
-    member_level: comment.member_level,
-    member_level_image_url: comment.member_level_image_url,
+  const commentAuthor: UserProfileInfo = {
+    id: comment.member_id,
+    nickname: comment.member_nickname,
+    profileImageUrl: comment.member_profile_url,
+    level: comment.member_level,
+    levelImageUrl: comment.member_level_image_url,
   }
 
   const isAuthor = author.member_nickname === comment.member_nickname

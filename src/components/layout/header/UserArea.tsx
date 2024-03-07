@@ -5,7 +5,7 @@ import Button from "@/components/shared/button/Button"
 import useModal from "@/hooks/useModal"
 import Link from "next/link"
 import { Icons } from "@/components/icons/Icons"
-import Profile from "@/components/shared/Profile"
+import Profile from "@/components/shared/user/Profile"
 import Dropdown from "rc-dropdown"
 import Menu, { Item as MenuItem, Divider } from "rc-menu"
 import { logout } from "@/service/auth"
@@ -60,8 +60,6 @@ function NotLoginedUserArea() {
 
 function LoginedUserArea({ user }: { user: LoginUserPayload }) {
   const { clientSessionLogout } = useClientSession()
-
-  const { openModal } = useModal()
 
   const DropDownMenu = () => {
     const profileDropdownMenu: Array<ProfileDropdownMenu> = [
@@ -127,7 +125,10 @@ function LoginedUserArea({ user }: { user: LoginUserPayload }) {
   return (
     <div className="flex gap-2 items-center">
       <Dropdown trigger={["click"]} overlay={DropDownMenu}>
-        <Profile profileImage={user?.image_url} />
+        <Profile
+          profileImage={user?.image_url}
+          className="cursor-pointer hover:cursor-pointer"
+        />
       </Dropdown>
       {/* <Button className="p-0">
         <Icons.Notification className="text-2xl text-colorsGray" />

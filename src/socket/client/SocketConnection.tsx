@@ -4,7 +4,7 @@ import { SessionPayload } from "@/recoil/atoms/user"
 import { initSocket } from "../provider"
 import { useEffect, useState } from "react"
 import { RoomAtomFamily } from "@/recoil/atoms/socket/socketAtom"
-import { useSetRecoilState } from "recoil"
+import { useRecoilState, useSetRecoilState } from "recoil"
 import {
   LeaveRoomDetail,
   PopupMessage,
@@ -15,6 +15,7 @@ import { CompatClient } from "@stomp/stompjs"
 import dayjs from "dayjs"
 import utc from "dayjs/plugin/utc"
 import { revalidatePage } from "@/util/actions/revalidatePage"
+import { popupWindowAtom } from "@/recoil/atoms/popup/popupWindowAtom"
 
 dayjs.extend(utc)
 
@@ -33,6 +34,8 @@ export const connectSuccessEventname = "kernel-ws-connect-success"
 function SocketConnection({ serverUrl, roomKey, user }: SocketConnectionProps) {
   const { replace } = useRouter()
   const [errorState, setErrorState] = useState<Error | null>(null)
+
+  const [popupWindow, setPopupWindow] = useRecoilState(popupWindowAtom)
   const setRoom = useSetRecoilState(RoomAtomFamily({ roomKey }))
 
   const searchParams = useSearchParams()
@@ -106,6 +109,13 @@ function SocketConnection({ serverUrl, roomKey, user }: SocketConnectionProps) {
               send_time: dayjs().utc().format(),
             }),
           )
+
+          if (isPopup && !popupWindow) {
+            ;(window.opener.postMessage as typeof window.postMessage)(
+              { type: "enter", user, popupWindow: window } as PopupMessage,
+              process.env.NEXT_PUBLIC_SITE_URL!,
+            )
+          }
         })
       }
     }

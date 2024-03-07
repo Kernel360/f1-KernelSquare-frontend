@@ -19,6 +19,9 @@ interface ChatErrorProps {
 }
 
 function ChatError({ errorType, errorMessage }: ChatErrorProps) {
+  const searchParams = useSearchParams()
+  const isPopup = searchParams.get("popup")
+
   const ChatErrorComponent = () => {
     switch (errorType) {
       case "LoginRequired":
@@ -38,10 +41,12 @@ function ChatError({ errorType, errorMessage }: ChatErrorProps) {
 
   useEffect(() => {
     const handleBeforeUnload = (e: BeforeUnloadEvent) => {
-      ;(window.opener.postMessage as typeof window.postMessage)(
-        { type: "leave" } as PopupMessage,
-        process.env.NEXT_PUBLIC_SITE_URL!,
-      )
+      if (isPopup) {
+        ;(window.opener.postMessage as typeof window.postMessage)(
+          { type: "leave" } as PopupMessage,
+          process.env.NEXT_PUBLIC_SITE_URL!,
+        )
+      }
     }
 
     window.addEventListener("beforeunload", handleBeforeUnload)
@@ -49,7 +54,7 @@ function ChatError({ errorType, errorMessage }: ChatErrorProps) {
     return () => {
       window.removeEventListener("beforeunload", handleBeforeUnload)
     }
-  }, [])
+  }, [isPopup])
 
   return (
     <div className="flex flex-col w-full justify-center items-center">

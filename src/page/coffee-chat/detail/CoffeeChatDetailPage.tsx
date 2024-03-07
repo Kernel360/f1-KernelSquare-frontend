@@ -22,7 +22,6 @@ function CoffeeChatDetailPage({
         return dateTime.mentee_nickname === user?.nickname
       }) ?? null
     : null
-  console.log("match", matchRoom)
 
   const isMentee =
     !user?.roles.includes("ROLE_MENTOR") ||
