@@ -20,11 +20,11 @@ const LandingSearchBar = () => {
         name="search"
         control={control}
         render={({ field }) => (
-          <div className="border-white border-[1px] p-3 w-[30%] m-auto relative flex">
+          <div className="border-white border-[1px] p-3 w-[90%] sm:w-[500px] m-auto relative flex">
             <input
               {...field}
               placeholder="당신의 관심사를 검색해보세요"
-              className="w-[90%] bg-transparent outline-none text-white text-[28px] placeholder:text-white placeholder:text-[28px] px-3 placeholder:font-extralight font-extralight"
+              className="w-[90%] bg-transparent outline-none text-white text-[28px] placeholder:text-white placeholder:text-[20px] sm:placeholder:text-[28px] px-3 placeholder:font-extralight font-extralight"
               autoComplete="off"
             />
             <div>
