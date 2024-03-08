@@ -1,4 +1,5 @@
 import queryKey from "@/constants/queryKey"
+import { CreateAIAutoAnswerRequest } from "@/interfaces/dto/answer/create-AI-auto-answer"
 import type { CreateAnswerRequest } from "@/interfaces/dto/answer/create-answer.dto"
 import type { CreateVoteRequest } from "@/interfaces/dto/answer/create-vote.dto"
 import type { DeleteAnswerRequest } from "@/interfaces/dto/answer/delete-answer.dto"
@@ -6,6 +7,7 @@ import { DeleteVoteRequest } from "@/interfaces/dto/answer/delete-vote.dto"
 import type { GetAnswerRequest } from "@/interfaces/dto/answer/get-answerlist.dto"
 import type { UpdateAnswerRequest } from "@/interfaces/dto/answer/update-answer.dto"
 import {
+  createAIAutoAnswer,
   createAnswer,
   deleteAnswer,
   deleteVote,
@@ -98,6 +100,28 @@ const useDeleteAnswer = () => {
   }
 }
 
+const useCreateAIAutoAnswer = () => {
+  const {
+    mutate: createAIAutoAnswerMutate,
+    isPending: isCreateAIAutoAnswer,
+    isError: isCreateAIAutoAnswerError,
+    isSuccess: isCreateAIAutoAnswerSuccess,
+  } = useMutation({
+    mutationKey: [queryKey.answer],
+    mutationFn: ({ questionId }: CreateAIAutoAnswerRequest) =>
+      createAIAutoAnswer({ questionId }),
+  })
+
+  return {
+    createAIAutoAnswer: createAIAutoAnswerMutate,
+    createAIAutoAnswerStatus: {
+      isCreateAIAutoAnswer,
+      isCreateAIAutoAnswerError,
+      isCreateAIAutoAnswerSuccess,
+    },
+  }
+}
+
 const useVoteAnswer = () => {
   const {
     mutate: voteAnswerMutate,
@@ -146,6 +170,7 @@ export const answerQueries = {
   useCreateAnswer,
   useUpdateAnswer,
   useDeleteAnswer,
+  useCreateAIAutoAnswer,
   useVoteAnswer,
   useDeleteVoteAnswer,
 }

@@ -27,6 +27,10 @@ import {
   DeleteVoteRequest,
   DeleteVoteResponse,
 } from "@/interfaces/dto/answer/delete-vote.dto"
+import {
+  CreateAIAutoAnswerRequest,
+  CreateAIAutoAnswerResponse,
+} from "@/interfaces/dto/answer/create-AI-auto-answer"
 
 export async function getAnswer({ questionId }: GetAnswerRequest) {
   const res = await apiInstance
@@ -104,6 +108,18 @@ export async function deleteAnswer({ answerId }: DeleteAnswerRequest) {
       console.log("err", err)
       throw err
     })
+
+  return res
+}
+
+export async function createAIAutoAnswer({
+  questionId,
+}: CreateAIAutoAnswerRequest) {
+  const res = await apiInstance.post<
+    any,
+    AxiosResponse<CreateAIAutoAnswerResponse>,
+    Omit<CreateAIAutoAnswerRequest, "questionId">
+  >(RouteMap.answer.createAIAutoAnswer(questionId))
 
   return res
 }

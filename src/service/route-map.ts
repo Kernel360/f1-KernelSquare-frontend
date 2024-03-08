@@ -5,6 +5,7 @@ export class RouteMap {
     auth: "auth",
     question: "questions",
     answer: "answers",
+    answerBot: "answer-bot",
     coffeeChat: "coffeechat",
     notice: "notices",
     faq: "faqs",
@@ -182,6 +183,11 @@ export class RouteMap {
     createAnswer(questionId?: number) {
       return `${RouteMap.routeGroupBaseURL.question}/${questionId ?? ":id"}/${
         RouteMap.prefix.answer
+      }`
+    },
+    createAIAutoAnswer(questionId?: number) {
+      return `${RouteMap.routeGroupBaseURL.question}/${questionId ?? ":id"}/${
+        RouteMap.prefix.answerBot
       }`
     },
     updateAnswer(answerId?: number) {
