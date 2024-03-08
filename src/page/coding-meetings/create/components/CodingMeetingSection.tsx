@@ -23,7 +23,7 @@ CodingMeetingSection.Label = function CodingMeetingSectionLabel({
 }: CodingMeetingSectionLabelProps) {
   const classNames = twMerge([
     className,
-    "mr-10 text-colorsDarkGray text-lg font-bold",
+    "w-[150px] mr-10 text-colorsDarkGray text-lg font-bold",
   ])
 
   return (

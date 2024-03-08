@@ -387,7 +387,7 @@ const CreateCodingMeetingPage = ({
           />
         </div>
         <Spacing size={10} />
-        <div className="flex flex-col sm:flex-row sm:justify-end sm:items-center w-full p-6 sm:p-0 sm:mr-5">
+        <div className="flex flex-col sm:flex-row sm:justify-end sm:items-center w-full p-6 sm:p-0 sm:pr-[20px]">
           <Button
             disabled={
               !user ||
