@@ -93,15 +93,6 @@ export const notificationMessage = {
   cancleReservation: "커피챗 예약이 취소되었습니다.",
 } as const
 
-export const confirmMessage = {
-  editProfileImage: "변경된 사진으로 저장하시겠습니까?",
-  resetProfileImage: "기본 이미지로 초기화하시겠습니까?",
-  deleteContent: "정말 삭제하시겠습니까?",
-  cancleVote: "투표 기록을 삭제하시겠습니까?",
-  reserveCoffeeChat: "해당 일정으로 예약하시겠습니까?",
-  deleteCoffeeChat: "해당 일정을 삭제하시겠습니까?",
-} as const
-
 export const loadingMessage = {
   deleteAnswer: "답변 삭제가 진행 중이에요.",
 } as const

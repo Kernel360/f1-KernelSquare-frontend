@@ -4,9 +4,9 @@ import Spacing from "@/components/shared/Spacing"
 import CoffeeChatDetailContent from "./CoffeeChatDetailContent"
 import CoffeeChatDetailHeader from "./CoffeeChatDetailHeader"
 import { CoffeeChatReservationDetailPayload } from "@/interfaces/dto/coffee-chat/coffeechat-reservation-detail.dto"
-import EnterCoffeeChat from "./EnterCoffeeChat"
 import ScheduleMentoringSession from "./reservation/ScheduleMentoringSession"
 import { useClientSession } from "@/hooks/useClientSession"
+import EnterChatRoomArea from "./EnterCoffeeChat/EnterChatRoomArea"
 
 interface CoffeeChatDetailPageProps {
   coffeeChatDetailPayload: CoffeeChatReservationDetailPayload
@@ -22,7 +22,6 @@ function CoffeeChatDetailPage({
         return dateTime.mentee_nickname === user?.nickname
       }) ?? null
     : null
-  console.log("match", matchRoom)
 
   const isMentee =
     !user?.roles.includes("ROLE_MENTOR") ||
@@ -40,11 +39,9 @@ function CoffeeChatDetailPage({
         hashtags={coffeeChatDetailPayload.hashtags}
       />
       <Spacing size={35} />
-      <CoffeeChatDetailContent content={coffeeChatDetailPayload.content} />
-      <Spacing size={32} />
       <div className="w-full flex justify-center items-center">
-        {user && isMentee && matchRoom && (
-          <EnterCoffeeChat
+        {(!user || (isMentee && matchRoom)) && (
+          <EnterChatRoomArea
             articleTitle={coffeeChatDetailPayload.title}
             roomId={matchRoom ? matchRoom.room_id : null}
             startTime={matchRoom?.start_time || null}
@@ -52,6 +49,8 @@ function CoffeeChatDetailPage({
           />
         )}
       </div>
+      <Spacing size={32} />
+      <CoffeeChatDetailContent content={coffeeChatDetailPayload.content} />
       <Spacing size={32} />
       <ScheduleMentoringSession
         mentor={coffeeChatDetailPayload.member_id}
