@@ -8,7 +8,7 @@ import {
 import { debounce } from "lodash-es"
 import React, { useState, useEffect } from "react"
 import { Map, MapMarker, useKakaoLoader } from "react-kakao-maps-sdk"
-import { useRecoilState } from "recoil"
+import { useRecoilState, useSetRecoilState } from "recoil"
 
 declare const window: typeof globalThis & {
   kakao: any
@@ -22,8 +22,8 @@ export default function KakaoMapPage({ keyword }: { keyword: string }) {
   const [info, setInfo] = useState<Marker>()
   const [markers, setMarkers] = useRecoilState(SearchMapMarker)
   const [map, setMap] = useState<kakao.maps.Map>()
-  const [mapData, setMapData] = useRecoilState(CodingMeetingMapData)
-  const [selectedPlace, setSelectedPlace] = useRecoilState(SelectedPlace)
+  const setMapData = useSetRecoilState(CodingMeetingMapData)
+  const setSelectedPlace = useSetRecoilState(SelectedPlace)
 
   useEffect(() => {
     if (!map) return
@@ -79,10 +79,6 @@ export default function KakaoMapPage({ keyword }: { keyword: string }) {
         lat: 37.566826,
         lng: 126.9786567,
       }}
-      // style={{
-      //   width: "100%",
-      //   height: "300px",
-      // }}
       className="w-full sm:w-[400px] h-[300px]"
       level={3}
       onCreate={setMap}

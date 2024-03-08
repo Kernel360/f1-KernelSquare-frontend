@@ -4,8 +4,6 @@ import { getDate, getTime } from "@/util/getDate"
 import { CircleIcons } from "@/components/icons/Icons"
 import { basic_profile } from "@/assets/images/basic"
 import Image from "next/image"
-import { mockCoffeeChatReservations } from "@/mocks/db/coffee-chat"
-import { useParams, useRouter } from "next/navigation"
 import CustomCalendar from "../CustomCalendar/CustomCalendar"
 import { useEffect, useState } from "react"
 import type { Value } from "../CustomCalendar/Calendar.types"
@@ -13,7 +11,6 @@ import type { CoffeeChatReservationTime } from "@/interfaces/dto/coffee-chat/cof
 import { twJoin } from "tailwind-merge"
 import CoffeeChat from "@/components/shared/animation/CoffeeChat"
 import { revalidatePage } from "@/util/actions/revalidatePage"
-import Button from "@/components/shared/button/Button"
 import EnterCoffeeChatButton from "../../EnterCoffeeChat/EnterCoffeeChatButton"
 
 interface MentorProps {
@@ -86,7 +83,6 @@ function ReservationForMentor({ reservation, created, title }: MentorProps) {
                 {target.map((time) => (
                   <div
                     key={time.reservation_id}
-                    // className="flex justify-around w-full flex-wrap min-h-[50px] my-5"
                     className="flex gap-4 justify-between w-full min-h-[50px] my-5"
                   >
                     <div className="flex items-center">
