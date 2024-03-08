@@ -8,20 +8,23 @@ import { popupWindowAtom } from "@/recoil/atoms/popup/popupWindowAtom"
 import { cloneDeep } from "lodash-es"
 import dayjs from "dayjs"
 import isBetween from "dayjs/plugin/isBetween"
+import { twMerge } from "tailwind-merge"
 dayjs.extend(isBetween)
 
-interface EnterCoffeeChatProps {
+export type EnterCoffeeChatProps = {
   articleTitle: string
   roomId: number | null
   startTime: string | null
   reservation_id: number
+  className?: string
 }
 
-function EnterCoffeeChat({
+function EnterCoffeeChatButton({
   articleTitle,
   roomId,
   startTime,
   reservation_id,
+  className,
 }: EnterCoffeeChatProps) {
   const { user } = useClientSession()
 
@@ -72,16 +75,21 @@ function EnterCoffeeChat({
     openChatRoomPopup()
   }
 
+  const ButtonClass = twMerge(
+    ["disabled:bg-colorsGray disabled:text-colorsDarkGray"],
+    className,
+  )
+
   return (
     <Button
       buttonTheme="primary"
       disabled={roomId === null || !!popupWindow}
       onClick={onSubmitEnterCoffeeChatRoom}
-      className="disabled:bg-colorsGray disabled:text-colorsDarkGray"
+      className={ButtonClass}
     >
       {popupWindow ? `커피챗 팝업 이용 중` : `커피챗 입장하기`}
     </Button>
   )
 }
 
-export default EnterCoffeeChat
+export default EnterCoffeeChatButton

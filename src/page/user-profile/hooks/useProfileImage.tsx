@@ -86,7 +86,7 @@ const useProfileImage = (image_url: string | null) => {
         <ConfirmModal.ModalContent
           onSuccess={onSuccess}
           onCancel={onCancel}
-          situation="uploadProfileImage"
+          situation="editProfileImage"
         />
       ),
     })
