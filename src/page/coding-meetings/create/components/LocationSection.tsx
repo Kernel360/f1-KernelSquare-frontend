@@ -24,6 +24,7 @@ import {
 } from "@/recoil/atoms/coding-meeting/mapData"
 import { twJoin } from "tailwind-merge"
 import { LocationSectionProps } from "../CreateCodingMeetingPage.types"
+import MapContainer from "../../detail/kakao-map/MapContainer"
 
 const LocationSection = ({ initialLocation }: LocationSectionProps) => {
   const [location, setLocation] = useRecoilState(LocationForSubmit)
@@ -182,7 +183,9 @@ const LocationDialog = () => {
                     </div>
                   ))}
               </div>
-              <KakaoMapPage keyword={keyword} />
+              <MapContainer>
+                <KakaoMapPage keyword={keyword} />
+              </MapContainer>
             </div>
           </DialogDescription>
         </DialogHeader>
