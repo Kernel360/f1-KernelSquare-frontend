@@ -122,16 +122,6 @@ function SocketConnection({
                   },
                 ],
               }))
-
-              // if (type === "LEAVE" && user.nickname === payload.sender) {
-              //   if (isPopup) {
-              //     window.close()
-
-              //     return
-              //   }
-
-              //   router.replace("")
-              // }
             },
             { memberId: `${user.member_id}` },
           )
