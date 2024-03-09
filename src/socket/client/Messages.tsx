@@ -18,9 +18,8 @@ import Button from "@/components/shared/button/Button"
 import { IoIosArrowDown } from "react-icons/io"
 import { IoClose } from "react-icons/io5"
 import { debounce, throttle } from "lodash-es"
-import { useRouter, useSearchParams } from "next/navigation"
-import { PopupMessage } from "@/page/coffee-chat/chat/ChatRoomHeader"
 import { getKorDayjs } from "@/util/getDate"
+import { useSearchParams } from "next/navigation"
 import type { SessionPayload } from "@/recoil/atoms/user"
 
 interface MessagesProps {
@@ -29,6 +28,9 @@ interface MessagesProps {
 }
 
 function Messages({ roomKey, user }: MessagesProps) {
+  const searchParams = useSearchParams()
+  const isPopup = searchParams.get("popup")
+
   const { messages } = useRecoilValue(RoomAtomFamily({ roomKey }))
 
   useEffect(() => {
@@ -42,7 +44,11 @@ function Messages({ roomKey, user }: MessagesProps) {
   }, [messages])
 
   return (
-    <div className="w-full flex flex-col gap-3 mb-[calc(52px+33px+16px)]">
+    <div
+      className={`w-full flex flex-col gap-3 mb-[calc(52px+33px+16px)] box-border px-2 ${
+        isPopup ? "mt-9" : "mt-[90px]"
+      }`}
+    >
       {messages.map((messagePayload, index) => {
         if (messagePayload.type === "ENTER")
           return (
@@ -61,6 +67,8 @@ function Messages({ roomKey, user }: MessagesProps) {
           )
         }
 
+        if (messagePayload.type === "EXPIRE") return null
+
         return <Messages.Message key={index} user={user} {...messagePayload} />
       })}
       <Messages.ScrollBottomButton />
@@ -74,15 +82,11 @@ Messages.Message = function Message({
   type,
   message,
   sender,
+  sender_id,
   sender_image_url,
   user,
   send_time,
 }: MessagePayload & { user: MessagesProps["user"] }) {
-  const { replace } = useRouter()
-
-  const searchParams = useSearchParams()
-  const isPopup = searchParams.get("popup")
-
   const me = user.nickname === sender
 
   const containerClassNames = twMerge([
@@ -118,25 +122,6 @@ Messages.Message = function Message({
   }
 
   const MessageContent = () => {
-    if (type === "EXPIRE") {
-      if (isPopup) {
-        ;(window.opener.postMessage as typeof window.postMessage)({
-          type: "finished",
-          user,
-        } as PopupMessage)
-
-        window.close()
-
-        return null
-      }
-
-      setTimeout(() => {
-        replace("/chat")
-      }, 0)
-
-      return null
-    }
-
     if (type === "CODE" && matchedCode) {
       return (
         <div className={codeMessageClassNames}>

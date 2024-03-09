@@ -22,7 +22,11 @@ import { useSetRecoilState } from "recoil"
 import type { LoginFormData } from "@/interfaces/form"
 import Logo from "../icons/Logo"
 
-function LoginForm() {
+interface LoginFormProps {
+  onSuccess?: (user: NonNullable<SessionPayload>) => void
+}
+
+function LoginForm({ onSuccess }: LoginFormProps) {
   const {
     register,
     handleSubmit,
@@ -75,6 +79,12 @@ function LoginForm() {
       await revalidatePage("*")
 
       closeModal()
+
+      if (onSuccess) {
+        setTimeout(() => {
+          onSuccess({ ...payload, expires: expires.toJSON() })
+        }, 0)
+      }
     } catch (error) {
       /*
         서버에서 유효하지 않은 응답이 오는 경우

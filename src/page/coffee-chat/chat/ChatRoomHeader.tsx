@@ -1,68 +1,127 @@
 "use client"
 
-import { useSearchParams } from "next/navigation"
-import { createPortal } from "react-dom"
+import { useRouter, useSearchParams } from "next/navigation"
 import Button from "@/components/shared/button/Button"
 import { useStopwatch } from "@/hooks/time/useStopwatch"
-import { useEffect } from "react"
+import { useEffect, useLayoutEffect, useRef } from "react"
+import {
+  ConnectSuccessDetail,
+  connectSuccessEventname,
+} from "@/socket/client/SocketConnection"
+import { CompatClient } from "@stomp/stompjs"
+import {
+  addPopupStorageItem,
+  hasPopup,
+  removePopupStorageItem,
+} from "@/util/chat/popup"
+import dayjs from "dayjs"
+import utc from "dayjs/plugin/utc"
 import type { SessionPayload } from "@/recoil/atoms/user"
 
-export const leaveRoomEventName = "kernel-room-leave"
-export interface LeaveRoomDetail {
-  user: NonNullable<SessionPayload>
-  isPopup: boolean
-}
+dayjs.extend(utc)
+
 export interface PopupMessage {
-  type: "leave" | "enter" | "finished" | "loginRequired"
   user: NonNullable<SessionPayload>
-  popupWindow?: Window | null
+  isRoomMember?: boolean
+  reservationId: number
+  type:
+    | "leave"
+    | "enter"
+    | "finished"
+    | "loginRequired"
+    | "reLogin"
+    | "popupOpen"
+    | "popupClose"
 }
 
 interface ChatRoomHeaderProps {
   articleTitle: string
+  roomKey: string
+  reservationId: number
   user: NonNullable<SessionPayload>
   startDate: string
 }
 
 function ChatRoomHeader({
   articleTitle,
+  roomKey,
+  reservationId,
   user,
   startDate,
 }: ChatRoomHeaderProps) {
-  return (
-    <Header articleTitle={articleTitle} user={user} startDate={startDate} />
-  )
-}
+  const router = useRouter()
 
-export default ChatRoomHeader
-
-function Header({ articleTitle, user, startDate }: ChatRoomHeaderProps) {
   const searchParams = useSearchParams()
   const isPopup = !!searchParams.get("popup")
 
+  const stompRef = useRef<CompatClient | null>(null)
+
   const onLeaveRoom = () => {
-    window.dispatchEvent(
-      new CustomEvent(leaveRoomEventName, {
-        detail: {
-          user,
-          isPopup,
-        } as LeaveRoomDetail,
-      }),
-    )
-
     if (isPopup) {
-      ;(window.opener.postMessage as typeof window.postMessage)(
-        { type: "leave", user } as PopupMessage,
-        process.env.NEXT_PUBLIC_SITE_URL!,
-      )
-
       window.close()
+
+      return
     }
+
+    setTimeout(() => {
+      router?.replace("/chat?page=0")
+    }, 0)
   }
 
+  useLayoutEffect(() => {
+    if (!hasPopup({ reservationId }) && isPopup) {
+      addPopupStorageItem({ reservationId })
+
+      window.dispatchEvent(new StorageEvent("storage"))
+    }
+
+    const handleConnectSuccess = (e: CustomEvent) => {
+      const { stomp } = e.detail as ConnectSuccessDetail
+
+      stompRef.current = stomp
+    }
+
+    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+      if (stompRef.current) return
+
+      if (isPopup) {
+        ;(window.opener?.postMessage as typeof window.postMessage)(
+          { type: "popupClose", user, reservationId } as PopupMessage,
+          process.env.NEXT_PUBLIC_SITE_URL!,
+        )
+
+        return
+      }
+
+      removePopupStorageItem({ reservationId })
+    }
+
+    window.addEventListener(
+      connectSuccessEventname as any,
+      handleConnectSuccess,
+    )
+
+    window.addEventListener("beforeunload", handleBeforeUnload)
+
+    return () => {
+      window.removeEventListener(
+        connectSuccessEventname as any,
+        handleConnectSuccess,
+      )
+
+      window.removeEventListener("beforeunload", handleBeforeUnload)
+    }
+  }, []) /* eslint-disable-line */
+
   return (
-    <section className="sticky top-0 w-full bg-white z-[2]">
-      <div className="w-full flex justify-end items-center gap-2">
+    <section
+      className={`z-[2] bg-white ${
+        isPopup
+          ? "sticky top-0 w-full"
+          : "fixed w-full left-0 top-[calc(var(--height-header)+67px)] sm:left-[200px] sm:top-[calc(var(--height-header))] sm:w-[calc(100%-200px)]"
+      }`}
+    >
+      <div className="w-full box-border flex justify-end items-center gap-2 pr-2">
         <h4 className="text-sm">남은 시간</h4>
         <ChatTimer startDate={startDate} />
       </div>
@@ -80,6 +139,8 @@ function Header({ articleTitle, user, startDate }: ChatRoomHeaderProps) {
     </section>
   )
 }
+
+export default ChatRoomHeader
 
 function ChatTimer({ startDate }: { startDate: string }) {
   const { start, diffTime } = useStopwatch({

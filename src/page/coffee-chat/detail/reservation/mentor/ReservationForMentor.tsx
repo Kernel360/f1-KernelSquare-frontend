@@ -14,7 +14,7 @@ import { twJoin } from "tailwind-merge"
 import CoffeeChat from "@/components/shared/animation/CoffeeChat"
 import { revalidatePage } from "@/util/actions/revalidatePage"
 import Button from "@/components/shared/button/Button"
-import EnterCoffeeChat from "../../EnterCoffeeChat"
+import EnterCoffeeChat from "../../EnterCoffeeChat/EnterCoffeeChatButton"
 
 interface MentorProps {
   reservation: CoffeeChatReservationTime[]

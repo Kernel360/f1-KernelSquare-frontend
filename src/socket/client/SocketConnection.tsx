@@ -2,20 +2,18 @@
 
 import { SessionPayload } from "@/recoil/atoms/user"
 import { initSocket } from "../provider"
-import { useEffect, useState } from "react"
-import { RoomAtomFamily } from "@/recoil/atoms/socket/socketAtom"
-import { useRecoilState, useSetRecoilState } from "recoil"
+import { useEffect, useRef, useState } from "react"
 import {
-  LeaveRoomDetail,
-  PopupMessage,
-  leaveRoomEventName,
-} from "@/page/coffee-chat/chat/ChatRoomHeader"
+  MessagePayload,
+  RoomAtomFamily,
+} from "@/recoil/atoms/socket/socketAtom"
+import { useSetRecoilState } from "recoil"
+import { PopupMessage } from "@/page/coffee-chat/chat/ChatRoomHeader"
 import { useRouter, useSearchParams } from "next/navigation"
 import { CompatClient } from "@stomp/stompjs"
 import dayjs from "dayjs"
 import utc from "dayjs/plugin/utc"
 import { revalidatePage } from "@/util/actions/revalidatePage"
-import { popupWindowAtom } from "@/recoil/atoms/popup/popupWindowAtom"
 
 dayjs.extend(utc)
 
@@ -26,16 +24,23 @@ export interface ConnectSuccessDetail {
 interface SocketConnectionProps {
   serverUrl: string
   roomKey: string
+  reservationId: number
   user: NonNullable<SessionPayload>
 }
 
 export const connectSuccessEventname = "kernel-ws-connect-success"
 
-function SocketConnection({ serverUrl, roomKey, user }: SocketConnectionProps) {
-  const { replace } = useRouter()
+function SocketConnection({
+  serverUrl,
+  roomKey,
+  reservationId,
+  user,
+}: SocketConnectionProps) {
+  const router = useRouter()
   const [errorState, setErrorState] = useState<Error | null>(null)
 
-  const [popupWindow, setPopupWindow] = useRecoilState(popupWindowAtom)
+  const leaveCase = useRef<"EXPIRE" | "DUPPLICATE_LOGIN" | "CLOSE">("CLOSE")
+
   const setRoom = useSetRecoilState(RoomAtomFamily({ roomKey }))
 
   const searchParams = useSearchParams()
@@ -71,23 +76,45 @@ function SocketConnection({ serverUrl, roomKey, user }: SocketConnectionProps) {
           stomp.subscribe(
             `/topic/chat/room/${roomKey}`,
             (message) => {
-              const payload = JSON.parse(message.body)
+              const payload = JSON.parse(message.body) as MessagePayload
 
-              if (payload.type === "EXPIRE") {
-                stomp.send(
+              const type = payload.type as MessagePayload["type"]
+
+              if (type === "EXPIRE") {
+                leaveCase.current = "EXPIRE"
+
+                stomp?.send(
                   `/app/chat/message`,
                   {},
                   JSON.stringify({
                     type: "LEAVE",
                     room_key: roomKey,
                     sender: user.nickname,
+                    sender_id: user.member_id,
                     send_time: dayjs().utc().format(),
                   }),
                 )
+                ;(window.opener?.postMessage as typeof window.postMessage)(
+                  { type: "finished", user, reservationId } as PopupMessage,
+                  process.env.NEXT_PUBLIC_SITE_URL!,
+                )
+
+                if (isPopup) {
+                  window.close()
+
+                  return
+                }
+
+                router?.replace("/chat?page=0")
+
+                return
               }
 
               setRoom((prev) => ({
                 ...prev,
+                ...((type === "ENTER" || type === "LEAVE") && {
+                  memberList: payload.member_list ?? [],
+                }),
                 messages: [
                   ...prev.messages,
                   {
@@ -95,6 +122,16 @@ function SocketConnection({ serverUrl, roomKey, user }: SocketConnectionProps) {
                   },
                 ],
               }))
+
+              // if (type === "LEAVE" && user.nickname === payload.sender) {
+              //   if (isPopup) {
+              //     window.close()
+
+              //     return
+              //   }
+
+              //   router.replace("")
+              // }
             },
             { memberId: `${user.member_id}` },
           )
@@ -106,16 +143,10 @@ function SocketConnection({ serverUrl, roomKey, user }: SocketConnectionProps) {
               type: "ENTER",
               room_key: roomKey,
               sender: user.nickname,
+              sender_id: user.member_id,
               send_time: dayjs().utc().format(),
             }),
           )
-
-          if (isPopup && !popupWindow) {
-            ;(window.opener.postMessage as typeof window.postMessage)(
-              { type: "enter", user, popupWindow: window } as PopupMessage,
-              process.env.NEXT_PUBLIC_SITE_URL!,
-            )
-          }
         })
       }
     }
@@ -124,40 +155,41 @@ function SocketConnection({ serverUrl, roomKey, user }: SocketConnectionProps) {
       setErrorState(error)
     }
 
-    const handleLeave = (e: CustomEvent) => {
-      const { user: leaveUser, isPopup } = e.detail as LeaveRoomDetail
+    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+      if (leaveCase.current === "CLOSE") {
+        stomp?.send(
+          `/app/chat/message`,
+          {},
+          JSON.stringify({
+            type: "LEAVE",
+            room_key: roomKey,
+            sender: user.nickname,
+            sender_id: user.member_id,
+            send_time: dayjs().utc().format(),
+          }),
+        )
 
-      if (!isPopup) {
-        setTimeout(() => {
-          replace("/chat")
-        }, 0)
+        if (isPopup) {
+          ;(window.opener?.postMessage as typeof window.postMessage)(
+            { type: "popupClose", user, reservationId } as PopupMessage,
+            process.env.NEXT_PUBLIC_SITE_URL!,
+          )
+
+          return
+        }
+
+        return
       }
     }
 
-    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
-      stomp?.send(
-        `/app/chat/message`,
-        {},
-        JSON.stringify({
-          type: "LEAVE",
-          room_key: roomKey,
-          sender: user.nickname,
-          send_time: dayjs().utc().format(),
-        }),
-      )
-      ;(window.opener.postMessage as typeof window.postMessage)(
-        { type: "leave", user } as PopupMessage,
-        process.env.NEXT_PUBLIC_SITE_URL!,
-      )
-    }
-
+    /*
+      opener(부모) window 가 보낸 메시지를 수신
+    */
     const handleMessage = (e: MessageEvent) => {
       if (typeof window === "undefined") return
       if (e.origin !== process.env.NEXT_PUBLIC_SITE_URL!) return
 
       const { type } = e.data
-
-      if (type !== "deleteUser") return
 
       if (type === "deleteUser") {
         stomp?.send(
@@ -167,11 +199,14 @@ function SocketConnection({ serverUrl, roomKey, user }: SocketConnectionProps) {
             type: "LEAVE",
             room_key: roomKey,
             sender: user.nickname,
+            sender_id: user.member_id,
             send_time: dayjs().utc().format(),
           }),
         )
 
         revalidatePage("*")
+
+        return
       }
     }
 
@@ -180,7 +215,6 @@ function SocketConnection({ serverUrl, roomKey, user }: SocketConnectionProps) {
         window.addEventListener("message", handleMessage)
       }
 
-      window.addEventListener(leaveRoomEventName as any, handleLeave)
       window.addEventListener("beforeunload", handleBeforeUnload)
     }
 
@@ -189,7 +223,6 @@ function SocketConnection({ serverUrl, roomKey, user }: SocketConnectionProps) {
         window.removeEventListener("message", handleMessage)
       }
 
-      window.removeEventListener(leaveRoomEventName as any, handleLeave)
       window.removeEventListener("beforeunload", handleBeforeUnload)
     }
   }, []) /* eslint-disable-line */

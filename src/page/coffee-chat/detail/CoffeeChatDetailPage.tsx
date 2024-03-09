@@ -4,7 +4,7 @@ import Spacing from "@/components/shared/Spacing"
 import CoffeeChatDetailContent from "./CoffeeChatDetailContent"
 import CoffeeChatDetailHeader from "./CoffeeChatDetailHeader"
 import { CoffeeChatReservationDetailPayload } from "@/interfaces/dto/coffee-chat/coffeechat-reservation-detail.dto"
-import EnterCoffeeChat from "./EnterCoffeeChat"
+import EnterCoffeeChat from "./EnterCoffeeChat/EnterCoffeeChatButton"
 import ScheduleMentoringSession from "./reservation/ScheduleMentoringSession"
 import { useClientSession } from "@/hooks/useClientSession"
 

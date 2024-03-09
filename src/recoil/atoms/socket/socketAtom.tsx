@@ -19,11 +19,13 @@ export interface MessagePayload {
 
 interface Room {
   messages: Array<MessagePayload>
+  memberList: Array<ChatRoomMember>
 }
 
 export const RoomAtomFamily = atomFamily<Room, { roomKey: string }>({
   key: "socket-room-atom-family",
   default: {
     messages: [],
+    memberList: [],
   },
 })
