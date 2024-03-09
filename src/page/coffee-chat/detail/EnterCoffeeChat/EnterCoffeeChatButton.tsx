@@ -1,12 +1,7 @@
 "use client"
 
-import { useClientSession } from "@/hooks/useClientSession"
-import { toast } from "react-toastify"
-import dayjs from "dayjs"
-import isBetween from "dayjs/plugin/isBetween"
-import { getKorDayjs } from "@/util/getDate"
-import { revalidatePage } from "@/util/actions/revalidatePage"
 import { useLayoutEffect, useRef, useState } from "react"
+import { revalidatePage } from "@/util/actions/revalidatePage"
 import { Button } from "@/components/ui/button"
 import { enterChatRoom } from "@/service/coffee-chat"
 import {
@@ -17,22 +12,28 @@ import {
 import { useQuery } from "@tanstack/react-query"
 import { AxiosError } from "axios"
 import { APIResponse } from "@/interfaces/dto/api-response"
+import { useClientSession } from "@/hooks/useClientSession"
+import { toast } from "react-toastify"
 import { twMerge } from "tailwind-merge"
-
+import { getKorDayjs } from "@/util/getDate"
+import dayjs from "dayjs"
+import isBetween from "dayjs/plugin/isBetween"
 dayjs.extend(isBetween)
 
-interface EnterCoffeeChatProps {
+export type EnterCoffeeChatProps = {
   articleTitle: string
   roomId: number | null
   startTime: string | null
   reservation_id: number
+  className?: string
 }
 
-function EnterCoffeeChat({
+function EnterCoffeeChatButton({
   articleTitle,
   roomId,
   startTime,
   reservation_id,
+  className,
 }: EnterCoffeeChatProps) {
   const { user } = useClientSession()
 
@@ -63,7 +64,10 @@ function EnterCoffeeChat({
   const buttonClassNames = (isPending: boolean) => {
     if (isPending) return "skeleton w-[120px] h-10 rounded-lg"
 
-    return twMerge([`disabled:bg-colorsGray disabled:text-colorsDarkGray`])
+    return twMerge([
+      `disabled:bg-colorsGray disabled:text-colorsDarkGray`,
+      className,
+    ])
   }
 
   const buttonText =
@@ -73,7 +77,7 @@ function EnterCoffeeChat({
       ? `커피 챗 팝업 이용 중`
       : `커피 챗 입장하기`
 
-  const disabled = !isValidTime || hasPopup || roomId === null
+  const disabled = !isValidTime(startTime) || hasPopup || roomId === null
 
   const openChatRoomPopup = () => {
     if (roomId === null) return
@@ -174,7 +178,7 @@ function EnterCoffeeChat({
   )
 }
 
-export default EnterCoffeeChat
+export default EnterCoffeeChatButton
 
 function isValidTime(startTime: string | null) {
   if (!startTime) return false

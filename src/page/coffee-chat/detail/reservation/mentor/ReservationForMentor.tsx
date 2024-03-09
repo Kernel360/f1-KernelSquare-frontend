@@ -4,8 +4,6 @@ import { getDate, getTime } from "@/util/getDate"
 import { CircleIcons } from "@/components/icons/Icons"
 import { basic_profile } from "@/assets/images/basic"
 import Image from "next/image"
-import { mockCoffeeChatReservations } from "@/mocks/db/coffee-chat"
-import { useParams, useRouter } from "next/navigation"
 import CustomCalendar from "../CustomCalendar/CustomCalendar"
 import { useEffect, useState } from "react"
 import type { Value } from "../CustomCalendar/Calendar.types"
@@ -13,8 +11,7 @@ import type { CoffeeChatReservationTime } from "@/interfaces/dto/coffee-chat/cof
 import { twJoin } from "tailwind-merge"
 import CoffeeChat from "@/components/shared/animation/CoffeeChat"
 import { revalidatePage } from "@/util/actions/revalidatePage"
-import Button from "@/components/shared/button/Button"
-import EnterCoffeeChat from "../../EnterCoffeeChat/EnterCoffeeChatButton"
+import EnterCoffeeChatButton from "../../EnterCoffeeChat/EnterCoffeeChatButton"
 
 interface MentorProps {
   reservation: CoffeeChatReservationTime[]
@@ -25,7 +22,10 @@ interface MentorProps {
 function ReservationForMentor({ reservation, created, title }: MentorProps) {
   const [date, setDate] = useState<Value>(new Date(reservation[0].start_time))
   const isReserved = (nickname: string | null) =>
-    twJoin(["ml-2 text-[20px]"], [nickname && "text-primary font-bold"])
+    twJoin(
+      ["ml-2 text-[20px] shrink-0"],
+      [nickname && "text-primary font-bold"],
+    )
   const target = reservation.filter(
     ({ start_time }) =>
       getDate({ date: date + "" }) === getDate({ date: start_time }),
@@ -68,9 +68,9 @@ function ReservationForMentor({ reservation, created, title }: MentorProps) {
           <div className="my-3 text-xl text-secondary font-bold">
             {getDate({ date: date + "" })}
           </div>
-          <div className="m-auto max-h-[300px] min-w-[456px] overflow-scroll px-4 py-3 border-[1px] border-primary flex justify-center gap-10">
+          <div className="max-h-[300px] overflow-auto border-[1px] border-primary flex justify-center">
             {!target.length && (
-              <div className="w-full m-auto text-center">
+              <div className="w-[35vw] m-auto text-center py-5">
                 <div className="flex justify-center mb-5">
                   <CoffeeChat className="w-[250px]" />
                 </div>
@@ -79,31 +79,25 @@ function ReservationForMentor({ reservation, created, title }: MentorProps) {
               </div>
             )}
             {!!target.length && (
-              <div>
+              <div className="flex flex-col w-full px-4">
                 {target.map((time) => (
                   <div
                     key={time.reservation_id}
-                    className="flex justify-around w-full flex-wrap min-h-[50px] my-5"
+                    className="flex gap-4 justify-between w-full min-h-[50px] my-5"
                   >
                     <div className="flex items-center">
-                      <CircleIcons.Line />
+                      <CircleIcons.Line className="shrink-0" />
                       <div className={isReserved(time.mentee_nickname)}>
                         {getTime(time.start_time)}
                       </div>
                     </div>
+                    <ReservedTime
+                      time={time}
+                      key={time.reservation_id}
+                      title={title}
+                      reservation_id={time.reservation_id}
+                    />
                   </div>
-                ))}
-              </div>
-            )}
-            {!!target.length && (
-              <div>
-                {target.map((time) => (
-                  <ReservedTime
-                    time={time}
-                    key={time.reservation_id}
-                    title={title}
-                    reservation_id={time.reservation_id}
-                  />
                 ))}
               </div>
             )}
@@ -121,9 +115,9 @@ type ReservedTimeProps = {
 }
 
 function ReservedTime({ time, title, reservation_id }: ReservedTimeProps) {
-  if (time.mentee_nickname)
+  if (time && time.mentee_nickname)
     return (
-      <div className="flex justify-around w-full flex-wrap min-h-[50px] my-5">
+      <div className="flex-1 flex justify-around w-full flex-wrap min-h-[50px] my-5 items-center gap-2">
         <div className="relative w-[50px] h-[50px] rounded-full mr-3 shrink-0 translate-x-0 translate-y-0">
           <Image
             src={time.mentee_image_url || basic_profile}
@@ -134,15 +128,18 @@ function ReservedTime({ time, title, reservation_id }: ReservedTimeProps) {
           />
         </div>
         <div>
-          <div className="font-bold text-left">{time.mentee_nickname} 님</div>
+          <div>
+            <div className="font-bold text-left">{time.mentee_nickname} 님</div>
+          </div>
           <div>과(와)의 멘토링이 예정되어 있습니다.</div>
         </div>
         <div>
-          <EnterCoffeeChat
+          <EnterCoffeeChatButton
             articleTitle={title}
             roomId={time.room_id}
             startTime={time.start_time}
             reservation_id={reservation_id}
+            className="px-2 py-2 w-max shrink-0 font-semibold text-sm underline bg-transparent sm:bg-primary sm:no-underline sm:text-white"
           />
         </div>
       </div>

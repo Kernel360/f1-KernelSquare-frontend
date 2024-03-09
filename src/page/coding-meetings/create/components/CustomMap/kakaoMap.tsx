@@ -1,3 +1,4 @@
+import { Icons } from "@/components/icons/Icons"
 import {
   CodingMeetingMapData,
   Marker,
@@ -6,30 +7,23 @@ import {
 } from "@/recoil/atoms/coding-meeting/mapData"
 import { debounce } from "lodash-es"
 import React, { useState, useEffect } from "react"
-import {
-  Map,
-  MapMarker,
-  MapMarkerProps,
-  useKakaoLoader,
-} from "react-kakao-maps-sdk"
-import { useRecoilState } from "recoil"
+import { Map, MapMarker, useKakaoLoader } from "react-kakao-maps-sdk"
+import { useRecoilState, useSetRecoilState } from "recoil"
 
 declare const window: typeof globalThis & {
   kakao: any
 }
 
-// window.kakao
-
 export default function KakaoMapPage({ keyword }: { keyword: string }) {
-  useKakaoLoader({
+  const [loading, error] = useKakaoLoader({
     appkey: process.env.NEXT_PUBLIC_KAKAO_MAP!,
     libraries: ["services"],
   })
   const [info, setInfo] = useState<Marker>()
   const [markers, setMarkers] = useRecoilState(SearchMapMarker)
   const [map, setMap] = useState<kakao.maps.Map>()
-  const [mapData, setMapData] = useRecoilState(CodingMeetingMapData)
-  const [selectedPlace, setSelectedPlace] = useRecoilState(SelectedPlace)
+  const setMapData = useSetRecoilState(CodingMeetingMapData)
+  const setSelectedPlace = useSetRecoilState(SelectedPlace)
 
   useEffect(() => {
     if (!map) return
@@ -65,16 +59,27 @@ export default function KakaoMapPage({ keyword }: { keyword: string }) {
 
     handleKeywordSearch()
   }, [map, keyword])
+
+  if (error) throw error
+
+  if (loading) {
+    return (
+      <div className="absolute left-0 top-0 z-[2] w-full h-full flex flex-col justify-center items-center bg-white">
+        <div className="w-8 h-8 flex justify-center items-center rounded-full border border-[#828282]">
+          <Icons.MapMarker className="text-[#828282]" />
+        </div>
+        <div className="mt-5 text-sm text-[#828282]">카카오 맵 로드 중</div>
+      </div>
+    )
+  }
+
   return (
     <Map // 로드뷰를 표시할 Container
       center={{
         lat: 37.566826,
         lng: 126.9786567,
       }}
-      style={{
-        width: "400px",
-        height: "300px",
-      }}
+      className="w-full sm:w-[400px] h-[300px]"
       level={3}
       onCreate={setMap}
     >

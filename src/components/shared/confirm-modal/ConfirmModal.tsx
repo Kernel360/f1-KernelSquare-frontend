@@ -4,7 +4,9 @@ import Button from "../button/Button"
 import useModal from "@/hooks/useModal"
 import { useEffect } from "react"
 import Spacing from "../Spacing"
-import ConfirmModalMessage, { type MessageKey } from "./ConfirmModalMessage"
+import ConfirmModalMessage, {
+  MessageKey,
+} from "@/constants/message/confirmModal"
 
 type BasicFunc = () => void
 type PromiseFunc = () => Promise<void>
