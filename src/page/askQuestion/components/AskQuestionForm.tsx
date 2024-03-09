@@ -216,12 +216,13 @@ function AskQuestionForm({
             question_id: createdQuestionId,
           })
         }
+        // AI 자동 응답 호출
+        if (createdQuestionId) {
+          console.log("id", createdQuestionId)
+          createAIAutoAnswer({ questionId: createdQuestionId })
+        }
 
         toast.success("질문 생성에 성공했습니다", { position: "bottom-center" })
-
-        // AI 자동 응답 호출
-        if (createdQuestionId)
-          createAIAutoAnswer({ questionId: createdQuestionId })
 
         queryClient.invalidateQueries({
           queryKey: ["question", "list"],

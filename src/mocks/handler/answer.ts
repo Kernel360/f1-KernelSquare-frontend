@@ -102,6 +102,7 @@ export const answerHandler = [
           ? targetQuestion.list.length + 1
           : Math.random() * 1000,
         question_id: questionId,
+        member_id: 1,
         content,
         author_level: 1,
         rank_image_url: badge_url[1],
@@ -283,13 +284,13 @@ export const answerHandler = [
   // AI 인턴 호출 (자동 답변)
   http.post<
     { id: string },
-    CreateAIAutoAnswerRequest,
+    Omit<CreateAnswerRequest, "questionId">,
     CreateAIAutoAnswerResponse
   >(
     `${process.env.NEXT_PUBLIC_SERVER}${RouteMap.answer.createAIAutoAnswer()}`,
     async ({ request, params }) => {
-      const questionId = Number(params.id)
       try {
+        const questionId = Number(params.id)
         // 질문 목록에서
         const targetQuestion = mockQuestions.find(
           (question) => question.id === questionId,
@@ -311,6 +312,7 @@ export const answerHandler = [
             ? targetQuestion.list.length + 1
             : Math.random() * 1000,
           question_id: questionId,
+          member_id: 9999,
           content: "AI 인턴의 답변입니다.",
           author_level: 1,
           rank_image_url: badge_url[1],
