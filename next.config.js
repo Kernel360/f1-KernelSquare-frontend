@@ -24,6 +24,10 @@ const nextConfig = {
         protocol: "https",
         hostname: "kernel-square-bucket.s3.ap-northeast-2.amazonaws.com",
       },
+      {
+        protocol: "https",
+        hostname: "avatars.githubusercontent.com",
+      },
     ],
   },
 }
