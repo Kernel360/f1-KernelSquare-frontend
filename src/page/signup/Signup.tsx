@@ -25,8 +25,8 @@ import PasswordInput from "./components/PasswordInput"
 import { sleep } from "@/util/sleep"
 import { useProgressModal } from "@/hooks/useProgressModal"
 import { toast } from "react-toastify"
-import Logo from "@/components/icons/Logo"
 import Link from "next/link"
+import LogoWithRowText from "@/components/icons/LogoWithRowText"
 
 interface SignupHookFormData extends SignupFormData {
   passwordCheck: string
@@ -230,14 +230,11 @@ function Signup() {
   return (
     <div className="flex w-full h-full min-h-[100dvh] justify-center items-center box-border p-4">
       <form className="border p-4 rounded-lg" onSubmit={handleSubmit(onSubmit)}>
-        {/* <h3 className="text-3xl font-bold text-center">회원가입</h3> */}
+        {/* logo - click: move Home */}
         <section className="w-full flex justify-center items-center">
-          <Link href={"/"} className="flex gap-2 items-center">
-            <Logo className="text-[40px]" />
-            <h3 className="text-center text-2xl font-bold text-secondary">
-              <span className="font-bold">KERNEL</span>&nbsp;
-              <span className="font-bold">SQUARE</span>
-            </h3>
+          <Link href={"/"} className="flex justify-center items-center mx-auto">
+            <LogoWithRowText className="w-[232px] h-12" />
+            <h2 className="sr-only">kernel square</h2>
           </Link>
         </section>
         <Spacing size={14} />
