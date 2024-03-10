@@ -10,6 +10,9 @@ import DayBox from "./DayBox"
 import AnswerContentBox from "./AnswerContentBox"
 import { Icons } from "@/components/icons/Icons"
 import React from "react"
+import { SessionPayload } from "@/recoil/atoms/user"
+import { twJoin } from "tailwind-merge"
+import { useRouter } from "next/navigation"
 
 export interface OneAnswerProps {
   answer: Answer
@@ -28,8 +31,8 @@ const OneAnswer: React.FC<OneAnswerProps> = ({ answer, createdby }) => {
       </div>
       <div className="flex flex-wrap justify-end my-5">
         <DayBox answer={answer} />
-        <MemoizedProfileImageBox answer={answer} />
-        <MemoizedUserInfoBox answer={answer} />
+        <MemoizedProfileImageBox answer={answer} user={user} />
+        <MemoizedUserInfoBox answer={answer} user={user} />
       </div>
       <HandleAnswerBox createdby={createdby} answer={answer} />
       <ProgressModalView />
@@ -39,10 +42,30 @@ const OneAnswer: React.FC<OneAnswerProps> = ({ answer, createdby }) => {
 
 export default OneAnswer
 
-const UserInfoBox: React.FC<{ answer: Answer }> = ({ answer }) => {
+const classUponAuthorization = (isUser: boolean, className: string) =>
+  twJoin(className, [isUser && "cursor-pointer"])
+
+type BoxProps = {
+  answer: Answer
+  user: SessionPayload
+}
+
+const UserInfoBox: React.FC<BoxProps> = ({ answer, user }) => {
+  const { push } = useRouter()
+  const handleRouting = (member_id: number) => {
+    if (!user) return
+    push(`/profile/${member_id}`)
+  }
+
   return (
     <div className="ml-[20px] text-center">
-      <div className="px-2 bg-[#F3EDC8] rounded-md mb-1">
+      <div
+        className={classUponAuthorization(
+          !!user,
+          "px-2 bg-[#F3EDC8] rounded-md mb-1",
+        )}
+        onClick={() => handleRouting(answer.member_id)}
+      >
         {answer.created_by}
       </div>
       <div className="text-center flex flex-wrap justify-center">
@@ -62,10 +85,21 @@ const UserInfoBox: React.FC<{ answer: Answer }> = ({ answer }) => {
   )
 }
 
-const ProfileImageBox: React.FC<{ answer: Answer }> = ({ answer }) => {
+const ProfileImageBox: React.FC<BoxProps> = ({ answer, user }) => {
+  const { push } = useRouter()
+  const handleRouting = (member_id: number) => {
+    if (!user) return
+    push(`/profile/${member_id}`)
+  }
   if (answer.member_image_url)
     return (
-      <div className="ml-[20px] w-[50px] h-[50px] relative">
+      <div
+        className={classUponAuthorization(
+          !!user,
+          "ml-[20px] w-[50px] h-[50px] relative",
+        )}
+        onClick={() => handleRouting(answer.member_id)}
+      >
         <Image
           src={answer.member_image_url}
           alt="답변자 프로필 이미지"
@@ -77,7 +111,13 @@ const ProfileImageBox: React.FC<{ answer: Answer }> = ({ answer }) => {
 
   // 사용자 프로필 이미지 없을 경우
   return (
-    <Icons.UserProfile className="ml-[20px] w-[50px] h-[50px] fill-colorsGray shrink-0" />
+    <Icons.UserProfile
+      className={classUponAuthorization(
+        !!user,
+        "ml-[20px] w-[50px] h-[50px] fill-colorsGray shrink-0",
+      )}
+      onClick={() => handleRouting(answer.member_id)}
+    />
   )
 }
 

@@ -24,6 +24,7 @@ import {
 } from "@/recoil/atoms/coding-meeting/mapData"
 import { twJoin } from "tailwind-merge"
 import { LocationSectionProps } from "../CreateCodingMeetingPage.types"
+import MapContainer from "../../detail/kakao-map/MapContainer"
 
 const LocationSection = ({ initialLocation }: LocationSectionProps) => {
   const [location, setLocation] = useRecoilState(LocationForSubmit)
@@ -132,8 +133,8 @@ const LocationDialog = () => {
                 <Icons.Close />
               </div>
             </div>
-            <div className="flex gap-5 -center mb-5">
-              <div className="w-[40%] border-[1px] border-gray-200 max-h-[300px] overflow-scroll">
+            <div className="flex gap-5 flex-col sm:flex-row mb-5">
+              <div className="w-full sm:w-[40%] border-[1px] border-gray-200 min-h-[70px] max-h-[300px] overflow-scroll">
                 {mapData &&
                   mapData.map((place) => (
                     <div
@@ -142,7 +143,7 @@ const LocationDialog = () => {
                       id={place.place_name}
                     >
                       <div
-                        className="font-bold mb-2 cursor-pointer hover:text-primary"
+                        className="font-bold mb-2 cursor-pointer text-left hover:text-primary"
                         onClick={() => {
                           window.open(place.place_url)
                         }}
@@ -182,7 +183,9 @@ const LocationDialog = () => {
                     </div>
                   ))}
               </div>
-              <KakaoMapPage keyword={keyword} />
+              <MapContainer>
+                <KakaoMapPage keyword={keyword} />
+              </MapContainer>
             </div>
           </DialogDescription>
         </DialogHeader>

@@ -6,6 +6,7 @@ import ContentLoading from "@/components/shared/animation/ContentLoading"
 import LightBulb from "@/components/shared/animation/LightBulb"
 import { notificationMessage } from "@/constants/message"
 import useQnADetail from "../../hooks/useQnADetail"
+import { useClientSession } from "@/hooks/useClientSession"
 
 export interface AnswerProps {
   createdby: string
@@ -25,6 +26,7 @@ const AnswerList: React.FC<AnswerProps> = ({
   const { data, isPending } = answerQueries.useGetAnswers({
     questionId,
   })
+  const { user } = useClientSession()
   const { filterMyAnswer, handleIsChecked } = useQnADetail()
   const isAnswer = !!data?.data?.answer_responses.length
 
@@ -35,15 +37,17 @@ const AnswerList: React.FC<AnswerProps> = ({
       <div>
         <div className="flex flex-wrap justify-between">
           <div className="font-bold text-[24px]">Answers</div>
-          <div className="mt-3 flex items-center">
-            <input
-              type="checkbox"
-              id="My Answer"
-              className="mr-3"
-              onChange={handleIsChecked}
-            />
-            <label htmlFor="My Answer">내 답변만 보기</label>
-          </div>
+          {!!user && (
+            <div className="mt-3 flex items-center">
+              <input
+                type="checkbox"
+                id="My Answer"
+                className="mr-3"
+                onChange={handleIsChecked}
+              />
+              <label htmlFor="My Answer">내 답변만 보기</label>
+            </div>
+          )}
         </div>
         <div className="max-w-full box-border border border-colorsGray rounded-lg p-10 my-5">
           {!isAnswer && <NoAnswer isMyAnswer={isMyAnswer} />}

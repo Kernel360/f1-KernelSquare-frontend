@@ -1,4 +1,4 @@
-import Profile from "@/components/shared/Profile"
+import Profile from "@/components/shared/user/Profile"
 import Spacing from "@/components/shared/Spacing"
 import HashTag from "@/components/shared/tag/HashTag"
 import Image from "next/image"

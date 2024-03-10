@@ -16,6 +16,15 @@ import CodeEditor, {
   insertCodeEventName,
 } from "./code/CodeEditor"
 import dayjs from "dayjs"
+import utc from "dayjs/plugin/utc"
+import LoginForm from "@/components/form/LoginForm"
+import { useRouter, useSearchParams } from "next/navigation"
+import { PopupMessage } from "@/page/coffee-chat/chat/ChatRoomHeader"
+import { getAuthCookie } from "@/util/actions/cookie"
+import { toast } from "react-toastify"
+import { useClientSession } from "@/hooks/useClientSession"
+
+dayjs.extend(utc)
 
 interface MessageControlProps {
   roomKey: string
@@ -23,6 +32,15 @@ interface MessageControlProps {
 }
 
 function MessageControl({ roomKey, user }: MessageControlProps) {
+  const { replace } = useRouter()
+
+  const searchParams = useSearchParams()
+  const isPopup = searchParams.get("popup")
+
+  const { clientSessionReset } = useClientSession()
+
+  const { openModal } = useModal()
+
   const stompRef = useRef<CompatClient | null>(null)
 
   const formRef = useRef<HTMLFormElement>(null)
@@ -30,10 +48,77 @@ function MessageControl({ roomKey, user }: MessageControlProps) {
 
   const submitBtnRef = useRef<HTMLButtonElement>(null)
 
-  const onSubmit = (e: React.FormEvent) => {
+  const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
 
     if (!textAreaRef?.current) return
+
+    /*
+      [TODO]
+      - 백엔드와 협의 필요 
+      (논의 결과에 따라 로직 변경될 수 있음 /
+      현재는 보내기시 토큰이 없을 경우, 
+      로그인 모달 나오고 브라우저 세션도 초기화 하여 동기화 함)
+        - 채팅 참여 도중 토큰이 만료되어 사라졌을 때 나가기 전까지는
+          계속 참여할 수 있도록 유지 시킬 것인가?
+        - 메시지 header에 accessToken도 같이 보내서 권한을 체크하도록 해야 되는가?
+      
+      - 메시지에 멤버리스트가 포함되있는 것으로 반영되면,
+        해당 멤버리스트를 활용하여 isRoomMember 적용
+    */
+    const { accessToken } = await getAuthCookie()
+
+    if (!accessToken) {
+      openModal({
+        containsHeader: false,
+        closeableDim: false,
+        content: (
+          <LoginForm
+            onSuccess={(loginUser) => {
+              if (isPopup) {
+                ;(window.opener.postMessage as typeof window.postMessage)(
+                  {
+                    type: "reLogin",
+                    user: loginUser,
+                    isRoomMember: user.nickname === loginUser.nickname,
+                  } as PopupMessage,
+                  process.env.NEXT_PUBLIC_SITE_URL!,
+                )
+
+                if (user.nickname !== loginUser.nickname) {
+                  window.close()
+                }
+
+                return
+              }
+
+              if (user.nickname !== loginUser.nickname) {
+                replace("/chat?page=0")
+
+                setTimeout(() => {
+                  toast.error("입장 가능한 유저가 아닙니다", {
+                    position: "bottom-center",
+                  })
+                }, 0)
+              }
+            }}
+          />
+        ),
+      })
+
+      if (isPopup) {
+        ;(window.opener.postMessage as typeof window.postMessage)(
+          { type: "loginRequired" } as PopupMessage,
+          process.env.NEXT_PUBLIC_SITE_URL!,
+        )
+
+        return
+      }
+
+      clientSessionReset()
+
+      return
+    }
 
     const message = textAreaRef.current.value
     if (!message) return
@@ -46,7 +131,9 @@ function MessageControl({ roomKey, user }: MessageControlProps) {
         room_key: roomKey,
         sender: user.nickname,
         message,
-        send_time: dayjs().format("YYYY-MM-DDTHH:mm:ss"),
+        sender_id: user.member_id,
+        sender_image_url: user.image_url,
+        send_time: dayjs().utc().format(),
       }),
     )
 
@@ -71,7 +158,9 @@ function MessageControl({ roomKey, user }: MessageControlProps) {
           room_key: roomKey,
           sender: user.nickname,
           message,
-          send_time: dayjs().format("YYYY-MM-DDTHH:mm:ss"),
+          sender_id: user.member_id,
+          sender_image_url: user.image_url,
+          send_time: dayjs().utc().format(),
         }),
       )
     }
@@ -97,7 +186,11 @@ function MessageControl({ roomKey, user }: MessageControlProps) {
     <form
       ref={formRef}
       onSubmit={onSubmit}
-      className="w-full fixed left-0 bottom-0 z-[2] bg-white"
+      className={`w-full fixed bottom-0 bg-white ${
+        isPopup
+          ? "z-[2] left-0"
+          : "z-[8] left-0 sm:left-[200px] sm:w-[calc(100%-200px)]"
+      }`}
     >
       <Inner className="flex flex-col gap-1 px-2 py-1 box-border border border-colorsGray bg-white">
         <Toolbar />
