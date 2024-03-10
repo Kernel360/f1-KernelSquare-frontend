@@ -1,6 +1,6 @@
 "use client"
 
-import Profile from "@/components/shared/Profile"
+import Profile from "@/components/shared/user/Profile"
 import Spacing from "@/components/shared/Spacing"
 import ListLoading from "@/components/shared/animation/ListLoading"
 import NoContent from "@/components/shared/animation/NoContent"

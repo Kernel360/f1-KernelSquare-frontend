@@ -186,6 +186,9 @@ const formatDay = (date: string) => dayjs(date).format("YYYY-MM-DD")
 const formatDate = ({ date }: dateProps, time: string) =>
   `${dayjs(date).format("YYYY-MM-DD")}T${time}:00`
 
+const getKorExactTime = (date: string) =>
+  dayjs(date).format("YYYY년 MM월 DD일 HH시 mm분")
+
 export {
   getDate,
   getDay,
@@ -197,6 +200,7 @@ export {
   getKorDayjs,
   formatDay,
   formatDate,
+  getKorExactTime,
 }
 
 export function getCollapsedDate({

@@ -2,15 +2,14 @@
 
 import ListLoading from "@/components/shared/animation/ListLoading"
 import NoContent from "@/components/shared/animation/NoContent"
-import { useClientSession } from "@/hooks/useClientSession"
 import dayjs from "dayjs"
 import Link from "next/link"
-import Profile from "@/components/shared/Profile"
-import Image from "next/image"
 import { getKorRelativeTime } from "@/util/getDate"
 import Spacing from "@/components/shared/Spacing"
 import HashTag from "@/components/shared/tag/HashTag"
 import { useRouter } from "next/navigation"
+import UserInfo, { UserProfileInfo } from "@/components/shared/user/UserInfo"
+import PostTime from "@/components/shared/time/PostTime"
 import type { CoffeeChatReservationListPayload } from "@/interfaces/dto/coffee-chat/get-all-coffeechat-reservation.dto"
 
 interface CoffeeChatListProps {
@@ -28,7 +27,7 @@ function CoffeeChatList({ coffeeChatList }: CoffeeChatListProps) {
     }
 
   return (
-    <ul className="flex flex-col gap-8 lgDevice:grid lgDevice:grid-cols-2">
+    <ul className="flex flex-col gap-4 lgDevice:grid lgDevice:grid-cols-2">
       {coffeeChatList.map(
         ({
           article_id,
@@ -42,51 +41,40 @@ function CoffeeChatList({ coffeeChatList }: CoffeeChatListProps) {
           created_date,
           modified_date,
         }) => {
+          const coffeeChatAuthor: UserProfileInfo = {
+            id: member_id,
+            nickname: nickname,
+            profileImageUrl: member_image_url,
+            level,
+            levelImageUrl: level_image_url,
+          }
+
           return (
             <li
               key={article_id}
-              className={`shadow-sm hover:shadow-md transition-shadow max-w-full box-border border border-colorsGray rounded-lg p-2 cursor-pointer`}
+              className={`hover:shadow-md transition-shadow max-w-full box-border border border-colorsGray rounded-lg p-6 cursor-pointer`}
               onClick={goToCoffeeChatDetail(article_id)}
             >
-              <div className="flex gap-1">
-                <div className="flex flex-col items-center py-1">
-                  <Profile
-                    profileImage={member_image_url}
-                    className="align-top m-0.5 cursor-default"
-                  />
-                  <div className="flex flex-col items-center w-[90px]">
-                    <div className="text-sm">{nickname}</div>
-                    <div className="inline-flex align-top items-center">
-                      <div className="relative w-5 h-5">
-                        <Image
-                          src={level_image_url}
-                          alt={`level badge`}
-                          fill
-                          style={{
-                            objectFit: "scale-down",
-                            objectPosition: "center",
-                          }}
-                        />
-                      </div>
-                      <span className="text-xs">LV.{level}</span>
-                    </div>
-                  </div>
-                </div>
-                <div className="flex flex-col flex-1">
-                  <h3 className="w-fit">
-                    <Link
-                      href={`/chat/${article_id}`}
-                      className="max-w-full line-clamp-2 text-ellipsis text-blue-400"
-                    >
-                      {title}
-                    </Link>
-                  </h3>
-                </div>
-                <div className="w-max self-end">
-                  {getKorRelativeTime({ now, targetDate: created_date })}
-                </div>
+              <div className="flex gap-2 justify-between items-center flex-shrink-0">
+                <UserInfo user={coffeeChatAuthor} />
+                <PostTime
+                  time={getKorRelativeTime({
+                    now,
+                    targetDate: created_date,
+                  })}
+                  className="font-medium"
+                />
               </div>
-              <Spacing size={12} />
+              <Spacing size={16} />
+              <h3 className="w-fit">
+                <Link
+                  href={`/chat/${article_id}`}
+                  className="max-w-full break-all line-clamp-2 text-ellipsis text-blue-400"
+                >
+                  {title}
+                </Link>
+              </h3>
+              <Spacing size={24} />
               <ul className="w-full flex flex-wrap gap-2">
                 {hash_tag_list.map((tag) => (
                   <li

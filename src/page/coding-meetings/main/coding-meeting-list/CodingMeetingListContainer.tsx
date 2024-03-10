@@ -55,7 +55,7 @@ function CodingMeetingListContainer() {
   return (
     <>
       <CodingMeetingList codingMeetings={codingMeetings.list} />
-      <div className="mt-12 tablet:mt-[78px] lg:!mt-8 flex justify-center items-center gap-1">
+      <div className="mt-12 tablet:mt-[78px] lg:!mt-8">
         <Pagination
           disabledClassName="hidden"
           forcePage={Number(page)}

@@ -1,6 +1,6 @@
 "use client"
 
-import Profile from "@/components/shared/Profile"
+import Profile from "@/components/shared/user/Profile"
 import {
   MessagePayload,
   RoomAtomFamily,
@@ -18,9 +18,8 @@ import Button from "@/components/shared/button/Button"
 import { IoIosArrowDown } from "react-icons/io"
 import { IoClose } from "react-icons/io5"
 import { debounce, throttle } from "lodash-es"
-import { useRouter, useSearchParams } from "next/navigation"
-import { PopupMessage } from "@/page/coffee-chat/chat/ChatRoomHeader"
-import dayjs from "dayjs"
+import { getKorDayjs } from "@/util/getDate"
+import { useSearchParams } from "next/navigation"
 import type { SessionPayload } from "@/recoil/atoms/user"
 
 interface MessagesProps {
@@ -29,9 +28,10 @@ interface MessagesProps {
 }
 
 function Messages({ roomKey, user }: MessagesProps) {
-  const { messages } = useRecoilValue(RoomAtomFamily({ roomKey }))
+  const searchParams = useSearchParams()
+  const isPopup = searchParams.get("popup")
 
-  console.log({ messages })
+  const { messages } = useRecoilValue(RoomAtomFamily({ roomKey }))
 
   useEffect(() => {
     const scrollingElement = document.scrollingElement
@@ -44,7 +44,11 @@ function Messages({ roomKey, user }: MessagesProps) {
   }, [messages])
 
   return (
-    <div className="w-full flex flex-col gap-3 mb-[calc(52px+33px+16px)]">
+    <div
+      className={`w-full flex flex-col gap-3 mb-[calc(52px+33px+16px)] box-border px-2 ${
+        isPopup ? "mt-9" : "mt-[90px]"
+      }`}
+    >
       {messages.map((messagePayload, index) => {
         if (messagePayload.type === "ENTER")
           return (
@@ -63,6 +67,8 @@ function Messages({ roomKey, user }: MessagesProps) {
           )
         }
 
+        if (messagePayload.type === "EXPIRE") return null
+
         return <Messages.Message key={index} user={user} {...messagePayload} />
       })}
       <Messages.ScrollBottomButton />
@@ -76,14 +82,11 @@ Messages.Message = function Message({
   type,
   message,
   sender,
+  sender_id,
+  sender_image_url,
   user,
   send_time,
 }: MessagePayload & { user: MessagesProps["user"] }) {
-  const { replace } = useRouter()
-
-  const searchParams = useSearchParams()
-  const isPopup = searchParams.get("popup")
-
   const me = user.nickname === sender
 
   const containerClassNames = twMerge([
@@ -119,25 +122,6 @@ Messages.Message = function Message({
   }
 
   const MessageContent = () => {
-    if (type === "EXPIRE") {
-      if (isPopup) {
-        ;(window.opener.postMessage as typeof window.postMessage)({
-          type: "finished",
-          user,
-        } as PopupMessage)
-
-        window.close()
-
-        return null
-      }
-
-      setTimeout(() => {
-        replace("/chat")
-      }, 0)
-
-      return null
-    }
-
     if (type === "CODE" && matchedCode) {
       return (
         <div className={codeMessageClassNames}>
@@ -157,7 +141,7 @@ Messages.Message = function Message({
       <div className={messageWrapperClassNames}>
         <Profile
           className={profileClassNames}
-          profileImage={me ? user.image_url : null}
+          profileImage={me ? user.image_url : sender_image_url ?? null}
         />
         <div className={`flex flex-col`}>
           <div
@@ -181,12 +165,13 @@ Messages.Message = function Message({
   )
 }
 
-// [TODO]서버 DB에 시간이 원하는 포멧의 시간으로 저장될 수 있도록 협의하여 수정할 예정
+// [TODO] 서버에서 유효한 ISO 포멧으로 오지 않을 경우, 수정될 수 있음
+// (지금은 서버에서 유효한 ISO 포멧으로 와서, 정상적으로 변환 될 것이라고 가정하고 구현)
 Messages.Time = function MessageTime({ formatTime }: { formatTime: string }) {
   return (
     <div className="flex shrink-0 self-end">
       <span className="text-secondary text-[10px] font-bold">
-        {dayjs(formatTime.replace("Z", "")).format("Ahh:mm")}
+        {getKorDayjs(formatTime).format("Ahh:mm")}
       </span>
     </div>
   )

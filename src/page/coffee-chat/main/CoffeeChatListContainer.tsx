@@ -1,6 +1,5 @@
 "use client"
 
-import { createPortal } from "react-dom"
 import { ApiStatus } from "@/constants/response/api"
 import { getCoffeeChatReservationList } from "@/service/coffee-chat"
 import { keepPreviousData, useQuery } from "@tanstack/react-query"
@@ -10,9 +9,8 @@ import CoffeeChatList from "./CoffeeChatList"
 import Pagination from "@/components/shared/pagination/Pagination"
 import { keyframes } from "@emotion/react"
 import styled from "@emotion/styled"
-import CoffeeChatPageLoading from "@/app/chat/_components/Loading"
+import ListPage from "@/components/shared/page-template/ListPage"
 import type { APIResponse } from "@/interfaces/dto/api-response"
-import { useMemo } from "react"
 
 function CoffeeChatListContainer() {
   const searchParams = useSearchParams()
@@ -34,10 +32,8 @@ function CoffeeChatListContainer() {
     },
   })
 
-  const portalContainer = document.getElementById("chat-pagination")
-
   if (isPending) {
-    return <CoffeeChatPageLoading page="main" />
+    return <ListPage.Loading section="coffeeChat" />
   }
 
   const Content = () => {
@@ -62,8 +58,10 @@ function CoffeeChatListContainer() {
       return <CoffeeChatList.NotHasCoffeeChatList type={"noContent"} />
     }
 
-    const Portal = portalContainer
-      ? createPortal(
+    return (
+      <div className="mt-6">
+        <CoffeeChatList coffeeChatList={coffeeChatList.list} />
+        <div className="mt-4 tablet:mt-[108px] lg:mt-[67px]">
           <Pagination
             disabledClassName="hidden"
             forcePage={Number(page)}
@@ -98,15 +96,8 @@ function CoffeeChatListContainer() {
                 return
               }
             }}
-          />,
-          portalContainer,
-        )
-      : null
-
-    return (
-      <div className="mt-1 py-4 w-[calc(100%-14px)] sm:w-[calc(100%-24px)] lg:w-[calc(100%-44px)] mx-auto">
-        <CoffeeChatList coffeeChatList={coffeeChatList.list} />
-        {Portal}
+          />
+        </div>
       </div>
     )
   }

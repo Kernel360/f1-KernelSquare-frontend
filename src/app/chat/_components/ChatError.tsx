@@ -2,7 +2,12 @@
 
 import { useClientSession } from "@/hooks/useClientSession"
 import { PopupMessage } from "@/page/coffee-chat/chat/ChatRoomHeader"
-import { useSearchParams } from "next/navigation"
+import {
+  addPopupStorageItem,
+  hasPopup,
+  removePopupStorageItem,
+} from "@/util/chat/popup"
+import { useParams, useSearchParams } from "next/navigation"
 import { useEffect } from "react"
 
 type ErrorType =
@@ -19,6 +24,12 @@ interface ChatErrorProps {
 }
 
 function ChatError({ errorType, errorMessage }: ChatErrorProps) {
+  const params = useParams()
+  const reservationId = Number(params.id)
+
+  const searchParams = useSearchParams()
+  const isPopup = searchParams.get("popup")
+
   const ChatErrorComponent = () => {
     switch (errorType) {
       case "LoginRequired":
@@ -37,11 +48,24 @@ function ChatError({ errorType, errorMessage }: ChatErrorProps) {
   }
 
   useEffect(() => {
+    if (!hasPopup({ reservationId })) {
+      addPopupStorageItem({ reservationId })
+
+      window.dispatchEvent(new StorageEvent("storage"))
+    }
+
     const handleBeforeUnload = (e: BeforeUnloadEvent) => {
-      ;(window.opener.postMessage as typeof window.postMessage)(
-        { type: "leave" } as PopupMessage,
-        process.env.NEXT_PUBLIC_SITE_URL!,
-      )
+      if (isPopup) {
+        ;(window.opener.postMessage as typeof window.postMessage)(
+          { type: "popupClose", reservationId } as PopupMessage,
+          process.env.NEXT_PUBLIC_SITE_URL!,
+        )
+
+        return
+      }
+
+      removePopupStorageItem({ reservationId })
+      window.dispatchEvent(new StorageEvent("storage"))
     }
 
     window.addEventListener("beforeunload", handleBeforeUnload)
@@ -49,15 +73,15 @@ function ChatError({ errorType, errorMessage }: ChatErrorProps) {
     return () => {
       window.removeEventListener("beforeunload", handleBeforeUnload)
     }
-  }, [])
+  }, []) /* eslint-disable-line */
 
   return (
-    <div className="flex flex-col w-full justify-center items-center">
+    <div className="flex flex-col w-fit h-[100dvh] justify-center items-center mx-auto">
       <ChatErrorComponent />
-      <div>
+      <section>
         <h4 className="w-full bg-slate-500 text-white">에러메시지</h4>
         <span>{errorMessage ?? "unknown"}</span>
-      </div>
+      </section>
     </div>
   )
 }

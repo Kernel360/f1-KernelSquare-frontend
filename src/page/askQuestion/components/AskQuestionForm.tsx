@@ -43,6 +43,7 @@ import { useResetRecoilState } from "recoil"
 import { searchTagAtom } from "@/recoil/atoms/tag"
 import Limitation from "@/constants/limitation"
 import { errorMessage } from "@/constants/message"
+import { answerQueries } from "@/react-query/answers"
 
 export interface QuestionEditorInitialValues {
   title: string
@@ -189,6 +190,7 @@ function AskQuestionForm({
 
   const queryClient = useQueryClient()
   const { replace } = useRouter()
+  const { createAIAutoAnswer } = answerQueries.useCreateAIAutoAnswer()
 
   const { deleteImage } = useDeleteImage()
 
@@ -213,6 +215,11 @@ function AskQuestionForm({
             skills: editorState.skills,
             question_id: createdQuestionId,
           })
+        }
+        // AI 자동 응답 호출
+        if (createdQuestionId) {
+          console.log("id", createdQuestionId)
+          createAIAutoAnswer({ questionId: createdQuestionId })
         }
 
         toast.success("질문 생성에 성공했습니다", { position: "bottom-center" })

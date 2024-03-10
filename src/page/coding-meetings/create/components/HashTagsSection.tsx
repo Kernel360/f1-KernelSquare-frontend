@@ -69,11 +69,14 @@ const HashTagsSection = ({ initialHashTags }: HashTagsSectionProps) => {
 
   return (
     <CodingMeetingSection>
-      <CodingMeetingSection.Label className="block w-max">
-        해시태그 ({hashtags.length}/{Limitation.hashtags_cnt})
+      <CodingMeetingSection.Label className="flex flex-row sm:flex-col">
+        <div>해시태그</div>
+        <div>
+          ({hashtags.length}/{Limitation.hashtags_cnt})
+        </div>
       </CodingMeetingSection.Label>
       <div>
-        <div className="flex">
+        <div className="flex flex-col sm:flex-row">
           <Input
             id="hashtags"
             spellCheck="false"
@@ -82,10 +85,10 @@ const HashTagsSection = ({ initialHashTags }: HashTagsSectionProps) => {
             placeholder="해시태그를 추가해보세요"
             ref={hashtagRef}
           />
-          <div className="flex flex-col justify-center ml-3">
+          <div className="flex flex-col justify-center sm:ml-3">
             <Button
               buttonTheme="primary"
-              className="px-5 py-2"
+              className="px-5 py-2 shrink-0 w-full mt-5 sm:mt-0"
               onClick={handleAddHashTags}
             >
               추가
