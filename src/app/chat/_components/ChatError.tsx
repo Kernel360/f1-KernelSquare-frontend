@@ -65,6 +65,7 @@ function ChatError({ errorType, errorMessage }: ChatErrorProps) {
       }
 
       removePopupStorageItem({ reservationId })
+      window.dispatchEvent(new StorageEvent("storage"))
     }
 
     window.addEventListener("beforeunload", handleBeforeUnload)

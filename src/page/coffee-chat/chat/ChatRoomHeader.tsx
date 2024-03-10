@@ -94,6 +94,7 @@ function ChatRoomHeader({
       }
 
       removePopupStorageItem({ reservationId })
+      window.dispatchEvent(new StorageEvent("storage"))
     }
 
     window.addEventListener(

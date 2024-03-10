@@ -3,22 +3,17 @@
 import { useLayoutEffect, useRef, useState } from "react"
 import { revalidatePage } from "@/util/actions/revalidatePage"
 import { Button } from "@/components/ui/button"
-import { enterChatRoom } from "@/service/coffee-chat"
 import {
   PopupStorage,
   addPopupStorageItem,
   getPopupStorage,
 } from "@/util/chat/popup"
-import { useQuery } from "@tanstack/react-query"
 import { AxiosError } from "axios"
 import { APIResponse } from "@/interfaces/dto/api-response"
 import { useClientSession } from "@/hooks/useClientSession"
 import { toast } from "react-toastify"
 import { twMerge } from "tailwind-merge"
-import { getKorDayjs } from "@/util/getDate"
-import dayjs from "dayjs"
-import isBetween from "dayjs/plugin/isBetween"
-dayjs.extend(isBetween)
+import { useChatRoomActive } from "@/hooks/chat/useChatRoomActive"
 
 export type EnterCoffeeChatProps = {
   articleTitle: string
@@ -38,20 +33,15 @@ function EnterCoffeeChatButton({
   const { user } = useClientSession()
 
   const {
-    data: enterCoffeeChatActivePayload,
-    status,
-    error: enterCoffeeChatError,
-  } = useQuery({
-    queryKey: ["room", "active", reservation_id],
-    queryFn: () =>
-      enterChatRoom({ article_title: articleTitle, reservation_id }),
-    select(response) {
-      return response.data.data?.active ?? false
-    },
+    isChatRoomActive,
+    status: { isLoading, isError },
+    chatRoomActiveError,
+    isValidTimeRange,
+  } = useChatRoomActive({
+    articleTitle,
+    reservationId: reservation_id,
+    startTime: startTime ?? "",
   })
-
-  const isRoomActive =
-    status === "error" ? false : !!enterCoffeeChatActivePayload
 
   const buttonRef = useRef<HTMLButtonElement>(null)
 
@@ -70,14 +60,13 @@ function EnterCoffeeChatButton({
     ])
   }
 
-  const buttonText =
-    status === "pending"
-      ? ""
-      : hasPopup
-      ? `커피 챗 팝업 이용 중`
-      : `커피 챗 입장하기`
+  const buttonText = isLoading
+    ? ""
+    : hasPopup
+    ? `커피 챗 이용 중`
+    : `커피 챗 입장하기`
 
-  const disabled = !isValidTime(startTime) || hasPopup || roomId === null
+  const disabled = !isValidTimeRange || hasPopup || roomId === null
 
   const openChatRoomPopup = () => {
     if (roomId === null) return
@@ -106,14 +95,14 @@ function EnterCoffeeChatButton({
         toastId,
       })
 
-      revalidatePage("/chat/[id]", "page")
+      revalidatePage("*")
 
       return
     }
 
-    if (!isRoomActive && status === "error") {
+    if (!isChatRoomActive && isError) {
       const message =
-        (enterCoffeeChatError as AxiosError<APIResponse>)?.response?.data.msg ??
+        (chatRoomActiveError as AxiosError<APIResponse>)?.response?.data.msg ??
         "입장 가능한 상태가 아닙니다."
 
       toast.error(message, {
@@ -125,7 +114,7 @@ function EnterCoffeeChatButton({
     }
 
     if (hasPopup) {
-      toast.error("현재 커피챗 팝업이 활성화 되있습니다", {
+      toast.error("현재 해당 커피챗이 활성화 되있습니다", {
         position: "bottom-center",
         toastId,
       })
@@ -133,7 +122,7 @@ function EnterCoffeeChatButton({
       return
     }
 
-    if (!isValidTime(startTime)) {
+    if (!isValidTimeRange) {
       toast.error("입장 가능한 시간이 아닙니다", {
         position: "bottom-center",
         toastId,
@@ -165,30 +154,20 @@ function EnterCoffeeChatButton({
 
       window.removeEventListener("storage", handleStorage)
     }
-  }, [status, hasPopup]) /* eslint-disable-line */
+    /* eslint-disable-next-line */
+  }, [isChatRoomActive, isError, isValidTimeRange, hasPopup])
 
   return (
-    <Button
-      ref={buttonRef}
-      disabled={!isRoomActive || disabled}
-      className={buttonClassNames(status === "pending")}
-    >
-      {buttonText}
-    </Button>
+    <>
+      <Button
+        ref={buttonRef}
+        disabled={!isChatRoomActive || disabled}
+        className={buttonClassNames(isLoading)}
+      >
+        {buttonText}
+      </Button>
+    </>
   )
 }
 
 export default EnterCoffeeChatButton
-
-function isValidTime(startTime: string | null) {
-  if (!startTime) return false
-
-  const now = getKorDayjs(dayjs())
-
-  const startKorTime = getKorDayjs(startTime)
-  const endKorTime = startKorTime.clone().add(30, "minutes")
-
-  const isBetween = now.isBetween(startKorTime, endKorTime, "minutes", "[)")
-
-  return isBetween
-}

@@ -14,6 +14,7 @@ import { CompatClient } from "@stomp/stompjs"
 import dayjs from "dayjs"
 import utc from "dayjs/plugin/utc"
 import { revalidatePage } from "@/util/actions/revalidatePage"
+import { removePopupStorageItem } from "@/util/chat/popup"
 
 dayjs.extend(utc)
 
@@ -105,6 +106,9 @@ function SocketConnection({
                   return
                 }
 
+                removePopupStorageItem({ reservationId })
+                window.dispatchEvent(new StorageEvent("storage"))
+
                 router?.replace("/chat?page=0")
 
                 return
@@ -167,6 +171,9 @@ function SocketConnection({
 
           return
         }
+
+        removePopupStorageItem({ reservationId })
+        window.dispatchEvent(new StorageEvent("storage"))
 
         return
       }
