@@ -8,9 +8,6 @@ import { useEffect } from "react"
 import { toast } from "react-toastify"
 import { useSetRecoilState } from "recoil"
 
-export const popupOpenEventName = "kernel-popup-open"
-export const popupCloseEventName = "kernel-popup-close"
-
 function PopupEventListener() {
   const { clientSessionReset } = useClientSession()
 
