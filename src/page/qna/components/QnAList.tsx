@@ -43,7 +43,7 @@ function QnAList({ questions }: QnAListProps) {
     }
 
   return (
-    <div className="py-4 w-[calc(100%-12px)] sm:w-[calc(100%-22px)] lg:w-[calc(100%-42px)] mx-auto">
+    <div className="w-full">
       <ul className="flex flex-col gap-4">
         {questions.list.map(
           ({
@@ -60,7 +60,7 @@ function QnAList({ questions }: QnAListProps) {
             return (
               <li
                 key={id}
-                className={`shadow-sm hover:shadow-md transition-shadow max-w-full box-border border border-colorsGray rounded-lg p-2 cursor-pointer`}
+                className={`hover:shadow-md transition-shadow max-w-full box-border border border-colorsGray rounded-lg p-2 cursor-pointer`}
                 onClick={goToQnaDetail(id)}
               >
                 <h3 className="w-fit">
