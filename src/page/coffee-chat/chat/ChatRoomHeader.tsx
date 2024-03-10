@@ -69,7 +69,7 @@ function ChatRoomHeader({
   }
 
   useLayoutEffect(() => {
-    if (!hasPopup({ reservationId }) && isPopup) {
+    if (!hasPopup({ reservationId })) {
       addPopupStorageItem({ reservationId })
 
       window.dispatchEvent(new StorageEvent("storage"))

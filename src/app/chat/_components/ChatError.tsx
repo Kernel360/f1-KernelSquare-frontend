@@ -48,7 +48,7 @@ function ChatError({ errorType, errorMessage }: ChatErrorProps) {
   }
 
   useEffect(() => {
-    if (!hasPopup({ reservationId }) && isPopup) {
+    if (!hasPopup({ reservationId })) {
       addPopupStorageItem({ reservationId })
 
       window.dispatchEvent(new StorageEvent("storage"))
