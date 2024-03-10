@@ -60,7 +60,7 @@ function QnAList({ questions }: QnAListProps) {
             level,
           }) => {
             const qnaAuthor: UserProfileInfo = {
-              id,
+              id: member_id,
               nickname,
               level,
               levelImageUrl: level_image_url,
