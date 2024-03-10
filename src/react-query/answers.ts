@@ -103,7 +103,7 @@ const useDeleteAnswer = () => {
 const useCreateAIAutoAnswer = () => {
   const {
     mutate: createAIAutoAnswerMutate,
-    isPending: isCreateAIAutoAnswer,
+    isPending: isCreateAIAutoAnswerProceeding,
     isError: isCreateAIAutoAnswerError,
     isSuccess: isCreateAIAutoAnswerSuccess,
   } = useMutation({
@@ -115,7 +115,7 @@ const useCreateAIAutoAnswer = () => {
   return {
     createAIAutoAnswer: createAIAutoAnswerMutate,
     createAIAutoAnswerStatus: {
-      isCreateAIAutoAnswer,
+      isCreateAIAutoAnswerProceeding,
       isCreateAIAutoAnswerError,
       isCreateAIAutoAnswerSuccess,
     },

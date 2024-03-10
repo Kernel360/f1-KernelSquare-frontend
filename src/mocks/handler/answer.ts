@@ -303,7 +303,8 @@ export const answerHandler = [
               msg: "해당 질문이 존재하지 않습니다.",
             },
             {
-              status: HttpStatusCode.InternalServerError,
+              status:
+                AnswerApiStatus.createAIAutoResponse.invalidQuestion.HttpStatus,
             },
           )
 
@@ -312,12 +313,11 @@ export const answerHandler = [
             ? targetQuestion.list.length + 1
             : Math.random() * 1000,
           question_id: questionId,
-          member_id: 9999,
+          member_id: mockUsers[mockUsers.length - 1].id,
           content: "AI 인턴의 답변입니다.",
-          author_level: 1,
-          rank_image_url: badge_url[1],
-          member_image_url:
-            "https://mobirise.com/bootstrap-template//profile-template/assets/images/timothy-paul-smith-256424-1200x800.jpg",
+          author_level: mockUsers[mockUsers.length - 1].level,
+          rank_image_url: badge_url[mockUsers[mockUsers.length - 1].level],
+          member_image_url: mockUsers[mockUsers.length - 1].image_url,
           created_by: mockUsers[mockUsers.length - 1].nickname,
           answer_image_url: mockUsers[mockUsers.length - 1].image_url ?? "",
           created_date: getNow(),
@@ -334,7 +334,7 @@ export const answerHandler = [
             msg: "커널스퀘어 AI 인턴 답변 성공",
           },
           {
-            status: HttpStatusCode.Ok,
+            status: AnswerApiStatus.createAIAutoResponse.Ok.HttpStatus,
           },
         )
       } catch (err) {
@@ -344,7 +344,9 @@ export const answerHandler = [
             msg: "커널스퀘어 AI 인턴 답변 실패",
           },
           {
-            status: HttpStatusCode.InternalServerError,
+            status:
+              AnswerApiStatus.createAIAutoResponse.InternalServerError
+                .HttpStatus,
           },
         )
       }
