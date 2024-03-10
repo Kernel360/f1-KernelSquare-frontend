@@ -1,5 +1,4 @@
 import { CodingMeetingDetailPayload } from "@/interfaces/dto/coding-meeting/get-coding-meeting-detail.dto"
-import UserInfo from "./UserInfo"
 import { CodingMeetingAuthor } from "@/interfaces/coding-meetings"
 import DetailMenu from "./DetailMenu"
 import Spacing from "@/components/shared/Spacing"
@@ -11,6 +10,7 @@ import dynamic from "next/dynamic"
 import MapContainer from "./kakao-map/MapContainer"
 import { Icons } from "@/components/icons/Icons"
 import CodingMeetingClose from "./modal/CodingMeetingClose"
+import UserInfo, { UserProfileInfo } from "@/components/shared/user/UserInfo"
 
 interface CodingMeetingsDetailPageProps {
   detail: CodingMeetingDetailPayload
@@ -50,12 +50,20 @@ const DetailCodingMeetingTime = dynamic(
 const CodingMeetingsDetailPage = ({
   detail,
 }: CodingMeetingsDetailPageProps) => {
-  const author: CodingMeetingAuthor = {
+  const codingMeetingAuthor:CodingMeetingAuthor = {
     member_id: detail.member_id,
     member_nickname: detail.member_nickname,
     member_profile_url: detail.member_profile_url,
-    member_level_image_url: detail.member_level_image_url,
     member_level: detail.member_level,
+    member_level_image_url: detail.member_level_image_url
+  }
+
+  const codingMeetingAuthorProfileInfo:UserProfileInfo = {
+    id: codingMeetingAuthor.member_id,
+    nickname: codingMeetingAuthor.member_nickname,
+    profileImageUrl: codingMeetingAuthor.member_profile_url,
+    level: codingMeetingAuthor.member_level,
+    levelImageUrl: codingMeetingAuthor.member_level_image_url
   }
 
   return (
@@ -65,14 +73,14 @@ const CodingMeetingsDetailPage = ({
           <h3 className="font-semibold text-xl lg:text-2xl">
             {detail.coding_meeting_title}
           </h3>
-          <DetailMenu token={detail.coding_meeting_token} author={author} />
+          <DetailMenu token={detail.coding_meeting_token} author={codingMeetingAuthor} />
         </section>
         <section className="w-full flex justify-between items-center mt-6 mb-4">
-          <UserInfo user={author} />
+          <UserInfo user={codingMeetingAuthorProfileInfo} />
           <CodingMeetingClose
             meetingToken={detail.coding_meeting_token}
             closed={detail.coding_meeting_closed}
-            author={author}
+            author={codingMeetingAuthor}
           />
         </section>
         <hr className="bg-[#E8E8E8] mb-6" />
@@ -128,7 +136,7 @@ const CodingMeetingsDetailPage = ({
           ) : null}
         </div>
       </div>
-      <DetailComments author={author} token={detail.coding_meeting_token} />
+      <DetailComments author={codingMeetingAuthor} token={detail.coding_meeting_token} />
     </>
   )
 }

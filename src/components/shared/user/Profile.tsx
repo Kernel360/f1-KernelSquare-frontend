@@ -1,7 +1,7 @@
 import { twMerge } from "tailwind-merge"
-import { Icons } from "../icons/Icons"
+import { Icons } from "../../icons/Icons"
 import Image from "next/image"
-import Button from "./button/Button"
+import Button from "../button/Button"
 import Skeleton from "react-loading-skeleton"
 import { ButtonHTMLAttributes, useState } from "react"
 import { ErrorBoundary } from "react-error-boundary"
@@ -15,9 +15,12 @@ function Profile({ profileImage, className, ...props }: ProfileProps) {
   const [imageLoaded, setImageLoaded] = useState(false)
 
   const classNames = {
-    noProfile: twMerge("w-8 h-8 p-0", className),
+    noProfile: twMerge(
+      "w-8 h-8 p-0 cursor-default hover:cursor-default",
+      className,
+    ),
     withProfile: twMerge(
-      "relative w-8 h-8 rounded-full overflow-hidden p-0",
+      "relative w-8 h-8 rounded-full overflow-hidden p-0 cursor-default hover:cursor-default",
       className,
     ),
   }
