@@ -1,5 +1,11 @@
 import { HttpStatusCode } from "axios"
-import { ApiStatus } from "./api"
+import { ApiStatus, Status } from "./api"
+
+type AiAutoAnswerExpandStatusType = {
+  unableToAnswer?: Status
+  invalidQuestion?: Status
+  resignation?: Status
+}
 
 export const AnswerApiStatus = {
   /**
@@ -207,6 +213,70 @@ export const AnswerApiStatus = {
     },
   },
   /**
+   * AI 인턴 호출 (자동 답변) 관련 api status
+   */
+  createAIAutoResponse: {
+    /**
+     * AI 인턴 호출 성공
+     */
+    Ok: {
+      Code: 2244,
+      HttpStatus: HttpStatusCode.Ok,
+    },
+    /**
+     * (AI 인턴 호출) 권한이 없는 회원
+     * - 커스텀 코드가 없어서 현재는 code를 -1로 설정함
+     */
+    Forbidden: {
+      Code: -1,
+      HttpStatus: HttpStatusCode.Forbidden,
+    },
+    /**
+     * (AI 인턴 호출) 인증되지 않은 회원
+     * - 커스텀 코드가 없어서 현재는 code를 -1로 설정함
+     */
+    Unauthorized: {
+      Code: -1,
+      HttpStatus: HttpStatusCode.Unauthorized,
+    },
+    /**
+     * (AI 인턴 호출) 이미 답변한 질문
+     */
+    Conflict: {
+      Code: 9200,
+      HttpStatus: HttpStatusCode.Conflict,
+    },
+    /**
+     * (AI 인턴 호출) AI 인턴이 답변할 수 없는 상태
+     */
+    unableToAnswer: {
+      Code: 9201,
+      HttpStatus: HttpStatusCode.NotFound,
+    },
+    /**
+     * (AI 인턴 호출) 존재하지 않는 질문
+     */
+    invalidQuestion: {
+      Code: 9202,
+      HttpStatus: HttpStatusCode.NotFound,
+    },
+    /**
+     * (AI 인턴 호출) AI 인턴 퇴사
+     */
+    resignation: {
+      Code: 9203,
+      HttpStatus: HttpStatusCode.NotFound,
+    },
+    /**
+     * (AI 인턴 호출) 서버 에러
+     * - 커스텀 코드가 없어서 현재는 code를 -1로 설정함
+     */
+    InternalServerError: {
+      Code: -1,
+      HttpStatus: HttpStatusCode.InternalServerError,
+    },
+  },
+  /**
    * 답변 투표 생성 관련 api status
    */
   createAnswerVote: {
@@ -317,4 +387,4 @@ export const AnswerApiStatus = {
       HttpStatus: HttpStatusCode.InternalServerError,
     },
   },
-} satisfies Record<string, ApiStatus>
+} satisfies Record<string, ApiStatus & AiAutoAnswerExpandStatusType>
