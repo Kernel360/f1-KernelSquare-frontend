@@ -7,13 +7,19 @@ import Button from "@/components/shared/button/Button"
 import { deleteCoffeeChatPost } from "@/service/coffee-chat"
 import useModal from "@/hooks/useModal"
 import SuccessModalContent from "@/page/qna-detail/components/SuccessModalContent"
-import { notificationMessage, successMessage } from "@/constants/message"
+import {
+  errorMessage,
+  notificationMessage,
+  successMessage,
+} from "@/constants/message"
 import { useQueryClient } from "@tanstack/react-query"
 import queryKey from "@/constants/queryKey"
 import { useRouter } from "next/navigation"
 import { toast } from "react-toastify"
 import ConfirmModal from "@/components/shared/confirm-modal/ConfirmModal"
 import { useClientSession } from "@/hooks/useClientSession"
+import { AxiosError } from "axios"
+import type { APIResponse } from "@/interfaces/dto/api-response"
 
 interface CoffeeChatDetailHeaderProps
   extends Pick<
@@ -66,7 +72,22 @@ function CoffeeChatDetailHeader({
         })
         router.replace("/chat")
       } catch (err) {
-        console.error(err)
+        if (err instanceof AxiosError) {
+          const { response } = err as AxiosError<APIResponse>
+
+          toast.error(response?.data.msg ?? errorMessage.failToReserve, {
+            toastId: "failToCancleReservation",
+            position: "top-center",
+            autoClose: 1000,
+          })
+          return
+        }
+
+        toast.error(errorMessage.failToCancleReservation, {
+          toastId: "failToCancleReservation",
+          position: "top-center",
+          autoClose: 1000,
+        })
       }
     }
     const onCancel = () => {
