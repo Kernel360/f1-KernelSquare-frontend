@@ -49,7 +49,7 @@ function EnterCoffeeChatButton({
     getPopupStorage(),
   )
 
-  const hasPopup = popupStorage.includes(reservation_id)
+  const hasPopup = popupStorage?.includes(reservation_id) ?? false
 
   const buttonClassNames = (isPending: boolean) => {
     if (isPending) return "skeleton w-[120px] h-10 rounded-lg"
