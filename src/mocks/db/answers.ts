@@ -5,7 +5,7 @@ const mockAnswers: Answer[] = [
   {
     answer_id: 1,
     question_id: 1,
-    member_id: 0,
+    answer_member_id: 0,
     content:
       "Integer pede justo, lacinia eget, tincidunt eget, tempus vel, pede. Morbi porttitor lorem id ligula. Suspendisse ornare consequat lectus.",
     author_level: 1,
@@ -21,7 +21,7 @@ const mockAnswers: Answer[] = [
   {
     answer_id: 2,
     question_id: 1,
-    member_id: 1,
+    answer_member_id: 1,
     content: "[네이버](www.naver.com)",
     author_level: 2,
     rank_image_url: null,
@@ -38,7 +38,7 @@ const mockAnswers: Answer[] = [
   {
     answer_id: 3,
     question_id: 1,
-    member_id: 4,
+    answer_member_id: 4,
     content:
       "Integer pede justo, lacinia eget, tincidunt eget, tempus vel, pede. Morbi porttitor lorem id ligula. Suspendisse ornare consequat lectus.",
     author_level: 3,
@@ -56,7 +56,7 @@ const mockAnswers: Answer[] = [
   {
     answer_id: 4,
     question_id: 1,
-    member_id: 3,
+    answer_member_id: 3,
     content:
       "Integer pede justo, lacinia eget, tincidunt eget, tempus vel, pede. Morbi porttitor lorem id ligula. Suspendisse ornare consequat lectus.",
     author_level: 4,
@@ -74,7 +74,7 @@ const mockAnswers: Answer[] = [
   {
     answer_id: 5,
     question_id: 1,
-    member_id: 5,
+    answer_member_id: 5,
     content:
       "Integer pede justo, lacinia eget, tincidunt eget, tempus vel, pede. Morbi porttitor lorem id ligula. Suspendisse ornare consequat lectus.",
     author_level: 5,
@@ -92,7 +92,7 @@ const mockAnswers: Answer[] = [
   {
     answer_id: 6,
     question_id: 1,
-    member_id: 1,
+    answer_member_id: 1,
     content:
       "Integer pede justo, lacinia eget, tincidunt eget, tempus vel, pede. Morbi porttitor lorem id ligula. Suspendisse ornare consequat lectus.",
     author_level: 6,
@@ -110,7 +110,7 @@ const mockAnswers: Answer[] = [
   {
     answer_id: 7,
     question_id: 1,
-    member_id: 2,
+    answer_member_id: 2,
     content:
       "Integer pede justo, lacinia eget, tincidunt eget, tempus vel, pede. Morbi porttitor lorem id ligula. Suspendisse ornare consequat lectus.",
     author_level: 7,
@@ -128,7 +128,7 @@ const mockAnswers: Answer[] = [
   {
     answer_id: 8,
     question_id: 1,
-    member_id: 3,
+    answer_member_id: 3,
     content:
       "Integer pede justo, lacinia eget, tincidunt eget, tempus vel, pede. Morbi porttitor lorem id ligula. Suspendisse ornare consequat lectus.",
     author_level: 8,
@@ -146,7 +146,7 @@ const mockAnswers: Answer[] = [
   {
     answer_id: 9,
     question_id: 1,
-    member_id: 4,
+    answer_member_id: 4,
     content:
       "Integer pede justo, lacinia eget, tincidunt eget, tempus vel, pede. Morbi porttitor lorem id ligula. Suspendisse ornare consequat lectus.",
     author_level: 9,
@@ -164,7 +164,7 @@ const mockAnswers: Answer[] = [
   {
     answer_id: 10,
     question_id: 1,
-    member_id: 5,
+    answer_member_id: 5,
     content:
       "Integer pede justo, lacinia eget, tincidunt eget, tempus vel, pede. Morbi porttitor lorem id ligula. Suspendisse ornare consequat lectus.",
     author_level: 10,
@@ -182,7 +182,7 @@ const mockAnswers: Answer[] = [
   {
     answer_id: 11,
     question_id: 1,
-    member_id: 6,
+    answer_member_id: 6,
     content:
       "Integer pede justo, lacinia eget, tincidunt eget, tempus vel, pede. Morbi porttitor lorem id ligula. Suspendisse ornare consequat lectus.",
     author_level: 1,
@@ -200,7 +200,7 @@ const mockAnswers: Answer[] = [
   {
     answer_id: 12,
     question_id: 1,
-    member_id: 1,
+    answer_member_id: 1,
     content:
       "Integer pede justo, lacinia eget, tincidunt eget, tempus vel, pede. Morbi porttitor lorem id ligula. Suspendisse ornare consequat lectus.",
     author_level: 2,
@@ -218,7 +218,7 @@ const mockAnswers: Answer[] = [
   {
     answer_id: 13,
     question_id: 3,
-    member_id: 2,
+    answer_member_id: 2,
     content:
       "Integer pede justo, lacinia eget, tincidunt eget, tempus vel, pede. Morbi porttitor lorem id ligula. Suspendisse ornare consequat lectus.",
     author_level: 3,
@@ -236,7 +236,7 @@ const mockAnswers: Answer[] = [
   {
     answer_id: 14,
     question_id: 3,
-    member_id: 3,
+    answer_member_id: 3,
     content:
       "Integer pede justo, lacinia eget, tincidunt eget, tempus vel, pede. Morbi porttitor lorem id ligula. Suspendisse ornare consequat lectus.",
     author_level: 4,
@@ -254,7 +254,7 @@ const mockAnswers: Answer[] = [
   {
     answer_id: 15,
     question_id: 4,
-    member_id: 4,
+    answer_member_id: 4,
     content:
       "Integer pede justo, lacinia eget, tincidunt eget, tempus vel, pede. Morbi porttitor lorem id ligula. Suspendisse ornare consequat lectus.",
     author_level: 5,
@@ -272,7 +272,7 @@ const mockAnswers: Answer[] = [
   {
     answer_id: 16,
     question_id: 5,
-    member_id: 5,
+    answer_member_id: 5,
     content:
       "Integer pede justo, lacinia eget, tincidunt eget, tempus vel, pede. Morbi porttitor lorem id ligula. Suspendisse ornare consequat lectus.",
     author_level: 6,
@@ -290,7 +290,7 @@ const mockAnswers: Answer[] = [
   {
     answer_id: 17,
     question_id: 5,
-    member_id: 6,
+    answer_member_id: 6,
     content:
       "Integer pede justo, lacinia eget, tincidunt eget, tempus vel, pede. Morbi porttitor lorem id ligula. Suspendisse ornare consequat lectus.",
     author_level: 7,
@@ -308,7 +308,7 @@ const mockAnswers: Answer[] = [
   {
     answer_id: 18,
     question_id: 6,
-    member_id: 1,
+    answer_member_id: 1,
     content:
       "Integer pede justo, lacinia eget, tincidunt eget, tempus vel, pede. Morbi porttitor lorem id ligula. Suspendisse ornare consequat lectus.",
     author_level: 8,
@@ -326,7 +326,7 @@ const mockAnswers: Answer[] = [
   {
     answer_id: 19,
     question_id: 6,
-    member_id: 2,
+    answer_member_id: 2,
     content:
       "Integer pede justo, lacinia eget, tincidunt eget, tempus vel, pede. Morbi porttitor lorem id ligula. Suspendisse ornare consequat lectus.",
     author_level: 9,
@@ -344,7 +344,7 @@ const mockAnswers: Answer[] = [
   {
     answer_id: 20,
     question_id: 7,
-    member_id: 3,
+    answer_member_id: 3,
     content:
       "Integer pede justo, lacinia eget, tincidunt eget, tempus vel, pede. Morbi porttitor lorem id ligula. Suspendisse ornare consequat lectus.",
     author_level: 10,
@@ -362,7 +362,7 @@ const mockAnswers: Answer[] = [
   {
     answer_id: 21,
     question_id: 7,
-    member_id: 4,
+    answer_member_id: 4,
     content:
       "Integer pede justo, lacinia eget, tincidunt eget, tempus vel, pede. Morbi porttitor lorem id ligula. Suspendisse ornare consequat lectus.",
     author_level: 1,

@@ -52,9 +52,9 @@ type BoxProps = {
 
 const UserInfoBox: React.FC<BoxProps> = ({ answer, user }) => {
   const { push } = useRouter()
-  const handleRouting = (member_id: number) => {
+  const handleRouting = (answer_member_id: number) => {
     if (!user) return
-    push(`/profile/${member_id}`)
+    push(`/profile/${answer_member_id}`)
   }
 
   return (
@@ -64,7 +64,7 @@ const UserInfoBox: React.FC<BoxProps> = ({ answer, user }) => {
           !!user,
           "px-2 bg-[#F3EDC8] rounded-md mb-1",
         )}
-        onClick={() => handleRouting(answer.member_id)}
+        onClick={() => handleRouting(answer.answer_member_id)}
       >
         {answer.created_by}
       </div>
@@ -87,9 +87,9 @@ const UserInfoBox: React.FC<BoxProps> = ({ answer, user }) => {
 
 const ProfileImageBox: React.FC<BoxProps> = ({ answer, user }) => {
   const { push } = useRouter()
-  const handleRouting = (member_id: number) => {
+  const handleRouting = (answer_member_id: number) => {
     if (!user) return
-    push(`/profile/${member_id}`)
+    push(`/profile/${answer_member_id}`)
   }
   if (answer.member_image_url)
     return (
@@ -98,7 +98,7 @@ const ProfileImageBox: React.FC<BoxProps> = ({ answer, user }) => {
           !!user,
           "ml-[20px] w-[50px] h-[50px] relative",
         )}
-        onClick={() => handleRouting(answer.member_id)}
+        onClick={() => handleRouting(answer.answer_member_id)}
       >
         <Image
           src={answer.member_image_url}
@@ -116,7 +116,7 @@ const ProfileImageBox: React.FC<BoxProps> = ({ answer, user }) => {
         !!user,
         "ml-[20px] w-[50px] h-[50px] fill-colorsGray shrink-0",
       )}
-      onClick={() => handleRouting(answer.member_id)}
+      onClick={() => handleRouting(answer.answer_member_id)}
     />
   )
 }
