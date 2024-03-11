@@ -21,10 +21,6 @@ import type {
   EnterChatRoomRequest,
   EnterChatRoomResponse,
 } from "@/interfaces/dto/coffee-chat/enter-chat-room"
-import type {
-  CreateCoffeeChatReservationRequest,
-  CreateCoffeeChatReservationResponse,
-} from "@/interfaces/dto/coffee-chat/create-coffeechat-reservation.dto"
 import type { DeleteCoffeeChatResponse } from "@/interfaces/dto/coffee-chat/delete-coffeechat.dto"
 import type { GetMyCoffeeChatReservationListResponse } from "@/interfaces/dto/coffee-chat/get-my-coffeechat-reservation"
 import type {
@@ -35,6 +31,10 @@ import type {
   DeleteReservationRequest,
   DeleteReservationResponse,
 } from "@/interfaces/dto/coffee-chat/delete-reservation.dto"
+import type {
+  CreateCoffeeChatPostRequest,
+  CreateCoffeeChatPostResponse,
+} from "@/interfaces/dto/coffee-chat/create-coffeechat-post.dto"
 
 export const coffeeChatHandler = [
   http.get<PathParams, DefaultBodyType, GetCoffeeChatReservationListResponse>(
@@ -226,8 +226,8 @@ export const coffeeChatHandler = [
   // 커피챗 등록글 생성
   http.post<
     PathParams,
-    CreateCoffeeChatReservationRequest,
-    CreateCoffeeChatReservationResponse
+    CreateCoffeeChatPostRequest,
+    CreateCoffeeChatPostResponse
   >(
     `${process.env.NEXT_PUBLIC_SERVER}${RouteMap.coffeeChat.createCoffeeChatPost}`,
     async ({ request }) => {

@@ -30,6 +30,8 @@ const Limitation = {
   mentoring_time: 10,
   title_limit_under: 5,
   title_limit_over: 100,
+  chat_introduction_limit_under: 10,
+  chat_introduction_limit_over: 150,
   content_limit_under: 10,
   content_limit_over: 10000,
   answer_limit_under: 10,
