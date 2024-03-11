@@ -5,6 +5,8 @@ import { FallbackProps } from "react-error-boundary"
 import { ApiStatus } from "@/constants/response/api"
 import { revalidatePage } from "@/util/actions/revalidatePage"
 import type { APIResponse } from "@/interfaces/dto/api-response"
+import UserProfileNotFound from "@/components/shared/animation/UserProfileNotFound"
+import type { PropsWithChildren } from "react"
 
 function UserProfileApiErrorBoundary({ error }: FallbackProps) {
   if (error instanceof AxiosError) {
@@ -19,11 +21,28 @@ function UserProfileApiErrorBoundary({ error }: FallbackProps) {
     }
 
     if (response?.status === ApiStatus.Member.getMember.NotFound.HttpStatus) {
-      return <div>존재하지 않는 유저</div>
+      return (
+        <UserProfileErrorContainer>
+          <div>존재하지 않는 사용자입니다.</div>
+        </UserProfileErrorContainer>
+      )
     }
   }
 
-  return <>유저 프로필 에러</>
+  return (
+    <UserProfileErrorContainer>
+      <div>유저 프로필 에러가 발생했습니다.</div>
+    </UserProfileErrorContainer>
+  )
 }
 
 export default UserProfileApiErrorBoundary
+
+const UserProfileErrorContainer = ({ children }: PropsWithChildren) => {
+  return (
+    <div className="w-full text-center">
+      <UserProfileNotFound className="w-[300px] m-auto" />
+      <div className="text-slate-400 text-xl mb-5 mt-[-50px]">{children}</div>
+    </div>
+  )
+}
