@@ -161,7 +161,6 @@ const CreateCodingMeetingPage = ({
               {
                 toastId: "failToCreateCodingMeeting",
                 position: "top-center",
-                autoClose: 1000,
               },
             )
             return
@@ -170,7 +169,6 @@ const CreateCodingMeetingPage = ({
           toast.error(errorMessage.failToCreateCodingMeeting, {
             toastId: "failToCreateCodingMeeting",
             position: "top-center",
-            autoClose: 1000,
           })
         },
       })
@@ -211,7 +209,6 @@ const CreateCodingMeetingPage = ({
               {
                 toastId: "failToUpdateCodingMeeting",
                 position: "top-center",
-                autoClose: 1000,
               },
             )
             return
@@ -220,7 +217,6 @@ const CreateCodingMeetingPage = ({
           toast.error(errorMessage.failToUpdateCodingMeeting, {
             toastId: "failToUpdateCodingMeeting",
             position: "top-center",
-            autoClose: 1000,
           })
         },
       })

@@ -105,7 +105,6 @@ const useProfileImage = (image_url: string | null) => {
         toast.error(errorMessage.imageLimitOver, {
           position: "top-center",
           toastId: "profileImageLimitOver",
-          autoClose: 1000,
         })
         return
       }
@@ -120,7 +119,6 @@ const useProfileImage = (image_url: string | null) => {
         toast.error(errorMessage.invalidImageExtension, {
           position: "top-center",
           toastId: "invalidImageExtension",
-          autoClose: 1000,
         })
         return
       }

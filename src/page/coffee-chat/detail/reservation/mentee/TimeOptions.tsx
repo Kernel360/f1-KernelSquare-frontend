@@ -64,7 +64,6 @@ const TimeOptions = ({ reservation, date }: TimeOptionsProps) => {
               toast.success(successMessage.deleteCoffeeChatReservation, {
                 toastId: "successToDeleteReservation",
                 position: "top-center",
-                autoClose: 1000,
               })
               setTimeout(() => {
                 queryClient.resetQueries({
@@ -80,7 +79,6 @@ const TimeOptions = ({ reservation, date }: TimeOptionsProps) => {
                 toast.error(response?.data.msg ?? errorMessage.failToReserve, {
                   toastId: "failToCancleReservation",
                   position: "top-center",
-                  autoClose: 1000,
                 })
                 return
               }
@@ -88,7 +86,6 @@ const TimeOptions = ({ reservation, date }: TimeOptionsProps) => {
               toast.error(errorMessage.failToCancleReservation, {
                 toastId: "failToCancleReservation",
                 position: "top-center",
-                autoClose: 1000,
               })
             },
           },
@@ -132,7 +129,6 @@ const TimeOptions = ({ reservation, date }: TimeOptionsProps) => {
               toast.success(successMessage.reserveCoffeeChat, {
                 toastId: "successToCreateReservation",
                 position: "top-center",
-                autoClose: 1000,
               })
               setTimeout(() => {
                 queryClient.resetQueries({
@@ -149,7 +145,6 @@ const TimeOptions = ({ reservation, date }: TimeOptionsProps) => {
                 toast.error(response?.data.msg ?? errorMessage.failToReserve, {
                   toastId: "failToCreateReservation",
                   position: "top-center",
-                  autoClose: 1000,
                 })
                 return
               }
@@ -157,7 +152,6 @@ const TimeOptions = ({ reservation, date }: TimeOptionsProps) => {
               toast.error(errorMessage.failToReserve, {
                 toastId: "failToCreateReservation",
                 position: "top-center",
-                autoClose: 1000,
               })
             },
           },

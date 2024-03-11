@@ -19,6 +19,8 @@ function ToastContainer(props: Partial<Omit<ToastContainerProps, "icon">>) {
       }
       bodyClassName={"!flex-[0_1_fit-content] text-white"}
       icon={(props) => null}
+      // 닫히는 시간 기본 2초로 설정
+      autoClose={2000}
       {...props}
     />
   )
