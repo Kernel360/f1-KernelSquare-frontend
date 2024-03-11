@@ -1,7 +1,7 @@
 "use client"
 
 import MarkdownEditor from "@/components/shared/markdown/Editor/MarkdownEditor"
-import { errorMessage } from "@/constants/message"
+import { errorMessage } from "@/constants/message/error"
 import {
   answerEditorAtomFamily,
   answerEditorLoadedAtomFamily,
@@ -13,6 +13,7 @@ import type { RefObject } from "react"
 import { toast } from "react-toastify"
 import { useRecoilState, useSetRecoilState } from "recoil"
 import { useAnswerToastUiEditorImageUploadHook } from "../../hooks/useToastUiEditorImageUploadHook"
+import { validationMessage } from "@/constants/message/validation"
 
 export interface EditorProps {
   answerId?: number
@@ -55,14 +56,14 @@ const MdEditor: React.FC<EditorProps> = ({
         return
       }
 
-      toast.error(errorMessage.failToUploadImage, {
+      toast.error(errorMessage.uploadImage, {
         toastId: "failToUploadAnswerImage",
         position: "top-center",
       })
     },
     onError({ errorCase }) {
       if (errorCase === "isMaximum") {
-        toast.error(errorMessage.imageUploadLimit, {
+        toast.error(validationMessage.imageUploadLimit, {
           toastId: "overAnswerImageLimit",
           position: "top-center",
         })
@@ -70,7 +71,7 @@ const MdEditor: React.FC<EditorProps> = ({
         return
       }
 
-      toast.error(errorMessage.failToUploadImage, {
+      toast.error(errorMessage.uploadImage, {
         toastId: "failToUploadImage",
         position: "top-center",
       })

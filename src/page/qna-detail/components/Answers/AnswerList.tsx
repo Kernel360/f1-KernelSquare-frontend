@@ -4,7 +4,7 @@ import OneAnswer from "./OneAnswer"
 import { answerQueries } from "@/react-query/answers"
 import ContentLoading from "@/components/shared/animation/ContentLoading"
 import LightBulb from "@/components/shared/animation/LightBulb"
-import { notificationMessage } from "@/constants/message"
+import notificationMessage from "@/constants/message/notification"
 import useQnADetail from "../../hooks/useQnADetail"
 import { useClientSession } from "@/hooks/useClientSession"
 

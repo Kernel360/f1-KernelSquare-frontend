@@ -8,17 +8,15 @@ import Button from "@/components/shared/button/Button"
 import CreateAnswerAnime from "@/components/shared/animation/CreateAnswerAnime"
 import useModal from "@/hooks/useModal"
 import LoginForm from "@/components/form/LoginForm"
-import {
-  buttonMessage,
-  errorMessage,
-  notificationMessage,
-} from "@/constants/message"
 import useQnADetail from "../hooks/useQnADetail"
 import { Answer } from "@/interfaces/answer"
 import { toast } from "react-toastify"
 import Limitation from "@/constants/limitation"
 import TextCounter from "@/components/shared/TextCounter"
 import type { AnswerFormData } from "./Answers/AnswerContentBox"
+import buttonMessage from "@/constants/message/button"
+import notificationMessage from "@/constants/message/notification"
+import { validationMessage } from "@/constants/message/validation"
 
 export interface MyAnswerProps {
   questionId: number
@@ -45,21 +43,21 @@ const MyAnswer: React.FC<MyAnswerProps> = ({ questionId, list, nickname }) => {
   const handleSubmitAnswer = async () => {
     const submitValue = editorRef.current?.getInstance().getMarkdown()
     if (!submitValue || checkNullValue(submitValue)) {
-      toast.error(errorMessage.noAnswerContent, {
+      toast.error(validationMessage.noAnswerContent, {
         toastId: "emptyAnswerContent",
         position: "top-center",
       })
       return
     }
     if (submitValue.length < Limitation.answer_limit_under) {
-      toast.error(errorMessage.underAnswerLimit, {
+      toast.error(validationMessage.underAnswerLimit, {
         toastId: "underAnswerLimit",
         position: "top-center",
       })
       return
     }
     if (submitValue.length > Limitation.answer_limit_over) {
-      toast.error(errorMessage.overAnswerLimit, {
+      toast.error(validationMessage.overAnswerLimit, {
         toastId: "overAnswerLimit",
         position: "top-center",
       })

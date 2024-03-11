@@ -10,7 +10,6 @@ import { useRouter } from "next/navigation"
 import { useQueryClient } from "@tanstack/react-query"
 import { useClientSession } from "@/hooks/useClientSession"
 import type { FieldErrors } from "react-hook-form"
-import ContentLoading from "@/components/shared/animation/ContentLoading"
 import { EditMode } from "@/page/askQuestion/components/AskQuestionPageControl"
 import Button from "@/components/shared/button/Button"
 import {
@@ -23,7 +22,7 @@ import ScheduleSection from "./components/ScheduleSection"
 import { CoffeeChatQueries } from "@/react-query/coffee-chat"
 import { useRecoilState } from "recoil"
 import { HashTagList } from "@/recoil/atoms/coffee-chat/hashtags"
-import { errorMessage } from "@/constants/message"
+import { errorMessage } from "@/constants/message/error"
 import dynamic from "next/dynamic"
 import { TimeCount } from "@/recoil/atoms/coffee-chat/schedule"
 import { useGetScheduleList } from "./hooks/useGetScheduleList"
@@ -32,6 +31,8 @@ import { AxiosError } from "axios"
 import { APIResponse } from "@/interfaces/dto/api-response"
 import { twJoin } from "tailwind-merge"
 import TextCounter from "@/components/shared/TextCounter"
+import notificationMessage from "@/constants/message/notification"
+import { validationMessage } from "@/constants/message/validation"
 
 const MdEditor = dynamic(() => import("./components/MdEditor"), {
   ssr: false,
@@ -73,22 +74,22 @@ function CreateCoffeeChatReservationPage({
 
   const onSubmit = async (data: CoffeeChatFormData) => {
     if (!user)
-      return toast.error(errorMessage.unauthorized, {
+      return toast.error(notificationMessage.unauthorized, {
         toastId: "unauthorizedToCreateCoffeeChat",
         position: "top-center",
       })
     if (data.title.length < Limitation.title_limit_under)
-      return toast.error(errorMessage.underTitleLimit, {
+      return toast.error(validationMessage.underTitleLimit, {
         toastId: "underCoffeeChatTitleLimit",
         position: "top-center",
       })
     if (data.title.length > Limitation.title_limit_over)
-      return toast.error(errorMessage.overTitleLimit, {
+      return toast.error(validationMessage.overTitleLimit, {
         toastId: "overCoffeeChatTitleLimit",
         position: "top-center",
       })
     if (!editorRef.current?.getInstance().getMarkdown())
-      return toast.error(errorMessage.noContent, {
+      return toast.error(validationMessage.noContent, {
         toastId: "emptyCoffeeChatContent",
         position: "top-center",
       })
@@ -96,7 +97,7 @@ function CreateCoffeeChatReservationPage({
       editorRef.current?.getInstance().getMarkdown().length <
       Limitation.content_limit_under
     )
-      return toast.error(errorMessage.underContentLimit, {
+      return toast.error(validationMessage.underContentLimit, {
         toastId: "underCoffeeChatContent",
         position: "top-center",
       })
@@ -104,13 +105,13 @@ function CreateCoffeeChatReservationPage({
       editorRef.current?.getInstance().getMarkdown().length >
       Limitation.content_limit_over
     )
-      return toast.error(errorMessage.overContentLimit, {
+      return toast.error(validationMessage.overContentLimit, {
         toastId: "overCoffeeChatContent",
         position: "top-center",
       })
 
     if (timeCount === 0)
-      return toast.error(errorMessage.undertimeCntLimit, {
+      return toast.error(validationMessage.undertimeCntLimit, {
         toastId: "emptyCoffeeChatTime",
         position: "top-center",
       })
@@ -136,16 +137,13 @@ function CreateCoffeeChatReservationPage({
           if (error instanceof AxiosError) {
             const { response } = error as AxiosError<APIResponse>
 
-            toast.error(
-              response?.data.msg ?? errorMessage.failToCreateCoffeeChat,
-              {
-                toastId: "failToCreateCoffeeChat",
-                position: "top-center",
-              },
-            )
+            toast.error(response?.data.msg ?? errorMessage.createCoffeeChat, {
+              toastId: "failToCreateCoffeeChat",
+              position: "top-center",
+            })
             return
           }
-          toast.error(errorMessage.failToCreateCoffeeChat, {
+          toast.error(errorMessage.createCoffeeChat, {
             toastId: "failToCreateCoffeeChat",
             position: "top-center",
           })
@@ -156,7 +154,7 @@ function CreateCoffeeChatReservationPage({
 
   const onInvalid = async (errors: FieldErrors<CoffeeChatFormData>) => {
     if (errors.title?.type === "required") {
-      toast.error(errorMessage.notitle, {
+      toast.error(validationMessage.notitle, {
         toastId: "emptyCoffeeChatTitle",
         position: "top-center",
       })

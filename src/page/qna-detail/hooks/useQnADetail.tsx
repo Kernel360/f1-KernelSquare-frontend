@@ -1,6 +1,6 @@
 "use client"
 
-import { errorMessage, successMessage } from "@/constants/message"
+import { errorMessage } from "@/constants/message/error"
 import { useClientSession } from "@/hooks/useClientSession"
 import { useProgressModal } from "@/hooks/useProgressModal"
 import type { Answer } from "@/interfaces/answer"
@@ -11,6 +11,8 @@ import queryKey from "@/constants/queryKey"
 import useModal from "@/hooks/useModal"
 import { useQueryClient } from "@tanstack/react-query"
 import { answerQueries } from "@/react-query/answers"
+import successMessage from "@/constants/message/success"
+import { validationMessage } from "@/constants/message/validation"
 
 export interface SubmitValueProps {
   questionId: number
@@ -66,7 +68,7 @@ const useQnADetail = () => {
     submitValue,
   }: SubmitValueProps) => {
     if (checkNullValue(submitValue)) {
-      toast.error(errorMessage.noContent, {
+      toast.error(validationMessage.noContent, {
         toastId: "emptyAnswerContent",
         position: "top-center",
       })
