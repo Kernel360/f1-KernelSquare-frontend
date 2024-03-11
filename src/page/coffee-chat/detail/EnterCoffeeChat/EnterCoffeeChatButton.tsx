@@ -122,14 +122,14 @@ function EnterCoffeeChatButton({
       return
     }
 
-    if (!isValidTimeRange) {
-      toast.error("입장 가능한 시간이 아닙니다", {
-        position: "bottom-center",
-        toastId,
-      })
+    // if (!isValidTimeRange) {
+    //   toast.error("입장 가능한 시간이 아닙니다", {
+    //     position: "bottom-center",
+    //     toastId,
+    //   })
 
-      return
-    }
+    //   return
+    // }
 
     openChatRoomPopup()
   }
@@ -161,7 +161,7 @@ function EnterCoffeeChatButton({
     <>
       <Button
         ref={buttonRef}
-        disabled={!isChatRoomActive || disabled}
+        // disabled={!isChatRoomActive || disabled}
         className={buttonClassNames(isLoading)}
       >
         {buttonText}

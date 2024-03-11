@@ -102,7 +102,7 @@ export const answerHandler = [
           ? targetQuestion.list.length + 1
           : Math.random() * 1000,
         question_id: questionId,
-        member_id: 1,
+        answer_member_id: 1,
         content,
         author_level: 1,
         rank_image_url: badge_url[1],
@@ -313,7 +313,7 @@ export const answerHandler = [
             ? targetQuestion.list.length + 1
             : Math.random() * 1000,
           question_id: questionId,
-          member_id: mockUsers[mockUsers.length - 1].id,
+          answer_member_id: mockUsers[mockUsers.length - 1].id,
           content: "AI 인턴의 답변입니다.",
           author_level: mockUsers[mockUsers.length - 1].level,
           rank_image_url: badge_url[mockUsers[mockUsers.length - 1].level],

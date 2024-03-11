@@ -2,7 +2,7 @@
 
 import dynamic from "next/dynamic"
 import { PropsWithChildren, useRef } from "react"
-import { FieldErrors, useForm } from "react-hook-form"
+import { useForm } from "react-hook-form"
 import { Editor } from "@toast-ui/react-editor"
 import Button from "@/components/shared/button/Button"
 import CreateAnswerAnime from "@/components/shared/animation/CreateAnswerAnime"
