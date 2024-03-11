@@ -1,9 +1,5 @@
 import ConfirmModal from "@/components/shared/confirm-modal/ConfirmModal"
-import {
-  errorMessage,
-  notificationMessage,
-  successMessage,
-} from "@/constants/message"
+import { errorMessage } from "@/constants/message/error"
 import { useClientSession } from "@/hooks/useClientSession"
 import useModal from "@/hooks/useModal"
 import { uploadImages } from "@/service/images"
@@ -14,6 +10,9 @@ import { useQueryClient } from "@tanstack/react-query"
 import { memberQueries } from "@/react-query/member"
 import Limitation from "@/constants/limitation"
 import { useDeleteImage } from "@/hooks/image/useDeleteImage"
+import cancleMessage from "@/constants/message/cancle"
+import successMessage from "@/constants/message/success"
+import { validationMessage } from "@/constants/message/validation"
 
 export interface SaveImageProps {
   image: File
@@ -66,7 +65,7 @@ const useProfileImage = (image_url: string | null) => {
           },
         )
       } catch (error) {
-        toast.error(errorMessage.failToUploadImage, {
+        toast.error(errorMessage.uploadImage, {
           position: "top-center",
           toastId: "failToUploadProfileImage",
         })
@@ -74,7 +73,7 @@ const useProfileImage = (image_url: string | null) => {
     }
 
     const onCancel = () => {
-      toast.error(notificationMessage.cancleUploadImage, {
+      toast.error(cancleMessage.uploadImage, {
         position: "top-center",
         toastId: "cancleUploadProfileImage",
       })
@@ -102,7 +101,7 @@ const useProfileImage = (image_url: string | null) => {
 
       // 파일 용량 제한
       if (file.size > Limitation.image.size) {
-        toast.error(errorMessage.imageLimitOver, {
+        toast.error(validationMessage.imageLimitOver, {
           position: "top-center",
           toastId: "profileImageLimitOver",
         })
@@ -116,7 +115,7 @@ const useProfileImage = (image_url: string | null) => {
         !file.type.includes("jpeg") &&
         !file.type.includes("gif")
       ) {
-        toast.error(errorMessage.invalidImageExtension, {
+        toast.error(validationMessage.invalidImageExtension, {
           position: "top-center",
           toastId: "invalidImageExtension",
         })
@@ -179,7 +178,7 @@ const useProfileImage = (image_url: string | null) => {
           },
         )
       } catch (error) {
-        toast.error(errorMessage.failToResetImage, {
+        toast.error(errorMessage.resetImage, {
           position: "top-center",
           toastId: "failToResetProfileImage",
         })
@@ -188,7 +187,7 @@ const useProfileImage = (image_url: string | null) => {
     }
 
     const onCancel = () => {
-      toast.error(notificationMessage.cancleResetImage, {
+      toast.error(cancleMessage.resetImage, {
         position: "top-center",
         toastId: "cancleResetProfileImage",
       })

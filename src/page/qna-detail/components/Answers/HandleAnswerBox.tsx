@@ -1,9 +1,10 @@
 "use client"
 
+import buttonMessage from "@/constants/message/button"
 import useHandleMyAnswer from "../../hooks/useHandleMyAnswer"
 import SuccessModalContent from "../SuccessModalContent"
-import { buttonMessage, successMessage } from "@/constants/message"
 import type { Answer } from "@/interfaces/answer"
+import successMessage from "@/constants/message/success"
 
 export type HandleAnswerProps = {
   answer: Answer

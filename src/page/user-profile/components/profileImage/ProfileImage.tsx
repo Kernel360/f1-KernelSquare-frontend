@@ -2,11 +2,11 @@
 
 import { Icons } from "@/components/icons/Icons"
 import Button from "@/components/shared/button/Button"
-import { buttonMessage } from "@/constants/message"
 import Image from "next/image"
 import useProfileImage from "../../hooks/useProfileImage"
 import { useClientSession } from "@/hooks/useClientSession"
 import { useRef } from "react"
+import buttonMessage from "@/constants/message/button"
 
 interface ProfileImageProps {
   user_id: number

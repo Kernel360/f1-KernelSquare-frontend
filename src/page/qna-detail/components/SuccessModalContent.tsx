@@ -1,7 +1,7 @@
 import DeleteSuccess from "@/components/shared/animation/DeleteSuccess"
 import ProgressModal from "@/page/signup/components/ProgressModal"
 import CheckSuccess from "@/components/shared/animation/CheckSuccess"
-import { successMessage } from "@/constants/message"
+import successMessage from "@/constants/message/success"
 import { CSSProperties } from "react"
 import { twMerge } from "tailwind-merge"
 

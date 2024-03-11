@@ -1,10 +1,5 @@
 import ConfirmModal from "@/components/shared/confirm-modal/ConfirmModal"
-import {
-  errorMessage,
-  notificationMessage,
-  pendingMessage,
-  successMessage,
-} from "@/constants/message"
+import { errorMessage } from "@/constants/message/error"
 import queryKey from "@/constants/queryKey"
 import { useClientSession } from "@/hooks/useClientSession"
 import useModal from "@/hooks/useModal"
@@ -17,6 +12,10 @@ import { twJoin } from "tailwind-merge"
 import type { Answer } from "@/interfaces/answer"
 import type { ModalState } from "@/interfaces/modal"
 import { answerQueries } from "@/react-query/answers"
+import { pendingMessage } from "@/constants/message/pending"
+import cancleMessage from "@/constants/message/cancle"
+import successMessage from "@/constants/message/success"
+import notificationMessage from "@/constants/message/notification"
 
 export interface VoteProps {
   answer: Answer
@@ -51,7 +50,7 @@ const useAnswerVote = ({ answer }: VoteProps) => {
 
   const handleRaise = async () => {
     if (!user)
-      return toast.error(errorMessage.unauthorized, {
+      return toast.error(notificationMessage.unauthorized, {
         toastId: "upauthorizedToVote",
         position: "top-center",
       })
@@ -74,17 +73,17 @@ const useAnswerVote = ({ answer }: VoteProps) => {
         },
       )
     } catch (err) {
-      toast.error(errorMessage.failToVote, {
+      toast.error(errorMessage.vote, {
         toastId: "failToVote",
         position: "top-center",
       })
-      throw new Error("투표 진행 중 오류가 발생했습니다.")
+      throw new Error(errorMessage.vote)
     }
   }
 
   const handleReduce = async () => {
     if (!user)
-      return toast.error(errorMessage.unauthorized, {
+      return toast.error(notificationMessage.unauthorized, {
         toastId: "upauthorizedToVote",
         position: "top-center",
       })
@@ -106,17 +105,17 @@ const useAnswerVote = ({ answer }: VoteProps) => {
         },
       )
     } catch (err) {
-      toast.error(errorMessage.failToVote, {
+      toast.error(errorMessage.vote, {
         toastId: "failToVote",
         position: "top-center",
       })
-      throw new Error("투표 진행 중 오류가 발생했습니다.")
+      throw new Error(errorMessage.vote)
     }
   }
 
   const handleCancle = () => {
     if (!user)
-      return toast.error(errorMessage.unauthorized, {
+      return toast.error(notificationMessage.unauthorized, {
         toastId: "upauthorizedToVote",
         position: "top-center",
       })
@@ -148,15 +147,15 @@ const useAnswerVote = ({ answer }: VoteProps) => {
           },
         )
       } catch (err) {
-        toast.error(errorMessage.failToVote, {
+        toast.error(errorMessage.vote, {
           toastId: "failToVote",
           position: "top-center",
         })
-        throw new Error("투표 진행 중 오류가 발생했습니다.")
+        throw new Error(errorMessage.vote)
       }
     }
     const onCancel = () => {
-      toast.error(notificationMessage.cancleDeleteVote, {
+      toast.error(cancleMessage.deleteVote, {
         toastId: "cancleDeleteVote",
         position: "top-center",
       })

@@ -8,7 +8,7 @@ import Button from "@/components/shared/button/Button"
 import dynamic from "next/dynamic"
 import useQnADetail from "../../hooks/useQnADetail"
 import { toast } from "react-toastify"
-import { errorMessage, successMessage } from "@/constants/message"
+import { errorMessage } from "@/constants/message/error"
 import { answerQueries } from "@/react-query/answers"
 import { useQueryClient } from "@tanstack/react-query"
 import queryKey from "@/constants/queryKey"
@@ -18,6 +18,8 @@ import { UpdateAnswerRequest } from "@/interfaces/dto/answer/update-answer.dto"
 import { deleteImages } from "@/service/images"
 import Limitation from "@/constants/limitation"
 import TextCounter from "@/components/shared/TextCounter"
+import successMessage from "@/constants/message/success"
+import { validationMessage } from "@/constants/message/validation"
 
 export type EditAnswerProps = {
   answer: Answer
@@ -54,21 +56,21 @@ const AnswerContentBox: React.FC<EditAnswerProps> = ({ answer }) => {
     const previousImage = answer.answer_image_url
     const submitValue = editorRef.current?.getInstance().getMarkdown()
     if (!submitValue || checkNullValue(submitValue)) {
-      toast.error(errorMessage.noAnswerContent, {
+      toast.error(validationMessage.noAnswerContent, {
         toastId: "emptyAnswerContent",
         position: "top-center",
       })
       return
     }
     if (submitValue.length < Limitation.answer_limit_under) {
-      toast.error(errorMessage.underAnswerLimit, {
+      toast.error(validationMessage.underAnswerLimit, {
         toastId: "underAnswerLimit",
         position: "top-center",
       })
       return
     }
     if (submitValue.length > Limitation.answer_limit_over) {
-      toast.error(errorMessage.overAnswerLimit, {
+      toast.error(validationMessage.overAnswerLimit, {
         toastId: "overAnswerLimit",
         position: "top-center",
       })
