@@ -7,8 +7,15 @@ import LandingSearchBar from "./components/LandingSearchBar"
 import { Icons } from "@/components/icons/Icons"
 import TeamKernelSqaure from "@/constants/team"
 import Spacing from "@/components/shared/Spacing"
+import { useEffect } from "react"
+import AOS from "aos"
+import "aos/dist/aos.css"
 
 const LandingPage: React.FC = () => {
+  useEffect(() => {
+    AOS.init()
+  }, [])
+
   const handleGithub = (url?: string) => {
     if (!url) return
     window.open(url)
@@ -51,7 +58,11 @@ const LandingPage: React.FC = () => {
       <LandingContainer>
         <div>모각코</div>
       </LandingContainer>
-      <LandingContainer className="w-full m-auto text-center flex flex-col justify-center gap-5">
+      <LandingContainer
+        className="w-full m-auto text-center flex flex-col justify-center gap-5"
+        data-aos="fade-up"
+        data-aos-duration="3000"
+      >
         <div className="text-primary text-4xl font-bold">
           Team Kernel Square
         </div>
