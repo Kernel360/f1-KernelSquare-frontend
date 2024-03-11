@@ -108,7 +108,6 @@ function LoginedUserArea({
             toast.success(successMessage.deleteCoffeeChatReservation, {
               toastId: "successToDeleteReservation",
               position: "top-center",
-              autoClose: 1000,
             })
             setTimeout(() => {
               queryClient.resetQueries({
@@ -124,7 +123,6 @@ function LoginedUserArea({
               toast.error(response?.data.msg ?? errorMessage.failToReserve, {
                 toastId: "failToCancleReservation",
                 position: "top-center",
-                autoClose: 1000,
               })
               return
             }
@@ -132,7 +130,6 @@ function LoginedUserArea({
             toast.error(errorMessage.failToCancleReservation, {
               toastId: "failToCancleReservation",
               position: "top-center",
-              autoClose: 1000,
             })
           },
         },

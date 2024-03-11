@@ -57,7 +57,6 @@ const AnswerContentBox: React.FC<EditAnswerProps> = ({ answer }) => {
       toast.error(errorMessage.noAnswerContent, {
         toastId: "emptyAnswerContent",
         position: "top-center",
-        autoClose: 1000,
       })
       return
     }
@@ -65,7 +64,6 @@ const AnswerContentBox: React.FC<EditAnswerProps> = ({ answer }) => {
       toast.error(errorMessage.underAnswerLimit, {
         toastId: "underAnswerLimit",
         position: "top-center",
-        autoClose: 1000,
       })
       return
     }
@@ -73,7 +71,6 @@ const AnswerContentBox: React.FC<EditAnswerProps> = ({ answer }) => {
       toast.error(errorMessage.overAnswerLimit, {
         toastId: "overAnswerLimit",
         position: "top-center",
-        autoClose: 1000,
       })
       return
     }

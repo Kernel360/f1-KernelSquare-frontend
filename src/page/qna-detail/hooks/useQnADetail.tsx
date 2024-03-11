@@ -69,7 +69,6 @@ const useQnADetail = () => {
       toast.error(errorMessage.noContent, {
         toastId: "emptyAnswerContent",
         position: "top-center",
-        autoClose: 1000,
       })
       return
     }

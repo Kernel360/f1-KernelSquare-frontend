@@ -19,6 +19,7 @@ function ToastContainer(props: Partial<Omit<ToastContainerProps, "icon">>) {
       }
       bodyClassName={"!flex-[0_1_fit-content] text-white"}
       icon={(props) => null}
+      autoClose={2000}
       {...props}
     />
   )

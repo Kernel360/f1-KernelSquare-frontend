@@ -50,7 +50,6 @@ const useHandleMyAnswer = ({ answerId, questionId }: AnswerProps) => {
       toast.error(errorMessage.noContent, {
         toastId: "emptyAnswerContent",
         position: "top-center",
-        autoClose: 1000,
       })
       return
     }

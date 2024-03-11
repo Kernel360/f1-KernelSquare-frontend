@@ -141,7 +141,6 @@ function CreateCoffeeChatReservationPage({
               {
                 toastId: "failToCreateCoffeeChat",
                 position: "top-center",
-                autoClose: 1000,
               },
             )
             return
@@ -149,7 +148,6 @@ function CreateCoffeeChatReservationPage({
           toast.error(errorMessage.failToCreateCoffeeChat, {
             toastId: "failToCreateCoffeeChat",
             position: "top-center",
-            autoClose: 1000,
           })
         },
       },

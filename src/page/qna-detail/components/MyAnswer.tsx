@@ -48,7 +48,6 @@ const MyAnswer: React.FC<MyAnswerProps> = ({ questionId, list, nickname }) => {
       toast.error(errorMessage.noAnswerContent, {
         toastId: "emptyAnswerContent",
         position: "top-center",
-        autoClose: 1000,
       })
       return
     }
@@ -56,7 +55,6 @@ const MyAnswer: React.FC<MyAnswerProps> = ({ questionId, list, nickname }) => {
       toast.error(errorMessage.underAnswerLimit, {
         toastId: "underAnswerLimit",
         position: "top-center",
-        autoClose: 1000,
       })
       return
     }
@@ -64,7 +62,6 @@ const MyAnswer: React.FC<MyAnswerProps> = ({ questionId, list, nickname }) => {
       toast.error(errorMessage.overAnswerLimit, {
         toastId: "overAnswerLimit",
         position: "top-center",
-        autoClose: 1000,
       })
       return
     }

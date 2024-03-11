@@ -31,7 +31,6 @@ const useIntroduction = () => {
       toast.error(errorMessage.unauthorized, {
         toastId: "unauthorizedToChangeIntroduction",
         position: "top-center",
-        autoClose: 1000,
       })
       return
     }
@@ -39,7 +38,6 @@ const useIntroduction = () => {
       toast.error(errorMessage.introductionLimitUnder, {
         toastId: "introductionLimitUnder",
         position: "top-center",
-        autoClose: 1000,
       })
       return
     }
@@ -47,7 +45,6 @@ const useIntroduction = () => {
       toast.error(errorMessage.introductionLimitOver, {
         toastId: "introductionLimitOver",
         position: "top-center",
-        autoClose: 1000,
       })
       return
     }
@@ -63,7 +60,6 @@ const useIntroduction = () => {
             toast.success(successMessage.editIntroduction, {
               toastId: "successToEditIntroduction",
               position: "top-center",
-              autoClose: 1000,
             })
             queryClient.invalidateQueries({
               queryKey: [queryKey.user, queryKey.profile, user.member_id],
@@ -76,7 +72,6 @@ const useIntroduction = () => {
       toast.error(errorMessage.failToUploadIntroduction, {
         toastId: "failToEditIntroduction",
         position: "top-center",
-        autoClose: 1000,
       })
       throw new Error("자기소개 업데이트 중 에러가 발생하였습니다.")
     }
