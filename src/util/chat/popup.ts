@@ -16,6 +16,12 @@ export function getPopupStorage(): PopupStorage {
     return []
   }
 
+  if (!Array.isArray(JSON.parse(storage))) {
+    localStorage.setItem(POPUP_STORAGE_KEY, "[]")
+
+    return []
+  }
+
   return JSON.parse(storage)
 }
 
