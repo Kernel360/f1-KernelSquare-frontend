@@ -8,15 +8,21 @@ interface PopupStorageFunctionArgs {
 }
 
 export function getPopupStorage(): PopupStorage {
-  return localStorage.getItem(POPUP_STORAGE_KEY)
-    ? JSON.parse(localStorage.getItem(POPUP_STORAGE_KEY)!)
-    : []
+  const storage = localStorage.getItem(POPUP_STORAGE_KEY)
+
+  if (!storage) {
+    localStorage.setItem(POPUP_STORAGE_KEY, "[]")
+
+    return []
+  }
+
+  return JSON.parse(storage)
 }
 
 export function hasPopup({ reservationId }: PopupStorageFunctionArgs) {
   const currentPopupStorage = getPopupStorage()
 
-  return currentPopupStorage.includes(reservationId)
+  return currentPopupStorage?.includes(reservationId) ?? false
 }
 
 export function addPopupStorageItem({
