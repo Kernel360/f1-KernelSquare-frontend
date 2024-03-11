@@ -49,9 +49,14 @@ export interface CommentUpdateFormData {
 
 export const commentFormMessages = {
   required: "댓글을 작성해주세요.",
-  minLength: "댓글은 최소 10자 이상이어야 합니다.",
-  maxLength: "댓글은 최대 10000자까지 작성가능합니다.",
+  maxLength: "댓글은 최대 300자까지 작성가능합니다.",
   isEqual: "댓글 내용이 이전과 동일합니다.",
+  isEmpty: "댓글에는 공백만 입력할 수 없습니다.",
+}
+
+export const commentLengthLimit = {
+  min: 1,
+  max: 300,
 }
 
 function DetailComments({ author, token }: DetailCommentsProps) {
@@ -80,7 +85,7 @@ function DetailComments({ author, token }: DetailCommentsProps) {
     setValue,
     watch,
     trigger,
-    formState: { isSubmitting, isValid },
+    formState: { isSubmitting, isValid, errors },
   } = useForm<CommentFormData>()
 
   const formRef = useRef<HTMLFormElement>(null)
@@ -151,8 +156,8 @@ function DetailComments({ author, token }: DetailCommentsProps) {
       return
     }
 
-    if (errors.comment?.type === "minLength") {
-      toast.error(commentFormMessages.minLength, {
+    if (errors.comment?.type === "validate") {
+      toast.error(errors.comment.message, {
         position: "top-center",
         toastId,
       })
@@ -160,12 +165,38 @@ function DetailComments({ author, token }: DetailCommentsProps) {
     }
 
     if (errors.comment?.type === "maxLength") {
-      toast.error(commentFormMessages.maxLength, {
+      toast.error(errors.comment.message, {
         position: "top-center",
         toastId,
       })
       return
     }
+  }
+
+  const onSubmitButtonClick = () => {
+    formRef.current?.requestSubmit()
+  }
+
+  /*
+    - 개발자 도구에서 disabled 를 강제로 풀고
+    클릭시에도 토스트 팝업이 나오도록 하기 위함,
+    - 이벤트 버블링을 활용하여 수동으로 검사(trigger)하는 것을 
+    통해 react hook form 의 validation이 반영될 수있도록 함
+  */
+  const onFormClickBubble = async (e: React.FormEvent<HTMLFormElement>) => {
+    const closestButton = (e.target as HTMLElement).closest("button")
+    if (!closestButton || closestButton !== submitBtnRef.current) return
+
+    if (isValid) return
+
+    await trigger("comment")
+    onInvalid(errors)
+  }
+
+  const validateEmpty = (value: string) => {
+    if (value.length && value.trim().length !== 0) return true
+
+    return commentFormMessages.isEmpty
   }
 
   return (
@@ -189,25 +220,23 @@ function DetailComments({ author, token }: DetailCommentsProps) {
           <form
             ref={formRef}
             onSubmit={handleSubmit(onSubmit, onInvalid)}
+            onClick={onFormClickBubble}
             className="relative w-full flex gap-4 justify-center items-center mb-[22px]"
           >
             <div className="w-full flex flex-col flex-1">
               <textarea
                 {...register("comment", {
                   required: true,
-                  minLength: {
-                    value: 10,
-                    message: commentFormMessages.minLength,
-                  },
                   maxLength: {
-                    value: 10000,
+                    value: commentLengthLimit.max,
                     message: commentFormMessages.maxLength,
                   },
+                  validate: validateEmpty,
                 })}
                 rows={1}
                 disabled={disableCase.input}
                 className="resize-none w-full box-border px-4 py-3 placeholder:text-[#BDBDBD] border border-[#E0E0E0] rounded-lg"
-                placeholder={"댓글을 입력해주세요"}
+                placeholder={"댓글을 입력해주세요(300자 이하)"}
                 autoComplete="off"
               />
             </div>
@@ -215,9 +244,7 @@ function DetailComments({ author, token }: DetailCommentsProps) {
               ref={submitBtnRef}
               disabled={disableCase.button}
               type="button"
-              onClick={() => {
-                formRef.current?.requestSubmit()
-              }}
+              onClick={onSubmitButtonClick}
               className="w-[87px] h-[49px] disabled:bg-colorsGray disabled:text-colorsDarkGray"
             >
               <div className="flex justify-center items-center flex-shrink-0 gap-1">
@@ -227,10 +254,20 @@ function DetailComments({ author, token }: DetailCommentsProps) {
             </Button>
             <TextCounter
               className="absolute left-0 -bottom-6"
-              min={10}
-              max={10000}
+              min={commentLengthLimit.min}
+              max={commentLengthLimit.max}
               text={watch("comment") ?? ""}
               target={!isCommentEditing && !!watch("comment")}
+              externalValidations={[
+                {
+                  valid: watch("comment")?.trim().length !== 0,
+                  render: (
+                    <span className="text-danger">
+                      {commentFormMessages.isEmpty}
+                    </span>
+                  ),
+                },
+              ]}
             />
           </form>
           <div>

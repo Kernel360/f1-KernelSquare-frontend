@@ -6,6 +6,7 @@ import { CodingMeetingComment } from "@/interfaces/coding-meetings"
 import { twMerge } from "tailwind-merge"
 import { ForwardedRef, forwardRef } from "react"
 import TextCounter from "@/components/shared/TextCounter"
+import { commentFormMessages, commentLengthLimit } from "./Comments"
 
 interface CommentContentProps {
   comment: CodingMeetingComment
@@ -52,13 +53,23 @@ function CommentContent(
         defaultValue={comment.coding_meeting_comment_content}
       />
       <TextCounter
-        min={10}
-        max={10000}
+        min={commentLengthLimit.min}
+        max={commentLengthLimit.max}
         text={codingMeetingEditComment.comment}
         target={
           codingMeetingEditComment.editingCommentToken ===
           comment.coding_meeting_comment_token
         }
+        externalValidations={[
+          {
+            valid:
+              codingMeetingEditComment.comment?.length === 0 ||
+              codingMeetingEditComment.comment.trim().length > 0,
+            render: (
+              <span className="text-danger">{commentFormMessages.isEmpty}</span>
+            ),
+          },
+        ]}
       />
     </div>
   )
