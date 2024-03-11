@@ -20,6 +20,7 @@ function UserProfileApiErrorBoundary({ error }: FallbackProps) {
       return null
     }
 
+    // 존재하지 않는 사용자 페이지 접근 시
     if (response?.status === ApiStatus.Member.getMember.NotFound.HttpStatus) {
       return (
         <UserProfileErrorContainer>
