@@ -45,9 +45,13 @@ function EnterCoffeeChatButton({
 
   const buttonRef = useRef<HTMLButtonElement>(null)
 
-  const [popupStorage, setPopupStorage] = useState<PopupStorage>(
-    getPopupStorage() ?? [],
-  )
+  const [popupStorage, setPopupStorage] = useState<PopupStorage>(() => {
+    try {
+      return getPopupStorage() ?? []
+    } catch (error) {
+      return []
+    }
+  })
 
   const hasPopup = popupStorage?.includes(reservation_id) ?? false
 
