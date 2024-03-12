@@ -66,7 +66,7 @@ const UserInfoBox: React.FC<BoxProps> = ({ answer, user }) => {
         )}
         onClick={() => handleRouting(answer.answer_member_id)}
       >
-        {answer.created_by}
+        {answer.member_nickname}
       </div>
       <div className="text-center flex flex-wrap justify-center">
         <div className="ml-1">Lv.{answer.author_level}</div>

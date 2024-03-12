@@ -26,7 +26,7 @@ const VoteBox: React.FC<VoteBoxProps> = ({ answer }) => {
   const { user } = useClientSession()
 
   const handleVoteRaise = () => {
-    if (answer.created_by === user?.nickname)
+    if (answer.member_nickname === user?.nickname)
       return toast.error(validationMessage.voteForMe, {
         toastId: "voteForMe",
         position: "top-center",
@@ -36,7 +36,7 @@ const VoteBox: React.FC<VoteBoxProps> = ({ answer }) => {
   }
 
   const handleVoteReduce = () => {
-    if (answer.created_by === user?.nickname)
+    if (answer.member_nickname === user?.nickname)
       return toast.error(validationMessage.voteForMe, {
         toastId: "voteForMe",
         position: "top-center",

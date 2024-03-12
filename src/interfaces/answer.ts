@@ -31,12 +31,13 @@
  */
 export interface Answer {
   answer_id: number
-  question_id: number
   answer_member_id: number
+  question_id: number
   content: string
   rank_image_url: string | null
+  rank_name: number
   member_image_url: string | null
-  created_by: string
+  member_nickname: string
   author_level: number
   answer_image_url: string | null
   created_date: string

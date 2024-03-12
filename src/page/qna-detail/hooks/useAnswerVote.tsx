@@ -26,7 +26,7 @@ export interface DeleteVoteProps {
 }
 
 const useAnswerVote = ({ answer }: VoteProps) => {
-  const [vote, setVote] = useRecoilState(voteAtoms(answer?.created_by))
+  const [vote, setVote] = useRecoilState(voteAtoms(answer?.member_nickname))
   const queryClient = useQueryClient()
   const { user } = useClientSession()
   const { openModal } = useModal()
