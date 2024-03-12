@@ -10,10 +10,10 @@ import {
   updateUserPayloadCookie,
 } from "@/util/actions/cookie"
 import { ENCRYPTED_PAYLOAD_KEY } from "@/constants/token"
-import { errorMessage } from "@/constants/message"
 import { USER_LOCAL_STORAGE_KEY } from "@/constants/editor"
 import type { LoginUserPayload } from "@/interfaces/dto/auth/login.dto"
 import type { User } from "@/interfaces/user"
+import notificationMessage from "@/constants/message/notification"
 
 export type SessionPayload = (LoginUserPayload & { expires: string }) | null
 
@@ -102,9 +102,9 @@ export const userClientSession = selector({
             const payloadResponse = await getPayloadCookie()
 
             if (payloadResponse === null) {
-              console.error(errorMessage.emptyCookie)
+              console.error(notificationMessage.emptyCookie)
 
-              throw new Error(errorMessage.emptyCookie)
+              throw new Error(notificationMessage.emptyCookie)
             }
 
             const editedPayload = JSON.parse(

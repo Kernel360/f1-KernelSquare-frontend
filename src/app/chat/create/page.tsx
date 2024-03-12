@@ -1,5 +1,5 @@
 import Mentee from "@/components/shared/animation/Mentee"
-import { errorMessage } from "@/constants/message"
+import notificationMessage from "@/constants/message/notification"
 import CreateCoffeeChatReservationPage from "@/page/coffee-chat/create/CreateCoffeeChatReservationPage"
 import { getServerSession } from "@/util/auth"
 import { Metadata } from "next"
@@ -21,7 +21,7 @@ export default async function CreateCoffeeChatPage() {
           <div className="w-[400px] m-auto mt-[100px]">
             <Mentee />
           </div>
-          <div className="text-xl">{errorMessage.unauthorized}.</div>
+          <div className="text-xl">{notificationMessage.unauthorized}.</div>
         </div>
       )
     }

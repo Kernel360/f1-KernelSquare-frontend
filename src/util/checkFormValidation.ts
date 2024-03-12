@@ -1,4 +1,4 @@
-import { errorMessage } from "@/constants/message"
+import { validationMessage } from "@/constants/message/validation"
 import { FieldErrors } from "react-hook-form"
 import { toast } from "react-toastify"
 
@@ -12,11 +12,11 @@ const checkFormValidation = async (errors: FieldErrors<BasicFormData>) => {
     const titleErrorMessage = ((type: typeof errors.title.type) => {
       switch (type) {
         case "required":
-          return errorMessage.notitle
+          return validationMessage.notitle
         case "minLength":
-          return errorMessage.underTitleLimit
+          return validationMessage.underTitleLimit
         case "maxLength":
-          return errorMessage.overTitleLimit
+          return validationMessage.overTitleLimit
       }
     })(errors.title.type)
 
@@ -36,11 +36,11 @@ const checkFormValidation = async (errors: FieldErrors<BasicFormData>) => {
     const contentErrorMessage = ((type: typeof errors.content.type) => {
       switch (type) {
         case "required":
-          return errorMessage.noContent
+          return validationMessage.noContent
         case "minLength":
-          return errorMessage.underContentLimit
+          return validationMessage.underContentLimit
         case "maxLength":
-          return errorMessage.overContentLimit
+          return validationMessage.overContentLimit
       }
     })(errors.content.type)
 

@@ -3,8 +3,9 @@
 import useHandleQuestion from "../../hooks/useHandleQuestion"
 import SuccessModalContent from "../SuccessModalContent"
 import useQnADetail from "../../hooks/useQnADetail"
-import { buttonMessage, successMessage } from "@/constants/message"
+import successMessage from "@/constants/message/success"
 import type { Question } from "@/interfaces/question"
+import buttonMessage from "@/constants/message/button"
 
 export interface HandleQuestionBoxProps {
   question: Question

@@ -4,6 +4,7 @@ import type { LabelHTMLAttributes, PropsWithChildren } from "react"
 export interface CoffeeChatEditorInitialValues {
   title: string
   content: string
+  introduction: string
   skills?: Array<TechTag> | null
   uploadImages?: Array<string> | null
 }
@@ -11,6 +12,7 @@ export interface CoffeeChatEditorInitialValues {
 export interface CoffeeChatFormData {
   title: string
   content: string
+  introduction: string
 }
 
 export type SubmitAskQuestionData = CoffeeChatFormData
