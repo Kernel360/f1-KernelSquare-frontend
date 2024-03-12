@@ -31,8 +31,6 @@ const TimeOptions = ({ reservation, date }: TimeOptionsProps) => {
       [
         "w-[100px] flex py-2 rounded justify-center transition-colors break-all text-sm text-secondary font-semibold",
       ],
-      // 이미 지난 시간
-      [filterTime(time) && "cursor-default bg-colorsGray"],
       // 다른 시간에 예약이 있는 커피챗
       [
         user &&
@@ -52,8 +50,11 @@ const TimeOptions = ({ reservation, date }: TimeOptionsProps) => {
         user &&
           !mentee_nickname &&
           !isAlreadyReservedByMe &&
+          !filterTime(time) &&
           "border-[1px] border-slate-200 bg-white cursor-pointer bg-colorsLightGray hover:bg-colorsGray",
       ],
+      // 이미 지난 시간
+      [filterTime(time) && "cursor-default bg-colorsGray"],
     )
 
   // 해당 일자에 멘토링 일정이 없는 경우
