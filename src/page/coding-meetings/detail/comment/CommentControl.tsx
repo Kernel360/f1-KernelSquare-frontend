@@ -55,16 +55,16 @@ function CommentControl({ comment, textarea }: CommentControlProps) {
         return
       }
 
-      if (errorType === "minLength") {
-        toast.error(commentFormMessages.minLength, {
+      if (errorType === "maxLength") {
+        toast.error(commentFormMessages.maxLength, {
           position: "top-center",
           toastId,
         })
         return
       }
 
-      if (errorType === "maxLength") {
-        toast.error(commentFormMessages.maxLength, {
+      if (errorType === "isEmpty") {
+        toast.error(commentFormMessages.isEmpty, {
           position: "top-center",
           toastId,
         })

@@ -1,5 +1,7 @@
 import validator from "validator"
 
+export const validPasswordSpecialList = ["@", "$", "!", "%", "*", "?", "&"]
+
 export class Validator {
   static instance: Validator
 
@@ -64,21 +66,21 @@ export class Validator {
         return () => this.format() && this.length()
       },
       eachFormat() {
+        const includeValidSpecial = /[@$!%*?&]/.test(password)
+        const includeInvalidSpecial = /[^a-zA-Z0-9@$!%*?&]/.test(password)
+
         return {
           minLowerCase: /[a-z]/.test(password),
           minUppercase: /[A-Z]/.test(password),
           minNumbers: /[0-9]/.test(password),
-          minSymbols: /[-#!$@£%^&*()_+|~=`{}\[\]:";'<>?,.\/]/.test(password),
+          minSymbols: includeValidSpecial && !includeInvalidSpecial,
         }
       },
-      format() {
-        return validator.isStrongPassword(password, {
-          minLowercase: 1,
-          minUppercase: 1,
-          minNumbers: 1,
-          minSymbols: 1,
-          minLength: 4,
-        })
+      get format() {
+        const { minLowerCase, minUppercase, minNumbers, minSymbols } =
+          this.eachFormat()
+
+        return () => minLowerCase && minUppercase && minNumbers && minSymbols
       },
       length() {
         return validator.isLength(password.replaceAll(" ", ""), {
