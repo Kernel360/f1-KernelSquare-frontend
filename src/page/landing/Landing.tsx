@@ -17,9 +17,12 @@ const LandingPage: React.FC = () => {
         <source src="/video/landing_video.mp4" type="video/mp4" />
       </video>
       <LandingHeader />
-      <div className="absolute left-0 top-0 w-full h-full flex flex-col items-center justify-center text-center">
-        <div className="font-bold text-[36px] sm:text-5xl text-white flex flex-col sm:flex-row">
-          <div>지속 가능한 성장을 위한</div> <div>&nbsp;개발자 커뮤니티,</div>
+      <div className="absolute left-0 top-0 w-full h-full flex flex-col sm:gap-5 items-center justify-center text-center">
+        <div className="font-bold text-[36px] sm:text-5xl text-white">
+          지속 가능한 성장을 위한
+        </div>
+        <div className="font-bold text-[36px] sm:text-5xl text-white">
+          개발자 커뮤니티,
         </div>
         <div className="text-[60px] sm:text-[90px] font-black text-primary italic">
           Kernel Square

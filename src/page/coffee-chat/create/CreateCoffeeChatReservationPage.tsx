@@ -33,6 +33,7 @@ import { twJoin } from "tailwind-merge"
 import TextCounter from "@/components/shared/TextCounter"
 import notificationMessage from "@/constants/message/notification"
 import { validationMessage } from "@/constants/message/validation"
+import Textarea from "@/components/shared/textarea/Textarea"
 
 const MdEditor = dynamic(() => import("./components/MdEditor"), {
   ssr: false,
@@ -58,6 +59,7 @@ function CreateCoffeeChatReservationPage({
             defaultValues: {
               title: initialValues.title,
               content: initialValues.content,
+              introduction: initialValues.introduction,
             },
           }
         : {},
@@ -119,6 +121,7 @@ function CreateCoffeeChatReservationPage({
       {
         member_id: user.member_id,
         title: data.title,
+        introduction: data.introduction,
         content: editorRef.current?.getInstance().getMarkdown(),
         hash_tags,
         date_times: first.concat(twice).concat(third),
@@ -170,6 +173,31 @@ function CreateCoffeeChatReservationPage({
 
   if (!user) return
 
+  const handleSubmitButtonDisabled = () => {
+    const isValidTitle = () =>
+      !getValues("title") ||
+      getValues("title").length < Limitation.title_limit_under ||
+      getValues("title").length > Limitation.title_limit_over
+
+    const isValidIntroduction = () =>
+      !watch("introduction") ||
+      watch("introduction").length < Limitation.chat_introduction_limit_under ||
+      watch("introduction").length > Limitation.chat_introduction_limit_over
+
+    const isValidContent = () =>
+      !watch("content") ||
+      watch("content").length < Limitation.content_limit_under ||
+      watch("content").length > Limitation.content_limit_over
+
+    return (
+      !user ||
+      timeCount === 0 ||
+      isValidTitle() ||
+      isValidIntroduction() ||
+      isValidContent()
+    )
+  }
+
   const TitleInputClass = twJoin([
     "rounded-none border-r-0 border-l-0 border-t-0 text-3xl placeholder:text-3xl",
     watch("title") &&
@@ -185,6 +213,7 @@ function CreateCoffeeChatReservationPage({
         className={`transition-opacity duration-1000 m-auto`}
       >
         {/* title section */}
+        <Spacing size={20} />
         <CoffeeChatSection className="border-transparent p-0">
           <Input
             id="title"
@@ -207,6 +236,28 @@ function CreateCoffeeChatReservationPage({
                   {"제목은 5자 이상 100자 이하여야 합니다."}
                 </Input.ErrorMessage>
               )}
+          </div>
+        </CoffeeChatSection>
+        <Spacing size={20} />
+        <CoffeeChatSection>
+          <div className="w-full">
+            <Textarea
+              className="w-full min-h-[100px] border-none outline-none focus:outline-none"
+              placeholder="커피챗의 내용이 명확하게 전달되도록 간결하게 요약해주세요. (10자 이상 150자 이하)"
+              {...register("introduction", {
+                required: true,
+                minLength: Limitation.chat_introduction_limit_under,
+                maxLength: Limitation.chat_introduction_limit_over,
+              })}
+            />
+          </div>
+          <div>
+            <TextCounter
+              text={watch("introduction") ?? ""}
+              min={Limitation.chat_introduction_limit_under}
+              max={Limitation.chat_introduction_limit_over}
+              className="text-lg block text-right h-2 mb-5"
+            />
           </div>
         </CoffeeChatSection>
         <Spacing size={20} />
@@ -235,16 +286,7 @@ function CreateCoffeeChatReservationPage({
         <ScheduleSection />
         <div className="flex justify-center">
           <Button
-            disabled={
-              !user ||
-              timeCount === 0 ||
-              !watch("content") ||
-              watch("content").length < Limitation.content_limit_under ||
-              watch("content").length > Limitation.content_limit_over ||
-              !getValues("title") ||
-              getValues("title").length < Limitation.title_limit_under ||
-              getValues("title").length > Limitation.title_limit_over
-            }
+            disabled={handleSubmitButtonDisabled()}
             buttonTheme="primary"
             className="p-5 py-3 my-10 disabled:bg-colorsGray disabled:text-colorsDarkGray"
             type="submit"

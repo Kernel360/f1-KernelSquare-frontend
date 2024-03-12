@@ -125,7 +125,7 @@ const TimeOptions = ({ reservation, date }: TimeOptionsProps) => {
             reservation_article_id: Number(params.id),
             reservation_id: time.reservation_id,
             member_id: user.member_id,
-            start_time: time.start_time,
+            reservation_start_time: time.reservation_start_time,
           },
           {
             onSuccess: () => {
@@ -209,8 +209,9 @@ const TimeOptions = ({ reservation, date }: TimeOptionsProps) => {
 
   if (
     !reservation.filter(
-      ({ start_time }) =>
-        getDate({ date: date + "" }) === getDate({ date: start_time }),
+      ({ reservation_start_time }) =>
+        getDate({ date: date + "" }) ===
+        getDate({ date: reservation_start_time }),
     ).length
   )
     return (
@@ -223,8 +224,9 @@ const TimeOptions = ({ reservation, date }: TimeOptionsProps) => {
     <div className="w-full grid grid-cols-1 sm:grid-rows-4 sm:grid-cols-4 gap-4 shrink-0 m-auto">
       {reservation
         .filter(
-          ({ start_time }) =>
-            getDate({ date: date + "" }) === getDate({ date: start_time }),
+          ({ reservation_start_time }) =>
+            getDate({ date: date + "" }) ===
+            getDate({ date: reservation_start_time }),
         )
         .map((time, i) => (
           <Button
@@ -244,7 +246,7 @@ const TimeOptions = ({ reservation, date }: TimeOptionsProps) => {
                   <Icons.UserProfile />
                 </div>
               )}
-              <div>{getTime(time.start_time)}</div>
+              <div>{getTime(time.reservation_start_time)}</div>
             </span>
           </Button>
         ))}
