@@ -10,9 +10,9 @@ import {
 import { twJoin } from "tailwind-merge"
 import Button from "@/components/shared/button/Button"
 import { toast } from "react-toastify"
-import { errorMessage } from "@/constants/message"
 import Limitation from "@/constants/limitation"
 import { useLayoutEffect } from "react"
+import { validationMessage } from "@/constants/message/validation"
 
 const TimeOptions = ({ date }: TimeOptionsProps) => {
   const selectedDate = useRecoilValue(SelectedDate)
@@ -33,7 +33,7 @@ const TimeOptions = ({ date }: TimeOptionsProps) => {
       })
     } else {
       if (timeCount === Limitation.mentoring_time)
-        return toast.error(errorMessage.overtimeCntLimit, {
+        return toast.error(validationMessage.overtimeCntLimit, {
           toastId: "overTimeCntLimit",
           position: "top-center",
         })

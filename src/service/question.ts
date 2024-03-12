@@ -1,7 +1,7 @@
 import { AxiosError, AxiosResponse } from "axios"
 import { apiInstance } from "./axios"
 import { RouteMap } from "./route-map"
-import { errorMessage } from "@/constants/message"
+import { errorMessage } from "@/constants/message/error"
 import type {
   GetQuestionListRequest,
   GetQuestionListResponse,

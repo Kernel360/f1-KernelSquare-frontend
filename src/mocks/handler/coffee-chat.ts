@@ -21,10 +21,6 @@ import type {
   EnterChatRoomRequest,
   EnterChatRoomResponse,
 } from "@/interfaces/dto/coffee-chat/enter-chat-room"
-import type {
-  CreateCoffeeChatReservationRequest,
-  CreateCoffeeChatReservationResponse,
-} from "@/interfaces/dto/coffee-chat/create-coffeechat-reservation.dto"
 import type { DeleteCoffeeChatResponse } from "@/interfaces/dto/coffee-chat/delete-coffeechat.dto"
 import type { GetMyCoffeeChatReservationListResponse } from "@/interfaces/dto/coffee-chat/get-my-coffeechat-reservation"
 import type {
@@ -35,6 +31,10 @@ import type {
   DeleteReservationRequest,
   DeleteReservationResponse,
 } from "@/interfaces/dto/coffee-chat/delete-reservation.dto"
+import type {
+  CreateCoffeeChatPostRequest,
+  CreateCoffeeChatPostResponse,
+} from "@/interfaces/dto/coffee-chat/create-coffeechat-post.dto"
 
 export const coffeeChatHandler = [
   http.get<PathParams, DefaultBodyType, GetCoffeeChatReservationListResponse>(
@@ -226,8 +226,8 @@ export const coffeeChatHandler = [
   // 커피챗 등록글 생성
   http.post<
     PathParams,
-    CreateCoffeeChatReservationRequest,
-    CreateCoffeeChatReservationResponse
+    CreateCoffeeChatPostRequest,
+    CreateCoffeeChatPostResponse
   >(
     `${process.env.NEXT_PUBLIC_SERVER}${RouteMap.coffeeChat.createCoffeeChatPost}`,
     async ({ request }) => {
@@ -319,8 +319,12 @@ export const coffeeChatHandler = [
   http.put<PathParams, MakeReservationRequest, MakeReservationResponse>(
     `${process.env.NEXT_PUBLIC_SERVER}${RouteMap.coffeeChat.coffeeChatReservation}`,
     async ({ request }) => {
-      const { reservation_article_id, reservation_id, member_id, start_time } =
-        await request.json()
+      const {
+        reservation_article_id,
+        reservation_id,
+        member_id,
+        reservation_start_time,
+      } = await request.json()
       const targetMember = mockUsers.find((member) => member.id === member_id)
 
       if (!targetMember) {
@@ -368,7 +372,7 @@ export const coffeeChatHandler = [
       }
 
       const targetTime = targetArticle.date_times.find(
-        (time) => time.start_time === start_time,
+        (time) => time.start_time === reservation_start_time,
       )
 
       if (!targetTime) {
@@ -419,7 +423,7 @@ export const coffeeChatHandler = [
 
       const hasDuplicateMentoringTime = MockReservations.find(
         (res) =>
-          res.start_time === start_time &&
+          res.start_time === reservation_start_time &&
           res.reservation_id !== reservation_id &&
           res.mentee_nickname === targetMember.nickname,
       )
@@ -477,18 +481,6 @@ export const coffeeChatHandler = [
           },
         )
       }
-
-      // if (dayjs(targetReservation.start_time).diff(dayjs(), "hour") <= 24) {
-      //   return HttpResponse.json(
-      //     {
-      //       code: 3402,
-      //       msg: "예약 취소 가능 시간이 지났습니다.",
-      //     },
-      //     {
-      //       status: HttpStatusCode.Forbidden,
-      //     },
-      //   )
-      // }
 
       return HttpResponse.json(
         {

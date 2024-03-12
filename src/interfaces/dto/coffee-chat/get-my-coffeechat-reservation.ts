@@ -6,7 +6,7 @@ export interface MyCoffeeChatReservation {
   reservatoin_id: number
   room_id: number
   start_time: string
-  menteeNickname: string
+  mentee_nickname: string
   mentee_image_url: string
 }
 

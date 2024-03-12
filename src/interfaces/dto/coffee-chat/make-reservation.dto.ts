@@ -4,7 +4,7 @@ export interface MakeReservationRequest {
   reservation_article_id: number
   reservation_id: number
   member_id: number
-  start_time: string
+  reservation_start_time: string
 }
 
 export interface MakeReservationPayload {

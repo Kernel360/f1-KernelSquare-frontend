@@ -15,7 +15,7 @@ import {
 } from "@/interfaces/dto/coding-meeting/delete-coding-meeting.dto"
 import { DefaultBodyType } from "msw"
 import { APIResponse } from "@/interfaces/dto/api-response"
-import { errorMessage } from "@/constants/message"
+import { errorMessage } from "@/constants/message/error"
 import {
   UpdateCodingMeetingRequest,
   UpdateCodingMeetingResponse,

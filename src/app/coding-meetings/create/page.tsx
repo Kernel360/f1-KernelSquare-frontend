@@ -1,5 +1,5 @@
 import Mentee from "@/components/shared/animation/Mentee"
-import { errorMessage } from "@/constants/message"
+import notificationMessage from "@/constants/message/notification"
 import CreateCodingMeetingPage from "@/page/coding-meetings/create/CreateCodingMeetingPage"
 
 import { getServerSession } from "@/util/auth"
@@ -22,7 +22,7 @@ export default async function CreateCodingMeetingsPage() {
           <div className="w-[400px] m-auto mt-[100px]">
             <Mentee />
           </div>
-          <div className="text-xl">{errorMessage.unauthorized}.</div>
+          <div className="text-xl">{notificationMessage.unauthorized}.</div>
         </div>
       )
     }

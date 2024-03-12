@@ -1,6 +1,5 @@
 "use client"
 
-import { errorMessage, successMessage } from "@/constants/message"
 import { useClientSession } from "@/hooks/useClientSession"
 import { useProgressModal } from "@/hooks/useProgressModal"
 import type { Answer } from "@/interfaces/answer"
@@ -11,6 +10,8 @@ import queryKey from "@/constants/queryKey"
 import useModal from "@/hooks/useModal"
 import { useQueryClient } from "@tanstack/react-query"
 import { answerQueries } from "@/react-query/answers"
+import successMessage from "@/constants/message/success"
+import { validationMessage } from "@/constants/message/validation"
 
 export interface SubmitValueProps {
   questionId: number
@@ -39,7 +40,9 @@ const useQnADetail = () => {
    */
   const filterMyAnswer = (answerArr: Answer[]) => {
     if (isChecked)
-      return answerArr.filter((answer) => answer.created_by === user?.nickname)
+      return answerArr.filter(
+        (answer) => answer.member_nickname === user?.nickname,
+      )
     return answerArr
   }
 
@@ -54,7 +57,7 @@ const useQnADetail = () => {
     if (!list) return false
     if (!nickname) return false
     // 답변 중에 이미 내가 작성한 답변이 있을 경우
-    if (list?.some((answer) => answer.created_by === user?.nickname))
+    if (list?.some((answer) => answer.member_nickname === user?.nickname))
       return false
     // 본인 질문글일 경우
     if (nickname === user?.nickname) return false
@@ -66,10 +69,9 @@ const useQnADetail = () => {
     submitValue,
   }: SubmitValueProps) => {
     if (checkNullValue(submitValue)) {
-      toast.error(errorMessage.noContent, {
+      toast.error(validationMessage.noContent, {
         toastId: "emptyAnswerContent",
         position: "top-center",
-        autoClose: 1000,
       })
       return
     }

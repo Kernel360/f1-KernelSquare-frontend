@@ -42,8 +42,8 @@ import type {
 import { useResetRecoilState } from "recoil"
 import { searchTagAtom } from "@/recoil/atoms/tag"
 import Limitation from "@/constants/limitation"
-import { errorMessage } from "@/constants/message"
 import { answerQueries } from "@/react-query/answers"
+import { validationMessage } from "@/constants/message/validation"
 
 export interface QuestionEditorInitialValues {
   title: string
@@ -148,7 +148,7 @@ function AskQuestionForm({
       },
       onError({ errorCase }) {
         if (errorCase === "isMaximum") {
-          toast.error(errorMessage.imageUploadLimit, {
+          toast.error(validationMessage.imageUploadLimit, {
             position: "top-center",
             toastId: "imageLengthError",
           })
@@ -157,7 +157,7 @@ function AskQuestionForm({
         }
 
         if (errorCase === "isMaximumSize") {
-          toast.error(errorMessage.imageLimitOver, {
+          toast.error(validationMessage.imageLimitOver, {
             position: "top-center",
             toastId: "imageSizeError",
           })
@@ -166,7 +166,7 @@ function AskQuestionForm({
         }
 
         if (errorCase === "notAllowedExtension") {
-          toast.error(errorMessage.notAllowedImageExtensions, {
+          toast.error(validationMessage.notAllowedImageExtensions, {
             position: "top-center",
             toastId: "imageExtensionError",
           })
@@ -312,11 +312,11 @@ function AskQuestionForm({
       const titleErrorMessage = ((type: typeof errors.title.type) => {
         switch (type) {
           case "required":
-            return errorMessage.notitle
+            return validationMessage.notitle
           case "minLength":
-            return errorMessage.underTitleLimit
+            return validationMessage.underTitleLimit
           case "maxLength":
-            return errorMessage.overTitleLimit
+            return validationMessage.overTitleLimit
         }
       })(errors.title.type)
 
@@ -342,11 +342,11 @@ function AskQuestionForm({
       const contentErrorMessage = ((type: typeof errors.content.type) => {
         switch (type) {
           case "required":
-            return errorMessage.noContent
+            return validationMessage.noContent
           case "minLength":
-            return errorMessage.underContentLimit
+            return validationMessage.underContentLimit
           case "maxLength":
-            return errorMessage.overContentLimit
+            return validationMessage.overContentLimit
         }
       })(errors.content.type)
 
