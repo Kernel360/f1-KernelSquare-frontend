@@ -15,7 +15,7 @@ export interface GetCoffeeChatReservationDetailRequest {
 export interface CoffeeChatReservationTime {
   reservation_id: number
   room_id: number
-  reservation_start_time: string
+  start_time: string
   mentee_nickname: string | null
   mentee_image_url: string | null
 }

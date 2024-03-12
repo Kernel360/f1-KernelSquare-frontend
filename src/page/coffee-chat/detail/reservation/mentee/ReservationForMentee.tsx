@@ -9,7 +9,6 @@ import { CoffeeChatReservationTime } from "@/interfaces/dto/coffee-chat/coffeech
 import TimeOptions from "./TimeOptions"
 import { FaCalendarAlt } from "react-icons/fa"
 import { revalidatePage } from "@/util/actions/revalidatePage"
-import { useClientSession } from "@/hooks/useClientSession"
 
 interface MenteeProps {
   reservation: CoffeeChatReservationTime[]
@@ -17,9 +16,7 @@ interface MenteeProps {
 }
 
 function ReservationForMentee({ reservation }: MenteeProps) {
-  const [date, setDate] = useState<Value>(
-    new Date(reservation[0].reservation_start_time),
-  )
+  const [date, setDate] = useState<Value>(new Date(reservation[0].start_time))
 
   const { ProgressModalView } = useProgressModal()
 
@@ -28,15 +25,6 @@ function ReservationForMentee({ reservation }: MenteeProps) {
       revalidatePage("/chat", "page")
     }
   }, [])
-
-  const { user } = useClientSession()
-  const isAlreadyReservedByMe = reservation.find(
-    (res) => res.mentee_nickname === user?.nickname,
-  )
-
-  if (isAlreadyReservedByMe) {
-    return <div></div>
-  }
 
   return (
     <section className="my-20 text-center">
@@ -52,7 +40,7 @@ function ReservationForMentee({ reservation }: MenteeProps) {
       </div>
       <div className="flex justify-around flex-wrap">
         <CustomCalendar
-          start={reservation[0].reservation_start_time}
+          start={reservation[0].start_time}
           limit={2}
           date={date}
           setDate={setDate}
@@ -76,7 +64,7 @@ function ReservationForMentee({ reservation }: MenteeProps) {
             <TimeOptions
               reservation={reservation}
               selectedDay={getDate({
-                date: reservation[0].reservation_start_time,
+                date: reservation[0].start_time,
               })}
               date={date}
             />
