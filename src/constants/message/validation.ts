@@ -36,4 +36,5 @@ export const validationMessage = {
   voteForMe: "자신의 답변에는 투표할 수 없습니다.",
   timeError: "종료 시간은 시작 시간보다 앞설 수 없습니다.",
   sameTime: "종료 시간은 시작 시간과 동일할 수 없습니다.",
+  beforeNow: "지난 시간의 커피챗은 예약할 수 없습니다.",
 } as const

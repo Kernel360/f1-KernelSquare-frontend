@@ -9,7 +9,6 @@ import { CoffeeChatReservationTime } from "@/interfaces/dto/coffee-chat/coffeech
 import TimeOptions from "./TimeOptions"
 import { FaCalendarAlt } from "react-icons/fa"
 import { revalidatePage } from "@/util/actions/revalidatePage"
-import { useClientSession } from "@/hooks/useClientSession"
 
 interface MenteeProps {
   reservation: CoffeeChatReservationTime[]
@@ -28,15 +27,6 @@ function ReservationForMentee({ reservation }: MenteeProps) {
       revalidatePage("/chat", "page")
     }
   }, [])
-
-  const { user } = useClientSession()
-  const isAlreadyReservedByMe = reservation.find(
-    (res) => res.mentee_nickname === user?.nickname,
-  )
-
-  if (isAlreadyReservedByMe) {
-    return <div></div>
-  }
 
   return (
     <section className="my-20 text-center">

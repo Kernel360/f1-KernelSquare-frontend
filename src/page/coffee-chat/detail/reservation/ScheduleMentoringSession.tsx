@@ -3,10 +3,7 @@
 import { useClientSession } from "@/hooks/useClientSession"
 import ReservationForMentee from "./mentee/ReservationForMentee"
 import ReservationForMentor from "./mentor/ReservationForMentor"
-import {
-  CoffeeChatReservationDetailPayload,
-  CoffeeChatReservationTime,
-} from "@/interfaces/dto/coffee-chat/coffeechat-reservation-detail.dto"
+import { CoffeeChatReservationTime } from "@/interfaces/dto/coffee-chat/coffeechat-reservation-detail.dto"
 
 interface ScheduleMentoringSessionProps {
   mentor: number
