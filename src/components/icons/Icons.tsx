@@ -19,7 +19,7 @@ import { RiArrowUpSLine } from "react-icons/ri"
 import { MdClose } from "react-icons/md"
 import { MdComputer } from "react-icons/md"
 import { FaMapMarkerAlt } from "react-icons/fa"
-import { IoSearchOutline } from "react-icons/io5"
+import { IoSearchOutline, IoOptionsOutline } from "react-icons/io5"
 
 type IconsKey =
   | "Search"
@@ -33,6 +33,7 @@ type IconsKey =
   | "Close"
   | "Info"
   | "MapMarker"
+  | "Filter"
 type NavigationIconsKey =
   | "QnA"
   | "Chat"
@@ -77,6 +78,9 @@ export const Icons: Record<IconsKey, Icon> = {
   },
   MapMarker(props) {
     return <FaMapMarkerAlt {...props} />
+  },
+  Filter(props) {
+    return <IoOptionsOutline {...props} />
   },
 }
 

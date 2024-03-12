@@ -23,7 +23,7 @@ import { toast } from "react-toastify"
 import { AxiosError, HttpStatusCode } from "axios"
 import { APIResponse } from "@/interfaces/dto/api-response"
 import { revalidatePage } from "@/util/actions/revalidatePage"
-import { useRef } from "react"
+import { useEffect, useRef, useState } from "react"
 import { FaRegCommentDots } from "react-icons/fa"
 import useModal from "@/hooks/useModal"
 import LoginForm from "@/components/form/LoginForm"
@@ -33,6 +33,12 @@ import { useRecoilValue } from "recoil"
 import { codingMeetingEditCommentAtom } from "@/recoil/atoms/coding-meeting/comment"
 import TextCounter from "@/components/shared/TextCounter"
 import UserInfo, { UserProfileInfo } from "@/components/shared/user/UserInfo"
+import CommentsFilter from "./CommentsFilter"
+import {
+  CodingMeetingCommentsFilterOption,
+  getCodingMeetingCommentsFilter,
+  sortCodingMeetingComments,
+} from "@/util/filter/coding-meeting-comments"
 
 interface DetailCommentsProps {
   author: CodingMeetingAuthor
@@ -75,6 +81,10 @@ function DetailComments({ author, token }: DetailCommentsProps) {
       return response.data.data
     },
   })
+
+  const [filter, setFilter] = useState<CodingMeetingCommentsFilterOption>(
+    getCodingMeetingCommentsFilter(),
+  )
 
   const codingMeetingEditComment = useRecoilValue(codingMeetingEditCommentAtom)
   const isCommentEditing = !!codingMeetingEditComment.editingCommentToken
@@ -199,18 +209,34 @@ function DetailComments({ author, token }: DetailCommentsProps) {
     return commentFormMessages.isEmpty
   }
 
+  useEffect(() => {
+    const handleStorageEvent = (e: StorageEvent) => {
+      console.log("storage change", { order: getCodingMeetingCommentsFilter() })
+      setFilter(getCodingMeetingCommentsFilter())
+    }
+
+    window.addEventListener("storage", handleStorageEvent)
+
+    return () => {
+      window.removeEventListener("storage", handleStorageEvent)
+    }
+  }, [])
+
   return (
     <div>
-      <div className="text-xl mb-6">
-        <span className="font-bold">댓글</span>
-        <span>&nbsp;</span>
-        <span>
-          {error
-            ? "(0)"
-            : status === "pending"
-            ? ""
-            : `(${comments?.length})` ?? "(0)"}
-        </span>
+      <div className="flex gap-1 justify-between items-center mb-6">
+        <div className="text-xl">
+          <span className="font-bold">댓글</span>
+          <span>&nbsp;</span>
+          <span>
+            {error
+              ? "(0)"
+              : status === "pending"
+              ? ""
+              : `(${comments?.length})` ?? "(0)"}
+          </span>
+        </div>
+        <CommentsFilter />
       </div>
       <Info />
       {status === "pending" ? (
@@ -271,7 +297,13 @@ function DetailComments({ author, token }: DetailCommentsProps) {
             />
           </form>
           <div>
-            <CommentList author={author} comments={comments ?? []} />
+            <CommentList
+              author={author}
+              comments={sortCodingMeetingComments({
+                comments: comments ?? [],
+                orderBy: filter,
+              })}
+            />
           </div>
         </>
       )}

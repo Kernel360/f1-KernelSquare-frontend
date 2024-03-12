@@ -27,7 +27,7 @@ function CommentContent(
   const justContentareaClassNames = twMerge([
     isEditTargetComment
       ? "hidden"
-      : "whitespace-pre-line opacity-100 pointer-events-auto",
+      : "whitespace-pre-wrap opacity-100 pointer-events-auto",
   ])
   const textareaClassNames = twMerge([
     "w-full resize-none outline-none",
