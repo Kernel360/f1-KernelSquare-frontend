@@ -1,6 +1,5 @@
 "use client"
 
-import { errorMessage } from "@/constants/message"
 import { useClientSession } from "@/hooks/useClientSession"
 import { CodingMeetingHashTagList } from "@/recoil/atoms/coding-meeting/hashtags"
 import { useQueryClient } from "@tanstack/react-query"
@@ -32,6 +31,9 @@ import { AxiosError } from "axios"
 import { APIResponse } from "@/interfaces/dto/api-response"
 import TextCounter from "@/components/shared/TextCounter"
 import { twJoin } from "tailwind-merge"
+import notificationMessage from "@/constants/message/notification"
+import { validationMessage } from "@/constants/message/validation"
+import { errorMessage } from "@/constants/message/error"
 
 interface CreateCodingMeetingPageProps {
   editMode: "create" | "update"
@@ -86,38 +88,38 @@ const CreateCodingMeetingPage = ({
   const onSubmit = async (data: CodingMeetingFormData) => {
     // 사용자 권한 인증
     if (!user)
-      return toast.error(errorMessage.unauthorized, {
+      return toast.error(notificationMessage.unauthorized, {
         toastId: "unauthorizedToCreateCodingMeeting",
         position: "top-center",
       })
     // 장소 유효성 검사
     if (!location)
-      return toast.error(errorMessage.noLocation, {
+      return toast.error(validationMessage.noLocation, {
         toastId: "emptyLocation",
         position: "top-center",
       })
     // 인원수 유효성 검사
     if (head_cnt === "0")
-      return toast.error(errorMessage.noHeadCnt, {
+      return toast.error(validationMessage.noHeadCnt, {
         toastId: "emptyHeadCnt",
         position: "top-center",
       })
     // 시간 유효성 검사
     // 시간 값이 없을 경우
     if (!startTime || !endTime)
-      return toast.error(errorMessage.noTime, {
+      return toast.error(validationMessage.noTime, {
         toastId: "emptyCodingMeetingTime",
         position: "top-center",
       })
     // 종료 시간이 시작 시간보다 빠를 경우
     if (formattedEndTime.isBefore(formattedStartTime))
-      return toast.error(errorMessage.timeError, {
+      return toast.error(validationMessage.timeError, {
         toastId: "codingMeetingTimeError",
         position: "top-center",
       })
     // 시작 시간이 종료 시간과 같을 경우
     if (formattedEndTime.isSame(formattedStartTime, "minute"))
-      return toast.error(errorMessage.sameTime, {
+      return toast.error(validationMessage.sameTime, {
         toastId: "codingMeetingSameTimeError",
         position: "top-center",
       })
@@ -157,20 +159,18 @@ const CreateCodingMeetingPage = ({
             const { response } = error as AxiosError<APIResponse>
 
             toast.error(
-              response?.data.msg ?? errorMessage.failToCreateCodingMeeting,
+              response?.data.msg ?? errorMessage.createCodingMeeting,
               {
                 toastId: "failToCreateCodingMeeting",
                 position: "top-center",
-                autoClose: 1000,
               },
             )
             return
           }
 
-          toast.error(errorMessage.failToCreateCodingMeeting, {
+          toast.error(errorMessage.createCodingMeeting, {
             toastId: "failToCreateCodingMeeting",
             position: "top-center",
-            autoClose: 1000,
           })
         },
       })
@@ -207,20 +207,18 @@ const CreateCodingMeetingPage = ({
             const { response } = error as AxiosError<APIResponse>
 
             toast.error(
-              response?.data.msg ?? errorMessage.failToUpdateCodingMeeting,
+              response?.data.msg ?? errorMessage.updateCodingMeeting,
               {
                 toastId: "failToUpdateCodingMeeting",
                 position: "top-center",
-                autoClose: 1000,
               },
             )
             return
           }
 
-          toast.error(errorMessage.failToUpdateCodingMeeting, {
+          toast.error(errorMessage.updateCodingMeeting, {
             toastId: "failToUpdateCodingMeeting",
             position: "top-center",
-            autoClose: 1000,
           })
         },
       })
@@ -231,11 +229,11 @@ const CreateCodingMeetingPage = ({
       const titleErrorMessage = ((type: typeof errors.title.type) => {
         switch (type) {
           case "required":
-            return errorMessage.notitle
+            return validationMessage.notitle
           case "minLength":
-            return errorMessage.underTitleLimit
+            return validationMessage.underTitleLimit
           case "maxLength":
-            return errorMessage.overTitleLimit
+            return validationMessage.overTitleLimit
         }
       })(errors.title.type)
 
@@ -256,11 +254,11 @@ const CreateCodingMeetingPage = ({
       const contentErrorMessage = ((type: typeof errors.content.type) => {
         switch (type) {
           case "required":
-            return errorMessage.noContent
+            return validationMessage.noContent
           case "minLength":
-            return errorMessage.underContentLimit
+            return validationMessage.underContentLimit
           case "maxLength":
-            return errorMessage.overContentLimit
+            return validationMessage.overContentLimit
         }
       })(errors.content.type)
 

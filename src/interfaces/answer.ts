@@ -9,7 +9,7 @@
  *
  * **content** 답변 본문(string)
  *
- * **member_id** 답변한 유저 아이디 (number)
+ * **answer_member_id** 답변한 유저 아이디 (number)
  *
  * **rank_image_url** 답변한 유저 레벨 이미지(string)
  *
@@ -31,12 +31,13 @@
  */
 export interface Answer {
   answer_id: number
+  answer_member_id: number
   question_id: number
-  member_id: number
   content: string
   rank_image_url: string | null
+  rank_name: number
   member_image_url: string | null
-  created_by: string
+  member_nickname: string
   author_level: number
   answer_image_url: string | null
   created_date: string

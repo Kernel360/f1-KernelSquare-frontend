@@ -11,9 +11,9 @@ import type {
   GetCoffeeChatReservationDetailResponse,
 } from "@/interfaces/dto/coffee-chat/coffeechat-reservation-detail.dto"
 import type {
-  CreateCoffeeChatReservationRequest,
-  CreateCoffeeChatReservationResponse,
-} from "@/interfaces/dto/coffee-chat/create-coffeechat-reservation.dto"
+  CreateCoffeeChatPostRequest,
+  CreateCoffeeChatPostResponse,
+} from "@/interfaces/dto/coffee-chat/create-coffeechat-post.dto"
 import type { AxiosResponse } from "axios"
 import type {
   EnterChatRoomRequest,
@@ -61,28 +61,6 @@ export async function getCoffeeChatReservationDetail({
   return res
 }
 
-export async function createCoffeeChatReservation({
-  member_id,
-  title,
-  content,
-  hash_tags,
-  date_times,
-}: CreateCoffeeChatReservationRequest) {
-  const res = await apiInstance.post<
-    any,
-    AxiosResponse<CreateCoffeeChatReservationResponse>,
-    CreateCoffeeChatReservationRequest
-  >(RouteMap.coffeeChat.createCoffeeChatPost, {
-    member_id,
-    title,
-    content,
-    hash_tags,
-    date_times,
-  })
-
-  return res
-}
-
 export async function enterChatRoom({
   article_title,
   reservation_id,
@@ -106,17 +84,19 @@ export async function createCoffeeChatPost({
   content,
   hash_tags,
   date_times,
-}: CreateCoffeeChatReservationRequest) {
+  introduction,
+}: CreateCoffeeChatPostRequest) {
   const res = await apiInstance.post<
     any,
-    AxiosResponse<CreateCoffeeChatReservationResponse>,
-    CreateCoffeeChatReservationRequest
+    AxiosResponse<CreateCoffeeChatPostResponse>,
+    CreateCoffeeChatPostRequest
   >(RouteMap.coffeeChat.createCoffeeChatPost, {
     member_id,
     content,
     title,
     hash_tags,
     date_times,
+    introduction,
   })
 
   return res
@@ -148,7 +128,7 @@ export async function makeReservation({
   reservation_article_id,
   reservation_id,
   member_id,
-  start_time,
+  reservation_start_time,
 }: MakeReservationRequest) {
   const res = await apiInstance
     .put<any, AxiosResponse<MakeReservationResponse>, MakeReservationRequest>(
@@ -157,7 +137,7 @@ export async function makeReservation({
         reservation_article_id,
         reservation_id,
         member_id,
-        start_time,
+        reservation_start_time,
       },
     )
     .catch((err) => {

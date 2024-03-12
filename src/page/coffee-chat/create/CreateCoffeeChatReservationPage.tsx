@@ -10,7 +10,6 @@ import { useRouter } from "next/navigation"
 import { useQueryClient } from "@tanstack/react-query"
 import { useClientSession } from "@/hooks/useClientSession"
 import type { FieldErrors } from "react-hook-form"
-import ContentLoading from "@/components/shared/animation/ContentLoading"
 import { EditMode } from "@/page/askQuestion/components/AskQuestionPageControl"
 import Button from "@/components/shared/button/Button"
 import {
@@ -23,7 +22,7 @@ import ScheduleSection from "./components/ScheduleSection"
 import { CoffeeChatQueries } from "@/react-query/coffee-chat"
 import { useRecoilState } from "recoil"
 import { HashTagList } from "@/recoil/atoms/coffee-chat/hashtags"
-import { errorMessage } from "@/constants/message"
+import { errorMessage } from "@/constants/message/error"
 import dynamic from "next/dynamic"
 import { TimeCount } from "@/recoil/atoms/coffee-chat/schedule"
 import { useGetScheduleList } from "./hooks/useGetScheduleList"
@@ -32,6 +31,9 @@ import { AxiosError } from "axios"
 import { APIResponse } from "@/interfaces/dto/api-response"
 import { twJoin } from "tailwind-merge"
 import TextCounter from "@/components/shared/TextCounter"
+import notificationMessage from "@/constants/message/notification"
+import { validationMessage } from "@/constants/message/validation"
+import Textarea from "@/components/shared/textarea/Textarea"
 
 const MdEditor = dynamic(() => import("./components/MdEditor"), {
   ssr: false,
@@ -57,6 +59,7 @@ function CreateCoffeeChatReservationPage({
             defaultValues: {
               title: initialValues.title,
               content: initialValues.content,
+              introduction: initialValues.introduction,
             },
           }
         : {},
@@ -73,22 +76,22 @@ function CreateCoffeeChatReservationPage({
 
   const onSubmit = async (data: CoffeeChatFormData) => {
     if (!user)
-      return toast.error(errorMessage.unauthorized, {
+      return toast.error(notificationMessage.unauthorized, {
         toastId: "unauthorizedToCreateCoffeeChat",
         position: "top-center",
       })
     if (data.title.length < Limitation.title_limit_under)
-      return toast.error(errorMessage.underTitleLimit, {
+      return toast.error(validationMessage.underTitleLimit, {
         toastId: "underCoffeeChatTitleLimit",
         position: "top-center",
       })
     if (data.title.length > Limitation.title_limit_over)
-      return toast.error(errorMessage.overTitleLimit, {
+      return toast.error(validationMessage.overTitleLimit, {
         toastId: "overCoffeeChatTitleLimit",
         position: "top-center",
       })
     if (!editorRef.current?.getInstance().getMarkdown())
-      return toast.error(errorMessage.noContent, {
+      return toast.error(validationMessage.noContent, {
         toastId: "emptyCoffeeChatContent",
         position: "top-center",
       })
@@ -96,7 +99,7 @@ function CreateCoffeeChatReservationPage({
       editorRef.current?.getInstance().getMarkdown().length <
       Limitation.content_limit_under
     )
-      return toast.error(errorMessage.underContentLimit, {
+      return toast.error(validationMessage.underContentLimit, {
         toastId: "underCoffeeChatContent",
         position: "top-center",
       })
@@ -104,13 +107,13 @@ function CreateCoffeeChatReservationPage({
       editorRef.current?.getInstance().getMarkdown().length >
       Limitation.content_limit_over
     )
-      return toast.error(errorMessage.overContentLimit, {
+      return toast.error(validationMessage.overContentLimit, {
         toastId: "overCoffeeChatContent",
         position: "top-center",
       })
 
     if (timeCount === 0)
-      return toast.error(errorMessage.undertimeCntLimit, {
+      return toast.error(validationMessage.undertimeCntLimit, {
         toastId: "emptyCoffeeChatTime",
         position: "top-center",
       })
@@ -118,6 +121,7 @@ function CreateCoffeeChatReservationPage({
       {
         member_id: user.member_id,
         title: data.title,
+        introduction: data.introduction,
         content: editorRef.current?.getInstance().getMarkdown(),
         hash_tags,
         date_times: first.concat(twice).concat(third),
@@ -136,20 +140,15 @@ function CreateCoffeeChatReservationPage({
           if (error instanceof AxiosError) {
             const { response } = error as AxiosError<APIResponse>
 
-            toast.error(
-              response?.data.msg ?? errorMessage.failToCreateCoffeeChat,
-              {
-                toastId: "failToCreateCoffeeChat",
-                position: "top-center",
-                autoClose: 1000,
-              },
-            )
+            toast.error(response?.data.msg ?? errorMessage.createCoffeeChat, {
+              toastId: "failToCreateCoffeeChat",
+              position: "top-center",
+            })
             return
           }
-          toast.error(errorMessage.failToCreateCoffeeChat, {
+          toast.error(errorMessage.createCoffeeChat, {
             toastId: "failToCreateCoffeeChat",
             position: "top-center",
-            autoClose: 1000,
           })
         },
       },
@@ -158,7 +157,7 @@ function CreateCoffeeChatReservationPage({
 
   const onInvalid = async (errors: FieldErrors<CoffeeChatFormData>) => {
     if (errors.title?.type === "required") {
-      toast.error(errorMessage.notitle, {
+      toast.error(validationMessage.notitle, {
         toastId: "emptyCoffeeChatTitle",
         position: "top-center",
       })
@@ -173,6 +172,31 @@ function CreateCoffeeChatReservationPage({
   }
 
   if (!user) return
+
+  const handleSubmitButtonDisabled = () => {
+    const isValidTitle = () =>
+      !getValues("title") ||
+      getValues("title").length < Limitation.title_limit_under ||
+      getValues("title").length > Limitation.title_limit_over
+
+    const isValidIntroduction = () =>
+      !watch("introduction") ||
+      watch("introduction").length < Limitation.chat_introduction_limit_under ||
+      watch("introduction").length > Limitation.chat_introduction_limit_over
+
+    const isValidContent = () =>
+      !watch("content") ||
+      watch("content").length < Limitation.content_limit_under ||
+      watch("content").length > Limitation.content_limit_over
+
+    return (
+      !user ||
+      timeCount === 0 ||
+      isValidTitle() ||
+      isValidIntroduction() ||
+      isValidContent()
+    )
+  }
 
   const TitleInputClass = twJoin([
     "rounded-none border-r-0 border-l-0 border-t-0 text-3xl placeholder:text-3xl",
@@ -189,6 +213,7 @@ function CreateCoffeeChatReservationPage({
         className={`transition-opacity duration-1000 m-auto`}
       >
         {/* title section */}
+        <Spacing size={20} />
         <CoffeeChatSection className="border-transparent p-0">
           <Input
             id="title"
@@ -211,6 +236,28 @@ function CreateCoffeeChatReservationPage({
                   {"제목은 5자 이상 100자 이하여야 합니다."}
                 </Input.ErrorMessage>
               )}
+          </div>
+        </CoffeeChatSection>
+        <Spacing size={20} />
+        <CoffeeChatSection>
+          <div className="w-full">
+            <Textarea
+              className="w-full min-h-[100px] border-none outline-none focus:outline-none"
+              placeholder="커피챗의 내용이 명확하게 전달되도록 간결하게 요약해주세요. (10자 이상 150자 이하)"
+              {...register("introduction", {
+                required: true,
+                minLength: Limitation.chat_introduction_limit_under,
+                maxLength: Limitation.chat_introduction_limit_over,
+              })}
+            />
+          </div>
+          <div>
+            <TextCounter
+              text={watch("introduction") ?? ""}
+              min={Limitation.chat_introduction_limit_under}
+              max={Limitation.chat_introduction_limit_over}
+              className="text-lg block text-right h-2 mb-5"
+            />
           </div>
         </CoffeeChatSection>
         <Spacing size={20} />
@@ -239,16 +286,7 @@ function CreateCoffeeChatReservationPage({
         <ScheduleSection />
         <div className="flex justify-center">
           <Button
-            disabled={
-              !user ||
-              timeCount === 0 ||
-              !watch("content") ||
-              watch("content").length < Limitation.content_limit_under ||
-              watch("content").length > Limitation.content_limit_over ||
-              !getValues("title") ||
-              getValues("title").length < Limitation.title_limit_under ||
-              getValues("title").length > Limitation.title_limit_over
-            }
+            disabled={handleSubmitButtonDisabled()}
             buttonTheme="primary"
             className="p-5 py-3 my-10 disabled:bg-colorsGray disabled:text-colorsDarkGray"
             type="submit"

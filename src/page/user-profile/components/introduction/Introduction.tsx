@@ -3,13 +3,14 @@
 import { useForm } from "react-hook-form"
 import useIntroduction from "../../hooks/useIntroduction"
 import { useRef } from "react"
-import { buttonMessage, notificationMessage } from "@/constants/message"
+import notificationMessage from "@/constants/message/notification"
 import Button from "@/components/shared/button/Button"
 import UserProfileMenu from "../UserProfileMenu"
 import dynamic from "next/dynamic"
 import { Editor } from "@toast-ui/react-editor"
 import TextCounter from "@/components/shared/TextCounter"
 import Limitation from "@/constants/limitation"
+import buttonMessage from "@/constants/message/button"
 
 const MdEditor = dynamic(() => import("./MdEditor"), {
   ssr: false,

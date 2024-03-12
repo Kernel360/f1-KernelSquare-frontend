@@ -102,13 +102,14 @@ export const answerHandler = [
           ? targetQuestion.list.length + 1
           : Math.random() * 1000,
         question_id: questionId,
-        member_id: 1,
+        answer_member_id: 1,
         content,
         author_level: 1,
         rank_image_url: badge_url[1],
+        rank_name: 1,
         member_image_url:
           "https://mobirise.com/bootstrap-template//profile-template/assets/images/timothy-paul-smith-256424-1200x800.jpg",
-        created_by: targetMember.nickname,
+        member_nickname: targetMember.nickname,
         answer_image_url: image_url ? image_url : "",
         created_date: getNow(),
         modified_date: getNow(),
@@ -284,7 +285,7 @@ export const answerHandler = [
   // AI 인턴 호출 (자동 답변)
   http.post<
     { id: string },
-    Omit<CreateAnswerRequest, "questionId">,
+    Omit<CreateAIAutoAnswerRequest, "questionId">,
     CreateAIAutoAnswerResponse
   >(
     `${process.env.NEXT_PUBLIC_SERVER}${RouteMap.answer.createAIAutoAnswer()}`,
@@ -313,12 +314,13 @@ export const answerHandler = [
             ? targetQuestion.list.length + 1
             : Math.random() * 1000,
           question_id: questionId,
-          member_id: mockUsers[mockUsers.length - 1].id,
+          answer_member_id: mockUsers[mockUsers.length - 1].id,
           content: "AI 인턴의 답변입니다.",
           author_level: mockUsers[mockUsers.length - 1].level,
           rank_image_url: badge_url[mockUsers[mockUsers.length - 1].level],
+          rank_name: mockUsers[mockUsers.length - 1].level,
           member_image_url: mockUsers[mockUsers.length - 1].image_url,
-          created_by: mockUsers[mockUsers.length - 1].nickname,
+          member_nickname: mockUsers[mockUsers.length - 1].nickname,
           answer_image_url: mockUsers[mockUsers.length - 1].image_url ?? "",
           created_date: getNow(),
           modified_date: getNow(),

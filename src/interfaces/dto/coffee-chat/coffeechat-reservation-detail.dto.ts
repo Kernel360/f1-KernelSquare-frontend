@@ -8,14 +8,14 @@ export interface GetCoffeeChatReservationDetailRequest {
 /**
  * reservation_id: 예약 id
  * room_id": 채팅방 id
- * start_time: 커피챗 시작 시간
+ * reservation_start_time: 커피챗 시작 시간
  * mentee_nickname: 예약한 멘티 닉네임
  * mentee_image_url: 예약한 멘티 프로필 사진
  */
 export interface CoffeeChatReservationTime {
   reservation_id: number
   room_id: number
-  start_time: string
+  reservation_start_time: string
   mentee_nickname: string | null
   mentee_image_url: string | null
 }

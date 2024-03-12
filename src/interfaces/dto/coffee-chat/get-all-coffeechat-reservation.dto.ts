@@ -26,12 +26,14 @@ export interface CoffeeChatReservation {
   level: number
   level_image_url: string
   title: string
-  content: string
+  introduction: string
   hash_tag_list: string[]
   created_date: string
   modified_date: string
-  article_status: boolean
-  full_check: number
+  article_status: boolean // 마감 여부
+  coffee_chat_count: number // 이전 멘토링 진행 횟수
+  available_reservation_count: number // 현재 예약 가능한 수
+  total_reservation_count: number // 전체 예약 수
 }
 
 export interface CoffeeChatReservationListPayload {

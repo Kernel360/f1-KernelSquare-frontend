@@ -10,7 +10,7 @@ import EnterCoffeeChatButton, {
 import { getKorExactTime } from "@/util/getDate"
 import { CoffeeChatQueries } from "@/react-query/coffee-chat"
 import { toast } from "react-toastify"
-import { errorMessage, successMessage } from "@/constants/message"
+import { errorMessage } from "@/constants/message/error"
 import { useQueryClient } from "@tanstack/react-query"
 import queryKey from "@/constants/queryKey"
 import { revalidatePage } from "@/util/actions/revalidatePage"
@@ -19,6 +19,7 @@ import { APIResponse } from "@/interfaces/dto/api-response"
 import ConfirmModal from "@/components/shared/confirm-modal/ConfirmModal"
 import { useProgressModal } from "@/hooks/useProgressModal"
 import dayjs from "dayjs"
+import successMessage from "@/constants/message/success"
 
 type EnterChatRoomArea = EnterCoffeeChatProps & {}
 
@@ -108,7 +109,6 @@ function LoginedUserArea({
             toast.success(successMessage.deleteCoffeeChatReservation, {
               toastId: "successToDeleteReservation",
               position: "top-center",
-              autoClose: 1000,
             })
             setTimeout(() => {
               queryClient.resetQueries({
@@ -121,18 +121,19 @@ function LoginedUserArea({
             if (error instanceof AxiosError) {
               const { response } = error as AxiosError<APIResponse>
 
-              toast.error(response?.data.msg ?? errorMessage.failToReserve, {
-                toastId: "failToCancleReservation",
-                position: "top-center",
-                autoClose: 1000,
-              })
+              toast.error(
+                response?.data.msg ?? errorMessage.reserveCoffeeChat,
+                {
+                  toastId: "failToCancleReservation",
+                  position: "top-center",
+                },
+              )
               return
             }
 
-            toast.error(errorMessage.failToCancleReservation, {
+            toast.error(errorMessage.cancleReservation, {
               toastId: "failToCancleReservation",
               position: "top-center",
-              autoClose: 1000,
             })
           },
         },

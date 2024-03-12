@@ -1,11 +1,7 @@
 "use client"
 
 import ConfirmModal from "@/components/shared/confirm-modal/ConfirmModal"
-import {
-  errorMessage,
-  notificationMessage,
-  successMessage,
-} from "@/constants/message"
+import { errorMessage } from "@/constants/message/error"
 import useModal from "@/hooks/useModal"
 import { useQueryClient } from "@tanstack/react-query"
 import { toast } from "react-toastify"
@@ -18,6 +14,9 @@ import { answerQueries } from "@/react-query/answers"
 import type { Answer } from "@/interfaces/answer"
 import type { ModalState } from "@/interfaces/modal"
 import { findImageLinkUrlFromMarkdown } from "@/util/editor"
+import cancleMessage from "@/constants/message/cancle"
+import successMessage from "@/constants/message/success"
+import { validationMessage } from "@/constants/message/validation"
 
 export interface EditValueProps {
   submitValue: string | undefined
@@ -47,10 +46,9 @@ const useHandleMyAnswer = ({ answerId, questionId }: AnswerProps) => {
 
   const handleEditValue = ({ submitValue, answer }: EditValueProps) => {
     if (checkNullValue(submitValue)) {
-      toast.error(errorMessage.noContent, {
+      toast.error(validationMessage.noContent, {
         toastId: "emptyAnswerContent",
         position: "top-center",
-        autoClose: 1000,
       })
       return
     }
@@ -112,7 +110,7 @@ const useHandleMyAnswer = ({ answerId, questionId }: AnswerProps) => {
       }
     }
     const onCancel = () => {
-      toast.error(notificationMessage.cancleDeleteAnswer, {
+      toast.error(cancleMessage.deleteAnswer, {
         toastId: "cancleDeleteAnswer",
         position: "top-center",
       })

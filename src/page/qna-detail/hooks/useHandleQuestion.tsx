@@ -1,7 +1,6 @@
 "use client"
 
 import ConfirmModal from "@/components/shared/confirm-modal/ConfirmModal"
-import { notificationMessage } from "@/constants/message"
 import queryKey from "@/constants/queryKey"
 import useModal from "@/hooks/useModal"
 import { deleteQuestion } from "@/service/question"
@@ -12,6 +11,7 @@ import { useDeleteImage } from "@/hooks/image/useDeleteImage"
 import type { ModalState } from "@/interfaces/modal"
 import type { Question } from "@/interfaces/question"
 import { findImageLinkUrlFromMarkdown } from "@/util/editor"
+import cancleMessage from "@/constants/message/cancle"
 
 export interface QuestionProps {
   questionId: number
@@ -61,7 +61,7 @@ const useHandleQuestion = () => {
       }
     }
     const onCancel = () => {
-      toast.error(notificationMessage.cancleDeleteQuestion, {
+      toast.error(cancleMessage.deleteQuestion, {
         toastId: "cancleDeleteQuestion",
         position: "top-center",
       })

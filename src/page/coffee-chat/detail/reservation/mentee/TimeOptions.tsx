@@ -2,14 +2,10 @@
 
 import { twJoin } from "tailwind-merge"
 import Button from "@/components/shared/button/Button"
-import { getDate, getHour, getTime } from "@/util/getDate"
+import { getDate, getTime } from "@/util/getDate"
 import { CoffeeChatReservationTime } from "@/interfaces/dto/coffee-chat/coffeechat-reservation-detail.dto"
 import { toast } from "react-toastify"
-import {
-  errorMessage,
-  notificationMessage,
-  successMessage,
-} from "@/constants/message"
+import { errorMessage } from "@/constants/message/error"
 import useModal from "@/hooks/useModal"
 import ConfirmModal from "@/components/shared/confirm-modal/ConfirmModal"
 import { useClientSession } from "@/hooks/useClientSession"
@@ -23,6 +19,10 @@ import queryKey from "@/constants/queryKey"
 import { AxiosError } from "axios"
 import { APIResponse } from "@/interfaces/dto/api-response"
 import { revalidatePage } from "@/util/actions/revalidatePage"
+import cancleMessage from "@/constants/message/cancle"
+import successMessage from "@/constants/message/success"
+import notificationMessage from "@/constants/message/notification"
+import { validationMessage } from "@/constants/message/validation"
 
 type TimeOptionsProps = {
   selectedDay: string
@@ -50,7 +50,7 @@ const TimeOptions = ({ reservation, date }: TimeOptionsProps) => {
     nickname: string | null,
   ) => {
     if (!user)
-      return toast.error(errorMessage.unauthorized, {
+      return toast.error(notificationMessage.unauthorized, {
         toastId: "unauthorizedToRegister",
         position: "top-center",
       })
@@ -64,7 +64,6 @@ const TimeOptions = ({ reservation, date }: TimeOptionsProps) => {
               toast.success(successMessage.deleteCoffeeChatReservation, {
                 toastId: "successToDeleteReservation",
                 position: "top-center",
-                autoClose: 1000,
               })
               setTimeout(() => {
                 queryClient.resetQueries({
@@ -77,18 +76,19 @@ const TimeOptions = ({ reservation, date }: TimeOptionsProps) => {
               if (error instanceof AxiosError) {
                 const { response } = error as AxiosError<APIResponse>
 
-                toast.error(response?.data.msg ?? errorMessage.failToReserve, {
-                  toastId: "failToCancleReservation",
-                  position: "top-center",
-                  autoClose: 1000,
-                })
+                toast.error(
+                  response?.data.msg ?? errorMessage.reserveCoffeeChat,
+                  {
+                    toastId: "failToCancleReservation",
+                    position: "top-center",
+                  },
+                )
                 return
               }
 
-              toast.error(errorMessage.failToCancleReservation, {
+              toast.error(errorMessage.cancleReservation, {
                 toastId: "failToCancleReservation",
                 position: "top-center",
-                autoClose: 1000,
               })
             },
           },
@@ -107,14 +107,14 @@ const TimeOptions = ({ reservation, date }: TimeOptionsProps) => {
     }
     // 이미 해당 커피챗의 다른 시간을 예약했을 경우
     if (isAlreadyReservedByMe)
-      return toast.error(errorMessage.youAlreadyReserved, {
+      return toast.error(validationMessage.youAlreadyReserved, {
         toastId: "youAlreadyReserved",
         position: "top-center",
       })
 
     // 다른 사람이 이미 예약한 시간대를 선택했을 경우
     if (nickname && nickname !== user.nickname)
-      return toast.error(errorMessage.alreadyReserved, {
+      return toast.error(validationMessage.alreadyReserved, {
         toastId: "othersAlreadyReserved",
         position: "top-center",
       })
@@ -125,14 +125,13 @@ const TimeOptions = ({ reservation, date }: TimeOptionsProps) => {
             reservation_article_id: Number(params.id),
             reservation_id: time.reservation_id,
             member_id: user.member_id,
-            start_time: time.start_time,
+            reservation_start_time: time.reservation_start_time,
           },
           {
             onSuccess: () => {
               toast.success(successMessage.reserveCoffeeChat, {
                 toastId: "successToCreateReservation",
                 position: "top-center",
-                autoClose: 1000,
               })
               setTimeout(() => {
                 queryClient.resetQueries({
@@ -146,18 +145,19 @@ const TimeOptions = ({ reservation, date }: TimeOptionsProps) => {
               if (error instanceof AxiosError) {
                 const { response } = error as AxiosError<APIResponse>
 
-                toast.error(response?.data.msg ?? errorMessage.failToReserve, {
-                  toastId: "failToCreateReservation",
-                  position: "top-center",
-                  autoClose: 1000,
-                })
+                toast.error(
+                  response?.data.msg ?? errorMessage.reserveCoffeeChat,
+                  {
+                    toastId: "failToCreateReservation",
+                    position: "top-center",
+                  },
+                )
                 return
               }
 
-              toast.error(errorMessage.failToReserve, {
+              toast.error(errorMessage.reserveCoffeeChat, {
                 toastId: "failToCreateReservation",
                 position: "top-center",
-                autoClose: 1000,
               })
             },
           },
@@ -165,7 +165,7 @@ const TimeOptions = ({ reservation, date }: TimeOptionsProps) => {
       }
 
       const cancleToCreate = () => {
-        toast.error(notificationMessage.cancleReservation, {
+        toast.error(cancleMessage.createReservation, {
           toastId: "cancleCreateReservation",
           position: "top-center",
         })
@@ -209,8 +209,9 @@ const TimeOptions = ({ reservation, date }: TimeOptionsProps) => {
 
   if (
     !reservation.filter(
-      ({ start_time }) =>
-        getDate({ date: date + "" }) === getDate({ date: start_time }),
+      ({ reservation_start_time }) =>
+        getDate({ date: date + "" }) ===
+        getDate({ date: reservation_start_time }),
     ).length
   )
     return (
@@ -223,8 +224,9 @@ const TimeOptions = ({ reservation, date }: TimeOptionsProps) => {
     <div className="w-full grid grid-cols-1 sm:grid-rows-4 sm:grid-cols-4 gap-4 shrink-0 m-auto">
       {reservation
         .filter(
-          ({ start_time }) =>
-            getDate({ date: date + "" }) === getDate({ date: start_time }),
+          ({ reservation_start_time }) =>
+            getDate({ date: date + "" }) ===
+            getDate({ date: reservation_start_time }),
         )
         .map((time, i) => (
           <Button
@@ -244,7 +246,7 @@ const TimeOptions = ({ reservation, date }: TimeOptionsProps) => {
                   <Icons.UserProfile />
                 </div>
               )}
-              <div>{getTime(time.start_time)}</div>
+              <div>{getTime(time.reservation_start_time)}</div>
             </span>
           </Button>
         ))}
