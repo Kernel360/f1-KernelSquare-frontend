@@ -1,7 +1,7 @@
 "use client"
 
 import { DirectionIcons } from "@/components/icons/Icons"
-import { CodingMeetingListFilter } from "@/interfaces/dto/coding-meeting/get-coding-meetingl-list.dto"
+import { getCodingMeetingsTargetHistory } from "@/util/historySession/coding-meetings"
 import { useRouter } from "next/navigation"
 
 function DetailHeader() {
@@ -10,9 +10,11 @@ function DetailHeader() {
   const viewCodingMeetingList = () => {
     const searchParams = new URLSearchParams()
 
-    searchParams.set("page", "0")
-    searchParams.set("size", "10")
-    searchParams.set("filter", "all" as CodingMeetingListFilter)
+    const codingMeetingsTargetHistory = getCodingMeetingsTargetHistory()
+
+    searchParams.set("page", `${codingMeetingsTargetHistory.page}`)
+    searchParams.set("size", `${codingMeetingsTargetHistory.size}`)
+    searchParams.set("filter", codingMeetingsTargetHistory.filter)
 
     push(`/coding-meetings?${searchParams.toString()}`)
   }
@@ -29,3 +31,13 @@ function DetailHeader() {
 }
 
 export default DetailHeader
+
+function validPageSearchParams(pageSearchParam: string) {
+  const pageNumber = Number(pageSearchParam)
+
+  return (
+    !Number.isNaN(pageNumber) &&
+    pageNumber > 0 &&
+    !pageSearchParam.includes(".")
+  )
+}
