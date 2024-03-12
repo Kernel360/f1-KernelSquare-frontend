@@ -20,18 +20,15 @@ interface MentorProps {
 }
 
 function ReservationForMentor({ reservation, created, title }: MentorProps) {
-  const [date, setDate] = useState<Value>(
-    new Date(reservation[0].reservation_start_time),
-  )
+  const [date, setDate] = useState<Value>(new Date(reservation[0].start_time))
   const isReserved = (nickname: string | null) =>
     twJoin(
       ["ml-2 text-[20px] shrink-0"],
       [nickname && "text-primary font-bold"],
     )
   const target = reservation.filter(
-    ({ reservation_start_time }) =>
-      getDate({ date: date + "" }) ===
-      getDate({ date: reservation_start_time }),
+    ({ start_time }) =>
+      getDate({ date: date + "" }) === getDate({ date: start_time }),
   )
 
   useEffect(() => {
@@ -47,7 +44,7 @@ function ReservationForMentor({ reservation, created, title }: MentorProps) {
         <div>
           <CustomCalendar
             limit={2}
-            start={reservation[0].reservation_start_time}
+            start={reservation[0].start_time}
             date={date}
             setDate={setDate}
             isClass
@@ -91,7 +88,7 @@ function ReservationForMentor({ reservation, created, title }: MentorProps) {
                     <div className="flex items-center">
                       <CircleIcons.Line className="shrink-0" />
                       <div className={isReserved(time.mentee_nickname)}>
-                        {getTime(time.reservation_start_time)}
+                        {getTime(time.start_time)}
                       </div>
                     </div>
                     <ReservedTime
@@ -140,7 +137,7 @@ function ReservedTime({ time, title, reservation_id }: ReservedTimeProps) {
           <EnterCoffeeChatButton
             articleTitle={title}
             roomId={time.room_id}
-            startTime={time.reservation_start_time}
+            startTime={time.start_time}
             reservation_id={reservation_id}
             className="px-2 py-2 w-max shrink-0 font-semibold text-sm underline bg-transparent sm:bg-primary sm:no-underline sm:text-white"
           />
