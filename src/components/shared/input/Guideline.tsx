@@ -1,4 +1,4 @@
-import { Validator } from "@/util/validate"
+import { Validator, validPasswordSpecialList } from "@/util/validate"
 import { twMerge } from "tailwind-merge"
 
 interface GuideLineLabelProps {
@@ -67,7 +67,9 @@ Guideline.PasswordLabel = function GuideLinePasswordLabel({
       <Delimeter />
       <span className={validClassNames(minNumbers)}>숫자</span>
       <Delimeter />
-      <span className={validClassNames(minSymbols)}>특수문자</span>
+      <span className={validClassNames(minSymbols)}>
+        허용된 특수문자 {validPasswordSpecialList.join("")} 만 사용
+      </span>
       <br />
       <span className={"text-secondary ml-2"}>각 1자 이상 포함</span>
     </>
