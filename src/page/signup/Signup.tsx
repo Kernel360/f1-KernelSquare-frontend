@@ -10,7 +10,7 @@ import { signup } from "@/service/auth"
 import { Validator } from "@/util/validate"
 import { useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
-import { useForm } from "react-hook-form"
+import { FieldErrors, useForm } from "react-hook-form"
 import { useRecoilState, useResetRecoilState, useSetRecoilState } from "recoil"
 import {
   FieldDuplicateState,
@@ -98,11 +98,6 @@ function Signup() {
     passwordCheck,
     image_url,
   }: SignupHookFormData) => {
-    // submit시 이전 값을 보존하기 위해 설정
-    // 하지 않을 경우 포커스 같은 유저 액션이 있기 전까지는
-    // 해당 필드가 빈 값이기 때문에 가이드라인에서 valid가 false로 됨
-    reset({ email, nickname, password, passwordCheck, image_url })
-
     // api 요청 중(onSubmit 실행 중)인 경우 재 요청되지 않도록 함
     if (isSubmitting) {
       return
@@ -163,6 +158,17 @@ function Signup() {
       return
     }
 
+    if (!isValid) {
+      onInvalid(errors)
+
+      return
+    }
+
+    // submit시 이전 값을 보존하기 위해 설정
+    // 하지 않을 경우 포커스 같은 유저 액션이 있기 전까지는
+    // 해당 필드가 빈 값이기 때문에 가이드라인에서 valid가 false로 됨
+    reset({ email, nickname, password, passwordCheck, image_url })
+
     /* ------ */
     setStep("start")
 
@@ -185,6 +191,13 @@ function Signup() {
     } catch (error) {
       setStep("fail")
     }
+  }
+
+  const onInvalid = (errors: FieldErrors<SignupHookFormData>) => {
+    toast.error("유효하지 않습니다", {
+      position: "top-center",
+      toastId: "signupFieldError",
+    })
   }
 
   const handleFocus = (e: React.FocusEvent<HTMLDivElement, Element>) => {
@@ -229,7 +242,10 @@ function Signup() {
 
   return (
     <div className="flex w-full h-full min-h-[100dvh] justify-center items-center box-border p-4">
-      <form className="border p-4 rounded-lg" onSubmit={handleSubmit(onSubmit)}>
+      <form
+        className="border p-4 rounded-lg"
+        onSubmit={handleSubmit(onSubmit, onInvalid)}
+      >
         {/* logo - click: move Home */}
         <section className="w-full flex justify-center items-center">
           <Link href={"/"} className="flex justify-center items-center mx-auto">
