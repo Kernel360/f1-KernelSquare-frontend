@@ -7,6 +7,9 @@ import { twMerge } from "tailwind-merge"
 import { ForwardedRef, forwardRef } from "react"
 import TextCounter from "@/components/shared/TextCounter"
 import { commentFormMessages, commentLengthLimit } from "./Comments"
+import Truncate from "@/components/shared/Truncate"
+import Button from "@/components/shared/button/Button"
+import { IoIosArrowUp } from "react-icons/io"
 
 interface CommentContentProps {
   comment: CodingMeetingComment
@@ -38,9 +41,21 @@ function CommentContent(
 
   return (
     <div className="relative mt-4">
-      <div className={justContentareaClassNames}>
-        {comment.coding_meeting_comment_content}
-      </div>
+      <Truncate
+        less={({ showLess }) => (
+          <Button
+            className="text-xs text-[#828282] font-medium gap-1"
+            onClick={showLess}
+          >
+            <IoIosArrowUp className="text-sm" />
+            댓글 접기
+          </Button>
+        )}
+      >
+        <div className={justContentareaClassNames}>
+          {comment.coding_meeting_comment_content}
+        </div>
+      </Truncate>
       <textarea
         ref={ref}
         className={textareaClassNames}
