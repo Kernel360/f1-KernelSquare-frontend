@@ -128,7 +128,7 @@ export async function makeReservation({
   reservation_article_id,
   reservation_id,
   member_id,
-  start_time,
+  reservation_start_time,
 }: MakeReservationRequest) {
   const res = await apiInstance
     .put<any, AxiosResponse<MakeReservationResponse>, MakeReservationRequest>(
@@ -137,7 +137,7 @@ export async function makeReservation({
         reservation_article_id,
         reservation_id,
         member_id,
-        start_time,
+        reservation_start_time,
       },
     )
     .catch((err) => {

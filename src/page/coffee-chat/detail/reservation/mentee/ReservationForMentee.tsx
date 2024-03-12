@@ -2,19 +2,10 @@
 
 import { getDate } from "@/util/getDate"
 import { useProgressModal } from "@/hooks/useProgressModal"
-import { useParams } from "next/navigation"
-import { MockReservations } from "@/mocks/db/coffee-chat"
 import CustomCalendar from "../CustomCalendar/CustomCalendar"
 import { useEffect, useState } from "react"
 import type { Value } from "../CustomCalendar/Calendar.types"
-import {
-  CoffeeChatReservationDetailPayload,
-  CoffeeChatReservationTime,
-} from "@/interfaces/dto/coffee-chat/coffeechat-reservation-detail.dto"
-import { twJoin } from "tailwind-merge"
-import { SelectItem } from "@/components/ui/Select"
-import dayjs from "dayjs"
-import { DirectionIcons } from "@/components/icons/Icons"
+import { CoffeeChatReservationTime } from "@/interfaces/dto/coffee-chat/coffeechat-reservation-detail.dto"
 import TimeOptions from "./TimeOptions"
 import { FaCalendarAlt } from "react-icons/fa"
 import { revalidatePage } from "@/util/actions/revalidatePage"
@@ -26,7 +17,9 @@ interface MenteeProps {
 }
 
 function ReservationForMentee({ reservation }: MenteeProps) {
-  const [date, setDate] = useState<Value>(new Date(reservation[0].start_time))
+  const [date, setDate] = useState<Value>(
+    new Date(reservation[0].reservation_start_time),
+  )
 
   const { ProgressModalView } = useProgressModal()
 
@@ -59,7 +52,7 @@ function ReservationForMentee({ reservation }: MenteeProps) {
       </div>
       <div className="flex justify-around flex-wrap">
         <CustomCalendar
-          start={reservation[0].start_time}
+          start={reservation[0].reservation_start_time}
           limit={2}
           date={date}
           setDate={setDate}
@@ -82,7 +75,9 @@ function ReservationForMentee({ reservation }: MenteeProps) {
           <div className="flex w-full justify-between mt-5 text-center">
             <TimeOptions
               reservation={reservation}
-              selectedDay={getDate({ date: reservation[0].start_time })}
+              selectedDay={getDate({
+                date: reservation[0].reservation_start_time,
+              })}
               date={date}
             />
           </div>
