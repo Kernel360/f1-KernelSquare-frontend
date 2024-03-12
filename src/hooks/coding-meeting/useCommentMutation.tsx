@@ -12,6 +12,7 @@ import { AxiosError, HttpStatusCode } from "axios"
 import { toast } from "react-toastify"
 import { useResetRecoilState } from "recoil"
 import { useClientSession } from "../useClientSession"
+import { commentLengthLimit } from "@/page/coding-meetings/detail/comment/Comments"
 
 export function useCommentMutation() {
   const { clientSessionReset } = useClientSession()
@@ -142,17 +143,19 @@ export function useCommentMutation() {
         },
       } as const
     }
-    if (comment.length < 10) {
-      return {
-        comment: {
-          type: "minLength",
-        },
-      } as const
-    }
-    if (comment.length > 10000) {
+
+    if (comment.length > commentLengthLimit.max) {
       return {
         comment: {
           type: "maxLength",
+        },
+      } as const
+    }
+
+    if (comment.length && comment.trim().length === 0) {
+      return {
+        comment: {
+          type: "isEmpty",
         },
       } as const
     }

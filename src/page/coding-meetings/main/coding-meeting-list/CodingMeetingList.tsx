@@ -7,17 +7,18 @@ import NoContent from "@/components/shared/animation/NoContent"
 import Button from "@/components/shared/button/Button"
 import HashTag from "@/components/shared/tag/HashTag"
 import { useClientSession } from "@/hooks/useClientSession"
-import { GetCodingMeetingListResponse } from "@/interfaces/dto/coding-meeting/get-coding-meetingl-list.dto"
 import {
-  getCollapsedDate,
-  getKorDayjs,
-  getKorRelativeTime,
-} from "@/util/getDate"
+  CodingMeetingListFilter,
+  GetCodingMeetingListResponse,
+} from "@/interfaces/dto/coding-meeting/get-coding-meetingl-list.dto"
+import { getCollapsedDate, getKorRelativeTime } from "@/util/getDate"
 import dayjs from "dayjs"
 import Image from "next/image"
 import Link from "next/link"
-import { useRouter } from "next/navigation"
+import { useRouter, useSearchParams } from "next/navigation"
 import { twJoin } from "tailwind-merge"
+import { useEffect } from "react"
+import { setCodingMeetingsHistorySession } from "@/util/historySession/coding-meetings"
 
 interface CodingMeetingListProps {
   codingMeetings: NonNullable<GetCodingMeetingListResponse["data"]>["list"]
@@ -27,6 +28,8 @@ function CodingMeetingList({ codingMeetings }: CodingMeetingListProps) {
   const { user } = useClientSession()
 
   const { push } = useRouter()
+
+  const searchParams = useSearchParams()
 
   const now = dayjs().format()
 
@@ -45,6 +48,14 @@ function CodingMeetingList({ codingMeetings }: CodingMeetingListProps) {
     (token: string) => (e: React.MouseEvent<HTMLLIElement>) => {
       push(detailHref(token))
     }
+
+  useEffect(() => {
+    setCodingMeetingsHistorySession({
+      page: searchParams.get("page"),
+      size: "10",
+      filter: searchParams.get("filter") as CodingMeetingListFilter | null,
+    })
+  }, [searchParams])
 
   return (
     <div className="w-full mx-auto">
