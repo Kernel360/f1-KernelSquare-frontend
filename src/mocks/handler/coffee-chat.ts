@@ -258,7 +258,7 @@ export const coffeeChatHandler = [
         date_times: date_times.map((date, i) => ({
           reservation_id: Math.random() * 10000,
           room_id: Math.random() * 10000,
-          reservation_start_time: date,
+          start_time: date,
           mentee_nickname: null,
           mentee_image_url: null,
         })),
@@ -372,7 +372,7 @@ export const coffeeChatHandler = [
       }
 
       const targetTime = targetArticle.date_times.find(
-        (time) => time.reservation_start_time === reservation_start_time,
+        (time) => time.start_time === reservation_start_time,
       )
 
       if (!targetTime) {
@@ -423,7 +423,7 @@ export const coffeeChatHandler = [
 
       const hasDuplicateMentoringTime = MockReservations.find(
         (res) =>
-          res.reservation_start_time === reservation_start_time &&
+          res.start_time === reservation_start_time &&
           res.reservation_id !== reservation_id &&
           res.mentee_nickname === targetMember.nickname,
       )

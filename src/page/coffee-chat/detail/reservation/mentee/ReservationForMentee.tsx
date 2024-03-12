@@ -16,9 +16,7 @@ interface MenteeProps {
 }
 
 function ReservationForMentee({ reservation }: MenteeProps) {
-  const [date, setDate] = useState<Value>(
-    new Date(reservation[0].reservation_start_time),
-  )
+  const [date, setDate] = useState<Value>(new Date(reservation[0].start_time))
 
   const { ProgressModalView } = useProgressModal()
 
@@ -42,7 +40,7 @@ function ReservationForMentee({ reservation }: MenteeProps) {
       </div>
       <div className="flex justify-around flex-wrap">
         <CustomCalendar
-          start={reservation[0].reservation_start_time}
+          start={reservation[0].start_time}
           limit={2}
           date={date}
           setDate={setDate}
@@ -66,7 +64,7 @@ function ReservationForMentee({ reservation }: MenteeProps) {
             <TimeOptions
               reservation={reservation}
               selectedDay={getDate({
-                date: reservation[0].reservation_start_time,
+                date: reservation[0].start_time,
               })}
               date={date}
             />

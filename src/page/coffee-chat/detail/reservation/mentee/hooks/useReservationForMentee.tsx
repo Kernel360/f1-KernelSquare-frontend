@@ -94,7 +94,7 @@ const useReservationForMentee = () => {
       })
     }
     // 지난 시간을 예약했을 경우
-    if (filterTime(time.reservation_start_time))
+    if (filterTime(time.start_time))
       return toast.error(validationMessage.beforeNow, {
         toastId: "beforeNow",
         position: "top-center",
@@ -120,7 +120,7 @@ const useReservationForMentee = () => {
             reservation_article_id: Number(params.id),
             reservation_id: time.reservation_id,
             member_id: user.member_id,
-            reservation_start_time: time.reservation_start_time,
+            reservation_start_time: time.start_time,
           },
           {
             onSuccess: () => {

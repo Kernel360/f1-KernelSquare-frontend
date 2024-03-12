@@ -9,7 +9,6 @@ import Image from "next/image"
 import { Icons } from "@/components/icons/Icons"
 import { Value } from "../CustomCalendar/Calendar.types"
 import useReservationForMentee from "./hooks/useReservationForMentee"
-import dayjs from "dayjs"
 
 type TimeOptionsProps = {
   selectedDay: string
@@ -60,9 +59,8 @@ const TimeOptions = ({ reservation, date }: TimeOptionsProps) => {
   // 해당 일자에 멘토링 일정이 없는 경우
   if (
     !reservation.filter(
-      ({ reservation_start_time }) =>
-        getDate({ date: date + "" }) ===
-        getDate({ date: reservation_start_time }),
+      ({ start_time }) =>
+        getDate({ date: date + "" }) === getDate({ date: start_time }),
     ).length
   )
     return (
@@ -75,9 +73,8 @@ const TimeOptions = ({ reservation, date }: TimeOptionsProps) => {
     <div className="w-full grid grid-cols-1 sm:grid-rows-4 sm:grid-cols-4 gap-4 shrink-0 m-auto">
       {reservation
         .filter(
-          ({ reservation_start_time }) =>
-            getDate({ date: date + "" }) ===
-            getDate({ date: reservation_start_time }),
+          ({ start_time }) =>
+            getDate({ date: date + "" }) === getDate({ date: start_time }),
         )
         .map((time, i) => (
           <Button
@@ -90,12 +87,7 @@ const TimeOptions = ({ reservation, date }: TimeOptionsProps) => {
             }
             disabled={!!time.mentee_nickname}
           >
-            <span
-              className={isReserved(
-                time.mentee_nickname,
-                time.reservation_start_time,
-              )}
-            >
+            <span className={isReserved(time.mentee_nickname, time.start_time)}>
               {time.mentee_image_url && (
                 <ProfileImage image_url={time.mentee_image_url} />
               )}
@@ -104,7 +96,7 @@ const TimeOptions = ({ reservation, date }: TimeOptionsProps) => {
                   <Icons.UserProfile />
                 </div>
               )}
-              <div>{getTime(time.reservation_start_time)}</div>
+              <div>{getTime(time.start_time)}</div>
             </span>
           </Button>
         ))}
