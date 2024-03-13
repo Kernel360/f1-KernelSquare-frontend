@@ -46,6 +46,7 @@ jobs:
             docker rm kernel_frontend_app
             fi
             docker run --name kernel_frontend_app --restart=always -itd -p 3000:3000 ${{ secrets.DOCKER_TAG }}
+            docker rmi $(docker images -q -f "dangling=true")
       - name: Remove Github Actions IP From Security Group
         if: always()
         run: |
