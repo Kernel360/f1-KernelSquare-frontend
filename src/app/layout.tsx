@@ -13,6 +13,7 @@ import "@toast-ui/editor/dist/toastui-editor.css"
 import ToastContainer from "@/components/shared/toast/ToastContainer"
 import ScrollTop from "@/components/shared/ScrollTop"
 import ToastDismissEventListener from "@/components/layout/ToastDismissListener"
+import GoogleAnalyticsProvider from "@/google-analytics/GoogleAnalyticsProvider"
 
 export const dynamic = "force-dynamic"
 
@@ -36,6 +37,7 @@ export default function RootLayout({
   return (
     <html lang="ko">
       <body>
+        <GoogleAnalyticsProvider />
         <RecoilProvider>
           <ReactQueryProvider>
             <MSW />
