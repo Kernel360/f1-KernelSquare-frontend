@@ -19,10 +19,14 @@ import dayjs from "dayjs"
 import { encrypt } from "@/util/crypto"
 import { setAuthCookie } from "@/util/actions/cookie"
 import { useSetRecoilState } from "recoil"
+import LogoWithRowText from "../icons/LogoWithRowText"
 import type { LoginFormData } from "@/interfaces/form"
-import Logo from "../icons/Logo"
 
-function LoginForm() {
+interface LoginFormProps {
+  onSuccess?: (user: NonNullable<SessionPayload>) => void
+}
+
+function LoginForm({ onSuccess }: LoginFormProps) {
   const {
     register,
     handleSubmit,
@@ -75,6 +79,12 @@ function LoginForm() {
       await revalidatePage("*")
 
       closeModal()
+
+      if (onSuccess) {
+        setTimeout(() => {
+          onSuccess({ ...payload, expires: expires.toJSON() })
+        }, 0)
+      }
     } catch (error) {
       /*
         서버에서 유효하지 않은 응답이 오는 경우
@@ -98,12 +108,9 @@ function LoginForm() {
       onSubmit={handleSubmit(onSubmit, onInvalid)}
       className="w-full sm:w-[320px]"
     >
-      <div className="w-full flex gap-2 justify-center items-center">
-        <Logo className="text-[40px]" />
-        <h3 className="text-center text-2xl font-bold text-secondary">
-          <span className="font-bold">KERNEL</span>&nbsp;
-          <span className="font-bold">SQUARE</span>
-        </h3>
+      <div className="max-w-full w-full h-12 flex gap-2 justify-center items-center">
+        <LogoWithRowText className="w-full h-full max-w-[262px]" />
+        <h2 className="sr-only">kernel square</h2>
       </div>
       <Spacing size={24} />
       <Input

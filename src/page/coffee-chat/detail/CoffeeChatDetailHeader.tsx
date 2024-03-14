@@ -1,4 +1,4 @@
-import Profile from "@/components/shared/Profile"
+import Profile from "@/components/shared/user/Profile"
 import Spacing from "@/components/shared/Spacing"
 import HashTag from "@/components/shared/tag/HashTag"
 import Image from "next/image"
@@ -7,13 +7,17 @@ import Button from "@/components/shared/button/Button"
 import { deleteCoffeeChatPost } from "@/service/coffee-chat"
 import useModal from "@/hooks/useModal"
 import SuccessModalContent from "@/page/qna-detail/components/SuccessModalContent"
-import { notificationMessage, successMessage } from "@/constants/message"
+import { errorMessage } from "@/constants/message/error"
 import { useQueryClient } from "@tanstack/react-query"
 import queryKey from "@/constants/queryKey"
 import { useRouter } from "next/navigation"
 import { toast } from "react-toastify"
 import ConfirmModal from "@/components/shared/confirm-modal/ConfirmModal"
 import { useClientSession } from "@/hooks/useClientSession"
+import { AxiosError } from "axios"
+import type { APIResponse } from "@/interfaces/dto/api-response"
+import cancleMessage from "@/constants/message/cancle"
+import successMessage from "@/constants/message/success"
 
 interface CoffeeChatDetailHeaderProps
   extends Pick<
@@ -42,7 +46,7 @@ function CoffeeChatDetailHeader({
   const { user } = useClientSession()
   const isMyPage = user?.nickname === nickname
 
-  const handleDeleteQuestion = async () => {
+  const handleDeleteCoffeeChatPost = async () => {
     const onSuccess = async () => {
       try {
         const res = await deleteCoffeeChatPost({
@@ -66,11 +70,26 @@ function CoffeeChatDetailHeader({
         })
         router.replace("/chat")
       } catch (err) {
-        console.error(err)
+        if (err instanceof AxiosError) {
+          const { response } = err as AxiosError<APIResponse>
+
+          toast.error(response?.data.msg ?? errorMessage.reserveCoffeeChat, {
+            toastId: "failToCancleReservation",
+            position: "top-center",
+            autoClose: 1000,
+          })
+          return
+        }
+
+        toast.error(errorMessage.cancleReservation, {
+          toastId: "failToCancleReservation",
+          position: "top-center",
+          autoClose: 1000,
+        })
       }
     }
     const onCancel = () => {
-      toast.error(notificationMessage.cancleDeleteCoffeeChatPost, {
+      toast.error(cancleMessage.deleteCoffeeChatPost, {
         position: "top-center",
       })
     }
@@ -125,7 +144,7 @@ function CoffeeChatDetailHeader({
           <Button
             buttonTheme="primary"
             className="px-2"
-            onClick={() => handleDeleteQuestion()}
+            onClick={() => handleDeleteCoffeeChatPost()}
           >
             삭제하기
           </Button>

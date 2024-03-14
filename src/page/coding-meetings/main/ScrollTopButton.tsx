@@ -1,9 +1,9 @@
 "use client"
 
 import { IoIosArrowUp } from "react-icons/io"
-import { buttonMessage } from "@/constants/message"
 import { useEffect, useState } from "react"
 import { debounce, throttle } from "lodash-es"
+import buttonMessage from "@/constants/message/button"
 
 function ScrollTopButton() {
   const [show, setShow] = useState(false)

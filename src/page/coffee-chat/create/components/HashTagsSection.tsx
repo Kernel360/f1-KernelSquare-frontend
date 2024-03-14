@@ -3,7 +3,6 @@
 import { useLayoutEffect, useRef } from "react"
 import CoffeeChatSection from "./CoffeeChatSection"
 import { toast } from "react-toastify"
-import { errorMessage } from "@/constants/message"
 import Limitation from "@/constants/limitation"
 import Regex from "@/constants/regex"
 import { Input } from "@/components/shared/input/Input"
@@ -11,6 +10,7 @@ import Button from "@/components/shared/button/Button"
 import { Icons } from "@/components/icons/Icons"
 import { useRecoilState } from "recoil"
 import { HashTagList } from "@/recoil/atoms/coffee-chat/hashtags"
+import { validationMessage } from "@/constants/message/validation"
 
 const HashTagsSection = () => {
   const hashtagRef = useRef<HTMLInputElement>(null)
@@ -25,19 +25,19 @@ const HashTagsSection = () => {
   const handleAddHashTags = () => {
     // 빈 값 방지
     if (!hashtagRef.current?.value)
-      return toast.error(errorMessage.noValue, {
+      return toast.error(validationMessage.noValue, {
         toastId: "emtpyHashtagValue",
         position: "top-center",
       })
     // 해시태그 개수 제한
     if (hashtags.length >= Limitation.hashtags_cnt)
-      return toast.error(errorMessage.overHashtagCntLimit, {
+      return toast.error(validationMessage.overHashtagCntLimit, {
         toastId: "overHashtagCntLimit",
         position: "top-center",
       })
     // 해시태그 개수 제한
     if (hashtagRef.current?.value.length >= Limitation.hashtags_word)
-      return toast.error(errorMessage.overHashtagWordLimit, {
+      return toast.error(validationMessage.overHashtagWordLimit, {
         toastId: "overHahtagWordLmit",
         position: "top-center",
       })
@@ -46,13 +46,13 @@ const HashTagsSection = () => {
       hashtagRef.current?.value.match(Regex.preventSpecialCharacter) ||
       hashtagRef.current?.value.match(Regex.preventEmoji)
     )
-      return toast.error(errorMessage.preventSpecialCharacter, {
+      return toast.error(validationMessage.preventSpecialCharacter, {
         toastId: "preventSpecialCharacter",
         position: "top-center",
       })
     // 중복 제출 방지
     if (hashtags.includes(hashtagRef.current.value))
-      return toast.error(errorMessage.preventDuplicateValue, {
+      return toast.error(validationMessage.preventDuplicateValue, {
         toastId: "preventDuplicateValue",
         position: "top-center",
       })

@@ -11,22 +11,35 @@ import {
 } from "@/components/ui/PopOver"
 import { PopoverClose } from "@radix-ui/react-popover"
 import QnAInfoArea from "@/page/coding-meetings/main/info-area/QnAInfoArea"
+import CoffeeChatInfoArea from "@/page/coding-meetings/main/info-area/CoffeeChatInfoArea"
+import { twMerge } from "tailwind-merge"
 
 interface ListPageProps {
-  section: "qna" | "codingMeetings"
+  section: "qna" | "codingMeetings" | "coffeeChat"
   children: React.ReactNode
 }
 
 function ListPage({ section, children }: ListPageProps) {
+  const classNames = twMerge([
+    "flex w-full px-6 pt-6 pb-6 tablet:pt-8 lg:mt-[72px] box-border",
+    section === "coffeeChat" &&
+      "pb-6 tablet:pt-6 tablet:pb-12 lg:pb-[72px] lg:pt-[75px]",
+  ])
+
+  const sideClassNames = twMerge([
+    "bg-transparent min-h-screen hidden tablet:block tablet:w-32 lg:w-72",
+    section === "coffeeChat" && "!hidden",
+  ])
+
   return (
-    <div className="flex w-full px-6 pt-6 pb-6 tablet:pt-8 lg:mt-[72px] box-border">
+    <div className={classNames}>
       <div className="flex-1 max-w-full">
         <Title section={section} />
         <ListPage.InfoArea section={section} />
         <ListPage.Tabs section={section} />
         {children}
       </div>
-      <aside className="bg-transparent min-h-screen hidden tablet:block tablet:w-32 lg:w-72" />
+      <aside className={sideClassNames} />
     </div>
   )
 }
@@ -49,7 +62,7 @@ function Title({ section }: { section: ListPageProps["section"] }) {
             align="start"
             sticky="always"
             alignOffset={4}
-            className="w-36 border border-[#828282] bg-white rounded-lg text-base p-4"
+            className="min-w-[84px] max-w-[calc(100vw-160px)] sm:max-w-none sm:w-[260px] tablet:w-[340px] lg:!w-[400px] border border-[#828282] bg-white rounded-lg text-base p-4"
           >
             <section className="relative">
               <PopoverClose className="absolute -top-2 -right-2">
@@ -57,20 +70,22 @@ function Title({ section }: { section: ListPageProps["section"] }) {
               </PopoverClose>
               <h4 className="font-bold text-xs">모각코?</h4>
               <article className="text-sm">
-                모각코는
+                모각코는 <span className="text-primary">모여서 각자 코딩</span>
+                의 줄임말로,
                 <br />
-                <span className="text-primary">모여서 각자 코딩</span>의
-                줄임말로,
+                여러 사람이 같은 공간에 모여
                 <br />
-                여러 사람이 같은 공간에 모여 각자의 코딩 공부나 프로젝트를
-                진행하는 활동이에요.
+                각자의 코딩 공부나 프로젝트를 진행하는 활동입니다.
               </article>
             </section>
           </PopoverContent>
         </Popover>
       </section>
     ),
+    coffeeChat: null,
   } satisfies Record<typeof section, React.ReactNode>
+
+  if (title[section] === null) return null
 
   return (
     <section className="text-[#333333] text-[32px] font-semibold mb-6 tablet:mb-8 lg:mb-12">
@@ -90,6 +105,8 @@ ListPage.InfoArea = function InfoArea({
         return <QnAInfoArea />
       case "codingMeetings":
         return <CodingMeetingInfoArea />
+      case "coffeeChat":
+        return <CoffeeChatInfoArea />
     }
   }
 
@@ -129,6 +146,7 @@ ListPage.Loading = function ListPageDataLoading({
   const title = {
     qna: "Q&A 리스트",
     codingMeetings: "모각코 리스트",
+    coffeeChat: "커피챗 리스트",
   } satisfies Record<typeof section, React.ReactNode>
 
   return (

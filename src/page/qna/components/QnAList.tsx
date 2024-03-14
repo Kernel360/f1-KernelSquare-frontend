@@ -1,7 +1,7 @@
 "use client"
 
 import dayjs from "dayjs"
-import Profile from "@/components/shared/Profile"
+import Profile from "@/components/shared/user/Profile"
 import Spacing from "@/components/shared/Spacing"
 import ListLoading from "@/components/shared/animation/ListLoading"
 import NoContent from "@/components/shared/animation/NoContent"
@@ -14,6 +14,8 @@ import { GetQuestionListResponse } from "@/interfaces/dto/question/get-questionl
 import Image from "next/image"
 import { useClientSession } from "@/hooks/useClientSession"
 import { getKorRelativeTime } from "@/util/getDate"
+import UserInfo, { UserProfileInfo } from "@/components/shared/user/UserInfo"
+import PostTime from "@/components/shared/time/PostTime"
 
 interface QnAListProps {
   questions: NonNullable<GetQuestionListResponse["data"]>
@@ -43,7 +45,7 @@ function QnAList({ questions }: QnAListProps) {
     }
 
   return (
-    <div className="py-4 w-[calc(100%-12px)] sm:w-[calc(100%-22px)] lg:w-[calc(100%-42px)] mx-auto">
+    <div className="w-full">
       <ul className="flex flex-col gap-4">
         {questions.list.map(
           ({
@@ -57,10 +59,18 @@ function QnAList({ questions }: QnAListProps) {
             created_date,
             level,
           }) => {
+            const qnaAuthor: UserProfileInfo = {
+              id: member_id,
+              nickname,
+              level,
+              levelImageUrl: level_image_url,
+              profileImageUrl: member_image_url,
+            }
+
             return (
               <li
                 key={id}
-                className={`shadow-sm hover:shadow-md transition-shadow max-w-full box-border border border-colorsGray rounded-lg p-2 cursor-pointer`}
+                className={`hover:shadow-md transition-shadow max-w-full box-border border border-colorsGray rounded-lg p-6 cursor-pointer`}
                 onClick={goToQnaDetail(id)}
               >
                 <h3 className="w-fit">
@@ -71,58 +81,27 @@ function QnAList({ questions }: QnAListProps) {
                     {title}
                   </Link>
                 </h3>
-                <ul className="flex gap-2 flex-wrap my-1">
-                  {skills.map((skill, index) => {
-                    return (
-                      <Tag
-                        key={`${id}-${index}-${skill}`}
-                        className={`pointer-events-none`}
-                      >
-                        {skill}
-                      </Tag>
-                    )
-                  })}
-                </ul>
-                <div className="flex h-full">
-                  <div className="flex flex-1 justify-end self-end">
-                    <time className="text-sm">
-                      {getKorRelativeTime({ now, targetDate: created_date })}
-                    </time>
-                  </div>
-                  <div
-                    className={`shrink-0 flex h-max max-h-14 items-center gap-1 ml-4 rounded-lg ${
-                      user
-                        ? "cursor-pointer pointer-events-auto relative outline outline-[2px] outline-transparent transition-colors hover:outline hover:outline-primary outline-offset-1"
-                        : "cursor-default pointer-events-none"
-                    } `}
-                    {...(user && {
-                      onClick: goToUserProfile(member_id),
-                      title: "유저 프로필로 이동",
+                <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3 sm:gap-1 mt-6">
+                  <ul className="flex-1 flex gap-2 flex-wrap my-1">
+                    {skills.map((skill, index) => {
+                      return (
+                        <Tag
+                          key={`${id}-${index}-${skill}`}
+                          className={`pointer-events-none`}
+                        >
+                          {skill}
+                        </Tag>
+                      )
                     })}
-                  >
-                    <div className="h-full box-border m-1 shrink-0 translate-x-0 translate-y-0">
-                      <Profile
-                        profileImage={member_image_url}
-                        className="align-top m-0.5"
-                      />
-                    </div>
-                    <div className="w-16 h-full flex flex-col justify-center items-start shrink-0">
-                      <div className="text-sm">{nickname}</div>
-                      <div className="flex justify-start items-center gap-1">
-                        <div className="relative w-4 h-4 my-1">
-                          <Image
-                            src={level_image_url}
-                            alt="level badge"
-                            fill
-                            style={{
-                              objectFit: "scale-down",
-                              objectPosition: "center",
-                            }}
-                          />
-                        </div>
-                        <div className="text-xs">LV.{level}</div>
-                      </div>
-                    </div>
+                  </ul>
+                  <div className="self-end sm:self-auto flex items-center gap-4 flex-wrap">
+                    <UserInfo user={qnaAuthor} />
+                    <PostTime
+                      time={getKorRelativeTime({
+                        now,
+                        targetDate: created_date,
+                      })}
+                    />
                   </div>
                 </div>
               </li>
@@ -130,44 +109,45 @@ function QnAList({ questions }: QnAListProps) {
           },
         )}
       </ul>
-      <Spacing size={32} />
-      <Pagination
-        disabledClassName="hidden"
-        forcePage={Number(page)}
-        pageCount={questions.pagination.total_page}
-        onPageChange={({ selected }) => {
-          push(`?page=${selected}`)
-        }}
-        onSkip={({ type, pageCount }) => {
-          const searchParams = new URLSearchParams()
+      <div className="mt-4 sm:mt-[72px]">
+        <Pagination
+          disabledClassName="hidden"
+          forcePage={Number(page)}
+          pageCount={questions.pagination.total_page}
+          onPageChange={({ selected }) => {
+            push(`?page=${selected}`)
+          }}
+          onSkip={({ type, pageCount }) => {
+            const searchParams = new URLSearchParams()
 
-          const pageNumber = Number(page)
+            const pageNumber = Number(page)
 
-          if (type === "prevSkip") {
-            if (pageCount > 10 && pageNumber - 10 >= 0) {
-              searchParams.set("page", `${pageNumber - 10}`)
-              searchParams.set("size", size)
+            if (type === "prevSkip") {
+              if (pageCount > 10 && pageNumber - 10 >= 0) {
+                searchParams.set("page", `${pageNumber - 10}`)
+                searchParams.set("size", size)
 
-              push(`/qna?${searchParams.toString()}`)
+                push(`/qna?${searchParams.toString()}`)
+
+                return
+              }
 
               return
             }
 
-            return
-          }
+            if (type === "nextSkip") {
+              if (pageCount > 10 && pageCount - 1 - pageNumber >= 10) {
+                searchParams.set("page", `${pageNumber + 10}`)
+                searchParams.set("size", size)
 
-          if (type === "nextSkip") {
-            if (pageCount > 10 && pageCount - 1 - pageNumber >= 10) {
-              searchParams.set("page", `${pageNumber + 10}`)
-              searchParams.set("size", size)
+                push(`/qna?${searchParams.toString()}`)
+              }
 
-              push(`/qna?${searchParams.toString()}`)
+              return
             }
-
-            return
-          }
-        }}
-      />
+          }}
+        />
+      </div>
     </div>
   )
 }

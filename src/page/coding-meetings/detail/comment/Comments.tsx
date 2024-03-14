@@ -7,7 +7,6 @@ import { useClientSession } from "@/hooks/useClientSession"
 import {
   CodingMeetingAuthor,
   CodingMeetingComment,
-  CodingMeetingCommentAuthor,
 } from "@/interfaces/coding-meetings"
 import { GetCodingMeetingCommentListPayload } from "@/interfaces/dto/coding-meeting/comment/get-coding-meeting-comment-list.dto"
 import {
@@ -17,7 +16,6 @@ import {
 import { useQuery, useQueryClient } from "@tanstack/react-query"
 import { FieldErrors, useForm } from "react-hook-form"
 import { twMerge } from "tailwind-merge"
-import UserInfo from "../UserInfo"
 import { getKorRelativeTime } from "@/util/getDate"
 import dayjs from "dayjs"
 import Skeleton from "react-loading-skeleton"
@@ -25,7 +23,7 @@ import { toast } from "react-toastify"
 import { AxiosError, HttpStatusCode } from "axios"
 import { APIResponse } from "@/interfaces/dto/api-response"
 import { revalidatePage } from "@/util/actions/revalidatePage"
-import { useRef } from "react"
+import { useEffect, useRef, useState } from "react"
 import { FaRegCommentDots } from "react-icons/fa"
 import useModal from "@/hooks/useModal"
 import LoginForm from "@/components/form/LoginForm"
@@ -34,6 +32,13 @@ import CommentContent from "./CommentContent"
 import { useRecoilValue } from "recoil"
 import { codingMeetingEditCommentAtom } from "@/recoil/atoms/coding-meeting/comment"
 import TextCounter from "@/components/shared/TextCounter"
+import UserInfo, { UserProfileInfo } from "@/components/shared/user/UserInfo"
+import CommentsFilter from "./CommentsFilter"
+import {
+  CodingMeetingCommentsFilterOption,
+  getCodingMeetingCommentsFilter,
+  sortCodingMeetingComments,
+} from "@/util/filter/coding-meeting-comments"
 
 interface DetailCommentsProps {
   author: CodingMeetingAuthor
@@ -50,9 +55,14 @@ export interface CommentUpdateFormData {
 
 export const commentFormMessages = {
   required: "댓글을 작성해주세요.",
-  minLength: "댓글은 최소 10자 이상이어야 합니다.",
-  maxLength: "댓글은 최대 10000자까지 작성가능합니다.",
+  maxLength: "댓글은 최대 300자까지 작성가능합니다.",
   isEqual: "댓글 내용이 이전과 동일합니다.",
+  isEmpty: "댓글에는 공백만 입력할 수 없습니다.",
+}
+
+export const commentLengthLimit = {
+  min: 1,
+  max: 300,
 }
 
 function DetailComments({ author, token }: DetailCommentsProps) {
@@ -72,6 +82,10 @@ function DetailComments({ author, token }: DetailCommentsProps) {
     },
   })
 
+  const [filter, setFilter] = useState<CodingMeetingCommentsFilterOption>(
+    getCodingMeetingCommentsFilter(),
+  )
+
   const codingMeetingEditComment = useRecoilValue(codingMeetingEditCommentAtom)
   const isCommentEditing = !!codingMeetingEditComment.editingCommentToken
 
@@ -81,7 +95,7 @@ function DetailComments({ author, token }: DetailCommentsProps) {
     setValue,
     watch,
     trigger,
-    formState: { isSubmitting, isValid },
+    formState: { isSubmitting, isValid, errors },
   } = useForm<CommentFormData>()
 
   const formRef = useRef<HTMLFormElement>(null)
@@ -152,8 +166,8 @@ function DetailComments({ author, token }: DetailCommentsProps) {
       return
     }
 
-    if (errors.comment?.type === "minLength") {
-      toast.error(commentFormMessages.minLength, {
+    if (errors.comment?.type === "validate") {
+      toast.error(errors.comment.message, {
         position: "top-center",
         toastId,
       })
@@ -161,7 +175,7 @@ function DetailComments({ author, token }: DetailCommentsProps) {
     }
 
     if (errors.comment?.type === "maxLength") {
-      toast.error(commentFormMessages.maxLength, {
+      toast.error(errors.comment.message, {
         position: "top-center",
         toastId,
       })
@@ -169,18 +183,60 @@ function DetailComments({ author, token }: DetailCommentsProps) {
     }
   }
 
+  const onSubmitButtonClick = () => {
+    formRef.current?.requestSubmit()
+  }
+
+  /*
+    - 개발자 도구에서 disabled 를 강제로 풀고
+    클릭시에도 토스트 팝업이 나오도록 하기 위함,
+    - 이벤트 버블링을 활용하여 수동으로 검사(trigger)하는 것을 
+    통해 react hook form 의 validation이 반영될 수있도록 함
+  */
+  const onFormClickBubble = async (e: React.FormEvent<HTMLFormElement>) => {
+    const closestButton = (e.target as HTMLElement).closest("button")
+    if (!closestButton || closestButton !== submitBtnRef.current) return
+
+    if (isValid) return
+
+    await trigger("comment")
+    onInvalid(errors)
+  }
+
+  const validateEmpty = (value: string) => {
+    if (value.length && value.trim().length !== 0) return true
+
+    return commentFormMessages.isEmpty
+  }
+
+  useEffect(() => {
+    const handleStorageEvent = (e: StorageEvent) => {
+      console.log("storage change", { order: getCodingMeetingCommentsFilter() })
+      setFilter(getCodingMeetingCommentsFilter())
+    }
+
+    window.addEventListener("storage", handleStorageEvent)
+
+    return () => {
+      window.removeEventListener("storage", handleStorageEvent)
+    }
+  }, [])
+
   return (
     <div>
-      <div className="text-xl mb-6">
-        <span className="font-bold">댓글</span>
-        <span>&nbsp;</span>
-        <span>
-          {error
-            ? "(0)"
-            : status === "pending"
-            ? ""
-            : `(${comments?.length})` ?? "(0)"}
-        </span>
+      <div className="flex gap-1 justify-between items-center mb-6">
+        <div className="text-xl">
+          <span className="font-bold">댓글</span>
+          <span>&nbsp;</span>
+          <span>
+            {error
+              ? "(0)"
+              : status === "pending"
+              ? ""
+              : `(${comments?.length})` ?? "(0)"}
+          </span>
+        </div>
+        <CommentsFilter />
       </div>
       <Info />
       {status === "pending" ? (
@@ -190,25 +246,23 @@ function DetailComments({ author, token }: DetailCommentsProps) {
           <form
             ref={formRef}
             onSubmit={handleSubmit(onSubmit, onInvalid)}
+            onClick={onFormClickBubble}
             className="relative w-full flex gap-4 justify-center items-center mb-[22px]"
           >
             <div className="w-full flex flex-col flex-1">
               <textarea
                 {...register("comment", {
                   required: true,
-                  minLength: {
-                    value: 10,
-                    message: commentFormMessages.minLength,
-                  },
                   maxLength: {
-                    value: 10000,
+                    value: commentLengthLimit.max,
                     message: commentFormMessages.maxLength,
                   },
+                  validate: validateEmpty,
                 })}
                 rows={1}
                 disabled={disableCase.input}
                 className="resize-none w-full box-border px-4 py-3 placeholder:text-[#BDBDBD] border border-[#E0E0E0] rounded-lg"
-                placeholder={"댓글을 입력해주세요"}
+                placeholder={"댓글을 입력해주세요(300자 이하)"}
                 autoComplete="off"
               />
             </div>
@@ -216,9 +270,7 @@ function DetailComments({ author, token }: DetailCommentsProps) {
               ref={submitBtnRef}
               disabled={disableCase.button}
               type="button"
-              onClick={() => {
-                formRef.current?.requestSubmit()
-              }}
+              onClick={onSubmitButtonClick}
               className="w-[87px] h-[49px] disabled:bg-colorsGray disabled:text-colorsDarkGray"
             >
               <div className="flex justify-center items-center flex-shrink-0 gap-1">
@@ -228,14 +280,30 @@ function DetailComments({ author, token }: DetailCommentsProps) {
             </Button>
             <TextCounter
               className="absolute left-0 -bottom-6"
-              min={10}
-              max={10000}
+              min={commentLengthLimit.min}
+              max={commentLengthLimit.max}
               text={watch("comment") ?? ""}
               target={!isCommentEditing && !!watch("comment")}
+              externalValidations={[
+                {
+                  valid: watch("comment")?.trim().length !== 0,
+                  render: (
+                    <span className="text-danger">
+                      {commentFormMessages.isEmpty}
+                    </span>
+                  ),
+                },
+              ]}
             />
           </form>
           <div>
-            <CommentList author={author} comments={comments ?? []} />
+            <CommentList
+              author={author}
+              comments={sortCodingMeetingComments({
+                comments: comments ?? [],
+                orderBy: filter,
+              })}
+            />
           </div>
         </>
       )}
@@ -335,12 +403,12 @@ function Comment({
 }) {
   const textareaRef = useRef<HTMLTextAreaElement>(null)
 
-  const commentAuthor: CodingMeetingCommentAuthor = {
-    member_id: comment.member_id,
-    member_nickname: comment.member_nickname,
-    member_profile_url: comment.member_profile_url,
-    member_level: comment.member_level,
-    member_level_image_url: comment.member_level_image_url,
+  const commentAuthor: UserProfileInfo = {
+    id: comment.member_id,
+    nickname: comment.member_nickname,
+    profileImageUrl: comment.member_profile_url,
+    level: comment.member_level,
+    levelImageUrl: comment.member_level_image_url,
   }
 
   const isAuthor = author.member_nickname === comment.member_nickname

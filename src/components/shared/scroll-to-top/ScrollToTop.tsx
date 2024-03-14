@@ -1,7 +1,7 @@
 "use client"
 
 import { Icons } from "@/components/icons/Icons"
-import { buttonMessage } from "@/constants/message"
+import buttonMessage from "@/constants/message/button"
 import { usePathname } from "next/navigation"
 
 const ScrollToTop = () => {

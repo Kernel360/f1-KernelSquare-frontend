@@ -1,15 +1,19 @@
 "use client"
 
-import Button from "@/components/shared/button/Button"
+import { useLayoutEffect, useRef, useState } from "react"
+import { revalidatePage } from "@/util/actions/revalidatePage"
+import { Button } from "@/components/ui/button"
+import {
+  PopupStorage,
+  addPopupStorageItem,
+  getPopupStorage,
+} from "@/util/chat/popup"
+import { AxiosError } from "axios"
+import { APIResponse } from "@/interfaces/dto/api-response"
 import { useClientSession } from "@/hooks/useClientSession"
 import { toast } from "react-toastify"
-import { useRecoilState } from "recoil"
-import { popupWindowAtom } from "@/recoil/atoms/popup/popupWindowAtom"
-import { cloneDeep } from "lodash-es"
-import dayjs from "dayjs"
-import isBetween from "dayjs/plugin/isBetween"
 import { twMerge } from "tailwind-merge"
-dayjs.extend(isBetween)
+import { useChatRoomActive } from "@/hooks/chat/useChatRoomActive"
 
 export type EnterCoffeeChatProps = {
   articleTitle: string
@@ -28,17 +32,43 @@ function EnterCoffeeChatButton({
 }: EnterCoffeeChatProps) {
   const { user } = useClientSession()
 
-  const [popupWindow, setPopupWindow] = useRecoilState(popupWindowAtom)
+  const {
+    isChatRoomActive,
+    status: { isLoading, isError },
+    chatRoomActiveError,
+    isValidTimeRange,
+  } = useChatRoomActive({
+    articleTitle,
+    reservationId: reservation_id,
+    startTime: startTime ?? "",
+  })
 
-  // const isTimePossible = dayjs().isBetween(
-  //   dayjs(startTime),
-  //   dayjs(startTime).add(30, "minutes"),
-  //   "seconds",
-  //   "[]",
-  // )
+  const buttonRef = useRef<HTMLButtonElement>(null)
+
+  const [popupStorage, setPopupStorage] = useState<PopupStorage>(
+    getPopupStorage(),
+  )
+
+  const hasPopup = popupStorage?.includes(reservation_id) ?? false
+
+  const buttonClassNames = (isPending: boolean) => {
+    if (isPending) return "skeleton w-[120px] h-10 rounded-lg"
+
+    return twMerge([
+      `disabled:bg-colorsGray disabled:text-colorsDarkGray`,
+      className,
+    ])
+  }
+
+  const buttonText = isLoading
+    ? ""
+    : hasPopup
+    ? `커피 챗 이용 중`
+    : `커피 챗 입장하기`
+
+  const disabled = !isValidTimeRange || hasPopup || roomId === null
 
   const openChatRoomPopup = () => {
-    // if (!isTimePossible) return
     if (roomId === null) return
 
     const urlSearchParams = new URLSearchParams()
@@ -51,44 +81,92 @@ function EnterCoffeeChatButton({
       "width=500, height=600",
     )
 
-    setPopupWindow(popup)
-
-    localStorage.setItem(
-      "popup",
-      JSON.stringify(cloneDeep({ postMessage: popup?.postMessage })),
-    )
+    setPopupStorage(addPopupStorageItem({ reservationId: reservation_id }))
   }
 
-  const onSubmitEnterCoffeeChatRoom = async () => {
+  const onSubmitEnterCoffeeChatRoom = () => {
+    if (typeof window === "undefined") return
+
+    const toastId = "openPopupError"
+
     if (!user) {
-      toast.error("로그인 후 다시 시도해주세요", { position: "bottom-center" })
+      toast.error("로그인 후 다시 시도해주세요", {
+        position: "bottom-center",
+        toastId,
+      })
+
+      revalidatePage("*")
 
       return
     }
 
-    if (!!popupWindow) {
-      toast.error("현재 커피챗 팝업이 활성화 되있습니다", {
+    if (!isChatRoomActive && isError) {
+      const message =
+        (chatRoomActiveError as AxiosError<APIResponse>)?.response?.data.msg ??
+        "입장 가능한 상태가 아닙니다."
+
+      toast.error(message, {
         position: "bottom-center",
+        toastId,
       })
+
+      return
+    }
+
+    if (hasPopup) {
+      toast.error("현재 해당 커피챗이 활성화 되있습니다", {
+        position: "bottom-center",
+        toastId,
+      })
+
+      return
+    }
+
+    if (!isValidTimeRange) {
+      toast.error("입장 가능한 시간이 아닙니다", {
+        position: "bottom-center",
+        toastId,
+      })
+
+      return
     }
 
     openChatRoomPopup()
   }
 
-  const ButtonClass = twMerge(
-    ["disabled:bg-colorsGray disabled:text-colorsDarkGray"],
-    className,
-  )
+  useLayoutEffect(() => {
+    const button = buttonRef.current
+
+    if (button) {
+      button.onclick = onSubmitEnterCoffeeChatRoom
+    }
+
+    const handleStorage = (e: StorageEvent) => {
+      setPopupStorage(getPopupStorage())
+    }
+
+    window.addEventListener("storage", handleStorage)
+
+    return () => {
+      if (button) {
+        button.onclick = null
+      }
+
+      window.removeEventListener("storage", handleStorage)
+    }
+    /* eslint-disable-next-line */
+  }, [isChatRoomActive, isError, isValidTimeRange, hasPopup])
 
   return (
-    <Button
-      buttonTheme="primary"
-      disabled={roomId === null || !!popupWindow}
-      onClick={onSubmitEnterCoffeeChatRoom}
-      className={ButtonClass}
-    >
-      {popupWindow ? `커피챗 팝업 이용 중` : `커피챗 입장하기`}
-    </Button>
+    <>
+      <Button
+        ref={buttonRef}
+        disabled={!isChatRoomActive || disabled}
+        className={buttonClassNames(isLoading)}
+      >
+        {buttonText}
+      </Button>
+    </>
   )
 }
 

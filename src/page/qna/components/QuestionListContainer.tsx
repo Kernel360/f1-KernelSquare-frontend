@@ -50,7 +50,7 @@ function QuestionListContainer() {
   }
 
   return (
-    <div className="relative box-border flex-1">
+    <div className="relative box-border flex-1 mt-6">
       <QnAList questions={questions} />
     </div>
   )

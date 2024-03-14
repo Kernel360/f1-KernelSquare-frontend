@@ -14,24 +14,12 @@ import { cloneDeep } from "lodash-es"
 import DeleteMemberModal from "../DeleteMemberModal"
 import DeleteMemberModalHeader from "../DeleteMemberModalHeader"
 import { revalidatePage } from "@/util/actions/revalidatePage"
-import { useRecoilCallback } from "recoil"
-import { popupWindowAtom } from "@/recoil/atoms/popup/popupWindowAtom"
 import type { SessionPayload } from "@/recoil/atoms/user"
 
 export const deleteUserEventName = "kernel-square-delete-user"
 
 function SubmitStep({ getValues }: FunnelStepFunctionComponentProps<Reason>) {
   const { user, clientSessionLogout } = useClientSession()
-
-  const popupWindowSnapshot = useRecoilCallback(
-    ({ snapshot }) =>
-      async () => {
-        const popupSnapshot = await snapshot.getPromise(popupWindowAtom)
-
-        return popupSnapshot
-      },
-    [],
-  )
 
   /*
     - 새로 만드는 모달에서 유저 관련 레이아웃을 그리는 용도로 
@@ -101,13 +89,6 @@ function SubmitStep({ getValues }: FunnelStepFunctionComponentProps<Reason>) {
           queryKey: ["withdraw", memberId],
         })
       }
-
-      const popup = await popupWindowSnapshot()
-
-      popup?.postMessage(
-        { type: "deleteUser" },
-        process.env.NEXT_PUBLIC_SITE_URL!,
-      )
     }
 
     window.addEventListener("beforeunload", handleBeforeUnload)
@@ -140,24 +121,7 @@ function Success({ cloneUser }: { cloneUser: NonNullable<SessionPayload> }) {
 function SuccessContent({ clone }: { clone: boolean }) {
   const { closeModal } = useModal()
 
-  const popupWindowSnapshot = useRecoilCallback(
-    ({ snapshot }) =>
-      async () => {
-        const popupSnapshot = await snapshot.getPromise(popupWindowAtom)
-
-        return popupSnapshot
-      },
-    [],
-  )
-
   const onClick = async () => {
-    const popup = await popupWindowSnapshot()
-
-    popup?.postMessage(
-      { type: "deleteUser" },
-      process.env.NEXT_PUBLIC_SITE_URL!,
-    )
-
     closeModal()
 
     revalidatePage("*")

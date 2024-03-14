@@ -1,8 +1,4 @@
-import {
-  errorMessage,
-  notificationMessage,
-  successMessage,
-} from "@/constants/message"
+import { errorMessage } from "@/constants/message/error"
 import { useClientSession } from "@/hooks/useClientSession"
 import { IntroductionEditMode } from "@/recoil/atoms/mode"
 import { toast } from "react-toastify"
@@ -10,6 +6,10 @@ import { useRecoilState } from "recoil"
 import { useQueryClient } from "@tanstack/react-query"
 import queryKey from "@/constants/queryKey"
 import { memberQueries } from "@/react-query/member"
+import cancleMessage from "@/constants/message/cancle"
+import successMessage from "@/constants/message/success"
+import notificationMessage from "@/constants/message/notification"
+import { validationMessage } from "@/constants/message/validation"
 
 const useIntroduction = () => {
   /**
@@ -28,26 +28,23 @@ const useIntroduction = () => {
 
   const handleSubmitIntroduction = (introduction: string) => {
     if (!user) {
-      toast.error(errorMessage.unauthorized, {
+      toast.error(notificationMessage.unauthorized, {
         toastId: "unauthorizedToChangeIntroduction",
         position: "top-center",
-        autoClose: 1000,
       })
       return
     }
     if (introduction.length < 10) {
-      toast.error(errorMessage.introductionLimitUnder, {
+      toast.error(validationMessage.introductionLimitUnder, {
         toastId: "introductionLimitUnder",
         position: "top-center",
-        autoClose: 1000,
       })
       return
     }
     if (introduction.length > 1000) {
-      toast.error(errorMessage.introductionLimitOver, {
+      toast.error(validationMessage.introductionLimitOver, {
         toastId: "introductionLimitOver",
         position: "top-center",
-        autoClose: 1000,
       })
       return
     }
@@ -63,7 +60,6 @@ const useIntroduction = () => {
             toast.success(successMessage.editIntroduction, {
               toastId: "successToEditIntroduction",
               position: "top-center",
-              autoClose: 1000,
             })
             queryClient.invalidateQueries({
               queryKey: [queryKey.user, queryKey.profile, user.member_id],
@@ -73,17 +69,16 @@ const useIntroduction = () => {
         },
       )
     } catch (err) {
-      toast.error(errorMessage.failToUploadIntroduction, {
+      toast.error(errorMessage.uploadIntroduction, {
         toastId: "failToEditIntroduction",
         position: "top-center",
-        autoClose: 1000,
       })
       throw new Error("자기소개 업데이트 중 에러가 발생하였습니다.")
     }
   }
 
   const handleCancleEditIntroduction = () =>
-    toast.error(notificationMessage.cancleEditIntroduction, {
+    toast.error(cancleMessage.editIntroduction, {
       toastId: "cancleEditIntroduction",
       position: "top-center",
     })

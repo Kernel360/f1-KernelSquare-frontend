@@ -1,13 +1,20 @@
 "use client"
 
-import Profile from "@/components/shared/Profile"
 import { useClientSession } from "@/hooks/useClientSession"
-import { CodingMeetingAuthor } from "@/interfaces/coding-meetings"
 import Image from "next/image"
 import { useRouter } from "next/navigation"
+import Profile from "./Profile"
+
+export interface UserProfileInfo {
+  id: number
+  level: number
+  nickname: string
+  profileImageUrl: string | null
+  levelImageUrl: string
+}
 
 interface UserInfoProps {
-  user: CodingMeetingAuthor
+  user: UserProfileInfo
 }
 
 function UserInfo({ user }: UserInfoProps) {
@@ -27,27 +34,27 @@ function UserInfo({ user }: UserInfoProps) {
         loginUser ? "cursor-pointer hover:outline-primary" : "cursor-default"
       }`}
       {...(loginUser && {
-        onClick: goToUserProfile(user.member_id),
+        onClick: goToUserProfile(user.id),
         title: "유저 프로필로 이동",
       })}
     >
       <div className="flex gap-2 items-center">
         <Profile
-          profileImage={user.member_profile_url}
+          profileImage={user.profileImageUrl}
           className={loginUser ? "cursor-pointer" : "cursor-default"}
         />
-        <span className="font-semibold text-sm">{user.member_nickname}</span>
+        <span className="font-semibold text-sm">{user.nickname}</span>
         <div className="flex gap-1 items-center">
           <div className="relative w-4 h-4">
             <Image
-              src={user.member_level_image_url}
+              src={user.levelImageUrl}
               alt="level image"
               style={{ objectFit: "contain" }}
               fill
             />
           </div>
           <div className="text-sm">
-            LV.<span>{user.member_level}</span>
+            LV.<span>{user.level}</span>
           </div>
         </div>
       </div>

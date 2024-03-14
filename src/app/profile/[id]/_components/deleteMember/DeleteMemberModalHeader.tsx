@@ -1,5 +1,5 @@
 import badge_url from "@/assets/images/badges"
-import Profile from "@/components/shared/Profile"
+import Profile from "@/components/shared/user/Profile"
 import Button from "@/components/shared/button/Button"
 import { useClientSession } from "@/hooks/useClientSession"
 import useModal from "@/hooks/useModal"

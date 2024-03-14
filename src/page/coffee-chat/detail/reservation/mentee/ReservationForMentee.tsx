@@ -2,23 +2,13 @@
 
 import { getDate } from "@/util/getDate"
 import { useProgressModal } from "@/hooks/useProgressModal"
-import { useParams } from "next/navigation"
-import { MockReservations } from "@/mocks/db/coffee-chat"
 import CustomCalendar from "../CustomCalendar/CustomCalendar"
 import { useEffect, useState } from "react"
 import type { Value } from "../CustomCalendar/Calendar.types"
-import {
-  CoffeeChatReservationDetailPayload,
-  CoffeeChatReservationTime,
-} from "@/interfaces/dto/coffee-chat/coffeechat-reservation-detail.dto"
-import { twJoin } from "tailwind-merge"
-import { SelectItem } from "@/components/ui/Select"
-import dayjs from "dayjs"
-import { DirectionIcons } from "@/components/icons/Icons"
+import { CoffeeChatReservationTime } from "@/interfaces/dto/coffee-chat/coffeechat-reservation-detail.dto"
 import TimeOptions from "./TimeOptions"
 import { FaCalendarAlt } from "react-icons/fa"
 import { revalidatePage } from "@/util/actions/revalidatePage"
-import { useClientSession } from "@/hooks/useClientSession"
 
 interface MenteeProps {
   reservation: CoffeeChatReservationTime[]
@@ -35,15 +25,6 @@ function ReservationForMentee({ reservation }: MenteeProps) {
       revalidatePage("/chat", "page")
     }
   }, [])
-
-  const { user } = useClientSession()
-  const isAlreadyReservedByMe = reservation.find(
-    (res) => res.mentee_nickname === user?.nickname,
-  )
-
-  if (isAlreadyReservedByMe) {
-    return <div></div>
-  }
 
   return (
     <section className="my-20 text-center">
@@ -82,7 +63,9 @@ function ReservationForMentee({ reservation }: MenteeProps) {
           <div className="flex w-full justify-between mt-5 text-center">
             <TimeOptions
               reservation={reservation}
-              selectedDay={getDate({ date: reservation[0].start_time })}
+              selectedDay={getDate({
+                date: reservation[0].start_time,
+              })}
               date={date}
             />
           </div>
