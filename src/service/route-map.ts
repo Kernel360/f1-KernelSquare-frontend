@@ -15,6 +15,7 @@ export class RouteMap {
     techTags: "techs",
     codingMeetings: "coding-meetings",
     codingMeetingComments: "coding-meeting-comments",
+    oauth: "oauth2",
   }
   private static routeGroupBaseURL = {
     member: `${RouteMap.baseURL}/${RouteMap.prefix.member}`,
@@ -29,6 +30,7 @@ export class RouteMap {
     techTags: `${RouteMap.baseURL}/${RouteMap.prefix.techTags}`,
     codingMeetings: `${RouteMap.baseURL}/${RouteMap.prefix.codingMeetings}`,
     codingMeetingComments: `${RouteMap.baseURL}/${RouteMap.prefix.codingMeetingComments}`,
+    oauth: `/${RouteMap.prefix.oauth}`,
   }
 
   static techTags = {
@@ -413,6 +415,20 @@ export class RouteMap {
       return `${RouteMap.routeGroupBaseURL.codingMeetingComments}/${
         coding_meeting_comment_token ?? ":coding_meeting_comment_token"
       }`
+    },
+  }
+
+  /**
+   * oauth api route 주소 얻기
+   *
+   * ---
+   *
+   * **`login.github`** github 소셜 로그인 (GET)
+   *
+   */
+  static oauth = {
+    login: {
+      github: `${RouteMap.routeGroupBaseURL.oauth}/authorization/github`,
     },
   }
 }
