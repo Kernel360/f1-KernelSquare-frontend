@@ -1,25 +1,16 @@
-"use client"
-
 import Image from "next/image"
 import LandingContainer from "./components/LandingContainer"
 import LandingHeader from "./components/LandingHeader"
 import LandingSearchBar from "./components/LandingSearchBar"
-import { Icons } from "@/components/icons/Icons"
-import TeamKernelSqaure from "@/constants/team"
-import Spacing from "@/components/shared/Spacing"
-import { useEffect } from "react"
-import AOS from "aos"
-import "aos/dist/aos.css"
+import landing_main_image from "@/assets/landing/graph.svg"
+import landing_main_text from "@/assets/landing/main_text.svg"
+import LandingCodingMeeting from "./components/sections/LandingCodingMeeting"
+import LandingCoffeeChat from "./components/sections/LandingCoffeeChat"
+import LandingQnA from "./components/sections/LandingQnA"
+import LandingTeam from "./components/sections/LandingTeam"
+import LandingLogIn from "./components/sections/LandingLogIn"
 
 const LandingPage: React.FC = () => {
-  useEffect(() => {
-    AOS.init()
-  }, [])
-
-  const handleGithub = (url?: string) => {
-    if (!url) return
-    window.open(url)
-  }
   return (
     <div>
       <div>
@@ -46,93 +37,31 @@ const LandingPage: React.FC = () => {
           <LandingSearchBar />
         </div>
       </div>
-      <LandingContainer>
-        <div>프로젝트 소개</div>
+      <LandingContainer className="flex flex-col sm:flex-row gap-10 justify-center items-center">
+        <Image
+          src={landing_main_image}
+          alt="landing_main_image"
+          width={500}
+          data-aos="fade-up"
+          data-aos-anchor-placement="top-bottom"
+          className="w-[300px] sm:w-[500px]"
+        />
+        <Image
+          src={landing_main_text}
+          alt="landing_main_text"
+          width={500}
+          data-aos="fade-up"
+          data-aos-anchor-placement="top-bottom"
+          className="w-[300px] sm:w-[500px]"
+        />
       </LandingContainer>
-      <LandingContainer>
-        <div>개발자 QnA</div>
-      </LandingContainer>
-      <LandingContainer>
-        <div>커피챗</div>
-      </LandingContainer>
-      <LandingContainer>
-        <div>모각코</div>
-      </LandingContainer>
-      <LandingContainer
-        className="w-full m-auto text-center flex flex-col justify-center gap-5"
-        data-aos="fade-up"
-        data-aos-duration="3000"
-      >
-        <div className="text-primary text-4xl font-bold">
-          Team Kernel Square
-        </div>
-        <div className="text-2xl">커널 스퀘어를 만들어가는 사람들</div>
-        <Spacing size={10} />
-        <div className="flex justify-center gap-10">
-          {TeamKernelSqaure.slice(0, 4).map(
-            ({ name, profile, role, github }, i) => (
-              <div
-                className="flex flex-col items-center justify-between gap-2"
-                key={name}
-              >
-                <div
-                  className="relative w-[100px] h-[100px] rounded-full overflow-hidden [&_svg]:w-[100px] [&>svg]:h-[100px]"
-                  onClick={() => handleGithub(github)}
-                >
-                  <ProfileImage profile={profile} />
-                </div>
-                <div className="font-bold text-base">{name}</div>
-                {!i && <div className="text-xs">Team Leader</div>}
-                <div className="text-xs">{role}</div>
-              </div>
-            ),
-          )}
-        </div>
-        <Spacing size={10} />
-        <div className="flex justify-center gap-10">
-          {TeamKernelSqaure.slice(4).map(
-            ({ name, profile, role, github }, i) => (
-              <div
-                className="flex flex-col items-center justify-between gap-2"
-                key={name}
-              >
-                <div
-                  className="relative w-[100px] h-[100px] rounded-full overflow-hidden [&_svg]:w-[100px] [&>svg]:h-[100px]"
-                  onClick={() => handleGithub(github)}
-                >
-                  <ProfileImage profile={profile} />
-                </div>
-                <div className="font-bold text-base">{name}</div>
-                <div className="text-xs">{role}</div>
-              </div>
-            ),
-          )}
-        </div>
-      </LandingContainer>
-      <LandingContainer>
-        <div>성장에 가까워지기</div>
-      </LandingContainer>
+      <LandingQnA />
+      <LandingCoffeeChat />
+      <LandingCodingMeeting />
+      <LandingTeam />
+      <LandingLogIn />
     </div>
   )
 }
 
 export default LandingPage
-
-type ProfileImageProps = {
-  profile?: string
-}
-
-const ProfileImage = ({ profile }: ProfileImageProps) => {
-  if (!profile)
-    return <Icons.UserProfile className="absolute text-colorsGray bg-white" />
-  return (
-    <Image
-      src={profile}
-      alt="프로필 사진"
-      fill
-      priority
-      style={{ objectFit: "cover", objectPosition: "center" }}
-      className="cursor-pointer"
-    />
-  )
-}

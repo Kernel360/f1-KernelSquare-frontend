@@ -6,47 +6,47 @@ const enum ROLE {
 
 const TeamKernelSqaure = [
   {
-    name: "WonSang.K",
+    name: "Wonsang.K",
     profile: "https://avatars.githubusercontent.com/u/92242326?v=4",
     role: ROLE.BE,
     github: "https://github.com/RossKWSang",
   },
   {
-    name: "ByungRyong.K",
+    name: "Byungryong.K",
     profile: "https://avatars.githubusercontent.com/u/54776553?v=4",
     role: ROLE.BE,
     github: "https://github.com/fingersdanny",
   },
   {
-    name: "JuKwang.H",
+    name: "Jukwang.H",
     profile: "https://avatars.githubusercontent.com/u/59231743?v=4",
     role: ROLE.BE,
     github: "https://github.com/Hju95",
   },
   {
-    name: "ChanWook.M",
+    name: "Chanwook.M",
     profile: "https://avatars.githubusercontent.com/u/97713997?v=4",
     role: ROLE.BE,
     github: "https://github.com/mooncw",
   },
   {
-    name: "DaeSung.O",
+    name: "Daesung.O",
     profile: "https://avatars.githubusercontent.com/u/110394773?v=4",
     role: ROLE.FE,
     github: "https://github.com/Ryan-TheLion",
   },
   {
-    name: "JeongWoo.H",
+    name: "Jeongwoo.H",
     profile: "https://avatars.githubusercontent.com/u/123251211?v=4",
     role: ROLE.FE,
     github: "https://github.com/JeongwooHam",
   },
-  {
-    name: "NaeKyung.L",
-    profile: undefined,
-    role: ROLE.DE,
-    github: undefined,
-  },
+  // {
+  //   name: "NaeKyung.L",
+  //   profile: undefined,
+  //   role: ROLE.DE,
+  //   github: undefined,
+  // },
 ]
 
 export default TeamKernelSqaure

@@ -29,7 +29,11 @@ function Footer() {
 
   return open ? (
     <Inner>
-      <footer>footer</footer>
+      <footer>
+        <div className="w-full h-10 bg-transparent bg-[#303030] text-white text-center">
+          © 2024. Kernel Square. All rights reserved.
+        </div>
+      </footer>
     </Inner>
   ) : null
 }

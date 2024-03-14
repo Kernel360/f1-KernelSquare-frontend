@@ -13,6 +13,7 @@ import "@toast-ui/editor/dist/toastui-editor.css"
 import ToastContainer from "@/components/shared/toast/ToastContainer"
 import ScrollTop from "@/components/shared/ScrollTop"
 import ToastDismissEventListener from "@/components/layout/ToastDismissListener"
+import AOSProvider from "@/components/layout/AOSProvider"
 
 export const dynamic = "force-dynamic"
 
@@ -35,6 +36,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="ko">
+      <AOSProvider />
       <body>
         <RecoilProvider>
           <ReactQueryProvider>
