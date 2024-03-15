@@ -40,7 +40,7 @@ const LandingCodingMeeting = () => {
         <Image
           src={square_line}
           alt="square_line"
-          height={600}
+          height={500}
           data-aos="fade-down"
         />
       </div>

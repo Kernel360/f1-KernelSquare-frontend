@@ -33,7 +33,7 @@ const LandingCoffeeChat = () => {
           <Image
             src={square_line}
             alt="square_line"
-            height={600}
+            height={500}
             data-aos="fade-down"
           />
         </div>
@@ -69,7 +69,7 @@ const LandingCoffeeChat = () => {
         <Image
           src={landing_coffeechat_process}
           alt="landing_coffeechat_process"
-          width={900}
+          width={800}
           data-aos="fade-up"
           data-aos-anchor-placement="top-bottom"
           className="hidden sm:block"
