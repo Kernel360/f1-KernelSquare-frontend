@@ -15,34 +15,19 @@ import {
   CarouselPrevious,
 } from "@/components/ui/Carousel"
 import Autoplay from "embla-carousel-autoplay"
-import { useEffect, useRef } from "react"
+import { useRef } from "react"
 import { CoffeeChatProcessSlide } from "@/constants/landing"
-import { useSetRecoilState } from "recoil"
-import landingTabAtom from "@/recoil/atoms/landingTab"
+import useHeaderObserver from "../../hooks/useHeaderObserver"
 
 const LandingCoffeeChat = () => {
   const autoplay = useRef(Autoplay({ delay: 1500, stopOnInteraction: true }))
-  const setLandingTab = useSetRecoilState(landingTabAtom)
 
-  const coffeechatRef = useRef<HTMLImageElement>(null)
-  const processRef = useRef<HTMLDivElement>(null)
+  const coffeechatRef = useRef<HTMLDivElement>(null)
 
-  useEffect(() => {
-    let observer: IntersectionObserver
-    if (coffeechatRef.current || processRef.current) {
-      observer = new IntersectionObserver(
-        () => {
-          setLandingTab("커피챗")
-        },
-        { threshold: 0.5 },
-      )
-      if (coffeechatRef.current) observer.observe(coffeechatRef.current)
-      if (processRef.current) observer.observe(processRef.current)
-    }
-  }, [coffeechatRef, processRef, setLandingTab])
+  useHeaderObserver({ ref: coffeechatRef, keyword: "커피챗", threshold: 0.3 })
 
   return (
-    <>
+    <div ref={coffeechatRef}>
       <LandingContainer className="flex justify-center items-center gap-10">
         <div className="hidden sm:block">
           <Image
@@ -59,7 +44,6 @@ const LandingCoffeeChat = () => {
             width={600}
             data-aos="fade-up"
             className="w-[400px] sm:w-[600px]"
-            ref={coffeechatRef}
           />
           <Image
             src={landing_coffeechat_text}
@@ -75,7 +59,6 @@ const LandingCoffeeChat = () => {
           className="text-center"
           data-aos="fade-up"
           data-aos-anchor-placement="top-bottom"
-          ref={processRef}
         >
           <div className="text-2xl font-bold">Coffee Chat Process</div>
           <div className="text-4xl font-bold text-primary">
@@ -118,7 +101,7 @@ const LandingCoffeeChat = () => {
           </Carousel>
         </div>
       </LandingContainer>
-    </>
+    </div>
   )
 }
 

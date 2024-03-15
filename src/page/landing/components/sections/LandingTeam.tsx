@@ -5,23 +5,13 @@ import LandingContainer from "../LandingContainer"
 import TeamKernelSqaure from "@/constants/landing"
 import { Icons } from "@/components/icons/Icons"
 import Image from "next/image"
-import { useSetRecoilState } from "recoil"
-import landingTabAtom from "@/recoil/atoms/landingTab"
-import { useEffect, useRef } from "react"
+import { useRef } from "react"
+import useHeaderObserver from "../../hooks/useHeaderObserver"
 
 const LandingTeam = () => {
-  const setLandingTab = useSetRecoilState(landingTabAtom)
   const teamRef = useRef<HTMLDivElement>(null)
 
-  useEffect(() => {
-    let observer: IntersectionObserver
-    if (teamRef.current) {
-      observer = new IntersectionObserver(() => {
-        setLandingTab("team")
-      })
-      observer.observe(teamRef.current)
-    }
-  }, [teamRef, setLandingTab])
+  useHeaderObserver({ ref: teamRef, keyword: "team", threshold: 0.4 })
 
   const handleGithub = (url?: string) => {
     if (!url) return
@@ -29,12 +19,14 @@ const LandingTeam = () => {
   }
 
   return (
-    <LandingContainer className="w-full m-auto text-center flex flex-col justify-center gap-5">
+    <LandingContainer
+      ref={teamRef}
+      className="w-full m-auto text-center flex flex-col justify-center gap-5"
+    >
       <div
         className="text-center"
         data-aos="fade-up"
         data-aos-anchor-placement="top-bottom"
-        ref={teamRef}
       >
         <div className="text-primary text-4xl font-bold">
           Team Kernel Square

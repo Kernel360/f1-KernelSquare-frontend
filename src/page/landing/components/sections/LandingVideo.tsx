@@ -1,29 +1,12 @@
 "use client"
 
-import landingTabAtom from "@/recoil/atoms/landingTab"
-import { useEffect, useRef } from "react"
-import { useSetRecoilState } from "recoil"
+import { useRef } from "react"
+import useHeaderObserver from "../../hooks/useHeaderObserver"
 
 const LandingVideo = () => {
-  const setLandingTab = useSetRecoilState(landingTabAtom)
   const videoRef = useRef<HTMLVideoElement>(null)
 
-  useEffect(() => {
-    let observer: IntersectionObserver
-    if (videoRef.current) {
-      observer = new IntersectionObserver(
-        () => {
-          setLandingTab("video")
-        },
-        { threshold: 0.1 },
-      )
-      observer.observe(videoRef.current)
-
-      return () => {
-        observer.disconnect()
-      }
-    }
-  }, [videoRef, setLandingTab])
+  useHeaderObserver({ ref: videoRef, keyword: "video" })
   return (
     <video
       ref={videoRef}

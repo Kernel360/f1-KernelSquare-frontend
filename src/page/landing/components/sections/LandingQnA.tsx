@@ -5,26 +5,13 @@ import LandingContainer from "../LandingContainer"
 import landing_qna_image from "@/assets/landing/qna_image.svg"
 import landing_qna_text from "@/assets/landing/qna_text.svg"
 import square_line from "@/assets/landing/square_line.svg"
-import { useEffect, useRef } from "react"
-import { useSetRecoilState } from "recoil"
-import landingTabAtom from "@/recoil/atoms/landingTab"
+import { useRef } from "react"
+import useHeaderObserver from "../../hooks/useHeaderObserver"
 
 const LandingQnA = () => {
-  const setLandingTab = useSetRecoilState(landingTabAtom)
   const qnaRef = useRef<HTMLImageElement>(null)
 
-  useEffect(() => {
-    let observer: IntersectionObserver
-    if (qnaRef.current) {
-      observer = new IntersectionObserver(
-        () => {
-          setLandingTab("개발자 Q&A")
-        },
-        { threshold: 0.5 },
-      )
-      observer.observe(qnaRef.current)
-    }
-  }, [qnaRef, setLandingTab])
+  useHeaderObserver({ ref: qnaRef, keyword: "개발자 Q&A" })
 
   return (
     <LandingContainer className="flex justify-center items-center gap-10">

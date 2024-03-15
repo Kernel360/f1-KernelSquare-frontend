@@ -26,13 +26,11 @@ const LandingHeader = () => {
     !isBackDrop && "bg-black/[0.15]",
   ])
 
-  const tabClassName = (text: string) => {
-    console.log("tab", landingTab)
-    return twJoin([
+  const tabClassName = (text: string) =>
+    twJoin([
       "cursor-pointer hover:text-primary hover:font-bold",
       landingTab && text === landingTab && "text-primary font-bold",
     ])
-  }
 
   useEffect(() => {
     setLandingTab(undefined)
