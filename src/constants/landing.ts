@@ -1,3 +1,7 @@
+import landing_create_coffeechat from "@/assets/landing/create_coffeechat.svg"
+import landing_reserve_coffeechat from "@/assets/landing/reserve_coffeechat.svg"
+import landing_enter_coffeechat from "@/assets/landing/enter_coffeechat.svg"
+
 const enum ROLE {
   BE = "Back-End Developer",
   FE = "Front-End Developer",
@@ -50,3 +54,24 @@ const TeamKernelSqaure = [
 ]
 
 export default TeamKernelSqaure
+
+export const CoffeeChatProcessSlide = [
+  landing_create_coffeechat,
+  landing_reserve_coffeechat,
+  landing_enter_coffeechat,
+]
+
+export const HeaderTab = [
+  {
+    title: "개발자 Q&A",
+    url: "/qna",
+  },
+  {
+    title: "커피챗",
+    url: "/chat",
+  },
+  {
+    title: "모각코",
+    url: "/coding-meetings",
+  },
+]

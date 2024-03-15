@@ -5,8 +5,24 @@ import LandingContainer from "../LandingContainer"
 import landing_coding_meeting_image from "@/assets/landing/coding_meeting_image.svg"
 import landing_coding_meeting_text from "@/assets/landing/coding_meeting_text.svg"
 import square_line from "@/assets/landing/square_line.svg"
+import { useSetRecoilState } from "recoil"
+import landingTabAtom from "@/recoil/atoms/landingTab"
+import { useEffect, useRef } from "react"
 
 const LandingCodingMeeting = () => {
+  const setLandingTab = useSetRecoilState(landingTabAtom)
+
+  const codingMeetingRef = useRef<HTMLImageElement>(null)
+
+  useEffect(() => {
+    let observer: IntersectionObserver
+    if (codingMeetingRef.current) {
+      observer = new IntersectionObserver(() => {
+        setLandingTab("모각코")
+      })
+      observer.observe(codingMeetingRef.current)
+    }
+  }, [codingMeetingRef, setLandingTab])
   return (
     <LandingContainer className="flex justify-center items-center gap-10">
       <div className="flex flex-col sm:flex-row gap-10">
@@ -16,6 +32,7 @@ const LandingCodingMeeting = () => {
           width={600}
           data-aos="fade-up"
           className="w-[400px] sm:w-[600px]"
+          ref={codingMeetingRef}
         />
         <Image
           src={landing_coding_meeting_text}

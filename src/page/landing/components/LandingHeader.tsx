@@ -1,12 +1,16 @@
 "use client"
 
+import { HeaderTab } from "@/constants/landing"
+import landingTabAtom from "@/recoil/atoms/landingTab"
 import { useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
-import { twMerge } from "tailwind-merge"
+import { useRecoilState } from "recoil"
+import { twJoin, twMerge } from "tailwind-merge"
 
 const LandingHeader = () => {
   const router = useRouter()
   const [isBackDrop, setIsBackDrop] = useState(false)
+  const [landingTab, setLandingTab] = useRecoilState(landingTabAtom)
 
   const handleScroll = () => {
     if (window.scrollY > window.innerHeight) {
@@ -22,27 +26,33 @@ const LandingHeader = () => {
     !isBackDrop && "bg-black/[0.15]",
   ])
 
+  const tabClassName = (text: string) => {
+    console.log("tab", landingTab)
+    return twJoin([
+      "cursor-pointer hover:text-primary hover:font-bold",
+      landingTab && text === landingTab && "text-primary font-bold",
+    ])
+  }
+
   useEffect(() => {
+    setLandingTab(undefined)
     window.addEventListener("scroll", handleScroll)
 
     // 컴포넌트가 언마운트 될 때 이벤트 리스너 제거
     return () => window.removeEventListener("scroll", handleScroll)
-  }, [])
+  }, [setLandingTab])
 
   return (
     <div className={headerClassName}>
-      <div className="cursor-pointer" onClick={() => router.push("/qna")}>
-        개발자 Q&A
-      </div>
-      <div className="cursor-pointer" onClick={() => router.push("/chat")}>
-        커피챗
-      </div>
-      <div
-        className="cursor-pointer"
-        onClick={() => router.push("/coding-meetings")}
-      >
-        모각코
-      </div>
+      {HeaderTab.map((tab) => (
+        <div
+          className={tabClassName(tab.title)}
+          onClick={() => router.push(tab.url)}
+          key={tab.title}
+        >
+          {tab.title}
+        </div>
+      ))}
     </div>
   )
 }
