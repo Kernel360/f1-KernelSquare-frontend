@@ -5,13 +5,42 @@ import LandingContainer from "../LandingContainer"
 import landing_coffeechat_image from "@/assets/landing/coffeechat_image.svg"
 import landing_coffeechat_text from "@/assets/landing/coffeechat_text.svg"
 import landing_coffeechat_process from "@/assets/landing/coffeechat_process.svg"
-import landing_create_coffeechat from "@/assets/landing/create_coffeechat.svg"
-import landing_reserve_coffeechat from "@/assets/landing/reserve_coffeechat.svg"
-import landing_enter_coffeecaht from "@/assets/landing/enter_coffeechat.svg"
 import square_line from "@/assets/landing/square_line.svg"
 import Spacing from "@/components/shared/Spacing"
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "@/components/ui/Carousel"
+import Autoplay from "embla-carousel-autoplay"
+import { useEffect, useRef } from "react"
+import { CoffeeChatProcessSlide } from "@/constants/landing"
+import { useSetRecoilState } from "recoil"
+import landingTabAtom from "@/recoil/atoms/landingTab"
 
 const LandingCoffeeChat = () => {
+  const autoplay = useRef(Autoplay({ delay: 1500, stopOnInteraction: true }))
+  const setLandingTab = useSetRecoilState(landingTabAtom)
+
+  const coffeechatRef = useRef<HTMLImageElement>(null)
+  const processRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    let observer: IntersectionObserver
+    if (coffeechatRef.current || processRef.current) {
+      observer = new IntersectionObserver(
+        () => {
+          setLandingTab("커피챗")
+        },
+        { threshold: 0.5 },
+      )
+      if (coffeechatRef.current) observer.observe(coffeechatRef.current)
+      if (processRef.current) observer.observe(processRef.current)
+    }
+  }, [coffeechatRef, processRef, setLandingTab])
+
   return (
     <>
       <LandingContainer className="flex justify-center items-center gap-10">
@@ -30,6 +59,7 @@ const LandingCoffeeChat = () => {
             width={600}
             data-aos="fade-up"
             className="w-[400px] sm:w-[600px]"
+            ref={coffeechatRef}
           />
           <Image
             src={landing_coffeechat_text}
@@ -45,6 +75,7 @@ const LandingCoffeeChat = () => {
           className="text-center"
           data-aos="fade-up"
           data-aos-anchor-placement="top-bottom"
+          ref={processRef}
         >
           <div className="text-2xl font-bold">Coffee Chat Process</div>
           <div className="text-4xl font-bold text-primary">
@@ -61,27 +92,30 @@ const LandingCoffeeChat = () => {
           className="hidden sm:block"
         />
         <div className="flex sm:hidden">
-          <Image
-            src={landing_create_coffeechat}
-            alt="landing_create_coffeechat"
-            width={200}
-            data-aos="fade-up"
-            data-aos-anchor-placement="top-bottom"
-          />
-          <Image
-            src={landing_reserve_coffeechat}
-            alt="landing_reserve_coffeechat"
-            width={200}
-            data-aos="fade-up"
-            data-aos-anchor-placement="top-bottom"
-          />
-          <Image
-            src={landing_enter_coffeecaht}
-            alt="landing_enter_coffeecaht"
-            width={200}
-            data-aos="fade-up"
-            data-aos-anchor-placement="top-bottom"
-          />
+          <Carousel
+            plugins={[autoplay.current]}
+            className="w-full max-w-xs"
+            onMouseEnter={autoplay.current.stop}
+            onMouseLeave={autoplay.current.reset}
+          >
+            <CarouselContent>
+              {CoffeeChatProcessSlide.map((image, i) => (
+                <CarouselItem
+                  key={Math.random() * 10000 + i}
+                  className="w-full m-auto"
+                >
+                  <Image
+                    src={image}
+                    alt={image}
+                    width={200}
+                    className="w-full"
+                  />
+                </CarouselItem>
+              ))}
+            </CarouselContent>
+            <CarouselPrevious className="bg-transparent text-white" />
+            <CarouselNext className="bg-transparent text-white" />
+          </Carousel>
         </div>
       </LandingContainer>
     </>
