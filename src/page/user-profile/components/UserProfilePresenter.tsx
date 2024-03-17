@@ -83,7 +83,7 @@ function ProfileImageWrapper({
       {children}
       <div className="flex flex-col w-full justify-center items-center">
         <Spacing size={16} />
-        <div className="text-4xl text-secondary font-semibold">
+        <div className="text-4xl text-secondary font-semibold px-4 sm:px-0 sm:max-w-[120px] lg:max-w-[250px] break-all">
           {userPayload.nickname}
         </div>
       </div>
