@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "dev:turbo": "next dev --turbo",
+    "dev:mock-oauth": "node mock-oauth-server.js",
     "build": "next build",
     "start": "next start",
     "lint": "next lint"
