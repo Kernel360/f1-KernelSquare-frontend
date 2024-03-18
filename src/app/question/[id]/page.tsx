@@ -40,11 +40,6 @@ export async function generateMetadata({
   }
 }
 
-export const metadata: Metadata = {
-  title: `${layoutMeta["question"].title}`,
-  description: `${layoutMeta["question"].description}`,
-}
-
 export default function QuestionDetailPage({
   params,
 }: QuestionDetailPageProps) {
