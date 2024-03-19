@@ -10,6 +10,7 @@ import badge_url from "@/assets/images/badges"
 import levelStandard from "@/constants/levelStandard"
 import ProfileImage from "./profileImage/ProfileImage"
 import { basic_profile_background } from "@/assets/images/basic"
+import UserProfileDropdown from "./UserProfileDropdownMenu"
 
 interface UserProfilePresenterProps {
   userPayload: UserPayload
@@ -88,6 +89,7 @@ function ProfileImageWrapper({
         </div>
       </div>
       <UserProfilePresenter.Grade userPayload={userPayload} />
+      <UserProfileDropdown />
     </div>
   )
 }

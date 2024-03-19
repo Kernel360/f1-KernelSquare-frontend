@@ -14,9 +14,8 @@ function OAuthGithubRedirect() {
   useEffect(() => {
     deleteCookie("loginResponse")
 
-    // [TODO] 닉네임 변경 페이지로 이동
     if (user && validator.validateEmail(user.nickname).format()) {
-      redirect(`/profile/${user.member_id}`)
+      redirect(`/profile/nickname`)
     }
 
     redirect(`/qna?page=0`)
