@@ -2,11 +2,8 @@
 
 import { useClientSession } from "@/hooks/useClientSession"
 import { deleteCookie } from "@/util/actions/cookie"
-import { Validator } from "@/util/validate"
 import { redirect } from "next/navigation"
 import { useEffect } from "react"
-
-const validator = new Validator()
 
 function OAuthGithubRedirect() {
   const { user } = useClientSession()
@@ -14,7 +11,7 @@ function OAuthGithubRedirect() {
   useEffect(() => {
     deleteCookie("loginResponse")
 
-    if (user && validator.validateEmail(user.nickname).format()) {
+    if (user && user.nickname.includes("@")) {
       redirect(`/profile/nickname`)
     }
 

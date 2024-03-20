@@ -58,6 +58,8 @@ export class RouteMap {
    * **getSelectableTechTag**: 선택 가능 기술 스택 조회(GET)
    *
    * **setTechTag**: 관심 기술 스택 선택(POST)
+   *
+   * **updateMemberNickname**: 회원 닉네임 수정(PUT)
    */
   static member = {
     getMember(memberId?: number) {
@@ -100,6 +102,7 @@ export class RouteMap {
         memberId === undefined ? ":id" : memberId
       }/subscribe`
     },
+    updateMemberNickname: `${RouteMap.routeGroupBaseURL.member}/nickname`,
   }
 
   /**

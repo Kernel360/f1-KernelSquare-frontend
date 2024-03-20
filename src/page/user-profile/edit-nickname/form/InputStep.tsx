@@ -71,7 +71,7 @@ function InputStep({
     if (status === "pending") return
 
     const nickname = getValues("nickname")
-    console.log({ nickname })
+
     checkNicknameDuplicateApi(nickname)
   }
 
@@ -161,7 +161,7 @@ function InputStep({
             }
           />
         </div>
-        <div className="">
+        <div>
           <div className="text-colorsDarkGray text-sm">닉네임 규칙</div>
           <Guideline
             open

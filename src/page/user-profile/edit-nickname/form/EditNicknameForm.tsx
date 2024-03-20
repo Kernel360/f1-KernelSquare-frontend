@@ -12,6 +12,7 @@ import { BsPersonCheckFill } from "react-icons/bs"
 import { useState } from "react"
 import { useMutationState } from "@tanstack/react-query"
 import EditNicknameProgressLoading from "../loading/EditNicknameProgressLoading"
+import { MdCancel } from "react-icons/md"
 
 export enum EditNicknameFunnelStep {
   "Input" = 0,
@@ -71,6 +72,9 @@ function EditNicknameProgress({
       step === "Submit" &&
         editNicknameMutationStatus === "success" &&
         "text-primary font-normal",
+      step === "Submit" &&
+        editNicknameMutationStatus === "error" &&
+        "text-danger font-normal",
     ])
 
   const iconClassNames = (step: keyof typeof EditNicknameFunnelStep) =>
@@ -81,7 +85,7 @@ function EditNicknameProgress({
     ])
 
   return (
-    <div className="w-full flex mb-4 pt-2 bg-white shadow-sm sticky top-[calc(var(--height-header)+67px)] sm:top-[calc(var(--height-header))]">
+    <div className="w-full flex mb-4 pt-2 bg-white shadow-sm sticky z-[2] top-[calc(var(--height-header)+67px)] sm:top-[calc(var(--height-header))]">
       <div className="w-full flex max-w-[560px] mx-auto">
         <StepDescription
           step="Input"
@@ -117,12 +121,15 @@ function EditNicknameProgress({
         />
         <StepDescription
           step="Submit"
-          icon={<BsPersonCheckFill className={iconClassNames("Confirm")} />}
+          icon={<BsPersonCheckFill className={iconClassNames("Submit")} />}
           description={<div className={classNames("Submit")}>결과</div>}
           loading={editNicknameMutationStatus === "pending"}
           success={
             progressStep === "Submit" &&
             editNicknameMutationStatus === "success"
+          }
+          fail={
+            progressStep === "Submit" && editNicknameMutationStatus === "error"
           }
         />
       </div>
@@ -134,14 +141,16 @@ function StepDescription({
   step,
   icon,
   description,
-  success,
+  success = false,
   loading = false,
+  fail = false,
 }: {
   step: keyof typeof EditNicknameFunnelStep
   icon: React.ReactNode
   description: React.ReactNode
-  success: boolean
+  success?: boolean
   loading?: boolean
+  fail?: boolean
 }) {
   return (
     <div className="flex flex-col px-2 pt-0.5 pb-2 items-center">
@@ -150,6 +159,8 @@ function StepDescription({
           <EditNicknameProgressLoading className="w-4 h-4" />
         ) : success ? (
           <FaCheckCircle className="text-primary shrink-0" />
+        ) : fail ? (
+          <MdCancel className="text-base text-danger" />
         ) : (
           icon
         )}
