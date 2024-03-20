@@ -41,6 +41,7 @@ export async function generateMetadata({
 
     const { title, nickname, content } = res.data.data
     const extractedContent = extractTextFromMarkdown(content)
+    console.log("qna", title, nickname, extractedContent)
 
     return {
       title: `${title} (개발자 Q&A 상세 페이지)`,

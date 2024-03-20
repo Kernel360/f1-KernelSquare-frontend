@@ -14,6 +14,12 @@ export const extractTextFromMarkdown = (markdown: string) => {
   // 테이블 삭제
   markdown = markdown.replace(/\|.*?\|/g, "")
 
+  // Heading 삭제
+  markdown = markdown.replace(/^#+\s/gm, "")
+
+  // 강조 삭제
+  markdown = markdown.replace(/^\*|\*$/g, "")
+
   return markdown
 }
 
