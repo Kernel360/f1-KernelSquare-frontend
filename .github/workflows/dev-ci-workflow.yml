@@ -30,7 +30,7 @@ jobs:
           context: .
           push: true
           tags: ${{ secrets.DOCKER_DEV_TAG }}
-          build-args:
+          build-args: |
             NEXT_PUBLIC_API_MOCKING=${{ secrets.NEXT_PUBLIC_API_MOCKING }}
             NEXT_PUBLIC_SITE_URL=${{ secrets.NEXT_PUBLIC_DEV_SITE_URL }}
             NEXT_PUBLIC_SERVER=${{ secrets.NEXT_PUBLIC_DEV_SERVER }}
