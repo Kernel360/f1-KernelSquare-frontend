@@ -171,12 +171,12 @@ function LoginForm({ onSuccess }: LoginFormProps) {
         </Link>
       </div>
       <Spacing size={24} />
-      {/* <LabelDivider label={"간편 로그인"} />
-      <Spacing size={12} /> */}
+      <LabelDivider label={"간편 로그인"} />
+      <Spacing size={12} />
       {/* social login button */}
-      {/* <div className="flex w-full justify-center gap-2">
+      <div className="flex w-full justify-center gap-2">
         <SocialButton social="github" action="login" />
-      </div> */}
+      </div>
     </form>
   )
 }
