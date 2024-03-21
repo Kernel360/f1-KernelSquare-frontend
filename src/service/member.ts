@@ -13,6 +13,10 @@ import {
   UpdateMemberProfileImageRequest,
   UpdateMemberProfileImageResponse,
 } from "@/interfaces/dto/member/update-member-profile-image-dto"
+import {
+  UpdateMemberNicknameRequest,
+  UpdateMemberNicknameResponse,
+} from "@/interfaces/dto/member/update-member-nickname.dto"
 
 /**
  *
@@ -64,6 +68,30 @@ export async function updateMemberProfileImage({
     Omit<UpdateMemberProfileImageRequest, "memberId">
   >(RouteMap.member.updateMemberProfileImage(memberId), {
     image_url,
+  })
+
+  return res
+}
+
+/**
+ * 유저 닉네임 수정 API (PUT)
+ *
+ * `member_id` : 유저 아이디 (number)
+ *
+ * `nickname` : 변경 닉네임 (string)
+ *
+ */
+export async function updateMemberNickname({
+  member_id,
+  nickname,
+}: UpdateMemberNicknameRequest) {
+  const res = await apiInstance.put<
+    any,
+    AxiosResponse<UpdateMemberNicknameResponse>,
+    UpdateMemberNicknameRequest
+  >(RouteMap.member.updateMemberNickname, {
+    member_id,
+    nickname,
   })
 
   return res

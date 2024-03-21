@@ -10,6 +10,7 @@ import badge_url from "@/assets/images/badges"
 import levelStandard from "@/constants/levelStandard"
 import ProfileImage from "./profileImage/ProfileImage"
 import { basic_profile_background } from "@/assets/images/basic"
+import UserProfileDropdown from "./UserProfileDropdownMenu"
 
 interface UserProfilePresenterProps {
   userPayload: UserPayload
@@ -83,11 +84,12 @@ function ProfileImageWrapper({
       {children}
       <div className="flex flex-col w-full justify-center items-center">
         <Spacing size={16} />
-        <div className="text-4xl text-secondary font-semibold">
+        <div className="text-4xl text-secondary font-semibold px-4 sm:px-0 sm:max-w-[120px] lg:max-w-[250px] break-all">
           {userPayload.nickname}
         </div>
       </div>
       <UserProfilePresenter.Grade userPayload={userPayload} />
+      <UserProfileDropdown />
     </div>
   )
 }

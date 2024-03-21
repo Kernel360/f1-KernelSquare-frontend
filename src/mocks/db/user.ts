@@ -79,6 +79,17 @@ export const mockUsers = [
     introduction: "console.log('hello world')",
   },
   {
+    id: 7,
+    email: "",
+    password: "",
+    nickname: "oauthUser@github.com",
+    experience: 60,
+    level: 1,
+    authorities: ["ROLE_USER"],
+    image_url: null,
+    introduction: "",
+  },
+  {
     id: 9999,
     email: "aiIntern@email.com",
     password: "InternIntern!",
