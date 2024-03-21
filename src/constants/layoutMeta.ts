@@ -11,6 +11,7 @@ export type LayoutMetaKey =
   | "profile"
   | "userProfile"
   | "search"
+  | "oauth"
 
 export type LayoutMeta = {
   title: string
@@ -130,6 +131,15 @@ export const layoutMeta = {
     containLayout: {
       header: true,
       navigation: true,
+      footer: false,
+    },
+  },
+  oauth: {
+    title: "소셜 로그인",
+    description: "소셜 로그인",
+    containLayout: {
+      header: false,
+      navigation: false,
       footer: false,
     },
   },

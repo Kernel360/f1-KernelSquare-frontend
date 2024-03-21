@@ -8,6 +8,7 @@ import MyPageGuardModal from "./MyPageGuardModal"
 import UpdateQuestionGuardModal from "./UpdateQustionGuardModal"
 import { useClientSession } from "@/hooks/useClientSession"
 import UpdateCodingMeetingGuardModal from "./UpdateCodingMeetingGuardModal"
+import OAuthGuardModal from "./OAuthGuardModal"
 
 type AuthGuardModalPages =
   | "question"
@@ -18,6 +19,7 @@ type AuthGuardModalPages =
   | "profile"
   | "updateCodingMeeting:Unauthorized"
   | "updateCodingMeeting:Forbidden"
+  | "oauth"
 
 type AuthGuardPayloadKey = Extract<
   AuthGuardModalPages,
@@ -52,6 +54,7 @@ const sholudNotResetSessionPaths: Array<AuthGuardModalPages> = [
   "signup",
   "updateQuestion:Forbidden",
   "updateCodingMeeting:Forbidden",
+  "oauth",
 ]
 
 const isUpdateQuestionPayload = (
@@ -117,6 +120,8 @@ function AuthGuardModal<T extends AuthGuardModalPages>({
             />
           )
         }
+      case "oauth":
+        return <OAuthGuardModal />
       default:
         return null
     }
