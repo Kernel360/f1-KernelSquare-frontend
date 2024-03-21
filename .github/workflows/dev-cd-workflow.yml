@@ -40,7 +40,7 @@ jobs:
         with:
           host: ${{ secrets.DEV_EC2_HOST }}
           username: ${{ secrets.EC2_USER }}
-          password: ${{ secrets.EC2_PASSWORD }}
+          key: ${{ secrets.AWS_SSH_KEY }}
           script_stop: true
           script: |
             docker pull ${{ secrets.DOCKER_DEV_TAG }}
