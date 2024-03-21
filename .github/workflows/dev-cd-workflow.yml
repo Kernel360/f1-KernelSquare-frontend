@@ -39,7 +39,7 @@ jobs:
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.DEV_EC2_HOST }}
-          username: ${{ secrets.EC2_USER }}
+          username: ${{ secrets.DEV_EC2_USER }}
           key: ${{ secrets.AWS_SSH_KEY }}
           script_stop: true
           script: |
