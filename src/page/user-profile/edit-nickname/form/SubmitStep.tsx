@@ -17,6 +17,11 @@ import { APIResponse } from "@/interfaces/dto/api-response"
 import { toast } from "react-toastify"
 import { Button } from "@/components/ui/button"
 import { revalidatePage } from "@/util/actions/revalidatePage"
+import { useSetRecoilState } from "recoil"
+import { userAtom } from "@/recoil/atoms/user"
+import dayjs from "dayjs"
+import { updateUserPayloadCookie } from "@/util/actions/cookie"
+import { encrypt } from "@/util/crypto"
 
 function SubmitStep({
   getValues,
@@ -25,7 +30,8 @@ function SubmitStep({
 }: FunnelStepFunctionComponentProps<EditNicknameFormData>) {
   const { replace } = useRouter()
 
-  const { user, clientSessionUpdate } = useClientSession()
+  const { user } = useClientSession()
+  const setUser = useSetRecoilState(userAtom)
 
   const queryClient = useQueryClient()
 
@@ -38,13 +44,28 @@ function SubmitStep({
     mutationFn: (nickname: string) =>
       updateMemberNickname({ member_id: user!.member_id, nickname }),
     async onSuccess(data, nickname) {
-      clientSessionUpdate({
-        image_url: user?.image_url,
-        nickname,
-      })
-
       setTimeout(() => {
-        replace(`/profile/${user?.member_id}`)
+        const payload = {
+          ...user!,
+          nickname,
+          expires: dayjs(user!.expires)
+            .startOf("second")
+            .toDate()
+            .toISOString(),
+        }
+
+        setUser({
+          ...payload,
+        })
+
+        updateUserPayloadCookie(
+          encrypt(JSON.stringify(payload)),
+          dayjs(user!.expires).startOf("second").toDate(),
+        )
+
+        setTimeout(() => {
+          replace(`/profile/${user?.member_id}`)
+        }, 100)
       }, 1500)
     },
     onError(error) {
