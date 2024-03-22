@@ -10,6 +10,8 @@ import badge_url from "@/assets/images/badges"
 import levelStandard from "@/constants/levelStandard"
 import ProfileImage from "./profileImage/ProfileImage"
 import { basic_profile_background } from "@/assets/images/basic"
+import UserProfileDropdown from "./UserProfileDropdownMenu"
+import { useClientSession } from "@/hooks/useClientSession"
 
 interface UserProfilePresenterProps {
   userPayload: UserPayload
@@ -78,16 +80,19 @@ function ProfileImageWrapper({
   children,
   userPayload,
 }: PropsWithChildren<ProfileImageWrapperProps>) {
+  const { user } = useClientSession()
+
   return (
     <div className="w-full flex flex-col justify-center items-center sticky top-0 [margin-block-start:-60px] sm:[margin-block-start:-88px] sm:h-max sm:min-h-[200px] sm:justify-start sm:top-[calc(var(--height-header))] sm:w-max sm:box-border sm:pt-4 sm:-translate-x-[7px]">
       {children}
       <div className="flex flex-col w-full justify-center items-center">
         <Spacing size={16} />
-        <div className="text-4xl text-secondary font-semibold">
+        <div className="text-4xl text-secondary font-semibold px-4 sm:px-0 sm:max-w-[120px] lg:max-w-[250px] break-all">
           {userPayload.nickname}
         </div>
       </div>
       <UserProfilePresenter.Grade userPayload={userPayload} />
+      {user?.nickname === userPayload.nickname ? <UserProfileDropdown /> : null}
     </div>
   )
 }
