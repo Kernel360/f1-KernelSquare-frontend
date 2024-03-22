@@ -97,7 +97,8 @@ export const userClientSession = selector({
         async ({
           image_url,
           introduction,
-        }: Omit<UpdateMemberInfoRequest, "id">) => {
+          nickname,
+        }: Omit<UpdateMemberInfoRequest & { nickname?: string }, "id">) => {
           try {
             const payloadResponse = await getPayloadCookie()
 
@@ -113,6 +114,7 @@ export const userClientSession = selector({
 
             editedPayload.image_url = image_url ?? null
             if (introduction) editedPayload.introduction = introduction
+            if (nickname) editedPayload.nickname = nickname
 
             const stringifyPayload = JSON.stringify(editedPayload)
             const encryptedPayload = encrypt(stringifyPayload)
