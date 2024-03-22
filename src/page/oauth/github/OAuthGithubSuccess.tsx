@@ -3,7 +3,6 @@
 import { UserRole } from "@/interfaces/user"
 import { userAtom } from "@/recoil/atoms/user"
 import { setAuthCookie } from "@/util/actions/cookie"
-import { revalidatePage } from "@/util/actions/revalidatePage"
 import { encrypt } from "@/util/crypto"
 import dayjs from "dayjs"
 import { useEffect } from "react"
@@ -69,8 +68,6 @@ function OAuthGithubSuccess({ decodedCookie }: OAuthGithubSuccessProps) {
         roles: userPayload.roles,
         expires: expires.toJSON(),
       })
-
-      await revalidatePage("/oauth/github", "page")
     })()
   }, []) /* eslint-disable-line */
 
