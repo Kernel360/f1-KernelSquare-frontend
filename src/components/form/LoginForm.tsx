@@ -96,7 +96,7 @@ function LoginForm({ onSuccess }: LoginFormProps) {
   }
 
   const onInvalid = (errors: FieldErrors<LoginFormData>) => {
-    toast.error(LoginForm.ErrorToast, { position: "top-center" })
+    toast.error(LoginForm.InvalidErrorToast, { position: "top-center" })
   }
 
   const handleClose = (e: React.MouseEvent<HTMLAnchorElement>) => {
@@ -155,7 +155,7 @@ function LoginForm({ onSuccess }: LoginFormProps) {
           fullWidth
           buttonTheme="primary"
           className="px-2 py-4 text-base font-semibold text-white disabled:bg-[#E0E0E0] disabled:text-[#BDBDBD] disabled:pointer-events-none"
-          disabled={!isValid || isSubmitting}
+          disabled={isSubmitting}
         >
           {isSubmitting ? "로그인 중" : "로그인"}
         </Button>
@@ -189,9 +189,21 @@ LoginForm.ErrorToast = function LoginFormErrorToast({
 }: ToastContentProps) {
   return (
     <div className="text-xs">
-      등록되지 않은 아이디 이거나,
+      등록되지 않은 이메일이거나,
       <br />
-      아이디 또는 비밀번호를 잘못 입력했습니다
+      이메일 또는 비밀번호를 잘못 입력했습니다
+    </div>
+  )
+}
+
+LoginForm.InvalidErrorToast = function LoginFormInvalidErrorToast(
+  props: ToastContentProps,
+) {
+  return (
+    <div className="text-xs">
+      이메일 또는 비밀번호를
+      <br />
+      다시 확인해주세요
     </div>
   )
 }
