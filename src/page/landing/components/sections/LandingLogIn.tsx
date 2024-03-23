@@ -4,9 +4,15 @@ import Button from "@/components/shared/button/Button"
 import LandingContainer from "../LandingContainer"
 import LoginForm from "@/components/form/LoginForm"
 import useModal from "@/hooks/useModal"
+import { useRouter } from "next/navigation"
+import { useClientSession } from "@/hooks/useClientSession"
 
 const LandingLogIn = () => {
   const { openModal } = useModal()
+  const { push } = useRouter()
+  const { user } = useClientSession()
+  const handleButtonClick = () =>
+    user ? push("/qna") : openModal({ content: <LoginForm /> })
 
   return (
     <LandingContainer className="relative flex flex-col justify-center items-center text-center gap-10 font-extralight">
@@ -46,9 +52,9 @@ const LandingLogIn = () => {
       </Button> */}
         <Button
           className="bg-transparent border-[1px] border-white w-[200px] h-[50px] rounded-[50px] text-2xl hover:bg-primary hover:border-primary hover:text-white"
-          onClick={() => openModal({ content: <LoginForm /> })}
+          onClick={() => handleButtonClick()}
         >
-          로그인
+          {user ? "시작하기" : "로그인"}
         </Button>
       </div>
       <div className="absolute bottom-0 w-full h-[50px] bg-transparent bg-[#303030] text-white text-center">
