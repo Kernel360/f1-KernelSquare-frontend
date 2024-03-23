@@ -41,6 +41,8 @@ jobs:
             NEXT_PUBLIC_KAKAO_MAP=${{ secrets.NEXT_PUBLIC_KAKAO_MAP }}
             NEXT_PUBLIC_GA_ACTIVE=${{ secrets.NEXT_PUBLIC_GA_ACTIVE }}
             NEXT_PUBLIC_GA_ID=${{ secrets.NEXT_PUBLIC_GA_ID }}
+            NEXT_PUBLIC_GOOGLE_VERIFICATION=${{ secrets.NEXT_PUBLIC_GOOGLE_VERIFICATION }}
+            NEXT_PUBLIC_NAVER_VERIFICATION=${{ secrets.NEXT_PUBLIC_NAVER_VERIFICATION }}
   notify:
     needs: build
     if: github.repository == 'KernelSquare/Frontend'
