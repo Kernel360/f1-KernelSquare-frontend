@@ -47,9 +47,6 @@ const LandingLogIn = () => {
         data-aos="fade-down"
         data-aos-anchor-placement="top-bottom"
       >
-        {/* <Button className="bg-transparent border-[1px] border-white w-[200px] h-[50px] rounded-[50px] text-2xl hover:bg-primary hover:border-primary hover:text-white">
-        <Link href="/signup">회원가입</Link>
-      </Button> */}
         <Button
           className="bg-transparent border-[1px] border-white w-[200px] h-[50px] rounded-[50px] text-2xl hover:bg-primary hover:border-primary hover:text-white"
           onClick={() => handleButtonClick()}
