@@ -3,7 +3,7 @@ import {
   UserPayload,
 } from "@/interfaces/dto/member/get-member.dto"
 import { RouteMap } from "@/service/route-map"
-import { DefaultBodyType, HttpResponse, http } from "msw"
+import { DefaultBodyType, HttpResponse, PathParams, http } from "msw"
 import { mockUsers } from "../db/user"
 import { ApiStatus } from "@/constants/response/api"
 import type {
@@ -14,6 +14,12 @@ import type {
   UpdateMemberProfileImageRequest,
   UpdateMemberProfileImageResponse,
 } from "@/interfaces/dto/member/update-member-profile-image-dto"
+import {
+  UpdateMemberNicknameRequest,
+  UpdateMemberNicknameResponse,
+} from "@/interfaces/dto/member/update-member-nickname.dto"
+import { HttpStatusCode } from "axios"
+import { Validator } from "@/util/validate"
 
 export const memberHandler = [
   http.get<{ id: string }, DefaultBodyType, GetMemberResponse>(
@@ -145,6 +151,72 @@ export const memberHandler = [
           msg: "회원 정보 수정 성공",
         },
         { status: HttpStatus },
+      )
+    },
+  ),
+  // 회원 닉네임 수정
+  http.put<
+    PathParams,
+    UpdateMemberNicknameRequest,
+    UpdateMemberNicknameResponse
+  >(
+    `${process.env.NEXT_PUBLIC_SERVER}${RouteMap.member.updateMemberNickname}`,
+    async ({ request }) => {
+      const header = request.headers
+      const header_token = header.get("Authorization")
+
+      const { member_id, nickname } = await request.json()
+
+      if (!header_token) {
+        return HttpResponse.json(
+          {
+            code: -1,
+            msg: "로그인 후 닉네임 수정이 가능합니다.",
+          },
+          { status: HttpStatusCode.Unauthorized },
+        )
+      }
+
+      const targetUser = mockUsers.find((mockUser) => mockUser.id === member_id)
+
+      if (!targetUser) {
+        return HttpResponse.json(
+          {
+            code: -1,
+            msg: "유저를 찾을 수 없습니다",
+          },
+          { status: HttpStatusCode.NotFound },
+        )
+      }
+
+      const validator = new Validator()
+
+      if (!validator.validateNickname(nickname).allCheck()) {
+        return HttpResponse.json(
+          {
+            code: -1,
+            msg: "유효한 닉네임이 아닙니다",
+          },
+          { status: HttpStatusCode.BadRequest },
+        )
+      }
+
+      targetUser.nickname = nickname
+
+      return HttpResponse.json(
+        {
+          code: 1246,
+          msg: "회원 닉네임이 수정되었습니다.",
+          data: {
+            member_id: targetUser.id,
+            nickname: targetUser.nickname,
+            experience: targetUser.experience,
+            introduction: targetUser.introduction,
+            image_url: targetUser.image_url,
+            level: targetUser.level,
+          },
+        },
+        { status: HttpStatusCode.Ok },
       )
     },
   ),

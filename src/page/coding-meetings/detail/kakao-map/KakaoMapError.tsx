@@ -7,12 +7,14 @@ import { FallbackProps } from "react-error-boundary"
 
 function KakakoMapError({ error }: FallbackProps) {
   useEffect(() => {
-    Sentry.withScope((scope) => {
-      const sentryKakakoMapError = new Error("kakaoMap 에러")
-      sentryKakakoMapError.name = "카카오 Map"
+    if (process.env.NEXT_PUBLIC_SENTRY_ACTIVE === "enabled") {
+      Sentry.withScope((scope) => {
+        const sentryKakakoMapError = new Error("kakaoMap 에러")
+        sentryKakakoMapError.name = "카카오 Map"
 
-      Sentry.captureException(sentryKakakoMapError)
-    })
+        Sentry.captureException(sentryKakakoMapError)
+      })
+    }
   }, [error])
 
   return (
