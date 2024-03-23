@@ -413,7 +413,7 @@ export const coffeeChatHandler = [
         return HttpResponse.json(
           {
             code: 3407,
-            msg: "이미 동일한 멘토링을 예약하셨습니다.",
+            msg: "이미 동일한 커피챗을 예약하셨습니다.",
           },
           {
             status: HttpStatusCode.Forbidden,
@@ -432,7 +432,7 @@ export const coffeeChatHandler = [
         return HttpResponse.json(
           {
             code: 3409,
-            msg: "해당 시간에 이미 다른 멘토링 예약이 존재합니다.",
+            msg: "해당 시간에 이미 다른 커피챗 예약이 존재합니다.",
           },
           {
             status: HttpStatusCode.Forbidden,

@@ -57,7 +57,7 @@ const TimeOptions = ({ reservation, date }: TimeOptionsProps) => {
       [filterTime(time) && "cursor-default bg-colorsGray"],
     )
 
-  // 해당 일자에 멘토링 일정이 없는 경우
+  // 해당 일자에 커피챗 일정이 없는 경우
   if (
     !reservation.filter(
       ({ start_time }) =>
@@ -66,7 +66,7 @@ const TimeOptions = ({ reservation, date }: TimeOptionsProps) => {
   )
     return (
       <div className="w-full sm:w-[448px] text-center text-slate-300">
-        가능한 멘토링 일정이 없습니다.
+        가능한 커피챗 일정이 없습니다.
       </div>
     )
 

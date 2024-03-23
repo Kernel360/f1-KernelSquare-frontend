@@ -30,7 +30,7 @@ function ReservationForMentee({ reservation }: MenteeProps) {
     <section className="my-20 text-center">
       <ProgressModalView />
       <div className="font-bold text-primary text-[28px] mb-5">
-        멘토링 가능 일시
+        커피챗 가능 일시
       </div>
       <div className="font-bold text-secondary text-[20px] mb-5 flex justify-center items-center">
         <FaCalendarAlt />

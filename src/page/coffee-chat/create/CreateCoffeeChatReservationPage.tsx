@@ -291,7 +291,7 @@ function CreateCoffeeChatReservationPage({
             className="p-5 py-3 my-10 disabled:bg-colorsGray disabled:text-colorsDarkGray"
             type="submit"
           >
-            멘토링 개설하기
+            커피챗 개설하기
           </Button>
         </div>
         <input hidden className="hidden" {...register("content")} />

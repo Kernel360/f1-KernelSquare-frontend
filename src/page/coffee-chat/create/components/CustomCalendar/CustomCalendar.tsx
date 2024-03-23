@@ -64,7 +64,7 @@ const CustomCalendar = ({ start, limit }: CustomCalendarProps) => {
     return false
   }
 
-  // 멘토링 기간
+  // 커피챗 기간
   const isMentoringPeriod = (target: Date) => {
     const date1 = dayjs(date + "", "YYYY-MM-DD")
     const date2 = dayjs(target, "YYYY-MM-DD")

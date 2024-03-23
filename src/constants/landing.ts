@@ -22,7 +22,7 @@ const TeamKernelSqaure = [
     github: "https://github.com/fingersdanny",
   },
   {
-    name: "Jukwang.H",
+    name: "Jugwang.H",
     profile: "https://avatars.githubusercontent.com/u/59231743?v=4",
     role: ROLE.BE,
     github: "https://github.com/Hju95",
