@@ -17,7 +17,6 @@ const LandingVideo = () => {
       muted
       loop
       className="object-cover h-screen w-full grayscale-[50%] contrast-[90%] brightness-50"
-      poster="/landing/landing_thumbnail.svg"
     >
       <source src="/landing/landing_video.webm" type="video/webm" />
       <source src="/landing/landing_video.mp4" type="video/mp4" />
