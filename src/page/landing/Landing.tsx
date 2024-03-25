@@ -13,7 +13,7 @@ const LandingPage: React.FC = () => {
   return (
     <>
       <AOSProvider />
-      <div>
+      <div className="bg-[#303030]">
         <div>
           <LandingVideo />
           <LandingHeader />

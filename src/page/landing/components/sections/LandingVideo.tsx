@@ -18,8 +18,8 @@ const LandingVideo = () => {
       loop
       className="object-cover h-screen w-full grayscale-[50%] contrast-[90%] brightness-50"
     >
-      <source src="/video/landing_video.webm" type="video/webm" />
-      <source src="/video/landing_video.mp4" type="video/mp4" />
+      <source src="/landing/landing_video.webm" type="video/webm" />
+      <source src="/landing/landing_video.mp4" type="video/mp4" />
     </video>
   )
 }

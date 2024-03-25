@@ -60,7 +60,7 @@ const ScheduleSection = () => {
     <CoffeeChatSection>
       <div className="w-full align-top max-w-full flex-col md:flex-row md:justify-start md:items-center">
         <CoffeeChatSection.Label className="w-max flex items-center">
-          <div>멘토링 가능 일시</div>
+          <div>커피챗 가능 일시</div>
           {date && <HoverBox />}
         </CoffeeChatSection.Label>
         <div className="flex justify-around">
@@ -83,7 +83,7 @@ const ScheduleSection = () => {
                 </div>
                 <div className="font-normal mt-3 flex items-center">
                   <div className="w-[10px] h-[10px] rounded-full bg-primary mr-1"></div>{" "}
-                  <div>멘토링 진행 기간</div>
+                  <div>커피챗 진행 기간</div>
                 </div>
               </div>
             )}
@@ -163,7 +163,7 @@ const ScheduleSection = () => {
                       </Button>
                     </div>
                     <div>
-                      선택한 멘토링 시간:{" "}
+                      선택한 커피챗 시간:{" "}
                       <span className="font-bold text-primary">
                         {timeCount}
                       </span>
@@ -192,7 +192,7 @@ function HoverBox() {
       <PopoverTrigger className="flex items-center ml-3 cursor-pointer text-slate-400 hover:text-primary">
         <Icons.Info />
         <div className="font-bold text-sm ml-2">
-          멘토링 가능 일시 산정 기준 알아보기
+          커피챗 가능 일시 산정 기준 알아보기
         </div>
       </PopoverTrigger>
       <PopoverContent className="w-auto">
@@ -202,12 +202,12 @@ function HoverBox() {
           </div>
           <div className="font-normal mt-3 flex items-center">
             <div className="w-[10px] h-[10px] rounded-full bg-[#00c47133] border-[1px] border-primary mr-1"></div>{" "}
-            <span className="text-primary mx-1">일주일</span> 뒤부터 멘토링 시작
+            <span className="text-primary mx-1">일주일</span> 뒤부터 커피챗 시작
             날짜로 선택할 수 있습니다.{" "}
           </div>
           <div className="font-normal mt-3 flex items-center">
             <div className="w-[10px] h-[10px] rounded-full bg-[#fbf8ce] border-[1px] border-[orange] mr-1"></div>{" "}
-            선택한 멘토링 날짜가 되기 전까지{" "}
+            선택한 커피챗 날짜가 되기 전까지{" "}
             <span className="text-primary mx-1">5일</span> 동안 예약이
             진행됩니다.
           </div>
@@ -218,7 +218,7 @@ function HoverBox() {
           </div>
           <div className="font-normal mt-3 flex items-center">
             <div className="w-[10px] h-[10px] rounded-full bg-primary mr-1"></div>{" "}
-            멘토링은 선택한 일자로부터 총{" "}
+            커피챗은 선택한 일자로부터 총{" "}
             <span className="text-primary mx-1">3일</span> 간 진행됩니다.
           </div>
         </div>
