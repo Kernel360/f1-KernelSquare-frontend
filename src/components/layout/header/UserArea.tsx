@@ -4,7 +4,6 @@ import LoginForm from "@/components/form/LoginForm"
 import Button from "@/components/shared/button/Button"
 import useModal from "@/hooks/useModal"
 import Link from "next/link"
-import { Icons } from "@/components/icons/Icons"
 import Profile from "@/components/shared/user/Profile"
 import Dropdown from "rc-dropdown"
 import Menu, { Item as MenuItem, Divider } from "rc-menu"
@@ -15,6 +14,7 @@ import { getAuthCookie } from "@/util/actions/cookie"
 import { revalidatePage } from "@/util/actions/revalidatePage"
 import type { LoginUserPayload } from "@/interfaces/dto/auth/login.dto"
 import DeleteMemberModal from "@/app/profile/[id]/_components/deleteMember/DeleteMemberModal"
+import Alerm from "./alerm/Alerm"
 
 type ProfileDropdownMenu = {
   label?: string
@@ -130,9 +130,7 @@ function LoginedUserArea({ user }: { user: LoginUserPayload }) {
           className="cursor-pointer hover:cursor-pointer"
         />
       </Dropdown>
-      {/* <Button className="p-0">
-        <Icons.Notification className="text-2xl text-colorsGray" />
-      </Button> */}
+      <Alerm />
     </div>
   )
 }

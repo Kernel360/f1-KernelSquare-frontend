@@ -60,7 +60,7 @@ function ReservationForMentor({ reservation, created, title }: MentorProps) {
             </div>
             <div className="font-normal mt-3 flex items-center">
               <div className="w-[10px] h-[10px] rounded-full bg-primary mr-1"></div>{" "}
-              <div>멘토링 진행 기간</div>
+              <div>커피챗 진행 기간</div>
             </div>
           </div>
         </div>
@@ -131,7 +131,7 @@ function ReservedTime({ time, title, reservation_id }: ReservedTimeProps) {
           <div>
             <div className="font-bold text-left">{time.mentee_nickname} 님</div>
           </div>
-          <div>과(와)의 멘토링이 예정되어 있습니다.</div>
+          <div>과(와)의 커피챗이 예정되어 있습니다.</div>
         </div>
         <div>
           <EnterCoffeeChatButton
