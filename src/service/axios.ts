@@ -2,9 +2,12 @@ import { ACCESS_TOKEN_KEY } from "@/constants/token"
 import axios from "axios"
 import { getCookie } from "@/util/actions/cookie"
 
-const createAPIInstance = () => {
+const createAPIInstance = (domain?: "alert") => {
   const axiosInstance = axios.create({
-    baseURL: process.env.NEXT_PUBLIC_SERVER,
+    baseURL:
+      domain === "alert"
+        ? process.env.NEXT_PUBLIC_SSE
+        : process.env.NEXT_PUBLIC_SERVER,
     withCredentials: true,
   })
 
@@ -64,3 +67,4 @@ const createAPIInstance = () => {
 }
 
 export const apiInstance = createAPIInstance()
+export const alertApiInstance = createAPIInstance("alert")

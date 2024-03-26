@@ -12,6 +12,7 @@ export type LayoutMetaKey =
   | "userProfile"
   | "search"
   | "oauth"
+  | "notification"
 
 export type LayoutMeta = {
   title: string
@@ -140,6 +141,15 @@ export const layoutMeta = {
     containLayout: {
       header: false,
       navigation: false,
+      footer: false,
+    },
+  },
+  notification: {
+    title: "알림 조회",
+    description: "개인 알림 조회",
+    containLayout: {
+      header: true,
+      navigation: true,
       footer: false,
     },
   },

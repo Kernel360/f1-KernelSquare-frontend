@@ -24,7 +24,7 @@ type SSEMessageType = {
 }
 
 type SSEMessageBase<T extends AlertType> = {
-  id: number
+  id: string
   recipient: string
   send_time: string
   alert_type: T extends "QUESTION_REPLY"
