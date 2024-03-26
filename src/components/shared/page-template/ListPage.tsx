@@ -15,7 +15,7 @@ import CoffeeChatInfoArea from "@/page/coding-meetings/main/info-area/CoffeeChat
 import { twMerge } from "tailwind-merge"
 
 interface ListPageProps {
-  section: "qna" | "codingMeetings" | "coffeeChat"
+  section: "qna" | "codingMeetings" | "coffeeChat" | "notification"
   children: React.ReactNode
 }
 
@@ -83,6 +83,7 @@ function Title({ section }: { section: ListPageProps["section"] }) {
       </section>
     ),
     coffeeChat: null,
+    notification: <h3>알림</h3>,
   } satisfies Record<typeof section, React.ReactNode>
 
   if (title[section] === null) return null
@@ -147,6 +148,7 @@ ListPage.Loading = function ListPageDataLoading({
     qna: "Q&A 리스트",
     codingMeetings: "모각코 리스트",
     coffeeChat: "커피챗 리스트",
+    notification: "알림 리스트",
   } satisfies Record<typeof section, React.ReactNode>
 
   return (
