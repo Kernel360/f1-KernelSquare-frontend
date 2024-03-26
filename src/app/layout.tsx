@@ -22,6 +22,18 @@ export const metadata: Metadata = {
     template: "%s - 커널스퀘어",
     default: "커널스퀘어",
   },
+  openGraph: {
+    images: {
+      url: "/og.png",
+      alt: "Kernel Square",
+    },
+  },
+  twitter: {
+    images: {
+      url: "/og.png",
+      alt: "Kernel Square",
+    },
+  },
 }
 
 const PopupEventListener = dynamicComponent(
