@@ -3,12 +3,21 @@
 import { Icons } from "@/components/icons/Icons"
 import Button from "@/components/shared/button/Button"
 import { useSSE } from "@/hooks/sse/useSSE"
-import { useEffect, useRef, useState } from "react"
+import { useState } from "react"
 import { Event } from "event-source-polyfill"
-import { SSEMessage, SSEMessages } from "@/interfaces/sse"
+import { AlertType, SSEMessage, SSEMessages } from "@/interfaces/sse"
 import { getKorDayjs } from "@/util/getDate"
 import Link from "next/link"
 import { twMerge } from "tailwind-merge"
+import { useQueryClient } from "@tanstack/react-query"
+import { useClientSession } from "@/hooks/useClientSession"
+import { setCookie } from "@/util/actions/cookie"
+import {
+  RECEIVED_MESSAGE_STATE,
+  SSE_STATE_KEY,
+} from "@/constants/sse/sse-constants"
+import { useRecoilState } from "recoil"
+import { sseAtom } from "@/recoil/atoms/sse/sseAtom"
 
 interface MessageState {
   receivedMessage: boolean
@@ -16,57 +25,42 @@ interface MessageState {
 }
 
 function Alerm() {
-  const [sse, setSSE] = useState<MessageState>({
-    receivedMessage: false,
-    events: [],
-  })
+  const { user } = useClientSession()
+  const queryClient = useQueryClient()
 
-  const [open, setOpen] = useState(false)
+  const [sse, setSSE] = useRecoilState(sseAtom)
 
   const eventSource = useSSE({
     onSSEevent(event) {
-      const sseEvent = {
-        ...event,
-        data: JSON.parse((event as any).data),
-      }
+      localStorage.setItem(SSE_STATE_KEY, RECEIVED_MESSAGE_STATE.Received)
+      setCookie(SSE_STATE_KEY, RECEIVED_MESSAGE_STATE.Received)
 
       setSSE((prev) => ({
         ...prev,
         receivedMessage: true,
-        events: [...prev.events, { ...(sseEvent as any) }],
       }))
+
+      queryClient.invalidateQueries({
+        queryKey: ["alert", "list", user?.member_id],
+      })
     },
   })
 
-  const alermRef = useRef<HTMLDivElement>(null)
-
-  useEffect(() => {
-    const handleDim = (e: MouseEvent) => {
-      if (!alermRef.current) return
-      if (alermRef.current.contains(e.target as HTMLElement)) return
-
-      setOpen(false)
-    }
-
-    window.addEventListener("click", handleDim)
-
-    return () => {
-      window.removeEventListener("click", handleDim)
-    }
-  }, []) /* eslint-disable-line */
-
   return (
-    <div className="relative inline-flex align-top" ref={alermRef}>
-      <Button
-        className="p-0"
-        onClick={() => {
-          setOpen((prev) => !prev)
-          setSSE((prev) => ({
-            ...prev,
-            receivedMessage: false,
-          }))
-        }}
-      >
+    <Link
+      href={`/notification`}
+      className="relative inline-flex align-top"
+      onClick={() => {
+        localStorage.setItem(SSE_STATE_KEY, RECEIVED_MESSAGE_STATE.NotReceived)
+        setCookie(SSE_STATE_KEY, RECEIVED_MESSAGE_STATE.NotReceived)
+
+        setSSE((prev) => ({
+          ...prev,
+          receivedMessage: false,
+        }))
+      }}
+    >
+      <Button className="p-0">
         <Icons.Notification
           className={`text-2xl transition-colors duration-200 ${
             sse.receivedMessage ? "text-secondary" : "text-colorsGray"
@@ -76,21 +70,13 @@ function Alerm() {
       {sse.receivedMessage ? (
         <div className="absolute top-0 -left-0.5 w-2 h-2 rounded-full bg-rose-500" />
       ) : null}
-      {open ? (
-        <div className="absolute left-full bottom-0 z-[101] -translate-x-full translate-y-full border border-colorsGray">
-          <AlermList
-            list={sse.events.map((event) => event.data)}
-            onLink={() => setOpen(false)}
-          />
-        </div>
-      ) : null}
-    </div>
+    </Link>
   )
 }
 
 export default Alerm
 
-function AlermList({
+export function AlermList({
   list,
   onLink,
 }: {
@@ -147,8 +133,12 @@ AlermList.Alerm = function AlermListAlerm({
         onClick={onLink}
       >
         <AlermList.AlermWrapper>
-          <div className="flex flex-wrap gap-1 items-center text-sm font-medium text-secondary">
-            <span className="flex-1 font-bold line-clamp-1 text-ellipsis">
+          <AlermList.TypeTag type={alerm.alert_type} />
+          <div className="text-sm font-medium text-secondary">
+            <span
+              className="max-w-[28%] inline-block align-top overflow-hidden font-bold text-ellipsis"
+              style={{ textWrap: "nowrap" }}
+            >
               {questionReplyAlerm.payload.questionTitle}
             </span>
             <span> 글에 </span>
@@ -173,8 +163,8 @@ AlermList.Alerm = function AlermListAlerm({
         onClick={onLink}
       >
         <AlermList.AlermWrapper>
-          <div className="flex flex-wrap gap-1 items-center text-sm font-medium text-secondary">
-            <span className="w-full sm:w-1/2 font-bold line-clamp-1 text-ellipsis">
+          <div className="text-sm font-medium text-secondary">
+            <span className="max-w-[28%] inline-block align-top overflow-hidden font-bold text-ellipsis">
               {rankAnswerAlerm.payload.questionTitle}
             </span>
             <span> 글에 작성하신 답변이 </span>
@@ -223,6 +213,24 @@ AlermList.NoAlerm = function AlermListNoAlerm() {
   return (
     <div className="w-full h-10 flex justify-center items-center text-colorsDarkGray text-sm">
       알람 메시지가 없습니다.
+    </div>
+  )
+}
+
+AlermList.TypeTag = function AlermListTypeStatusTag({
+  type,
+}: {
+  type: AlertType
+}) {
+  return (
+    <div
+      className={`w-fit h-fit shrink-0 text-xs px-2 py-1 rounded-full bg-primary text-white`}
+    >
+      {type === "QUESTION_REPLY"
+        ? "질문 답변"
+        : type === "RANK_ANSWER"
+        ? "답변 랭크"
+        : "커피챗 요청"}
     </div>
   )
 }
