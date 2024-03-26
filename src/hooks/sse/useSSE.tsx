@@ -1,18 +1,19 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useEffect } from "react"
 import { EventSourcePolyfill, MessageEvent, Event } from "event-source-polyfill"
 import { getAuthCookie } from "@/util/actions/cookie"
+import { useClientSession } from "../useClientSession"
 
 interface UseSSEOptions {
   onMessage?: (event: MessageEvent) => void
   onSSEevent: (event: Event) => void
 }
 
+let eventSource: EventSourcePolyfill | null = null
+
 export function useSSE({ onMessage, onSSEevent }: UseSSEOptions) {
-  const [eventSource, setEventSource] = useState<EventSourcePolyfill | null>(
-    null,
-  )
+  const { user } = useClientSession()
 
   useEffect(() => {
     const onEvent = (event: Event) => {
@@ -20,28 +21,52 @@ export function useSSE({ onMessage, onSSEevent }: UseSSEOptions) {
     }
 
     const onError = (err: Event) => {
-      console.log({ err })
+      console.log("[error]", { eventSource, err })
 
-      eventSource?.close()
+      // eventSource?.close()
     }
 
     ;(async () => {
-      if (eventSource) return
+      if (eventSource) {
+        const { accessToken } = await getAuthCookie()
 
-      const targetEventSource = await connectSSE()
+        if (!accessToken) {
+          if (eventSource.readyState !== eventSource.CLOSED) {
+            console.log("close", { eventSource })
 
-      if (targetEventSource) {
-        if (onMessage) {
-          targetEventSource.addEventListener("message", onMessage)
+            eventSource.close()
+            eventSource = null
+
+            return
+          }
+
+          return
         }
-        targetEventSource.addEventListener("QUESTION_REPLY", onEvent)
-        targetEventSource.addEventListener("RANK_ANSWER", onEvent)
-        targetEventSource.addEventListener("COFFEE_CHAT_REQUEST", onEvent)
 
-        targetEventSource.addEventListener("error", onError)
+        if (eventSource.readyState === eventSource.CLOSED) {
+          console.log("readyStateClosed", { eventSource })
+          eventSource = null
+        }
+
+        return
       }
 
-      setEventSource(targetEventSource)
+      if (!eventSource && user) {
+        const targetEventSource = await connectSSE()
+
+        if (targetEventSource) {
+          if (onMessage) {
+            targetEventSource.addEventListener("message", onMessage)
+          }
+          targetEventSource.addEventListener("QUESTION_REPLY", onEvent)
+          targetEventSource.addEventListener("RANK_ANSWER", onEvent)
+          targetEventSource.addEventListener("COFFEE_CHAT_REQUEST", onEvent)
+
+          targetEventSource.addEventListener("error", onError)
+
+          eventSource = targetEventSource
+        }
+      }
     })()
 
     return () => {
@@ -54,9 +79,13 @@ export function useSSE({ onMessage, onSSEevent }: UseSSEOptions) {
         eventSource.removeEventListener("COFFEE_CHAT_REQUEST", onEvent)
 
         eventSource.removeEventListener("error", onError)
+
+        eventSource.close()
+
+        eventSource = null
       }
     }
-  }, [eventSource]) /* eslint-disable-line */
+  }, [user]) /* eslint-disable-line */
 
   return eventSource
 }
@@ -66,16 +95,19 @@ async function connectSSE() {
 
   if (!accessToken) return null
 
-  const eventSource = new EventSourcePolyfill(
+  if (eventSource && eventSource.readyState !== eventSource.CLOSED) {
+    return eventSource
+  }
+
+  const targetEventSource = new EventSourcePolyfill(
     `${process.env.NEXT_PUBLIC_SSE}/api/v1/alerts/sse`,
     {
       headers: {
         Authorization: `Bearer ${accessToken}`,
       },
       withCredentials: true,
-      heartbeatTimeout: 60 * 60 * 1000,
     },
   )
 
-  return eventSource
+  return targetEventSource
 }
