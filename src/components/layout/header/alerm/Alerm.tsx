@@ -3,8 +3,6 @@
 import { Icons } from "@/components/icons/Icons"
 import Button from "@/components/shared/button/Button"
 import { useSSE } from "@/hooks/sse/useSSE"
-import { useState } from "react"
-import { Event } from "event-source-polyfill"
 import { AlertType, SSEMessage, SSEMessages } from "@/interfaces/sse"
 import { getKorDayjs } from "@/util/getDate"
 import Link from "next/link"
@@ -18,11 +16,6 @@ import {
 } from "@/constants/sse/sse-constants"
 import { useRecoilState } from "recoil"
 import { sseAtom } from "@/recoil/atoms/sse/sseAtom"
-
-interface MessageState {
-  receivedMessage: boolean
-  events: Array<Event & { lastEventId: string; data: SSEMessages }>
-}
 
 function Alerm() {
   const { user } = useClientSession()

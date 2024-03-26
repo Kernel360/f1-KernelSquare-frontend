@@ -16,9 +16,30 @@ export interface CodingMeetingsDetailPageProps {
   }
 }
 
-export const metadata: Metadata = {
-  title: "모각코 상세보기",
-  description: "모여서 각자 코딩 상세보기",
+export async function generateMetadata({
+  params,
+}: CodingMeetingsDetailPageProps): Promise<Metadata> {
+  const fallbackMetadata: Metadata = {
+    title: "모각코 상세보기",
+    description: "모여서 각자 코딩 상세보기",
+  }
+
+  try {
+    const detailResponse = await getCodingMeetingDetail({
+      coding_meeting_token: params.token,
+    })
+
+    const payload = detailResponse.data.data
+
+    if (!payload) return fallbackMetadata
+
+    return {
+      title: `${payload.coding_meeting_title}`,
+      description: `${payload.coding_meeting_content}`,
+    }
+  } catch (error) {
+    return fallbackMetadata
+  }
 }
 
 export default async function CodingMeetingsDetailPage({
