@@ -7,7 +7,7 @@ import { DefaultBodyType, HttpResponse, http } from "msw"
 import { mockQuestions } from "../db/questions"
 import { mockUsers } from "../db/user"
 import { getNow } from "@/util/getDate"
-import { HttpStatusCode } from "axios"
+import axios, { HttpStatusCode } from "axios"
 import {
   UpdateAnswerRequest,
   UpdateAnswerResponse,
@@ -34,6 +34,8 @@ import {
   CreateAIAutoAnswerRequest,
   CreateAIAutoAnswerResponse,
 } from "@/interfaces/dto/answer/create-AI-auto-answer"
+import { mockSSENotification } from "@/service/sse"
+import { ALERT_TYPE } from "@/interfaces/sse"
 
 export const answerHandler = [
   // 특정 질문 답변 조회
@@ -118,6 +120,26 @@ export const answerHandler = [
       }
 
       mockAnswers.unshift(newAnswer)
+
+      /*
+        답변 mock 데이터를 수정해야 좀 더 정확하게 반영할 수 있으나
+        시간 상 어려울 것 같아,
+        mock 서버 SSE 받는 유저의 아이디를 1로 고정 (testUser1)
+      */
+      mockSSENotification<ALERT_TYPE.QUESTION_REPLY>({
+        targetUserId: 1,
+        message: {
+          alert_type: "QUESTION_REPLY",
+          id: 1,
+          recipient: targetQuestion!.nickname,
+          send_time: new Date().toISOString(),
+          payload: {
+            questionId,
+            questionTitle: targetQuestion!.title,
+            sender: targetMember.nickname,
+          },
+        },
+      })
 
       return HttpResponse.json(
         {
