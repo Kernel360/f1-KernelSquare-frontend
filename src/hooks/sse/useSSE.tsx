@@ -1,26 +1,44 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { EventSourcePolyfill, MessageEvent } from "event-source-polyfill"
+import { EventSourcePolyfill, MessageEvent, Event } from "event-source-polyfill"
 import { getAuthCookie } from "@/util/actions/cookie"
 
 interface UseSSEOptions {
-  onMessage: (event: MessageEvent) => void
+  onMessage?: (event: MessageEvent) => void
+  onSSEevent: (event: Event) => void
 }
 
-export function useSSE({ onMessage }: UseSSEOptions) {
+export function useSSE({ onMessage, onSSEevent }: UseSSEOptions) {
   const [eventSource, setEventSource] = useState<EventSourcePolyfill | null>(
     null,
   )
 
   useEffect(() => {
+    const onEvent = (event: Event) => {
+      onSSEevent(event)
+    }
+
+    const onError = (err: Event) => {
+      console.log({ err })
+
+      eventSource?.close()
+    }
+
     ;(async () => {
       if (eventSource) return
 
       const targetEventSource = await connectSSE()
 
       if (targetEventSource) {
-        targetEventSource.addEventListener("message", onMessage)
+        if (onMessage) {
+          targetEventSource.addEventListener("message", onMessage)
+        }
+        targetEventSource.addEventListener("QUESTION_REPLY", onEvent)
+        targetEventSource.addEventListener("RANK_ANSWER", onEvent)
+        targetEventSource.addEventListener("COFFEE_CHAT_REQUEST", onEvent)
+
+        targetEventSource.addEventListener("error", onError)
       }
 
       setEventSource(targetEventSource)
@@ -28,7 +46,14 @@ export function useSSE({ onMessage }: UseSSEOptions) {
 
     return () => {
       if (eventSource) {
-        eventSource.removeEventListener("message", onMessage)
+        if (onMessage) {
+          eventSource.removeEventListener("message", onMessage)
+        }
+        eventSource.removeEventListener("QUESTION_REPLY", onEvent)
+        eventSource.removeEventListener("RANK_ANSWER", onEvent)
+        eventSource.removeEventListener("COFFEE_CHAT_REQUEST", onEvent)
+
+        eventSource.removeEventListener("error", onError)
       }
     }
   }, [eventSource]) /* eslint-disable-line */

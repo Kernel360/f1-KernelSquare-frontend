@@ -4,7 +4,7 @@ import { Icons } from "@/components/icons/Icons"
 import Button from "@/components/shared/button/Button"
 import { useSSE } from "@/hooks/sse/useSSE"
 import { useEffect, useRef, useState } from "react"
-import { MessageEvent } from "event-source-polyfill"
+import { Event } from "event-source-polyfill"
 import { SSEMessage, SSEMessages } from "@/interfaces/sse"
 import { getKorDayjs } from "@/util/getDate"
 import Link from "next/link"
@@ -12,7 +12,7 @@ import { twMerge } from "tailwind-merge"
 
 interface MessageState {
   receivedMessage: boolean
-  events: Array<Omit<MessageEvent, "data"> & { data: SSEMessages }>
+  events: Array<Event & { lastEventId: string; data: SSEMessages }>
 }
 
 function Alerm() {
@@ -24,18 +24,16 @@ function Alerm() {
   const [open, setOpen] = useState(false)
 
   const eventSource = useSSE({
-    onMessage(event) {
-      console.log("[received]", event.data)
-
+    onSSEevent(event) {
       const sseEvent = {
         ...event,
-        data: JSON.parse(event.data),
+        data: JSON.parse((event as any).data),
       }
 
       setSSE((prev) => ({
         ...prev,
         receivedMessage: true,
-        events: [...prev.events, { ...sseEvent }],
+        events: [...prev.events, { ...(sseEvent as any) }],
       }))
     },
   })
@@ -103,6 +101,12 @@ function AlermList({
     <div className="bg-white w-[150px] sm:w-[320px] h-max max-h-[120px] overflow-y-auto">
       {list.length ? (
         list
+          .filter(
+            (alerm) =>
+              alerm.alert_type === "QUESTION_REPLY" ||
+              alerm.alert_type === "RANK_ANSWER" ||
+              alerm.alert_type === "COFFEE_CHAT_REQUEST",
+          )
           .map((alerm, index) => {
             return <AlermList.Alerm key={index} alerm={alerm} onLink={onLink} />
           })
@@ -183,25 +187,28 @@ AlermList.Alerm = function AlermListAlerm({
     )
   }
 
-  const coffeeChatRequestAlerm = alerm as SSEMessage<"COFFEE_CHAT_REQUEST">
+  if (alerm.alert_type === "COFFEE_CHAT_REQUEST") {
+    const coffeeChatRequestAlerm = alerm as SSEMessage<"COFFEE_CHAT_REQUEST">
 
-  // 커피챗 요청
-  return (
-    <AlermList.AlermWrapper className="bg-white hover:bg-colorsLightGray transition-colors duration-200 text-secondary">
-      <div>
-        <Link
-          href={`/profile/${coffeeChatRequestAlerm.payload.senderId}`}
-          onClick={onLink}
-        >
-          <span className="text-sm font-bold underline underline-offset-4">
-            {coffeeChatRequestAlerm.payload.sender}
-          </span>
-        </Link>
-        <span> 님이 커피챗을 요청하였습니다.</span>
-      </div>
-      <AlermList.AlermTime time={coffeeChatRequestAlerm.send_time} />
-    </AlermList.AlermWrapper>
-  )
+    return (
+      <AlermList.AlermWrapper className="bg-white hover:bg-colorsLightGray transition-colors duration-200 text-secondary">
+        <div>
+          <Link
+            href={`/profile/${coffeeChatRequestAlerm.payload.senderId}`}
+            onClick={onLink}
+          >
+            <span className="text-sm font-bold underline underline-offset-4">
+              {coffeeChatRequestAlerm.payload.sender}
+            </span>
+          </Link>
+          <span> 님이 커피챗을 요청하였습니다.</span>
+        </div>
+        <AlermList.AlermTime time={coffeeChatRequestAlerm.send_time} />
+      </AlermList.AlermWrapper>
+    )
+  }
+
+  return null
 }
 
 AlermList.AlermTime = function AlermListAlermTime({ time }: { time: string }) {
