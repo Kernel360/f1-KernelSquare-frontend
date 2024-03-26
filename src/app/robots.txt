@@ -1,0 +1,5 @@
+User-Agent: *
+Disallow: /signup/
+Disallow: /profile/
+
+Sitemap: https://kernelsquare.live/sitemap.xml
