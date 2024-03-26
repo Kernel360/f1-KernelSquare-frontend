@@ -130,7 +130,7 @@ export const answerHandler = [
         targetUserId: 1,
         message: {
           alert_type: "QUESTION_REPLY",
-          id: 1,
+          id: "1",
           recipient: targetQuestion!.nickname,
           send_time: new Date().toISOString(),
           payload: {
