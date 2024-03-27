@@ -10,7 +10,23 @@ interface QnaPageProps {
 
 export const metadata: Metadata = {
   title: `개발자 Q&A`,
-  description: `커널스퀘어 개발자 Q&A`,
+  description: `궁금한 내용을 질문하거나 질문에 답변을 남겨보세요`,
+  openGraph: {
+    title: `개발자 Q&A - 커널스퀘어`,
+    description: `궁금한 내용을 질문하거나 질문에 답변을 남겨보세요`,
+    images: {
+      url: "/og.png",
+      alt: "Kernel Square",
+    },
+  },
+  twitter: {
+    title: `개발자 Q&A - 커널스퀘어`,
+    description: `궁금한 내용을 질문하거나 질문에 답변을 남겨보세요`,
+    images: {
+      url: "/og.png",
+      alt: "Kernel Square",
+    },
+  },
 }
 
 function isValidPageProps({ searchParams }: QnaPageProps) {
