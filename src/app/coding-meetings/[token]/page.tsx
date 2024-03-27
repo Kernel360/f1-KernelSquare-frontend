@@ -22,6 +22,23 @@ export async function generateMetadata({
   const fallbackMetadata: Metadata = {
     title: "모각코 상세보기",
     description: "모여서 각자 코딩 상세보기",
+    openGraph: {
+      title: "모각코 상세보기",
+      description: "모여서 각자 코딩 상세보기",
+      url: `https://kernelsquare.live/coding-meetings/${params.token}`,
+      images: {
+        url: "/og.png",
+        alt: "Kernel Square",
+      },
+    },
+    twitter: {
+      title: "모각코 상세보기",
+      description: "모여서 각자 코딩 상세보기",
+      images: {
+        url: "/og.png",
+        alt: "Kernel Square",
+      },
+    },
   }
 
   try {
@@ -36,6 +53,23 @@ export async function generateMetadata({
     return {
       title: `${payload.coding_meeting_title}`,
       description: `${payload.coding_meeting_content}`,
+      openGraph: {
+        title: payload.coding_meeting_title,
+        description: payload.coding_meeting_content,
+        url: `https://kernelsquare.live/coding-meetings/${params.token}`,
+        images: {
+          url: "/og.png",
+          alt: "Kernel Square",
+        },
+      },
+      twitter: {
+        title: payload.coding_meeting_title,
+        description: payload.coding_meeting_content,
+        images: {
+          url: "/og.png",
+          alt: "Kernel Square",
+        },
+      },
     }
   } catch (error) {
     return fallbackMetadata

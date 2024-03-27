@@ -11,7 +11,23 @@ export interface CoffeeChatUpdatePageProps {
 
 export const metadata: Metadata = {
   title: `커피챗 수정`,
-  description: `커피챗 수정`,
+  description: `커피챗 수정 페이지`,
+  openGraph: {
+    title: `커피챗 수정 - 커널스퀘어`,
+    description: `커피챗 수정 페이지`,
+    images: {
+      url: "/og.png",
+      alt: "Kernel Square",
+    },
+  },
+  twitter: {
+    title: `커피챗 수정 - 커널스퀘어`,
+    description: `커피챗 수정 페이지`,
+    images: {
+      url: "/og.png",
+      alt: "Kernel Square",
+    },
+  },
 }
 
 function isValidPageProps({ params }: CoffeeChatUpdatePageProps) {

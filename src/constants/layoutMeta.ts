@@ -74,7 +74,7 @@ export const layoutMeta = {
   },
   signup: {
     title: "회원가입",
-    description: "회원가입",
+    description: "커널스퀘어의 멤버가 되어 지속 가능한 성장을 경험해 보세요",
     containLayout: {
       header: false,
       navigation: false,
@@ -83,7 +83,7 @@ export const layoutMeta = {
   },
   chat: {
     title: "커피챗",
-    description: "커피챗",
+    description: "커피챗을 통해 지속 가능한 성장을 경험해 보세요",
     containLayout: {
       header: true,
       navigation: true,

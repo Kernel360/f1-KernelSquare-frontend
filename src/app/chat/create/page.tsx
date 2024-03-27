@@ -7,7 +7,23 @@ import { notFound } from "next/navigation"
 
 export const metadata: Metadata = {
   title: `커피챗 생성`,
-  description: `커피챗 생성`,
+  description: `커피챗 생성 페이지`,
+  openGraph: {
+    title: `커피챗 생성 - 커널스퀘어`,
+    description: `커피챗 생성 페이지`,
+    images: {
+      url: "/og.png",
+      alt: "Kernel Square",
+    },
+  },
+  twitter: {
+    title: `커피챗 생성 - 커널스퀘어`,
+    description: `커피챗 생성 페이지`,
+    images: {
+      url: "/og.png",
+      alt: "Kernel Square",
+    },
+  },
 }
 
 export default async function CreateCoffeeChatPage() {

@@ -45,6 +45,22 @@ function isValidProps({ searchParams }: CodingMeetingsMainPageProps) {
 export const metadata: Metadata = {
   title: "모각코",
   description: "모여서 각자 코딩",
+  openGraph: {
+    title: "모각코 - 커널스퀘어",
+    description: "모여서 각자 코딩",
+    images: {
+      url: "/og.png",
+      alt: "Kernel Square",
+    },
+  },
+  twitter: {
+    title: "모각코 - 커널스퀘어",
+    description: "모여서 각자 코딩",
+    images: {
+      url: "/og.png",
+      alt: "Kernel Square",
+    },
+  },
 }
 
 export default function CodingMeetingsMainPage({
