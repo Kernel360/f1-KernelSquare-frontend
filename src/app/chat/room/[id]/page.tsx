@@ -36,8 +36,24 @@ interface CoffeeChatRoomProps {
 }
 
 export const metadata: Metadata = {
-  title: `커피챗:채팅`,
+  title: `커피챗 채팅`,
   description: `커피챗 채팅 페이지`,
+  openGraph: {
+    title: `커피챗 채팅`,
+    description: `커피챗 채팅 페이지`,
+    images: {
+      url: "/og.png",
+      alt: "Kernel Square",
+    },
+  },
+  twitter: {
+    title: `커피챗 채팅`,
+    description: `커피챗 채팅 페이지`,
+    images: {
+      url: "/og.png",
+      alt: "Kernel Square",
+    },
+  },
 }
 
 function isValidPageProps({ params, searchParams }: CoffeeChatRoomProps) {
