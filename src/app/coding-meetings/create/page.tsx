@@ -8,7 +8,23 @@ import { notFound } from "next/navigation"
 
 export const metadata: Metadata = {
   title: `모각코 생성`,
-  description: `모각코 생성`,
+  description: `모각코 생성 페이지`,
+  openGraph: {
+    title: `모각코 생성 - 커널스퀘어`,
+    description: `모각코 생성 페이지`,
+    images: {
+      url: "/og.png",
+      alt: "Kernel Square",
+    },
+  },
+  twitter: {
+    title: `모각코 생성 - 커널스퀘어`,
+    description: `모각코 생성 페이지`,
+    images: {
+      url: "/og.png",
+      alt: "Kernel Square",
+    },
+  },
 }
 
 export default async function CreateCodingMeetingsPage() {

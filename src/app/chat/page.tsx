@@ -12,6 +12,22 @@ interface CoffeeChatMainPageProps {
 export const metadata: Metadata = {
   title: `${layoutMeta["chat"].title}`,
   description: `${layoutMeta["chat"].description}`,
+  openGraph: {
+    title: `${layoutMeta["chat"].title}`,
+    description: `${layoutMeta["chat"].description}`,
+    images: {
+      url: "/og.png",
+      alt: "Kernel Square",
+    },
+  },
+  twitter: {
+    title: `${layoutMeta["chat"].title}`,
+    description: `${layoutMeta["chat"].description}`,
+    images: {
+      url: "/og.png",
+      alt: "Kernel Square",
+    },
+  },
 }
 
 function isValidPageProps({ searchParams }: CoffeeChatMainPageProps) {
