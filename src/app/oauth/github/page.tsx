@@ -27,12 +27,7 @@ export default function OAuthGithub({ searchParams }: OAuthGihubProps) {
     ? Buffer.from(loginResponseCookie, "base64").toString("utf-8")
     : ""
 
-  const error = searchParams?.errorCode
-    ? {
-        errorCode: Number(searchParams.errorCode),
-        errorMessage: searchParams.errorMessage,
-      }
-    : null
+  const error = parseErrorFromQs({ searchParams })
 
   if (user) {
     return loginResponseCookie ? (
@@ -43,12 +38,7 @@ export default function OAuthGithub({ searchParams }: OAuthGihubProps) {
   }
 
   if (error) {
-    return (
-      <OAuthGithubError
-        errorCode={error.errorCode}
-        errorMessage={error.errorMessage}
-      />
-    )
+    return <OAuthGithubError errorCode={error.errorCode} />
   }
 
   if (!decodedLoginResponseCookie) {
@@ -56,4 +46,36 @@ export default function OAuthGithub({ searchParams }: OAuthGihubProps) {
   }
 
   return <OAuthGithubSuccess decodedCookie={decodedLoginResponseCookie} />
+}
+
+function parseErrorFromQs({
+  searchParams,
+}: Pick<OAuthGihubProps, "searchParams">) {
+  const knownErrorCode = [1106, 9999]
+
+  if (searchParams?.errorCode) {
+    const errorCode = Number(searchParams.errorCode)
+
+    if (
+      Number.isNaN(errorCode) ||
+      errorCode < 0 ||
+      searchParams.errorCode.includes(".")
+    ) {
+      return {
+        errorCode: 9999,
+      }
+    }
+
+    if (!knownErrorCode.includes(errorCode)) {
+      return {
+        errorCode: 9999,
+      }
+    }
+
+    return {
+      errorCode,
+    }
+  }
+
+  return null
 }

@@ -17,7 +17,7 @@ function OAuthGithubErrorWrapper({ children }: OAuthGithubErrorWrapperProps) {
               <GithubIcon />
             </div>
             <h3 className="font-bold text-secondary text-xl">
-              Github Login Error
+              Github Login Fail
             </h3>
           </section>
           <section className="w-full">{children}</section>
