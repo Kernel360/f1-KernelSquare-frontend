@@ -78,8 +78,10 @@ export async function generateMetadata({
     const res = await getQuestion({ id })
     if (!res.data.data) return fallbackMetadata.error
 
-    const { title, nickname, content } = res.data.data
+    const { title, nickname, content, question_image_url } = res.data.data
     const extractedContent = extractTextFromMarkdown(content)
+    const imageUrl = question_image_url || "/og.png"
+    const imageAlt = question_image_url ? "질문 이미지" : "Kernel Square"
 
     return {
       title: `${title} (개발자 Q&A 상세 페이지)`,
@@ -89,16 +91,16 @@ export async function generateMetadata({
         description: `${extractedContent ?? `${nickname}의 게시글입니다.`}`,
         url: `/question/${id}`,
         images: {
-          url: "/og.png",
-          alt: "Kernel Square",
+          url: imageUrl,
+          alt: imageAlt,
         },
       },
       twitter: {
         title: `${title} (개발자 Q&A 상세 페이지)`,
         description: `${extractedContent ?? `${nickname}의 게시글입니다.`}`,
         images: {
-          url: "/og.png",
-          alt: "Kernel Square",
+          url: imageUrl,
+          alt: imageAlt,
         },
       },
     }
