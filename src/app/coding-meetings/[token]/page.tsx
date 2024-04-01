@@ -6,6 +6,7 @@ import { notFound } from "next/navigation"
 import { getCodingMeetingDetail } from "@/service/coding-meetings"
 import DetailHeader from "@/page/coding-meetings/detail/DetailHeader"
 import ScrollTopButton from "@/page/coding-meetings/main/ScrollTopButton"
+import { deSerializeCmToken } from "@/page/coding-meetings/util/cm-token"
 
 export const dynamic = "force-dynamic"
 export const revalidate = 0
@@ -43,7 +44,7 @@ export async function generateMetadata({
 
   try {
     const detailResponse = await getCodingMeetingDetail({
-      coding_meeting_token: params.token,
+      coding_meeting_token: deSerializeCmToken(params.token),
     })
 
     const payload = detailResponse.data.data
@@ -81,7 +82,7 @@ export default async function CodingMeetingsDetailPage({
 }: CodingMeetingsDetailPageProps) {
   try {
     const detailResponse = await getCodingMeetingDetail({
-      coding_meeting_token: params.token,
+      coding_meeting_token: deSerializeCmToken(params.token),
     })
 
     return (

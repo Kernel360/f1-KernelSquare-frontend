@@ -19,6 +19,7 @@ import { useRouter, useSearchParams } from "next/navigation"
 import { twJoin } from "tailwind-merge"
 import { useEffect } from "react"
 import { setCodingMeetingsHistorySession } from "@/util/historySession/coding-meetings"
+import { serializeCmToken } from "../../util/cm-token"
 
 interface CodingMeetingListProps {
   codingMeetings: NonNullable<GetCodingMeetingListResponse["data"]>["list"]
@@ -34,7 +35,7 @@ function CodingMeetingList({ codingMeetings }: CodingMeetingListProps) {
   const now = dayjs().format()
 
   const detailHref = (token: string) => {
-    return `/coding-meetings/${token}`
+    return `/coding-meetings/${serializeCmToken(token)}`
   }
 
   const goToUserProfile =

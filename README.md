@@ -4,16 +4,8 @@
 
 ## 주요 기술 스택
 
-- <img src="https://img.shields.io/badge/Nextjs-ffffff?logo=nextdotjs&logoColor=000" />
-- <img src="https://img.shields.io/badge/tailwindcss-ffffff?logo=tailwindcss" />
-- <img src="https://img.shields.io/badge/axios-ffffff?logo=axios&logoColor=ffffff" />
-- <img src="https://img.shields.io/badge/react query-ffffff?logo=reactquery" />
-- <img src="https://img.shields.io/badge/recoil-ffffff?logo=recoil" />
-- <img src="https://day.js.org/img/logo.png" width="18" height="18" /> <img src="https://img.shields.io/badge/dayjs-ffffff" />
-- <img src="https://img.shields.io/badge/msw-ffffff?logo=mockserviceworker" />
-- <img src="  
-  https://ui.toast.com/icons-afac2d19e8aa82377b3f18a704d4acf5/favicon.ico" width="18" height="18" /> <img src="https://img.shields.io/badge/toast ui editor-ffffff" />
-- <img src="https://airbnb.design/wp-content/themes/airbnbdesign/microsites/lottie/static/images/favicon.ico" width="18" height="18" /> <img src="https://img.shields.io/badge/Lottie-ffffff" />
+![Group 148](https://github.com/KernelSquare/Frontend/assets/123251211/37a1f214-c768-4731-9db3-ffb044ade7c9)
+
 
 ## 관련 링크(초대를 해야 볼 수 있어서 링크 누르셔도 보지 못하실수 있음)
 
@@ -88,9 +80,3 @@
 
 - 개발 효율성 향상을 위한 기술 스택 도입 적극 고려해보기
 
-## 구현 목표(2월 시연)
-
-- [ ] 검색 페이지
-- [ ] 예약 페이지
-- [ ] 채팅(멘토 커피챗) 페이지
-- [ ] 소셜 로그인
