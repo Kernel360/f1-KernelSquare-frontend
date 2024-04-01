@@ -18,6 +18,7 @@ import GoogleAnalyticsProvider from "@/google-analytics/GoogleAnalyticsProvider"
 export const dynamic = "force-dynamic"
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://kernelsquare.live"),
   title: {
     template: "%s - 커널스퀘어",
     default: "커널스퀘어",

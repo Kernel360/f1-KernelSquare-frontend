@@ -4,8 +4,24 @@ import { Metadata } from "next"
 
 export function generateMetadata(): Metadata {
   const fallbackMetadata: Metadata = {
-    title: "유저 닉네임 수정",
+    title: "닉네임 수정",
     description: "유저 닉네임 수정 페이지",
+    openGraph: {
+      title: "닉네임 수정 - 커널스퀘어",
+      description: "유저 닉네임 수정 페이지",
+      images: {
+        url: "/og.png",
+        alt: "Kernel Square",
+      },
+    },
+    twitter: {
+      title: "닉네임 수정 - 커널스퀘어",
+      description: "유저 닉네임 수정 페이지",
+      images: {
+        url: "/og.png",
+        alt: "Kernel Square",
+      },
+    },
   }
 
   try {

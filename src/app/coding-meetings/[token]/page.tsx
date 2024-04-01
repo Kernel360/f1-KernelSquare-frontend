@@ -6,9 +6,7 @@ import { notFound } from "next/navigation"
 import { getCodingMeetingDetail } from "@/service/coding-meetings"
 import DetailHeader from "@/page/coding-meetings/detail/DetailHeader"
 import ScrollTopButton from "@/page/coding-meetings/main/ScrollTopButton"
-
-export const dynamic = "force-dynamic"
-export const revalidate = 0
+import { deSerializeCmToken } from "@/page/coding-meetings/util/cm-token"
 
 export interface CodingMeetingsDetailPageProps {
   params: {
@@ -22,11 +20,28 @@ export async function generateMetadata({
   const fallbackMetadata: Metadata = {
     title: "모각코 상세보기",
     description: "모여서 각자 코딩 상세보기",
+    openGraph: {
+      title: "모각코 상세보기",
+      description: "모여서 각자 코딩 상세보기",
+      url: `/coding-meetings/${params.token}`,
+      images: {
+        url: "/og.png",
+        alt: "Kernel Square",
+      },
+    },
+    twitter: {
+      title: "모각코 상세보기",
+      description: "모여서 각자 코딩 상세보기",
+      images: {
+        url: "/og.png",
+        alt: "Kernel Square",
+      },
+    },
   }
 
   try {
     const detailResponse = await getCodingMeetingDetail({
-      coding_meeting_token: params.token,
+      coding_meeting_token: deSerializeCmToken(params.token),
     })
 
     const payload = detailResponse.data.data
@@ -36,6 +51,23 @@ export async function generateMetadata({
     return {
       title: `${payload.coding_meeting_title}`,
       description: `${payload.coding_meeting_content}`,
+      openGraph: {
+        title: `${payload.coding_meeting_title}`,
+        description: `${payload.coding_meeting_content}`,
+        url: `/coding-meetings/${params.token}`,
+        images: {
+          url: "/og.png",
+          alt: "Kernel Square",
+        },
+      },
+      twitter: {
+        title: `${payload.coding_meeting_title}`,
+        description: `${payload.coding_meeting_content}`,
+        images: {
+          url: "/og.png",
+          alt: "Kernel Square",
+        },
+      },
     }
   } catch (error) {
     return fallbackMetadata
@@ -47,7 +79,7 @@ export default async function CodingMeetingsDetailPage({
 }: CodingMeetingsDetailPageProps) {
   try {
     const detailResponse = await getCodingMeetingDetail({
-      coding_meeting_token: params.token,
+      coding_meeting_token: deSerializeCmToken(params.token),
     })
 
     return (

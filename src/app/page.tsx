@@ -15,6 +15,23 @@ export const metadata: Metadata = {
           },
         }
       : undefined,
+  openGraph: {
+    title: `${layoutMeta["/"].title} - 커널스퀘어`,
+    description: `${layoutMeta["/"].description}`,
+    url: "https://kernelsquare.live",
+    images: {
+      url: "/og.png",
+      alt: "Kernel Square",
+    },
+  },
+  twitter: {
+    title: `${layoutMeta["/"].title} - 커널스퀘어`,
+    description: `${layoutMeta["/"].description}`,
+    images: {
+      url: "/og.png",
+      alt: "Kernel Square",
+    },
+  },
 }
 
 export default async function Main() {

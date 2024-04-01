@@ -1,5 +1,6 @@
 import { GetCodingMeetingSEOResponse } from "@/interfaces/dto/seo/get-coding-meeting-seo-list"
 import { GetQnaSEOResponse } from "@/interfaces/dto/seo/get-qna-seo-list"
+import { serializeCmToken } from "@/page/coding-meetings/util/cm-token"
 import { getCodingMeetingSEOList, getQnaSEOList } from "@/service/seo"
 import { AxiosResponse } from "axios"
 import { MetadataRoute } from "next"
@@ -24,7 +25,7 @@ function createQnaSEO(
   res: AxiosResponse<GetQnaSEOResponse, any>,
 ): MetadataRoute.Sitemap {
   const baseQnaSEO: MetadataRoute.Sitemap = [
-    { url: "https://kernelsquare.live/qna" },
+    { url: "https://kernelsquare.live/qna?page=0" },
   ]
 
   const list = res.data.data?.question_id_list
@@ -44,7 +45,7 @@ function createCodingMeetingSEO(
 ): MetadataRoute.Sitemap {
   const baseCodingMeetingSEO: MetadataRoute.Sitemap = [
     {
-      url: "https://kernelsquare.live/coding-meetings",
+      url: `https://kernelsquare.live/coding-meetings?page=0&amp;size=10&amp;filter=all`,
     },
   ]
 
@@ -54,7 +55,9 @@ function createCodingMeetingSEO(
     ? [
         ...baseCodingMeetingSEO,
         ...list.map(({ coding_meeting_token }) => ({
-          url: `https://kernelsquare.live/coding-meetings/${coding_meeting_token}`,
+          url: `https://kernelsquare.live/coding-meetings/${serializeCmToken(
+            coding_meeting_token,
+          )}`,
         })),
       ]
     : [...baseCodingMeetingSEO]
