@@ -9,6 +9,9 @@ export const revalidate = 0
 export const metadata: Metadata = {
   title: `${layoutMeta["signup"].title}`,
   description: `${layoutMeta["signup"].description}`,
+  robots: {
+    index: false,
+  },
   openGraph: {
     title: `${layoutMeta["signup"].title} - 커널스퀘어`,
     description: `${layoutMeta["signup"].description}`,
