@@ -55,17 +55,17 @@ export async function generateMetadata({
       title: `${payload.coding_meeting_title}`,
       description: `${payload.coding_meeting_content}`,
       openGraph: {
-        title: payload.coding_meeting_title,
-        description: payload.coding_meeting_content,
-        url: `https://kernelsquare.live/coding-meetings/${params.token}`,
+        title: `${payload.coding_meeting_title}`,
+        description: `${payload.coding_meeting_content}`,
+        url: `/coding-meetings/${params.token}`,
         images: {
           url: "/og.png",
           alt: "Kernel Square",
         },
       },
       twitter: {
-        title: payload.coding_meeting_title,
-        description: payload.coding_meeting_content,
+        title: `${payload.coding_meeting_title}`,
+        description: `${payload.coding_meeting_content}`,
         images: {
           url: "/og.png",
           alt: "Kernel Square",
