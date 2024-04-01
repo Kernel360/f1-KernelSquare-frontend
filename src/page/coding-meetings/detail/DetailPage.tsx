@@ -5,7 +5,6 @@ import Spacing from "@/components/shared/Spacing"
 import DetailSection from "./Section"
 import Link from "next/link"
 import HashTag from "@/components/shared/tag/HashTag"
-import DetailComments from "./comment/Comments"
 import dynamic from "next/dynamic"
 import MapContainer from "./kakao-map/MapContainer"
 import { Icons } from "@/components/icons/Icons"
@@ -47,23 +46,41 @@ const DetailCodingMeetingTime = dynamic(
   },
 )
 
+const DetailComments = dynamic(() => import("./comment/Comments"), {
+  ssr: false,
+  loading(loadingProps) {
+    return (
+      <div>
+        <div className="flex gap-1 justify-between items-center mb-6">
+          <div className="text-xl">
+            <span className="font-bold">댓글</span>
+            <span>&nbsp;</span>
+            <span>{""}</span>
+          </div>
+        </div>
+        <div className="skeleton w-full rounded-lg h-[342px]" />
+      </div>
+    )
+  },
+})
+
 const CodingMeetingsDetailPage = ({
   detail,
 }: CodingMeetingsDetailPageProps) => {
-  const codingMeetingAuthor:CodingMeetingAuthor = {
+  const codingMeetingAuthor: CodingMeetingAuthor = {
     member_id: detail.member_id,
     member_nickname: detail.member_nickname,
     member_profile_url: detail.member_profile_url,
     member_level: detail.member_level,
-    member_level_image_url: detail.member_level_image_url
+    member_level_image_url: detail.member_level_image_url,
   }
 
-  const codingMeetingAuthorProfileInfo:UserProfileInfo = {
+  const codingMeetingAuthorProfileInfo: UserProfileInfo = {
     id: codingMeetingAuthor.member_id,
     nickname: codingMeetingAuthor.member_nickname,
     profileImageUrl: codingMeetingAuthor.member_profile_url,
     level: codingMeetingAuthor.member_level,
-    levelImageUrl: codingMeetingAuthor.member_level_image_url
+    levelImageUrl: codingMeetingAuthor.member_level_image_url,
   }
 
   return (
@@ -73,7 +90,10 @@ const CodingMeetingsDetailPage = ({
           <h3 className="font-semibold text-xl lg:text-2xl">
             {detail.coding_meeting_title}
           </h3>
-          <DetailMenu token={detail.coding_meeting_token} author={codingMeetingAuthor} />
+          <DetailMenu
+            token={detail.coding_meeting_token}
+            author={codingMeetingAuthor}
+          />
         </section>
         <section className="w-full flex justify-between items-center mt-6 mb-4">
           <UserInfo user={codingMeetingAuthorProfileInfo} />
@@ -136,7 +156,10 @@ const CodingMeetingsDetailPage = ({
           ) : null}
         </div>
       </div>
-      <DetailComments author={codingMeetingAuthor} token={detail.coding_meeting_token} />
+      <DetailComments
+        author={codingMeetingAuthor}
+        token={detail.coding_meeting_token}
+      />
     </>
   )
 }
