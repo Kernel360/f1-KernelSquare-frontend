@@ -1,7 +1,16 @@
 export function serializeCmToken(cmToken: string) {
-  return cmToken.replace(/^cm_/g, "cm-")
+  const serializedCmToken = cmToken.replace(/^cm_/g, "")
+  const lowerCaseFirstChar = serializedCmToken[0].toLowerCase()
+
+  return serializedCmToken.replace(/^[A-Z]/g, lowerCaseFirstChar)
 }
 
 export function deSerializeCmToken(serializedCmToken: string) {
-  return `${serializedCmToken.replace(/^cm\-/g, "cm_")}`
+  const upperCaseFirstChar = serializedCmToken[0].toUpperCase()
+  const deSerializeCmToken = `cm_${serializedCmToken.replace(
+    /^[a-z]/g,
+    upperCaseFirstChar,
+  )}`
+
+  return deSerializeCmToken
 }

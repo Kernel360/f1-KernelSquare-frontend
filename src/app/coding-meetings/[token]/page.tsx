@@ -8,9 +8,6 @@ import DetailHeader from "@/page/coding-meetings/detail/DetailHeader"
 import ScrollTopButton from "@/page/coding-meetings/main/ScrollTopButton"
 import { deSerializeCmToken } from "@/page/coding-meetings/util/cm-token"
 
-export const dynamic = "force-dynamic"
-export const revalidate = 0
-
 export interface CodingMeetingsDetailPageProps {
   params: {
     token: string
@@ -26,7 +23,7 @@ export async function generateMetadata({
     openGraph: {
       title: "모각코 상세보기",
       description: "모여서 각자 코딩 상세보기",
-      url: `https://kernelsquare.live/coding-meetings/${params.token}`,
+      url: `/coding-meetings/${params.token}`,
       images: {
         url: "/og.png",
         alt: "Kernel Square",
