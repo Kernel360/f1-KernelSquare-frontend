@@ -129,7 +129,7 @@ AlermList.Alerm = function AlermListAlerm({
           <AlermList.TypeTag type={"QUESTION_REPLY"} />
           <div className="text-sm font-medium text-secondary">
             <span
-              className="max-w-[28%] inline-block align-top overflow-hidden font-bold text-ellipsis"
+              className="max-w-[28%] inline-block whitespace-nowrap align-top overflow-hidden font-bold text-ellipsis"
               style={{ textWrap: "nowrap" }}
             >
               {questionReplyAlerm.payload.questionTitle}
@@ -158,7 +158,7 @@ AlermList.Alerm = function AlermListAlerm({
         <AlermList.AlermWrapper>
           <AlermList.TypeTag type={"RANK_ANSWER"} />
           <div className="text-sm font-medium text-secondary">
-            <span className="max-w-[28%] inline-block align-top overflow-hidden font-bold text-ellipsis">
+            <span className="max-w-[28%] inline-block whitespace-nowrap align-top overflow-hidden font-bold text-ellipsis">
               {rankAnswerAlerm.payload.questionTitle}
             </span>
             <span> 글에 작성하신 답변이 </span>
