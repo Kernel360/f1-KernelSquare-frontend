@@ -128,10 +128,7 @@ AlermList.Alerm = function AlermListAlerm({
         <AlermList.AlermWrapper>
           <AlermList.TypeTag type={"QUESTION_REPLY"} />
           <div className="text-sm font-medium text-secondary">
-            <span
-              className="max-w-[28%] inline-block whitespace-nowrap align-top overflow-hidden font-bold text-ellipsis"
-              style={{ textWrap: "nowrap" }}
-            >
+            <span className="max-w-[28%] inline-block whitespace-nowrap align-top overflow-hidden font-bold text-ellipsis">
               {questionReplyAlerm.payload.questionTitle}
             </span>
             <span> 글에 </span>
@@ -158,11 +155,13 @@ AlermList.Alerm = function AlermListAlerm({
         <AlermList.AlermWrapper>
           <AlermList.TypeTag type={"RANK_ANSWER"} />
           <div className="text-sm font-medium text-secondary">
-            <span className="max-w-[28%] inline-block whitespace-nowrap align-top overflow-hidden font-bold text-ellipsis">
+            <span className="text-[#214B8F] max-w-[28%] inline-block whitespace-nowrap align-top overflow-hidden font-bold text-ellipsis">
               {rankAnswerAlerm.payload.questionTitle}
             </span>
             <span> 글에 작성하신 답변이 </span>
-            <span className="font-bold">{rankAnswerAlerm.payload.rank}등</span>
+            <span className="text-[#214B8F] font-bold">
+              {rankAnswerAlerm.payload.rank}등
+            </span>
             <span> 답변이 되었습니다.</span>
           </div>
           <AlermList.AlermTime time={rankAnswerAlerm.send_time} />
@@ -175,14 +174,14 @@ AlermList.Alerm = function AlermListAlerm({
     const coffeeChatRequestAlerm = alerm as SSEMessage<"COFFEE_CHAT_REQUEST">
 
     return (
-      <AlermList.AlermWrapper className="bg-white hover:bg-colorsLightGray transition-colors duration-200 text-secondary">
+      <AlermList.AlermWrapper className="bg-white hover:bg-colorsLightGray transition-colors duration-200 text-secondary text-sm">
         <AlermList.TypeTag type={"COFFEE_CHAT_REQUEST"} />
         <div>
           <Link
             href={`/profile/${coffeeChatRequestAlerm.payload.senderId}`}
             onClick={onLink}
           >
-            <span className="text-sm font-bold underline underline-offset-4">
+            <span className="text-[#D9B48F] text-sm font-bold underline underline-offset-4">
               {coffeeChatRequestAlerm.payload.sender}
             </span>
           </Link>
@@ -217,10 +216,15 @@ AlermList.TypeTag = function AlermListTypeStatusTag({
 }: {
   type: AlertType
 }) {
+  const classNames = twMerge([
+    `w-fit h-fit shrink-0 text-xs px-2 py-1 rounded-full text-white`,
+    type === "QUESTION_REPLY" && "bg-primary",
+    type === "RANK_ANSWER" && "bg-[#214B8F]",
+    type === "COFFEE_CHAT_REQUEST" && "bg-[#D9B48F]",
+  ])
+
   return (
-    <div
-      className={`w-fit h-fit shrink-0 text-xs px-2 py-1 rounded-full bg-primary text-white`}
-    >
+    <div className={classNames}>
       {type === "QUESTION_REPLY"
         ? "질문 답변"
         : type === "RANK_ANSWER"
