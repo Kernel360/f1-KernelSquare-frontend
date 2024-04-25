@@ -3,6 +3,7 @@ import { authHandler } from "./auth"
 import { codingMeetingHandler } from "./coding-meeting"
 import { coffeeChatHandler } from "./coffee-chat"
 import { memberHandler } from "./member"
+import { mockNotificationApi } from "./notification"
 import { questionHandler } from "./question"
 import { searchHandler } from "./search"
 import { techTagsHandler } from "./techs"
@@ -18,4 +19,5 @@ export const mswHandler = [
   ...searchHandler,
   ...techTagsHandler,
   ...codingMeetingHandler,
+  ...mockNotificationApi,
 ]
