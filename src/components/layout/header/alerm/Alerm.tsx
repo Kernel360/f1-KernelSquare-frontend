@@ -126,7 +126,7 @@ AlermList.Alerm = function AlermListAlerm({
         onClick={onLink}
       >
         <AlermList.AlermWrapper>
-          <AlermList.TypeTag type={alerm.alert_type} />
+          <AlermList.TypeTag type={"QUESTION_REPLY"} />
           <div className="text-sm font-medium text-secondary">
             <span
               className="max-w-[28%] inline-block align-top overflow-hidden font-bold text-ellipsis"
@@ -156,6 +156,7 @@ AlermList.Alerm = function AlermListAlerm({
         onClick={onLink}
       >
         <AlermList.AlermWrapper>
+          <AlermList.TypeTag type={"RANK_ANSWER"} />
           <div className="text-sm font-medium text-secondary">
             <span className="max-w-[28%] inline-block align-top overflow-hidden font-bold text-ellipsis">
               {rankAnswerAlerm.payload.questionTitle}
@@ -175,6 +176,7 @@ AlermList.Alerm = function AlermListAlerm({
 
     return (
       <AlermList.AlermWrapper className="bg-white hover:bg-colorsLightGray transition-colors duration-200 text-secondary">
+        <AlermList.TypeTag type={"COFFEE_CHAT_REQUEST"} />
         <div>
           <Link
             href={`/profile/${coffeeChatRequestAlerm.payload.senderId}`}
