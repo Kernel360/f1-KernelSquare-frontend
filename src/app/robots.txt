@@ -1,5 +1,14 @@
 User-Agent: *
 Disallow: /signup
 Disallow: /profile/
+Disallow: /question$
+Disallow: /question/u/
+Disallow: /chat/create
+Disallow: /chat/room/
+Disallow: /chat/u/
+Disallow: /coding-meetings/create
+Disallow: /coding-meetings/post/
+Disallow: /notification
+Disallow: /oauth/
 
 Sitemap: https://kernelsquare.live/sitemap.xml

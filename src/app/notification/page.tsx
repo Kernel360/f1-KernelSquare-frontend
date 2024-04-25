@@ -4,6 +4,9 @@ import { Metadata } from "next"
 export const metadata: Metadata = {
   title: "알림 조회",
   description: "개인 알림 조회",
+  robots: {
+    index: false,
+  },
   openGraph: {
     title: "알림 조회 - 커널스퀘어",
     description: "개인 알림 조회",

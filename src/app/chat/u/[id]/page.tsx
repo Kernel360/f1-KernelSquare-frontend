@@ -12,6 +12,9 @@ export interface CoffeeChatUpdatePageProps {
 export const metadata: Metadata = {
   title: `커피챗 수정`,
   description: `커피챗 수정 페이지`,
+  robots: {
+    index: false,
+  },
   openGraph: {
     title: `커피챗 수정 - 커널스퀘어`,
     description: `커피챗 수정 페이지`,

@@ -19,6 +19,9 @@ export interface QuestionUpdatePageProps {
 export const metadata: Metadata = {
   title: `${layoutMeta["updateQuestion"].title}`,
   description: `${layoutMeta["updateQuestion"].description}`,
+  robots: {
+    index: false,
+  },
 }
 
 function isValidPageProps({ params }: QuestionUpdatePageProps) {

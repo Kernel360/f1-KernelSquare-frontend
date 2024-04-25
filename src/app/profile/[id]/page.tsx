@@ -25,6 +25,9 @@ export async function generateMetadata({
   const fallbackMetadata: Metadata = {
     title: "유저 프로필",
     description: "로그인 후 유저 프로필 페이지를 볼 수 있습니다.",
+    robots: {
+      index: false,
+    },
     openGraph: {
       title: "유저 프로필",
       description: "로그인 후 유저 프로필 페이지를 볼 수 있습니다.",
@@ -61,6 +64,9 @@ export async function generateMetadata({
     return {
       title: `${nickname} : 프로필`,
       description: userIntroduction,
+      robots: {
+        index: false,
+      },
       openGraph: {
         title: `${nickname} : 프로필 - 커널스퀘어`,
         description: userIntroduction,

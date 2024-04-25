@@ -38,6 +38,9 @@ interface CoffeeChatRoomProps {
 export const metadata: Metadata = {
   title: `커피챗 채팅`,
   description: `커피챗 채팅 페이지`,
+  robots: {
+    index: false,
+  },
   openGraph: {
     title: `커피챗 채팅`,
     description: `커피챗 채팅 페이지`,
