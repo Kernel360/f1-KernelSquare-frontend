@@ -8,6 +8,9 @@ import { notFound } from "next/navigation"
 export const metadata: Metadata = {
   title: `커피챗 생성`,
   description: `커피챗 생성 페이지`,
+  robots: {
+    index: false,
+  },
   openGraph: {
     title: `커피챗 생성 - 커널스퀘어`,
     description: `커피챗 생성 페이지`,

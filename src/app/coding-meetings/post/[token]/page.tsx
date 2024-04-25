@@ -17,6 +17,9 @@ export interface UpdateCodingMeetingsPageProps {
 export const metadata: Metadata = {
   title: "모각코 수정",
   description: "모각코 수정 페이지",
+  robots: {
+    index: false,
+  },
   openGraph: {
     title: `모각코 수정 - 커널스퀘어`,
     description: `모각코 수정 페이지`,

@@ -9,6 +9,9 @@ export const revalidate = 0
 export const metadata: Metadata = {
   title: "질문 작성",
   description: "질문 작성 페이지",
+  robots: {
+    index: false,
+  },
 }
 
 // dynamic import (CSR)
