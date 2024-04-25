@@ -17,6 +17,9 @@ interface OAuthGihubProps {
 export const metadata: Metadata = {
   title: "github 소셜로그인",
   description: "github 소셜로그인",
+  robots: {
+    index: false,
+  },
 }
 
 export default function OAuthGithub({ searchParams }: OAuthGihubProps) {
