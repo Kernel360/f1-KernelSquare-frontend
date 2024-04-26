@@ -19,10 +19,6 @@ import SelectableTagList from "@/components/shared/tag/SelectableTagList"
 import { useRouter } from "next/navigation"
 import { useQueryClient } from "@tanstack/react-query"
 import {
-  createMockQuestion,
-  updateMockQuestion,
-} from "@/mocks/handler/question"
-import {
   deleteImageLinkFromMarkdownEventName,
   sendEditorRefEventName,
 } from "./AskQuestionPageControl"
@@ -44,6 +40,10 @@ import { searchTagAtom } from "@/recoil/atoms/tag"
 import Limitation from "@/constants/limitation"
 import { answerQueries } from "@/react-query/answers"
 import { validationMessage } from "@/constants/message/validation"
+import {
+  createMockQuestion,
+  updateMockQuestion,
+} from "@/mocks/util/mock-question"
 
 export interface QuestionEditorInitialValues {
   title: string

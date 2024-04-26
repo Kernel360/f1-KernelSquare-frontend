@@ -1,23 +1,21 @@
-import { answerHandler } from "./answer"
-import { authHandler } from "./auth"
-import { codingMeetingHandler } from "./coding-meeting"
-import { coffeeChatHandler } from "./coffee-chat"
-import { memberHandler } from "./member"
+import { mockAuthApi } from "./auth"
 import { mockNotificationApi } from "./notification"
-import { questionHandler } from "./question"
-import { searchHandler } from "./search"
-import { techTagsHandler } from "./techs"
-import { uploadHandler } from "./upload"
+import { mockQnaApi } from "./qna"
+import { mockMemberApi } from "./member"
+import { mockUploadApi } from "./upload"
+import { mockCoffeeChatApi } from "./coffee-chat"
+import { mockSearchApi } from "./search"
+import { mockTechTagApi } from "./tech-tag"
+import { mockCodingMeetingApi } from "./coding-meeting"
 
 export const mswHandler = [
-  ...authHandler,
-  ...memberHandler,
-  ...questionHandler,
-  ...answerHandler,
-  ...uploadHandler,
-  ...coffeeChatHandler,
-  ...searchHandler,
-  ...techTagsHandler,
-  ...codingMeetingHandler,
+  ...mockAuthApi,
+  ...mockQnaApi,
+  ...mockMemberApi,
+  ...mockUploadApi,
+  ...mockCoffeeChatApi,
+  ...mockSearchApi,
+  ...mockTechTagApi,
+  ...mockCodingMeetingApi,
   ...mockNotificationApi,
 ]
