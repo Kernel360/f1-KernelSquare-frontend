@@ -97,7 +97,6 @@ const useProfileImage = (image_url: string | null) => {
   ) => {
     if (event.target.files) {
       const file = event.target.files[0]
-      console.log("image size", file.size, file.size > Limitation.image.size)
 
       // 파일 용량 제한
       if (file.size > Limitation.image.size) {

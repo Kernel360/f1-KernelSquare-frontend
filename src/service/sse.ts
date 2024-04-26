@@ -1,6 +1,6 @@
 import { AlertType, SSEMessage } from "@/interfaces/sse"
 import axios, { AxiosResponse } from "axios"
-import { alertApiInstance, apiInstance } from "./axios"
+import { alertApiInstance } from "./axios"
 import { GetAlertListResponse } from "@/interfaces/dto/sse/get-alret-list"
 import { RouteMap } from "./route-map"
 
