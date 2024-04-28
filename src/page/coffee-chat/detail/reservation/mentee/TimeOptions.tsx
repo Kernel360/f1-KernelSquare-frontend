@@ -29,7 +29,7 @@ const TimeOptions = ({ reservation, date }: TimeOptionsProps) => {
   const isReserved = (mentee_nickname: string | null, time: string) =>
     twJoin(
       [
-        "w-[100px] flex py-2 rounded justify-center transition-colors break-all text-sm text-secondary font-semibold",
+        "w-[100px] h-[38px] flex gap-1 justify-center items-center transition-colors break-all text-sm text-secondary font-semibold rounded",
       ],
       // 다른 시간에 예약이 있는 커피챗
       [
@@ -78,9 +78,10 @@ const TimeOptions = ({ reservation, date }: TimeOptionsProps) => {
             getDate({ date: date + "" }) === getDate({ date: start_time }),
         )
         .map((time, i) => (
+          // "text-left p-0 leading-[30px] flex items-center disabled:bg-colorsGray disabled:text-colorsDarkGray rounded"
           <Button
             className={
-              "text-left p-0 leading-[30px] flex items-center disabled:bg-colorsGray disabled:text-colorsDarkGray rounded"
+              "mx-auto p-0 justify-center items-center disabled:bg-colorsGray disabled:text-colorsDarkGray rounded"
             }
             key={time.room_id + i}
             onClick={() =>
@@ -93,11 +94,9 @@ const TimeOptions = ({ reservation, date }: TimeOptionsProps) => {
                 <ProfileImage image_url={time.mentee_image_url} />
               )}
               {time.mentee_nickname && !time.mentee_image_url && (
-                <div className="w-[20px] h-[20px] mr-1 mt-[2px]">
-                  <Icons.UserProfile />
-                </div>
+                <Icons.UserProfile className="text-xl" />
               )}
-              <div>{getTime(time.start_time)}</div>
+              <time>{getTime(time.start_time)}</time>
             </span>
           </Button>
         ))}
@@ -111,12 +110,12 @@ type ProfileImageProps = { image_url: string }
 
 function ProfileImage({ image_url }: ProfileImageProps) {
   return (
-    <div className="relative w-[20px] h-[20px] rounded mr-1">
+    <div className="relative w-[20px] h-[20px] rounded-full overflow-hidden">
       <Image
         src={image_url}
         fill
         alt="예약자 프로필 이미지"
-        className="object-cover rounded-full mt-[2px]"
+        className="object-cover"
       />
     </div>
   )

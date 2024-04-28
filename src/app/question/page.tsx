@@ -1,5 +1,6 @@
 import Spacing from "@/components/shared/Spacing"
 import AuthGuardModal from "@/components/shared/auth-modal"
+import ScrollTopButton from "@/page/coding-meetings/main/ScrollTopButton"
 import { isLogined } from "@/util/auth"
 import { Metadata } from "next"
 import dynamic from "next/dynamic"
@@ -42,6 +43,7 @@ export default function AskQuestionPage() {
         <Spacing size={120} />
       </div>
       <AskQuestionPageControl editMode={"create"} />
+      <ScrollTopButton />
     </div>
   )
 }

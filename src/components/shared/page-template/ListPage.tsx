@@ -1,6 +1,6 @@
 "use client"
 
-import CodingMeetingInfoArea from "@/page/coding-meetings/main/info-area/InfoArea"
+import CodingMeetingInfoArea from "@/page/coding-meetings/main/info-area/CodingMeetingInfoArea"
 import ListLoading from "../animation/ListLoading"
 import CodingMeetingTabs from "@/page/coding-meetings/main/Tab"
 import { Icons } from "@/components/icons/Icons"
@@ -21,13 +21,13 @@ interface ListPageProps {
 
 function ListPage({ section, children }: ListPageProps) {
   const classNames = twMerge([
-    "flex w-full px-6 pt-6 pb-6 tablet:pt-8 lg:mt-[72px] box-border",
+    "flex w-full px-6 pt-6 pb-6 tabletDevice:pt-8 pc:mt-[72px] box-border",
     section === "coffeeChat" &&
-      "pb-6 tablet:pt-6 tablet:pb-12 lg:pb-[72px] lg:pt-[75px]",
+      "pb-6 tabletDevice:pt-6 tabletDevice:pb-12 pc:pb-[72px] pc:mt-0 pc:pt-[75px]",
   ])
 
   const sideClassNames = twMerge([
-    "bg-transparent min-h-screen hidden tablet:block tablet:w-32 lg:w-72",
+    "bg-transparent min-h-screen hidden lg:block lg:w-44 xl:w-72",
     section === "coffeeChat" && "!hidden",
   ])
 
@@ -89,7 +89,7 @@ function Title({ section }: { section: ListPageProps["section"] }) {
   if (title[section] === null) return null
 
   return (
-    <section className="text-[#333333] text-[32px] font-semibold mb-6 tablet:mb-8 lg:mb-12">
+    <section className="text-[#333333] text-[32px] font-semibold mb-6 tabletDevice:mb-8 pc:mb-12">
       {title[section]}
     </section>
   )

@@ -31,7 +31,7 @@ function NotLoginedUserArea() {
   return (
     <>
       <div className="flex items-center">
-        <CodingMeetingAreaImage />
+        <CodingMeetingAreaImage className="sm:block" />
         <AreaText logined={false} />
       </div>
       <AreaButton logined={false} />
@@ -43,7 +43,7 @@ function LoginedUserArea() {
   return (
     <>
       <div className="flex items-center">
-        <CodingMeetingAreaImage />
+        <CodingMeetingAreaImage className="sm:block" />
         <AreaText logined={true} />
       </div>
       <AreaButton logined={true} />

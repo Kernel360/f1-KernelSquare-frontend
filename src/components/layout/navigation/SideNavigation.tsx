@@ -33,7 +33,7 @@ function SideNavigation({ hasHeader }: SideNavigationProps) {
   const params = useParams()
 
   const wrapperClassNames = twMerge([
-    "hidden sm:sticky sm:inline-flex sm:w-[200px] sm:align-top sm:top-[--height-header] sm:bg-colorsLightGray sm:h-[calc(100vh-var(--height-header))] sm:z-navigation",
+    "hidden pc:sticky pc:inline-flex pc:border-r pc:border-[#E7E7E7] pc:w-[200px] pc:align-top pc:top-[--height-header] pc:bg-white pc:h-[calc(100vh-var(--height-header))] pc:z-navigation",
     !hasHeader && "sm:top-0 sm:h-screen",
   ])
 
@@ -100,7 +100,7 @@ function SideNavigationItem({
   ])
 
   const textClassNames = twMerge([
-    "text-colorsGray text-xl font-bold",
+    "text-colorsGray text-base font-semibold",
     active && "text-secondary",
   ])
 

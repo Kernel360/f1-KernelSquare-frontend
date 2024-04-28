@@ -3,15 +3,13 @@
 import Image from "next/image"
 import { memo } from "react"
 import codingMeetingSVG from "@/assets/codingMeetingInfo.svg"
+import { twMerge } from "tailwind-merge"
 
-function CodingMeetingAreaImage() {
+function CodingMeetingAreaImage({ className }: { className?: string }) {
+  const classNames = twMerge(["hidden pc:block", className])
+
   return (
-    <Image
-      priority
-      src={codingMeetingSVG}
-      className="hidden sm:block"
-      alt="svg"
-    />
+    <Image priority src={codingMeetingSVG} className={classNames} alt="svg" />
   )
 }
 

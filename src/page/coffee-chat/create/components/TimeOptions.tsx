@@ -7,7 +7,7 @@ import {
   SelectedDate,
   TimeCount,
 } from "@/recoil/atoms/coffee-chat/schedule"
-import { twJoin } from "tailwind-merge"
+import { twMerge } from "tailwind-merge"
 import Button from "@/components/shared/button/Button"
 import { toast } from "react-toastify"
 import Limitation from "@/constants/limitation"
@@ -20,12 +20,7 @@ const TimeOptions = ({ date }: TimeOptionsProps) => {
     ScheduleListAtomFamily(selectedDate),
   )
   const [timeCount, setTimeCount] = useRecoilState(TimeCount)
-  useLayoutEffect(() => {
-    setSchedulelist({
-      schedule: [],
-    })
-    setTimeCount(0)
-  }, [])
+
   const handleRegister = (time: string) => {
     if (schedulelist.schedule.includes(time)) {
       setSchedulelist({
@@ -41,31 +36,34 @@ const TimeOptions = ({ date }: TimeOptionsProps) => {
     }
   }
 
-  const timeClassName = (time: string) =>
-    twJoin(
-      [
-        "flex px-6 py-2 rounded justify-center transition-colors break-all text-sm text-secondary font-semibold shadow-sm",
-      ],
-      [
-        !schedulelist.schedule.includes(time) &&
-          "border-[1px] border-slate-200 bg-white cursor-pointer bg-colorsLightGray hover:bg-colorsGray ",
-      ],
-      [
-        schedulelist.schedule.includes(time) &&
-          "flex cursor-default bg-slate-300",
-      ],
-    )
+  const buttonClassName = (isSchedule: boolean) =>
+    twMerge([
+      `border-[1px] shadow-sm duration-150 shadow-sm rounded px-6 py-2`,
+      isSchedule
+        ? "bg-slate-300 border-slate-200"
+        : "bg-white hover:bg-colorsLightGray",
+    ])
+
+  useLayoutEffect(() => {
+    setSchedulelist({
+      schedule: [],
+    })
+    setTimeCount(0)
+  }, []) /* eslint-disable-line */
+
   return (
-    <div className="grid grid-cols-1 sm:grid-rows-4 sm:grid-cols-4 gap-4 shrink-0 m-auto">
+    <div className="grid gap-4 grid-cols-4">
       {date.map((time, i) => (
         <Button
-          className={"inline text-left leading-[30px] p-0"}
+          className={buttonClassName(schedulelist.schedule.includes(time))}
           key={time + i}
           onClick={() => handleRegister(time)}
         >
-          <span className={timeClassName(time)}>
-            <div>{time}</div>
-          </span>
+          <time
+            className={`w-max shrink-0 text-sm text-secondary font-semibold`}
+          >
+            {time}
+          </time>
         </Button>
       ))}
     </div>

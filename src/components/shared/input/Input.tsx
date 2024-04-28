@@ -16,6 +16,7 @@ export interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   error?: boolean
   errorMessage?: string
   helpMessage?: string
+  wrapperClassName?: string
 }
 
 interface InputErrorMessageProps extends HTMLAttributes<HTMLSpanElement> {}
@@ -24,6 +25,7 @@ const forwardInput = forwardRef<HTMLInputElement, InputProps>(
   (
     {
       className,
+      wrapperClassName,
       fullWidth = false,
       error = false,
       errorMessage,
@@ -35,6 +37,7 @@ const forwardInput = forwardRef<HTMLInputElement, InputProps>(
     const wrapperClassNames = twMerge([
       "inline-flex flex-col align-top",
       fullWidth && "w-full",
+      wrapperClassName,
     ])
 
     const classNames = twMerge([
