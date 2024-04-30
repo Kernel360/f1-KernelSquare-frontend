@@ -125,7 +125,13 @@ const AuthButton = () => {
 
   if (user)
     return (
-      <Button className="pl-0 gap-4 py-4" onClick={appLogout}>
+      <Button
+        className="pl-0 gap-4 py-4"
+        onClick={() => {
+          setMenuOpen(false)
+          appLogout()
+        }}
+      >
         <RiLogoutBoxRLine className="text-2xl text-[#828282]" />
         <span className="font-normal text-base">로그아웃</span>
       </Button>

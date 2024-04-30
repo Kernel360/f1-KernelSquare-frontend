@@ -21,17 +21,22 @@ import { setAuthCookie } from "@/util/actions/cookie"
 import { useSetRecoilState } from "recoil"
 import LogoWithRowText from "../icons/LogoWithRowText"
 import type { LoginFormData } from "@/interfaces/form"
+import { useRouter } from "next/navigation"
 
-interface LoginFormProps {
+export interface LoginFormProps {
   onSuccess?: (user: NonNullable<SessionPayload>) => void
+  continueURL?: string
 }
 
-function LoginForm({ onSuccess }: LoginFormProps) {
+function LoginForm({ onSuccess, continueURL }: LoginFormProps) {
+  const { replace } = useRouter()
+
   const {
     register,
     handleSubmit,
-    formState: { errors, isValid, isSubmitting },
+    formState: { errors, isSubmitting },
   } = useForm<LoginFormData>()
+
   const setUserAtom = useSetRecoilState(userAtom)
 
   const { closeModal } = useModal()
@@ -75,6 +80,18 @@ function LoginForm({ onSuccess }: LoginFormProps) {
         ...payload,
         expires: expires.toJSON(),
       })
+
+      if (continueURL) {
+        closeModal()
+
+        replace(continueURL)
+
+        setTimeout(() => {
+          revalidatePage("*")
+        }, 400)
+
+        return
+      }
 
       await revalidatePage("*")
 

@@ -14,6 +14,7 @@ import ToastContainer from "@/components/shared/toast/ToastContainer"
 import ScrollTop from "@/components/shared/ScrollTop"
 import ToastDismissEventListener from "@/components/layout/ToastDismissListener"
 import GoogleAnalyticsProvider from "@/google-analytics/GoogleAnalyticsProvider"
+import HistorySession from "@/components/history/HistorySession"
 
 export const dynamic = "force-dynamic"
 
@@ -64,6 +65,7 @@ export default function RootLayout({
         <RecoilProvider>
           <ReactQueryProvider>
             <MSW />
+            <HistorySession />
             <PopupEventListener />
             <ScrollTop />
             <Layout>{children}</Layout>

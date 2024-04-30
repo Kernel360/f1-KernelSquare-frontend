@@ -27,13 +27,13 @@ export const navigationRoutes = [
   {
     label: "커피챗",
     icon: NavigationIcons.Chat,
-    to: "/chat",
+    to: "/chat?page=0",
     activeClassName: "text-amber-600",
   },
   {
     label: "모각코",
     icon: NavigationIcons.CodingMeetings,
-    to: "/coding-meetings",
+    to: "/coding-meetings?page=0&size=10&filter=all",
     activeClassName: "text-secondary",
   },
   {

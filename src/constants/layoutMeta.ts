@@ -5,6 +5,7 @@ export type LayoutMetaKey =
   | "question"
   | "updateQuestion"
   | "signup"
+  | "login"
   | "chat"
   | "chat/popup"
   | "faq"
@@ -75,6 +76,15 @@ export const layoutMeta = {
   signup: {
     title: "회원가입",
     description: "커널스퀘어의 멤버가 되어 지속 가능한 성장을 경험해 보세요",
+    containLayout: {
+      header: false,
+      navigation: false,
+      footer: false,
+    },
+  },
+  login: {
+    title: "로그인",
+    description: "커널스퀘어에 로그인하고 다양한 서비스를 이용해 보세요",
     containLayout: {
       header: false,
       navigation: false,
