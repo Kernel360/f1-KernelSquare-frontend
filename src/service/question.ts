@@ -54,15 +54,6 @@ export async function createQuestion({
   image_url,
   skills,
 }: CreateQuestionRequest) {
-  // 서버 로그 확인용
-  console.log("[create submit]", {
-    member_id,
-    title,
-    content,
-    image_url,
-    skills,
-    parsedSkills: skills ?? [],
-  })
   const res = await apiInstance.post<
     any,
     AxiosResponse<CreateQuestionResponse>,
@@ -88,11 +79,6 @@ export async function deleteQuestion({ questionId }: DeleteQuestionRequest) {
 
     return res
   } catch (err) {
-    if (err instanceof AxiosError) {
-      const { response } = err as AxiosError<APIResponse>
-
-      console.log({ response: response?.data })
-    }
     throw new Error(errorMessage.deleteQuestion)
   }
 }
@@ -104,15 +90,6 @@ export async function updateQuestion({
   image_url,
   skills,
 }: UpdateQuestionRequest) {
-  // 서버 로그 확인용
-  console.log("[update submit]", {
-    questionId,
-    title,
-    content,
-    image_url,
-    skills,
-    parsedSkills: skills ?? [],
-  })
   const res = await apiInstance.put<
     any,
     AxiosResponse<UpdateQuestionResponse>,

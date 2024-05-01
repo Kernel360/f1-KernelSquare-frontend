@@ -1,4 +1,4 @@
-import type { APIPagenationResponse } from "../api-response"
+import type { APIResponse } from "../api-response"
 
 export interface GetMyCoffeeChatReservationRequest {}
 
@@ -11,8 +11,8 @@ export interface MyCoffeeChatReservation {
 }
 
 export interface MyCoffeeChatReservationListPayload {
-  reservationResponseList: Array<MyCoffeeChatReservation>
+  reservation_responses: Array<MyCoffeeChatReservation>
 }
 
 export interface GetMyCoffeeChatReservationListResponse
-  extends APIPagenationResponse<MyCoffeeChatReservationListPayload> {}
+  extends APIResponse<MyCoffeeChatReservationListPayload> {}

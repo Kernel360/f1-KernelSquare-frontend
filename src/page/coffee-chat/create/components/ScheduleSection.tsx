@@ -38,8 +38,10 @@ const ScheduleSection = () => {
   const [selectedDay, setSelectedDay] = useRecoilState(SelectedDate)
   const [timeCount, setTimeCount] = useRecoilState(TimeCount)
 
-  // // 오전 or 오후
+  // 오전 or 오후
   const [timeZone, setTimeZone] = useState<TimeZone>(TimeZone.AM)
+
+  const timeOptions = timeZone === TimeZone.AM ? AM : PM
 
   useLayoutEffect(() => {
     setTimeZone(TimeZone.AM)
@@ -58,127 +60,111 @@ const ScheduleSection = () => {
 
   return (
     <CoffeeChatSection>
-      <div className="w-full align-top max-w-full flex-col md:flex-row md:justify-start md:items-center">
-        <CoffeeChatSection.Label className="w-max flex items-center">
-          <div>커피챗 가능 일시</div>
-          {date && <HoverBox />}
-        </CoffeeChatSection.Label>
-        <div className="flex justify-around">
-          <div>
-            <CustomCalendar start={startDate} limit={21} />
-            {!date && (
-              <div className="font-bold text-primary mt-3">
-                원하는 시작 일자를 클릭하면 시간대를 설정할 수 있습니다.
-              </div>
-            )}
-            {date && (
-              <div className="flex justify-between">
-                <div className="font-normal mt-3 flex items-center">
-                  <div className="w-[10px] h-[10px] rounded-full bg-[#fbf8ce] border-[1px] border-[orange] mr-1"></div>{" "}
-                  <div>멘티 모집 기간</div>
-                </div>
-                <div className="font-normal mt-3 flex items-center">
-                  <div className="w-[10px] h-[10px] rounded-full bg-[lightgray] mr-1"></div>{" "}
-                  <div>예약 확정 기간</div>
-                </div>
-                <div className="font-normal mt-3 flex items-center">
-                  <div className="w-[10px] h-[10px] rounded-full bg-primary mr-1"></div>{" "}
-                  <div>커피챗 진행 기간</div>
-                </div>
-              </div>
-            )}
-          </div>
+      <CoffeeChatSection.Label className="w-max max-w-full flex flex-wrap items-center gap-2">
+        <div>커피챗 가능 일시</div>
+        {date && <HoverBox />}
+      </CoffeeChatSection.Label>
+      <div className="flex flex-col calendarRow:flex-row calendarRow:justify-between calendarRow:gap-4">
+        <div className="w-full calendarRow:max-w-[325px] pc:!max-w-[450px]">
+          <CustomCalendar start={startDate} limit={21} />
+          {!date && (
+            <div className="font-bold text-primary mt-3">
+              원하는 시작 일자를 클릭하면 시간대를 설정할 수 있습니다.
+            </div>
+          )}
           {date && (
-            <div>
-              <div className="flex justify-center mb-5 text-xl text-secondary font-bold text-center">
-                <Select
-                  onValueChange={(day: string) => {
-                    setSelectedDay(day)
-                    setTimeZone(TimeZone.AM)
-                  }}
-                  defaultValue={dayjs(date + "").format("YYYY년MM월DD일")}
-                >
-                  <SelectTrigger className="w-[180px] text-center">
-                    <SelectValue className="flex flex-1">
-                      {selectedDay || dayjs(date + "").format("YYYY년MM월DD일")}
-                    </SelectValue>
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem
-                      value={dayjs(date + "").format("YYYY년MM월DD일")}
-                    >
-                      {dayjs(date + "").format("YYYY년MM월DD일")}
-                    </SelectItem>
-                    <SelectItem
-                      value={dayjs(date + "")
-                        .add(1, "day")
-                        .format("YYYY년MM월DD일")}
-                    >
-                      {dayjs(date + "")
-                        .add(1, "day")
-                        .format("YYYY년MM월DD일")}
-                    </SelectItem>
-                    <SelectItem
-                      value={dayjs(date + "")
-                        .add(2, "day")
-                        .format("YYYY년MM월DD일")}
-                    >
-                      {dayjs(date + "")
-                        .add(2, "day")
-                        .format("YYYY년MM월DD일")}
-                    </SelectItem>
-                  </SelectContent>
-                </Select>
+            <div className="flex justify-between gap-1 mt-3 font-semibold text-xs">
+              <div className="flex gap-1 items-center">
+                <div className="w-[10px] h-[10px] rounded-full bg-[#fbf8ce] border-[1px] border-[orange]" />
+                <div>멘티 모집 기간</div>
               </div>
-              <div className="flex">
+              <div className="flex gap-1 items-center">
+                <div className="w-[10px] h-[10px] rounded-full bg-[lightgray]" />
+                <div>예약 확정 기간</div>
+              </div>
+              <div className="flex gap-1 items-center">
+                <div className="w-[10px] h-[10px] rounded-full bg-primary" />
+                <div>커피챗 진행 기간</div>
+              </div>
+            </div>
+          )}
+        </div>
+        {date && (
+          <div className="w-full calendarRow:flex-1 mt-6 calendarRow:mt-2">
+            <div className="flex w-full justify-center mb-5 text-xl text-secondary font-bold text-center">
+              <Select
+                onValueChange={(day: string) => {
+                  setSelectedDay(day)
+                  setTimeZone(TimeZone.AM)
+                }}
+                defaultValue={dayjs(date + "").format("YYYY년MM월DD일")}
+              >
+                <SelectTrigger className="w-[180px] text-center">
+                  <SelectValue className="flex flex-1">
+                    {selectedDay || dayjs(date + "").format("YYYY년MM월DD일")}
+                  </SelectValue>
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value={dayjs(date + "").format("YYYY년MM월DD일")}>
+                    {dayjs(date + "").format("YYYY년MM월DD일")}
+                  </SelectItem>
+                  <SelectItem
+                    value={dayjs(date + "")
+                      .add(1, "day")
+                      .format("YYYY년MM월DD일")}
+                  >
+                    {dayjs(date + "")
+                      .add(1, "day")
+                      .format("YYYY년MM월DD일")}
+                  </SelectItem>
+                  <SelectItem
+                    value={dayjs(date + "")
+                      .add(2, "day")
+                      .format("YYYY년MM월DD일")}
+                  >
+                    {dayjs(date + "")
+                      .add(2, "day")
+                      .format("YYYY년MM월DD일")}
+                  </SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="w-full">
+              <div className="flex gap-1 items-center w-full mb-5">
                 <DirectionIcons.Left
                   className={ArrowClassName(timeZone === TimeZone.AM)}
                   onClick={() => setTimeZone(TimeZone.AM)}
                 />
-                <div>
-                  {timeZone === "AM" && (
-                    <div className="text-center">
-                      <div className="font-bold text-primary text-lg mb-5">
-                        오전
-                      </div>
-                      <TimeOptions date={AM} />
-                    </div>
-                  )}
-                  {timeZone === "PM" && (
-                    <div className="text-center">
-                      <div className="font-bold text-primary text-lg mb-5">
-                        오후
-                      </div>
-                      <TimeOptions date={PM} />
-                    </div>
-                  )}
-                  <div className="mt-3 text-right flex justify-between items-center">
-                    <div>
-                      <Button
-                        ghost
-                        className="py-2 hover:text-primary"
-                        onClick={handleResetSchedule}
-                      >
-                        선택 초기화
-                      </Button>
-                    </div>
-                    <div>
-                      선택한 커피챗 시간:{" "}
-                      <span className="font-bold text-primary">
-                        {timeCount}
-                      </span>
-                      /10개
-                    </div>
-                  </div>
+                <div className="font-bold text-primary text-lg flex-1 text-center">
+                  {timeZone === "AM" ? "오전" : "오후"}
                 </div>
                 <DirectionIcons.Right
                   className={ArrowClassName(timeZone === TimeZone.PM)}
                   onClick={() => setTimeZone(TimeZone.PM)}
                 />
               </div>
+              <div className="text-center">
+                <TimeOptions date={timeOptions} />
+              </div>
+              <div className="mt-3 text-right flex justify-between items-center">
+                <div>
+                  <Button
+                    ghost
+                    className="py-2 hover:text-primary"
+                    onClick={handleResetSchedule}
+                  >
+                    선택 초기화
+                  </Button>
+                </div>
+                <div>
+                  선택한 커피챗 시간:{" "}
+                  <span className="font-bold text-primary">{timeCount}</span>
+                  /10개
+                </div>
+              </div>
             </div>
-          )}
-        </div>
+          </div>
+        )}
       </div>
     </CoffeeChatSection>
   )
@@ -189,37 +175,46 @@ export default ScheduleSection
 function HoverBox() {
   return (
     <Popover>
-      <PopoverTrigger className="flex items-center ml-3 cursor-pointer text-slate-400 hover:text-primary">
-        <Icons.Info />
-        <div className="font-bold text-sm ml-2">
-          커피챗 가능 일시 산정 기준 알아보기
-        </div>
+      <PopoverTrigger className="flex items-center cursor-pointer text-slate-400 hover:text-primary">
+        <Icons.Info className="shrink-0" />
       </PopoverTrigger>
-      <PopoverContent className="w-auto">
+      <PopoverContent
+        side="bottom"
+        align="start"
+        className="w-[calc(100vw-48px)] max-w-[360px] p-1 break-all"
+      >
         <div className="text-sm">
           <div className="font-bold">
             🤔 달력에 표시되는 각 기간은 무엇을 의미하나요?
           </div>
-          <div className="font-normal mt-3 flex items-center">
-            <div className="w-[10px] h-[10px] rounded-full bg-[#00c47133] border-[1px] border-primary mr-1"></div>{" "}
-            <span className="text-primary mx-1">일주일</span> 뒤부터 커피챗 시작
-            날짜로 선택할 수 있습니다.{" "}
+          <div className="font-normal mt-3 flex items-center gap-1">
+            <div className="w-[10px] h-[10px] rounded-full bg-[#00c47133] border-[1px] border-primary" />
+            <div>
+              <span className="text-primary">일주일</span> 뒤부터 커피챗 시작
+              날짜로 선택할 수 있습니다.
+            </div>
           </div>
-          <div className="font-normal mt-3 flex items-center">
-            <div className="w-[10px] h-[10px] rounded-full bg-[#fbf8ce] border-[1px] border-[orange] mr-1"></div>{" "}
-            선택한 커피챗 날짜가 되기 전까지{" "}
-            <span className="text-primary mx-1">5일</span> 동안 예약이
-            진행됩니다.
+          <div className="font-normal mt-3 flex items-center gap-1">
+            <div className="w-[10px] h-[10px] rounded-full bg-[#fbf8ce] border-[1px] border-[orange]" />
+            <div>
+              선택한 커피챗 날짜가 되기 전까지&nbsp;
+              <span className="text-primary">5일</span>
+              &nbsp;동안 예약이 진행됩니다.
+            </div>
           </div>
-          <div className="font-normal mt-3 flex items-center">
-            <div className="w-[10px] h-[10px] rounded-full bg-[lightgray] mr-1"></div>{" "}
-            이후 예약 확정을 위해 <span className="text-primary mx-1">1일</span>{" "}
-            이 소요됩니다.
+          <div className="font-normal mt-3 flex items-center gap-1">
+            <div className="w-[10px] h-[10px] rounded-full bg-[lightgray]" />
+            <div>
+              이후 예약 확정을 위해&nbsp;
+              <span className="text-primary">1일</span>이 소요됩니다.
+            </div>
           </div>
-          <div className="font-normal mt-3 flex items-center">
-            <div className="w-[10px] h-[10px] rounded-full bg-primary mr-1"></div>{" "}
-            커피챗은 선택한 일자로부터 총{" "}
-            <span className="text-primary mx-1">3일</span> 간 진행됩니다.
+          <div className="font-normal mt-3 flex items-center gap-1">
+            <div className="w-[10px] h-[10px] rounded-full bg-primary" />
+            <div>
+              커피챗은 선택한 일자로부터 총&nbsp;
+              <span className="text-primary">3일</span>간 진행됩니다.
+            </div>
           </div>
         </div>
       </PopoverContent>

@@ -25,9 +25,9 @@ function CoffeeChatList({ coffeeChatList }: CoffeeChatListProps) {
     (id: number) => (e: React.MouseEvent<HTMLLIElement>) => {
       push(`/chat/${id}`)
     }
-
+  // lgDevice:grid lgDevice:grid-cols-2
   return (
-    <ul className="flex flex-col gap-4 lgDevice:grid lgDevice:grid-cols-2">
+    <ul className="flex flex-col gap-4 sm:grid sm:grid-cols-2">
       {coffeeChatList.map(
         ({
           article_id,

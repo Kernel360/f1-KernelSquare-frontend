@@ -218,7 +218,6 @@ function AskQuestionForm({
         }
         // AI 자동 응답 호출
         if (createdQuestionId) {
-          console.log("id", createdQuestionId)
           createAIAutoAnswer({ questionId: createdQuestionId })
         }
 
@@ -498,7 +497,6 @@ function AskQuestionForm({
 
                 if (initialValues) {
                   queueMicrotask(() => {
-                    console.log("set initialValues", { initialValues })
                     updateQuestionEditorState({
                       title: initialValues.title,
                       content: initialValues.content,

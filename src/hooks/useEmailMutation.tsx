@@ -1,85 +1,33 @@
 "use client"
 
-import LoginForm from "@/components/form/LoginForm"
-import { duplicateState } from "@/recoil/atoms/duplicate"
+import { DuplicateCheckEmailResponse } from "@/interfaces/dto/auth/duplicate-check-email.dto"
 import { duplicateCheckEmail } from "@/service/auth"
 import { useMutation } from "@tanstack/react-query"
-import { AxiosError, HttpStatusCode } from "axios"
-import { FieldValues, UseFormTrigger } from "react-hook-form"
-import { ToastContentProps, toast } from "react-toastify"
-import { useSetRecoilState } from "recoil"
+import { AxiosResponse } from "axios"
 
-interface UseEmailMutationOptions<T extends FieldValues> {
-  trigger: UseFormTrigger<T>
-  emailFieldName?: string
+interface UseEmailMutationOptions {
+  mutationKey?: any[]
+  onSuccess?: (
+    data: AxiosResponse<DuplicateCheckEmailResponse, any>,
+    variables: string,
+    context: unknown,
+  ) => void
+  onError?: (error: Error, variables: string, context: unknown) => void
 }
 
-export function useEmailMutation<T extends FieldValues>({
-  trigger,
-  emailFieldName = "email",
-}: UseEmailMutationOptions<T>) {
-  const setDuplicate = useSetRecoilState(duplicateState)
-
+export function useEmailMutation({
+  mutationKey = ["emailMutation"],
+  onSuccess,
+  onError,
+}: UseEmailMutationOptions = {}) {
   const { mutate: checkEmailDuplicateApi } = useMutation({
+    mutationKey,
     mutationFn: (email: string) => duplicateCheckEmail({ email }),
-    onSuccess(payload, email) {
-      setDuplicate((prev) => ({
-        ...prev,
-        email: {
-          checkedDuplicate: true,
-          isDuplicate: false,
-        },
-      }))
-    },
-    onError(error) {
-      if (error instanceof AxiosError) {
-        const { response } = error
-
-        if (response?.status === HttpStatusCode.Conflict) {
-          setDuplicate((prev) => ({
-            ...prev,
-            email: {
-              checkedDuplicate: true,
-              isDuplicate: true,
-            },
-          }))
-
-          return
-        }
-      }
-
-      toast.error(LoginForm.InternalServerErrorToast, {
-        position: "top-center",
-      })
-
-      return
-    },
-    onSettled() {
-      const emailField = document.querySelector(
-        `input[name="${emailFieldName}"]`,
-      ) as HTMLInputElement | null
-
-      emailField?.focus()
-    },
+    onSuccess,
+    onError,
   })
 
-  const checkEmailDuplicate = async (email: string) => {
-    const isValid = await trigger(emailFieldName as any)
-
-    if (!isValid) {
-      const emailField = document.querySelector(
-        `input[name="${emailFieldName}"]`,
-      ) as HTMLInputElement | null
-
-      emailField?.focus()
-
-      return
-    }
-
-    checkEmailDuplicateApi(email)
-  }
-
   return {
-    checkEmailDuplicate,
+    checkEmailDuplicateApi,
   }
 }

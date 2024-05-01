@@ -1,7 +1,6 @@
 "use client"
 
 import Calendar, { TileArgs } from "react-calendar"
-import "react-calendar/dist/Calendar.css"
 import "./Calendar.css"
 import { getDate, getDay } from "@/util/getDate"
 import dayjs from "dayjs"

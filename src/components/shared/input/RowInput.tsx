@@ -14,6 +14,7 @@ export interface RowInputProps extends Omit<InputProps, "className"> {
 function RowInput(
   {
     classNames,
+    disabled,
     sideField,
     fullWidth,
     error,
@@ -32,47 +33,35 @@ function RowInput(
   ])
 
   const wrapperClassNames = twMerge([
-    "border border-colorsGray inline-flex align-top justify-between items-center rounded-lg pr-2 focus:bg-primary",
+    "border border-colorsGray inline-flex align-top justify-between items-center rounded-lg pr-2 focus-within:border-secondary",
     fullWidth && "w-full",
     classNames?.wrapper,
     error && "border-danger",
   ])
 
   const inputClassNames = twMerge([
-    "border-transparent focus:border-transparent",
+    "border-transparent focus:border-transparent disabled:bg-transparent",
     classNames?.input,
   ])
-
-  const handleFocus = (e: React.FocusEvent<HTMLDivElement, Element>) => {
-    if (e.target.tagName === "INPUT") {
-      if (wrapperRef.current && !error) {
-        wrapperRef.current.style.borderColor = "#00c471"
-      }
-    }
-  }
-
-  const handleBlur = (e: React.FocusEvent<HTMLDivElement, Element>) => {
-    if (e.target.tagName === "INPUT") {
-      if (wrapperRef.current) {
-        wrapperRef.current.style.removeProperty("border-color")
-      }
-    }
-  }
 
   return (
     <div
       className={containerClassNames}
-      aria-disabled={props.disabled ? "true" : "false"}
+      aria-disabled={disabled ? "true" : "false"}
     >
       <div
         ref={wrapperRef}
         className={wrapperClassNames}
-        onFocus={handleFocus}
-        onBlur={handleBlur}
-        aria-disabled={props.disabled ? "true" : "false"}
+        aria-disabled={disabled ? "true" : "false"}
       >
         <div className="flex-1">
-          <Input ref={ref} fullWidth className={inputClassNames} {...props} />
+          <Input
+            ref={ref}
+            fullWidth
+            disabled={disabled}
+            className={inputClassNames}
+            {...props}
+          />
         </div>
         <div>{sideField}</div>
       </div>

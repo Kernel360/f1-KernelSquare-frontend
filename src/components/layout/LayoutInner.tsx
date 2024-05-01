@@ -17,7 +17,7 @@ function LayoutInner({ children }: LayoutInner) {
       <Inner className="max-w-screen-3xl w-full h-screen">{children}</Inner>
     )
 
-  return <Inner className="flex w-full flex-col sm:flex-row">{children}</Inner>
+  return <Inner className="flex w-full flex-col pc:flex-row">{children}</Inner>
 }
 
 export default LayoutInner

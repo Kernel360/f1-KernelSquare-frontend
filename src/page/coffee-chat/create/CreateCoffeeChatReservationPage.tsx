@@ -207,10 +207,10 @@ function CreateCoffeeChatReservationPage({
   ])
 
   return (
-    <div className="w-[80%] m-auto">
+    <div className="mt-5 px-6 tabletDevice:px-12 xl:px-16">
       <form
         onSubmit={handleSubmit(onSubmit, onInvalid)}
-        className={`transition-opacity duration-1000 m-auto`}
+        className={`transition-opacity duration-1000 w-full`}
       >
         {/* title section */}
         <Spacing size={20} />
@@ -242,7 +242,7 @@ function CreateCoffeeChatReservationPage({
         <CoffeeChatSection>
           <div className="w-full">
             <Textarea
-              className="w-full min-h-[100px] border-none outline-none focus:outline-none"
+              className="resize-none w-full min-h-[100px] border-none outline-none focus:outline-none"
               placeholder="커피챗의 내용이 명확하게 전달되도록 간결하게 요약해주세요. (10자 이상 150자 이하)"
               {...register("introduction", {
                 required: true,

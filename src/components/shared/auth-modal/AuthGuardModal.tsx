@@ -15,6 +15,7 @@ type AuthGuardModalPages =
   | "updateQuestion:Unauthorized"
   | "updateQuestion:Forbidden"
   | "signup"
+  | "login"
   | "userProfile"
   | "profile"
   | "updateCodingMeeting:Unauthorized"
@@ -52,6 +53,7 @@ type AuthGuardModalProps<T extends AuthGuardModalPages> = {
 // [회원가입, 인가되지 않은 유저의 질문 수정] 세션 유지 되야 됨
 const sholudNotResetSessionPaths: Array<AuthGuardModalPages> = [
   "signup",
+  "login",
   "updateQuestion:Forbidden",
   "updateCodingMeeting:Forbidden",
   "oauth",

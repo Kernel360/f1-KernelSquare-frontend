@@ -1,7 +1,6 @@
 "use client"
 
 import dayjs from "dayjs"
-import Profile from "@/components/shared/user/Profile"
 import Spacing from "@/components/shared/Spacing"
 import ListLoading from "@/components/shared/animation/ListLoading"
 import NoContent from "@/components/shared/animation/NoContent"
@@ -11,22 +10,20 @@ import Tag from "@/components/shared/tag/Tag"
 import Link from "next/link"
 import { useRouter, useSearchParams } from "next/navigation"
 import { GetQuestionListResponse } from "@/interfaces/dto/question/get-questionlist.dto"
-import Image from "next/image"
-import { useClientSession } from "@/hooks/useClientSession"
 import { getKorRelativeTime } from "@/util/getDate"
 import UserInfo, { UserProfileInfo } from "@/components/shared/user/UserInfo"
 import PostTime from "@/components/shared/time/PostTime"
 
 interface QnAListProps {
   questions: NonNullable<GetQuestionListResponse["data"]>
+  isSearch?: boolean
 }
 
-function QnAList({ questions }: QnAListProps) {
-  const { user } = useClientSession()
-
+function QnAList({ questions, isSearch }: QnAListProps) {
   const searchParams = useSearchParams()
   const page = searchParams.get("page") ?? "0"
-  const size = searchParams.get("size") ?? "10"
+  const size = searchParams.get("size") ?? isSearch ? "5" : "10"
+  const keyword = searchParams.get("keyword") ?? ""
 
   const { push } = useRouter()
 
@@ -115,6 +112,15 @@ function QnAList({ questions }: QnAListProps) {
           forcePage={Number(page)}
           pageCount={questions.pagination.total_page}
           onPageChange={({ selected }) => {
+            if (isSearch) {
+              const searchParams = new URLSearchParams()
+              searchParams.set("keyword", keyword)
+              searchParams.set("page", `${selected}`)
+
+              push(`/search?${searchParams.toString()}`)
+              return
+            }
+
             push(`?page=${selected}`)
           }}
           onSkip={({ type, pageCount }) => {

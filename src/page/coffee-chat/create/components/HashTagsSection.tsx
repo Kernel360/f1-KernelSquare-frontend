@@ -11,6 +11,7 @@ import { Icons } from "@/components/icons/Icons"
 import { useRecoilState } from "recoil"
 import { HashTagList } from "@/recoil/atoms/coffee-chat/hashtags"
 import { validationMessage } from "@/constants/message/validation"
+import HashTag from "@/components/shared/tag/HashTag"
 
 const HashTagsSection = () => {
   const hashtagRef = useRef<HTMLInputElement>(null)
@@ -65,38 +66,39 @@ const HashTagsSection = () => {
     setHashtags(hashtags.filter((hashtag) => hashtag !== tag))
 
   return (
-    <CoffeeChatSection>
+    <CoffeeChatSection className="overflow-hidden">
       <CoffeeChatSection.Label className="block w-max">
         해시태그 ({hashtags.length}/{Limitation.hashtags_cnt})
       </CoffeeChatSection.Label>
-      <div className="flex">
+      <div className="flex gap-3">
         <Input
           id="hashtags"
           spellCheck="false"
           autoComplete="off"
-          className="rounded-none border-r-0 border-l-0 border-t-0 text-xl"
+          wrapperClassName="max-w-[282px] w-[64%]"
+          className="rounded-none border-r-0 border-l-0 border-t-0 text-sm"
           placeholder="해시태그를 추가해보세요"
           ref={hashtagRef}
         />
-        <div className="flex flex-col justify-center ml-3">
+        <div className="flex flex-col justify-center">
           <Button
             buttonTheme="primary"
-            className="px-5 py-2"
+            className="px-5 py-2 w-max shrink-0"
             onClick={handleAddHashTags}
           >
             추가
           </Button>
         </div>
       </div>
-      <div className="min-h-[30px] mt-5 flex">
+      <div className="min-h-[30px] mt-5 flex flex-wrap gap-3">
         {hashtags.map((tag) => (
           <div
             key={tag}
-            className="px-3 mr-3 flex border-[1px] border-primary rounded items-center"
+            className="inline-flex rounded-lg items-center bg-colorsLightGray pr-2"
           >
-            <div className="mr-1"># {tag}</div>
+            <HashTag className="bg-transparent shadow-none">{tag}</HashTag>
             <div
-              className="transition-colors w-5 h-5 p-1 rounded-full border flex justify-center items-center bg-white hover:bg-secondary hover:text-white"
+              className="cursor-pointer transition-colors w-5 h-5 p-1 rounded-full border flex justify-center items-center bg-white hover:bg-secondary hover:text-white"
               onClick={() => handleDeleteHashTags(tag)}
             >
               <Icons.Close />

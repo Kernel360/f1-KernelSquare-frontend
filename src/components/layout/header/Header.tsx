@@ -8,9 +8,9 @@ import {
   useSearchParams,
   useSelectedLayoutSegment,
 } from "next/navigation"
-import SearchArea from "./search/SearchArea"
-import UserArea from "./UserArea"
 import LogoWithRowText from "@/components/icons/LogoWithRowText"
+import MobileArea from "./area/mobileArea"
+import Area from "./area"
 
 function Header() {
   const currentSegment = useSelectedLayoutSegment()
@@ -26,17 +26,15 @@ function Header() {
   const open = matchedLayout ? matchedLayout.containLayout.header : true
 
   return open ? (
-    <header className="bg-white h-16 p-2 sticky top-0 shadow-[0_2px_4px_0_hsla(0,0%,80.8%,.5)] z-header">
+    <header className="bg-white h-16 p-2 sticky top-0 border-b border-b-colorsGray z-header">
       <Inner className="flex justify-between items-center h-full">
         {/* logo - click: move Home */}
         <Link href={"/"} className="flex justify-center items-center">
           <LogoWithRowText />
           <h2 className="sr-only">kernel square</h2>
         </Link>
-        {/* search */}
-        <SearchArea />
-        {/* userArea */}
-        <UserArea />
+        <Area />
+        <MobileArea />
       </Inner>
     </header>
   ) : null

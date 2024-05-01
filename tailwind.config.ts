@@ -25,6 +25,9 @@ const config = {
         editor: { min: "480px" },
         lgDevice: { min: "992px" },
         tablet: { min: "834px" },
+        tabletDevice: { min: "640px", max: "991px" },
+        pc: { min: "992px" },
+        calendarRow: { min: "695px" },
       },
       colors: {
         colorsGray: "#ced4da",

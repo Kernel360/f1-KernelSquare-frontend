@@ -61,7 +61,7 @@ function CoffeeChatListContainer() {
     return (
       <div className="mt-6">
         <CoffeeChatList coffeeChatList={coffeeChatList.list} />
-        <div className="mt-4 tablet:mt-[108px] lg:mt-[67px]">
+        <div className="mt-4 sm:mt-[108px] pc:mt-[67px]">
           <Pagination
             disabledClassName="hidden"
             forcePage={Number(page)}
