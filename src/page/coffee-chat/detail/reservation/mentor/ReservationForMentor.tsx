@@ -11,7 +11,7 @@ import type { CoffeeChatReservationTime } from "@/interfaces/dto/coffee-chat/cof
 import { twJoin } from "tailwind-merge"
 import CoffeeChat from "@/components/shared/animation/CoffeeChat"
 import { revalidatePage } from "@/util/actions/revalidatePage"
-import EnterCoffeeChatButton from "../../EnterCoffeeChat/EnterCoffeeChatButton"
+import dynamic from "next/dynamic"
 
 interface MentorProps {
   reservation: CoffeeChatReservationTime[]
@@ -19,13 +19,25 @@ interface MentorProps {
   title: string
 }
 
+const EnterCoffeeChatButton = dynamic(
+  () =>
+    import("@/page/coffee-chat/detail/EnterCoffeeChat/EnterCoffeeChatButton"),
+  {
+    ssr: false,
+    loading(loadingProps) {
+      return (
+        <button className="skeleton w-[108px] h-[36px]">
+          <span></span>
+        </button>
+      )
+    },
+  },
+)
+
 function ReservationForMentor({ reservation, created, title }: MentorProps) {
   const [date, setDate] = useState<Value>(new Date(reservation[0].start_time))
   const isReserved = (nickname: string | null) =>
-    twJoin(
-      ["ml-2 text-[20px] shrink-0"],
-      [nickname && "text-primary font-bold"],
-    )
+    twJoin(["shrink-0 w-[46px]"], [nickname && "text-primary font-bold"])
   const target = reservation.filter(
     ({ start_time }) =>
       getDate({ date: date + "" }) === getDate({ date: start_time }),
@@ -79,14 +91,18 @@ function ReservationForMentor({ reservation, created, title }: MentorProps) {
               </div>
             )}
             {!!target.length && (
-              <div className="flex flex-col w-full px-4">
+              <ul className="flex flex-col w-full gap-4">
                 {target.map((time) => (
-                  <div
+                  <li
                     key={time.reservation_id}
-                    className="flex gap-4 justify-between w-full min-h-[50px] my-5"
+                    className={`flex p-4 gap-4 w-full h-max items-center ${
+                      time?.mentee_nickname
+                        ? "hover:bg-info"
+                        : "hover:bg-transparent"
+                    }`}
                   >
-                    <div className="flex items-center">
-                      <CircleIcons.Line className="shrink-0" />
+                    <div className="flex h-full items-center gap-1">
+                      <CircleIcons.Line className="text-[8px] shrink-0" />
                       <div className={isReserved(time.mentee_nickname)}>
                         {getTime(time.start_time)}
                       </div>
@@ -97,9 +113,9 @@ function ReservationForMentor({ reservation, created, title }: MentorProps) {
                       title={title}
                       reservation_id={time.reservation_id}
                     />
-                  </div>
+                  </li>
                 ))}
-              </div>
+              </ul>
             )}
           </div>
         </div>
@@ -115,35 +131,36 @@ type ReservedTimeProps = {
 }
 
 function ReservedTime({ time, title, reservation_id }: ReservedTimeProps) {
-  if (time && time.mentee_nickname)
+  if (time && time.mentee_nickname) {
     return (
-      <div className="flex-1 flex justify-around w-full flex-wrap min-h-[50px] my-5 items-center gap-2">
-        <div className="relative w-[50px] h-[50px] rounded-full mr-3 shrink-0 translate-x-0 translate-y-0">
-          <Image
-            src={time.mentee_image_url || basic_profile}
-            alt="예약자 프로필 사진"
-            fill
-            sizes="auto"
-            className="rounded-full"
-          />
-        </div>
-        <div>
-          <div>
-            <div className="font-bold text-left">{time.mentee_nickname} 님</div>
+      <div className="flex-1 flex flex-col sm:flex-row justify-between w-full items-center gap-2">
+        <div className="flex gap-2 items-center">
+          <div className="relative w-7 h-7 rounded-full overflow-hidden shrink-0">
+            <Image
+              src={time.mentee_image_url || basic_profile}
+              alt="예약자 프로필 사진"
+              fill
+              sizes="auto"
+              className="object-cover"
+            />
           </div>
-          <div>과(와)의 커피챗이 예정되어 있습니다.</div>
+          <span className="text-sm whitespace-normal sm:whitespace-pre-line text-left">
+            <span className="font-bold">{time.mentee_nickname} 님</span>
+            <span>{`\n과(와)의 커피챗이 예정되어 있습니다.`}</span>
+          </span>
         </div>
-        <div>
-          <EnterCoffeeChatButton
-            articleTitle={title}
-            roomId={time.room_id}
-            startTime={time.start_time}
-            reservation_id={reservation_id}
-            className="px-2 py-2 w-max shrink-0 font-semibold text-sm underline bg-transparent sm:bg-primary sm:no-underline sm:text-white"
-          />
-        </div>
+        <EnterCoffeeChatButton
+          articleTitle={title}
+          roomId={time.room_id}
+          startTime={time.start_time}
+          reservation_id={reservation_id}
+          className="self-end sm:self-auto h-fit px-2 py-1 sm:py-2 w-max shrink-0 font-semibold text-sm bg-primary text-white"
+        />
       </div>
     )
+  }
+
+  return null
 }
 
 export default ReservationForMentor

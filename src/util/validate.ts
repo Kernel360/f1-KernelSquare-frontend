@@ -91,3 +91,5 @@ export class Validator {
     }
   }
 }
+
+export const validatorInstance = new Validator()

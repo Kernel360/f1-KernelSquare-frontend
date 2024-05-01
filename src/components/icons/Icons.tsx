@@ -1,7 +1,7 @@
 import { IconBaseProps } from "react-icons"
 import { IoIosNotifications } from "react-icons/io"
 import { FaCircle, FaRegCircle, FaUserCircle } from "react-icons/fa"
-import { LuCode2, LuInfo, LuSearchCode } from "react-icons/lu"
+import { LuCode2, LuInfo } from "react-icons/lu"
 import { AiOutlineNotification } from "react-icons/ai"
 import { HiOutlineChatBubbleLeftRight } from "react-icons/hi2"
 import { TbMessage2Question } from "react-icons/tb"
@@ -46,9 +46,9 @@ type CircleIconsKey = "Line" | "Fill"
 export type Icon = (props: IconBaseProps) => JSX.Element
 
 export const Icons: Record<IconsKey, Icon> = {
-  // Search(props) {
-  //   return <IoSearchOutline {...props} />
-  // },
+  Search(props) {
+    return <IoSearchOutline {...props} />
+  },
   Notification(props) {
     return <IoIosNotifications {...props} />
   },
@@ -63,9 +63,6 @@ export const Icons: Record<IconsKey, Icon> = {
   },
   ScrollToTop(props) {
     return <RiArrowUpSLine {...props} />
-  },
-  Search(props) {
-    return <LuSearchCode {...props} />
   },
   PlainSearch(props) {
     return <IoSearchOutline {...props} />

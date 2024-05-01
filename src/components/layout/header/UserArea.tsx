@@ -13,8 +13,8 @@ import { useClientSession } from "@/hooks/useClientSession"
 import { getAuthCookie } from "@/util/actions/cookie"
 import { revalidatePage } from "@/util/actions/revalidatePage"
 import type { LoginUserPayload } from "@/interfaces/dto/auth/login.dto"
-import DeleteMemberModal from "@/app/profile/[id]/_components/deleteMember/DeleteMemberModal"
 import Alerm from "./alerm/Alerm"
+// import DeleteMemberModal from "@/app/profile/[id]/_components/deleteMember/DeleteMemberModal"
 
 type ProfileDropdownMenu = {
   label?: string
@@ -36,21 +36,20 @@ function UserArea() {
 function NotLoginedUserArea() {
   const { openModal } = useModal()
 
+  const openLoginModal = () => {
+    openModal({ content: <LoginForm /> })
+  }
+
   return (
     <div className="flex gap-2 items-center">
       <Button
-        className="border border-colorsGray font-normal"
-        buttonTheme="primary"
-        onClick={() => openModal({ content: <LoginForm /> })}
+        className="font-normal text-secondary hover:bg-primary hover:text-white gap-1"
+        onClick={openLoginModal}
       >
         로그인
       </Button>
       <Link href={"/signup"}>
-        <Button
-          ghost
-          buttonTheme="secondary"
-          className="border border-colorsGray font-normal"
-        >
+        <Button ghost buttonTheme="secondary" className="font-normal">
           회원가입
         </Button>
       </Link>

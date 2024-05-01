@@ -17,13 +17,13 @@ export const initSocket: InitSocket = (serverUrl: string) => {
 
     const stomp = Stomp.over(socket)
 
-    socket.onopen = (e) => {
-      console.log("[socket open]", { e })
-    }
+    // socket.onopen = (e) => {
+    //   console.log("[socket open]", { e })
+    // }
 
-    socket.onmessage = (e) => {
-      console.log("[message]", { e })
-    }
+    // socket.onmessage = (e) => {
+    //   console.log("[message]", { e })
+    // }
 
     return {
       success: true,

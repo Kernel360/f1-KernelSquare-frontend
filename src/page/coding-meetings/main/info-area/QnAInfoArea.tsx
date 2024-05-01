@@ -8,9 +8,9 @@ import { twMerge } from "tailwind-merge"
 
 function QnAInfoArea() {
   const wrapperClassNames = twMerge([
-    `flex w-full justify-between items-center bg-[#EAF7F0] rounded-md overflow-hidden border border-transparent sm:border-[#E0E0E0]`,
+    `flex w-full justify-between items-center bg-[#EAF7F0] rounded-md overflow-hidden border border-transparent pc:border-[#E0E0E0]`,
     `p-4`,
-    `sm:p-0 sm:bg-white sm:h-[97px] sm:pr-[34px]`,
+    `pc:p-0 pc:bg-white pc:h-[97px] pc:pr-[34px]`,
   ])
 
   return (
@@ -57,7 +57,7 @@ function AreaText({ logined }: { logined: boolean }) {
     : "로그인하고\n질문을 작성해보세요"
 
   return (
-    <div className="whitespace-pre-line text-[#7E8280] font-normal sm:whitespace-normal sm:text-primary sm:font-semibold">
+    <div className="whitespace-pre-line text-[#7E8280] font-normal pc:whitespace-normal pc:text-primary pc:font-semibold">
       {textContent}
     </div>
   )
@@ -81,7 +81,7 @@ function AreaButton({ logined }: { logined: boolean }) {
 
   return (
     <Button
-      className="px-6 py-4 w-max shrink-0 font-semibold text-sm underline bg-transparent sm:bg-primary sm:no-underline sm:text-white"
+      className="px-6 py-4 w-max shrink-0 font-semibold text-sm underline bg-transparent pc:bg-primary pc:no-underline pc:text-white"
       onClick={handleClick}
     >
       {logined ? "질문 작성" : "로그인 하기"}

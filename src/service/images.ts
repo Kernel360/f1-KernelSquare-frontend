@@ -16,25 +16,15 @@ export const uploadImages = async ({ category, file }: UploadImagesRequest) => {
   formData.append("category", category)
   formData.append("file", file)
 
-  const res = await apiInstance
-    .post<any, AxiosResponse<UploadImagesResponse>>(
-      RouteMap.images.uploadImages,
-      formData,
-      {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
+  const res = await apiInstance.post<any, AxiosResponse<UploadImagesResponse>>(
+    RouteMap.images.uploadImages,
+    formData,
+    {
+      headers: {
+        "Content-Type": "multipart/form-data",
       },
-    )
-    .catch((err) => {
-      if (err instanceof AxiosError) {
-        const { response } = err as AxiosError<APIResponse>
-
-        console.log("answers res", { response: response?.data })
-      }
-      console.log("err", err)
-      throw err
-    })
+    },
+  )
 
   return res
 }

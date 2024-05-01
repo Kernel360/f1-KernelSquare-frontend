@@ -94,15 +94,15 @@ export const mockCoffeeChatReservations: Array<MockCoffeechat> = [
         reservation_id: 4,
         room_id: 4,
         start_time: "2024-03-12T02:00:00",
-        mentee_nickname: null,
-        mentee_image_url: null,
+        mentee_nickname: mockUsers[1].nickname,
+        mentee_image_url: mockUsers[1].image_url,
       },
       {
         reservation_id: 5,
         room_id: 5,
         start_time: "2024-03-12T10:00:00",
         mentee_nickname: mockUsers[0].nickname,
-        mentee_image_url: mockUsers[0].image_url!,
+        mentee_image_url: mockUsers[0].image_url,
       },
       {
         reservation_id: 30,

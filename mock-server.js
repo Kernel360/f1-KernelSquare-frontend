@@ -94,7 +94,7 @@ app.post(`/api/v1/alerts/sse`, (req, res) => {
   const target = sseSessions.get(targetUserId)
 
   if (target) {
-    return target.publish(message)
+    return target.publish(message, message.alert_type)
   }
 
   return res.status(500).json({

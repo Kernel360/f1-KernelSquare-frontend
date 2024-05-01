@@ -28,7 +28,7 @@ function NavigationTab({ hasHeader }: NavigationTabProps) {
   const params = useParams()
 
   const wrapperClassNames = twMerge([
-    "sticky w-full top-[--height-header] z-navigation py-1 bg-white sm:hidden",
+    "sticky w-full top-[--height-header] z-navigation bg-white hidden tabletDevice:block pc:hidden overflow-auto [&::-webkit-scrollbar]:w-0 [&::-webkit-scrollbar]:h-0 border-b border-colorsGray",
     !hasHeader && "top-0",
   ])
 
@@ -69,7 +69,8 @@ function NavigationTab({ hasHeader }: NavigationTabProps) {
       <Tab
         defaultTab={activeNavItem?.label}
         classNames={{
-          wrapper: "h-[59px] font-bold px-1 sm:px-4",
+          wrapper:
+            "h-[59px] font-bold px-1 sm:px-4 min-w-[438px] max-w-[480px] border-b-0 mx-auto",
         }}
         activeClassNames={{
           tab: "text-secondary",

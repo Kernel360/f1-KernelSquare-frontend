@@ -1,4 +1,4 @@
-import { NavigationIcons } from "@/components/icons/Icons"
+import { Icons, NavigationIcons } from "@/components/icons/Icons"
 import { NOTMATCH_SEGMENT } from "./layoutMeta"
 
 export const enum NavigationRouteIndex {
@@ -12,6 +12,11 @@ export const enum ProfileRouteIndex {
   Mypage = 0,
 }
 
+export const enum RequiredAuthIndex {
+  MyPage = 0,
+  Notification = 1,
+}
+
 export const navigationRoutes = [
   {
     label: "개발자 Q&A",
@@ -22,13 +27,13 @@ export const navigationRoutes = [
   {
     label: "커피챗",
     icon: NavigationIcons.Chat,
-    to: "/chat",
+    to: "/chat?page=0",
     activeClassName: "text-amber-600",
   },
   {
     label: "모각코",
     icon: NavigationIcons.CodingMeetings,
-    to: "/coding-meetings",
+    to: "/coding-meetings?page=0&size=10&filter=all",
     activeClassName: "text-secondary",
   },
   {
@@ -45,6 +50,21 @@ export const profileRoute = [
     icon: NavigationIcons.MyPage,
     to: "/profile",
     activeClassName: "text-purple-500",
+  },
+]
+
+export const requiredAuthRoute = [
+  {
+    label: "마이 페이지",
+    icon: NavigationIcons.MyPage,
+    to: "/profile",
+    activeClassName: "text-purple-500",
+  },
+  {
+    label: "알림",
+    icon: Icons.Notification,
+    to: "/notification",
+    activeClassName: "text-[#FFA500]",
   },
 ]
 
@@ -101,6 +121,11 @@ export function getActiveNavigationItem({
   // coffeeChat Path(/chat/**)
   if (segment === "chat") {
     return navigationRoutes[NavigationRouteIndex.Chat]
+  }
+
+  // notification Path(/notification)
+  if (segment === "notification") {
+    return requiredAuthRoute[RequiredAuthIndex.Notification]
   }
 
   return null

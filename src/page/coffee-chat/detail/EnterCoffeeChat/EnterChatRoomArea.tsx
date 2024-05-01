@@ -30,9 +30,9 @@ function EnterChatRoomArea({
   reservation_id,
 }: EnterChatRoomArea) {
   const wrapperClassNames = twMerge([
-    `flex w-full justify-between items-center bg-[#EAF7F0] rounded-md overflow-hidden border border-transparent sm:border-[#E0E0E0]`,
+    `flex flex-col sm:flex-row w-full justify-between items-center bg-[#EAF7F0] rounded-md overflow-hidden border border-transparent sm:border-[#E0E0E0]`,
     `p-4`,
-    `sm:p-0 sm:bg-white sm:pr-[2%]`,
+    `sm:p-0 sm:pr-2 sm:bg-white`,
   ])
 
   return (
@@ -65,7 +65,7 @@ function NotLoginedUserArea() {
   return (
     <>
       <div className="flex items-center">
-        <CodingMeetingAreaImage />
+        <CodingMeetingAreaImage className="sm:block" />
         <AreaText logined={false} />
       </div>
       <Button
@@ -160,28 +160,32 @@ function LoginedUserArea({
       <>
         <ProgressModalView />
         <div className="flex items-center">
-          <CodingMeetingAreaImage />
+          <CodingMeetingAreaImage className="sm:block" />
           <div>
-            <div className="mb-1">
+            <div className="mb-1 [@media_(min-width:340px)]:whitespace-pre-line">
               <span className="font-bold underline">
-                {getKorExactTime(startTime)}
+                {`${getKorExactTime(startTime)}`}
               </span>
-              {"에 예약된 일정이 있습니다."}
+              <span>{`에\n예약된 일정이 있습니다.`}</span>
             </div>
-            <AreaText startTime={startTime} logined={true} />
+            <AreaText
+              startTime={startTime}
+              logined={true}
+              className={"text-xs"}
+            />
           </div>
         </div>
-        <div className="flex flex-wrap items-center gap-2">
+        <div className="w-full sm:w-fit flex flex-row justify-center items-center mt-2 sm:mt-0 sm:flex-col sm:ml-2 flex-shrink-0 gap-2">
           <EnterCoffeeChatButton
             articleTitle={articleTitle}
             roomId={roomId}
             startTime={startTime}
             reservation_id={reservation_id}
-            className="font-semibold text-sm bg-transparent bg-primary text-white"
+            className="font-semibold text-sm bg-transparent bg-primary text-white h-full sm:self-stretch"
           />
           <Button
             buttonTheme="third"
-            className="hover:bg-white cursor-pointer"
+            className="hover:bg-secondary hover:border-secondary hover:text-white cursor-pointer px-4 py-[7.2px] h-full sm:self-stretch"
             onClick={() => handleCancleReservation()}
           >
             취소하기
@@ -194,17 +198,19 @@ function LoginedUserArea({
 type AreaTextProps = {
   logined: boolean
   startTime?: string | null
+  className?: string
 }
 
-function AreaText({ logined, startTime }: AreaTextProps) {
+function AreaText({ logined, startTime, className }: AreaTextProps) {
+  const classNames = twMerge([
+    "whitespace-pre-line text-[#7E8280] font-normal sm:whitespace-normal sm:text-primary sm:font-semibold",
+    className,
+  ])
+
   const textContent =
     logined && startTime
       ? `버튼이 활성화 되면 커피챗에 입장할 수 있습니다.`
-      : "커피챗에 입장하고 싶으시다구요?"
+      : "커피챗에\n입장하고 싶으시다구요?"
 
-  return (
-    <div className="whitespace-pre-line text-[#7E8280] font-normal sm:whitespace-normal sm:text-primary sm:font-semibold">
-      {textContent}
-    </div>
-  )
+  return <div className={classNames}>{textContent}</div>
 }
