@@ -28,7 +28,7 @@ function CoffeeChatDetailPage({
     coffeeChatDetailPayload.member_id !== user?.member_id
 
   return (
-    <div className="w-[80%] m-auto mt-5">
+    <div className="mt-5 px-6 tabletDevice:px-12">
       <CoffeeChatDetailHeader
         article_id={coffeeChatDetailPayload.article_id}
         title={coffeeChatDetailPayload.title}

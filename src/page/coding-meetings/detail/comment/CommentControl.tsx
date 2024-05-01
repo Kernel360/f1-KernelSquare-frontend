@@ -11,15 +11,17 @@ import { codingMeetingEditCommentAtom } from "@/recoil/atoms/coding-meeting/comm
 import { RxDividerVertical } from "react-icons/rx"
 import { toast } from "react-toastify"
 import { useRecoilState, useResetRecoilState } from "recoil"
-import { commentFormMessages } from "./Comments"
 import { twMerge } from "tailwind-merge"
+import { commentFormMessages } from "./rules/commentRules"
+import { Control, FieldErrors } from "react-hook-form"
+import { CommentUpdateFormData } from "@/interfaces/form"
 
 interface CommentControlProps {
   comment: CodingMeetingComment
-  textarea: HTMLTextAreaElement | null
+  control: Control<CommentUpdateFormData, any>
 }
 
-function CommentControl({ comment, textarea }: CommentControlProps) {
+function CommentControl({ comment, control }: CommentControlProps) {
   const { user } = useClientSession()
 
   const [codingMeetingEditComment, setCodingMeetingEditComment] =
@@ -34,47 +36,12 @@ function CommentControl({ comment, textarea }: CommentControlProps) {
     updateCommentStatus,
     deleteComment,
     deleteCommentStatus,
-    validateComment,
   } = useCommentMutation()
 
-  const onSubmit = () => {
-    const errors = validateComment(textarea?.value ?? "")
+  const onSubmit = ({ commentForUpdate }: CommentUpdateFormData) => {
+    const toastId = "equalCommentError"
 
-    const toastId = "updateCommentError"
-
-    if (errors) {
-      const {
-        comment: { type: errorType },
-      } = errors
-
-      if (errorType === "required") {
-        toast.error(commentFormMessages.required, {
-          position: "top-center",
-          toastId,
-        })
-        return
-      }
-
-      if (errorType === "maxLength") {
-        toast.error(commentFormMessages.maxLength, {
-          position: "top-center",
-          toastId,
-        })
-        return
-      }
-
-      if (errorType === "isEmpty") {
-        toast.error(commentFormMessages.isEmpty, {
-          position: "top-center",
-          toastId,
-        })
-        return
-      }
-
-      return
-    }
-
-    if (textarea?.value === comment.coding_meeting_comment_content) {
+    if (commentForUpdate === comment.coding_meeting_comment_content) {
       toast.error(commentFormMessages.isEqual, {
         position: "top-center",
         toastId,
@@ -85,16 +52,45 @@ function CommentControl({ comment, textarea }: CommentControlProps) {
 
     updateComment({
       commentToken: comment.coding_meeting_comment_token,
-      content: textarea?.value ?? "",
+      content: commentForUpdate ?? "",
     })
   }
 
+  const onInvalid = (errors: FieldErrors<CommentUpdateFormData>) => {
+    const toastId = "updateCommentError"
+
+    const { type } = errors.commentForUpdate!
+
+    if (type === "required") {
+      toast.error(commentFormMessages.required, {
+        position: "top-center",
+        toastId,
+      })
+      return
+    }
+
+    if (type === "maxLength") {
+      toast.error(commentFormMessages.maxLength, {
+        position: "top-center",
+        toastId,
+      })
+      return
+    }
+
+    if (type === "validate") {
+      toast.error(commentFormMessages.isEmpty, {
+        position: "top-center",
+        toastId,
+      })
+      return
+    }
+  }
+
   const disableCase =
-    updateCommentStatus === "pending" ||
-    deleteCommentStatus === "pending" ||
-    (!!codingMeetingEditComment.editingCommentToken &&
-      codingMeetingEditComment.editingCommentToken !==
-        comment.coding_meeting_comment_token)
+    updateCommentStatus === "pending" || deleteCommentStatus === "pending"
+  // (!!codingMeetingEditComment.editingCommentToken &&
+  //   codingMeetingEditComment.editingCommentToken !==
+  //     comment.coding_meeting_comment_token)
 
   const commentAuthor: CodingMeetingCommentAuthor = {
     member_id: comment.member_id,
@@ -155,7 +151,7 @@ function CommentControl({ comment, textarea }: CommentControlProps) {
       <Button
         className="px-4 py-2 text-[#828282] shrink-0 disabled:bg-colorsLightGray"
         disabled={disableCase}
-        onClick={onSubmit}
+        onClick={() => control.handleSubmit(onSubmit, onInvalid)()}
       >
         수정
       </Button>
@@ -165,7 +161,9 @@ function CommentControl({ comment, textarea }: CommentControlProps) {
         onClick={(e) => {
           resetCodingMeetingEditComment()
 
-          if (textarea) textarea.value = comment.coding_meeting_comment_content
+          control._reset({
+            commentForUpdate: comment.coding_meeting_comment_content,
+          })
 
           e.currentTarget.blur()
         }}

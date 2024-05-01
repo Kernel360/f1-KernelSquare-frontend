@@ -6,12 +6,14 @@ import { CSSProperties, useLayoutEffect } from "react"
 
 interface NoSearchResultProps {
   style?: CSSProperties
+  className?: string
 }
 
-function NoSearchResult({ style }: NoSearchResultProps) {
+function NoSearchResult({ style, className }: NoSearchResultProps) {
   const { setSpeed, View } = useLottie({
     animationData: noSearchResult,
     style: { ...style },
+    className,
   })
 
   useLayoutEffect(() => {

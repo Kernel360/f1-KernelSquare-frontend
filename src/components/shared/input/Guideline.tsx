@@ -1,12 +1,14 @@
-import { Validator, validPasswordSpecialList } from "@/util/validate"
+"use client"
+
+import { useId } from "react"
 import { twMerge } from "tailwind-merge"
 
-interface GuideLineLabelProps {
-  value: string
+export interface GuideLineLabelProps {
+  value?: string
   valid: boolean
 }
 
-type Guide = {
+export type Guide = {
   label: string | ((props: GuideLineLabelProps) => JSX.Element)
   value?: string
   valid: boolean
@@ -18,9 +20,8 @@ interface GuidelineProps {
   guildeline: Array<Guide>
 }
 
-const validator = new Validator()
-
 function Guideline({ open, guildeline, className }: GuidelineProps) {
+  const id = useId()
   const wrapperClassNames = twMerge(["text-xs", className])
 
   const itemClassNames = ({ valid }: { valid: boolean }) =>
@@ -30,7 +31,10 @@ function Guideline({ open, guildeline, className }: GuidelineProps) {
     <ul className={wrapperClassNames}>
       {guildeline.map(({ label, valid, value }, index) => {
         return (
-          <li key={`guideline-${label}`} className={itemClassNames({ valid })}>
+          <li
+            key={`${id}-guideline-${label}`}
+            className={itemClassNames({ valid })}
+          >
             {typeof label === "string"
               ? label
               : label({ valid, value: value ?? "" })}
@@ -42,36 +46,3 @@ function Guideline({ open, guildeline, className }: GuidelineProps) {
 }
 
 export default Guideline
-
-Guideline.PasswordLabel = function GuideLinePasswordLabel({
-  value,
-  valid,
-}: GuideLineLabelProps) {
-  const { minLowerCase, minUppercase, minNumbers, minSymbols } = validator
-    .validatePassword(value)
-    .eachFormat()
-
-  const validClassNames = (valid: boolean) =>
-    twMerge(["text-secondary", valid ? "text-primary" : "text-danger"])
-
-  const Delimeter = () => {
-    return <span className="text-secondary">&nbsp;/&nbsp;</span>
-  }
-
-  return (
-    <>
-      <span className={validClassNames(valid)}>-&nbsp;</span>
-      <span className={validClassNames(minLowerCase)}>영문 소문자</span>
-      <Delimeter />
-      <span className={validClassNames(minUppercase)}>영문 대문자</span>
-      <Delimeter />
-      <span className={validClassNames(minNumbers)}>숫자</span>
-      <Delimeter />
-      <span className={validClassNames(minSymbols)}>
-        허용된 특수문자 {validPasswordSpecialList.join("")} 만 사용
-      </span>
-      <br />
-      <span className={"text-secondary ml-2"}>각 1자 이상 포함</span>
-    </>
-  )
-}

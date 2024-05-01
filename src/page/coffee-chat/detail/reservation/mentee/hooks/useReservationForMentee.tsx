@@ -179,7 +179,7 @@ const useReservationForMentee = () => {
   }
 
   return {
-    MyReservations: data,
+    myReservations: data?.data.data?.reservation_responses,
     filterTime,
     handleRegister,
   }

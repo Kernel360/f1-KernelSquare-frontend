@@ -1,16 +1,13 @@
 "use client"
 
 import { FieldErrors, useForm } from "react-hook-form"
-import { Input } from "../shared/input/Input"
 import Button from "../shared/button/Button"
-import PasswordField from "../shared/input/PasswordField"
 import Spacing from "../shared/Spacing"
 import Link from "next/link"
 import { twJoin } from "tailwind-merge"
 import LabelDivider from "../shared/divider/LabelDivider"
 import useModal from "@/hooks/useModal"
 import SocialButton from "../SocialButton"
-import { Validator } from "@/util/validate"
 import { revalidatePage } from "@/util/actions/revalidatePage"
 import { ToastContentProps, toast } from "react-toastify"
 import { login } from "@/service/auth"
@@ -21,22 +18,27 @@ import { setAuthCookie } from "@/util/actions/cookie"
 import { useSetRecoilState } from "recoil"
 import LogoWithRowText from "../icons/LogoWithRowText"
 import type { LoginFormData } from "@/interfaces/form"
+import { useRouter } from "next/navigation"
+import PasswordFieldController from "../form-fields/login/password/PasswordFieldController"
+import EmailFieldController from "../form-fields/login/email/EmailFieldController"
 
-interface LoginFormProps {
+export interface LoginFormProps {
   onSuccess?: (user: NonNullable<SessionPayload>) => void
+  continueURL?: string
 }
 
-function LoginForm({ onSuccess }: LoginFormProps) {
+function LoginForm({ onSuccess, continueURL }: LoginFormProps) {
+  const { replace, push } = useRouter()
+
   const {
-    register,
     handleSubmit,
-    formState: { errors, isValid, isSubmitting },
+    control,
+    formState: { errors, isSubmitting },
   } = useForm<LoginFormData>()
+
   const setUserAtom = useSetRecoilState(userAtom)
 
   const { closeModal } = useModal()
-
-  const validator = new Validator()
 
   const linkClassNames = twJoin([
     "flex justify-center items-center font-semibold text-primary underline underline-offset-4",
@@ -76,6 +78,18 @@ function LoginForm({ onSuccess }: LoginFormProps) {
         expires: expires.toJSON(),
       })
 
+      if (continueURL) {
+        closeModal()
+
+        replace(continueURL)
+
+        setTimeout(() => {
+          revalidatePage("*")
+        }, 400)
+
+        return
+      }
+
       await revalidatePage("*")
 
       closeModal()
@@ -108,46 +122,17 @@ function LoginForm({ onSuccess }: LoginFormProps) {
       onSubmit={handleSubmit(onSubmit, onInvalid)}
       className="w-full sm:w-[320px]"
     >
-      <div className="max-w-full w-full h-12 flex gap-2 justify-center items-center">
+      <div
+        className="max-w-full w-full h-12 flex gap-2 justify-center items-center cursor-pointer"
+        onClick={() => push("/")}
+      >
         <LogoWithRowText className="w-full h-full max-w-[262px]" />
         <h2 className="sr-only">kernel square</h2>
       </div>
       <Spacing size={24} />
-      <Input
-        className="px-4 py-3.5 h-12 box-border placeholder:font-medium placeholder:text-base"
-        fullWidth
-        placeholder="이메일"
-        autoComplete="off"
-        error={!!errors.email}
-        errorMessage={errors.email?.message}
-        {...register("email", {
-          required: true,
-          validate: (email) => {
-            const { allCheck } = validator.validateEmail(email)
-
-            return allCheck()
-          },
-        })}
-      />
+      <EmailFieldController control={control} />
       <Spacing size={12} />
-      <PasswordField
-        placeholder="비밀번호"
-        fullWidth
-        classNames={{
-          wrapper: "pl-4 pr-2 py-3.5 h-12 box-border",
-          input: "p-0 placeholder:font-medium placeholder:text-base",
-        }}
-        error={!!errors.password}
-        errorMessage={errors.password?.message}
-        {...register("password", {
-          required: true,
-          validate: (password) => {
-            const { allCheck } = validator.validatePassword(password)
-
-            return allCheck()
-          },
-        })}
-      />
+      <PasswordFieldController control={control} />
       <Spacing size={12} />
       <div>
         <Button

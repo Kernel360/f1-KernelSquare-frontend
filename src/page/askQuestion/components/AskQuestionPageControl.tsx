@@ -79,8 +79,8 @@ function AskQuestionPageControl({
   }, []) /* eslint-disable-line */
 
   return !formLoaded ? null : (
-    <aside className="order-1 lgDevice:order-2 sticky justify-self-start z-[1] bg-[#f7f9fc] box-border p-0 lgDevice:py-4 top-[calc(var(--height-header)+67px)] sm:top-[calc(var(--height-header))] lgDevice:top-[calc(var(--height-header)+150px)] h-max w-full lgDevice:w-32 lgDevice:self-start lgDevice:mr-4 shadow-md rounded-none lgDevice:rounded-md">
-      <div className="relative flex flex-row lgDevice:flex-col gap-4 w-full h-full justify-between items-center box-border p-2 lgDevice:p-0">
+    <aside className="order-1 pc:order-2 sticky justify-self-start z-[1] bg-[#f7f9fc] box-border p-0 pc:py-4 top-[--height-header] tabletDevice:top-[calc(var(--height-header)+60px)] pc:top-[calc(var(--height-header)+150px)] h-max w-full pc:w-32 pc:self-start pc:mr-4 shadow-md rounded-none pc:rounded-md">
+      <div className="relative flex flex-row pc:flex-col gap-4 w-full h-full justify-between items-center box-border p-2 pc:p-0">
         {/* file uploaded image */}
         <UploadedImageList
           srcList={fileUploadImageLinks}
@@ -88,7 +88,7 @@ function AskQuestionPageControl({
           editMode={editMode}
           editorRef={editorRef.current}
         />
-        <div className="flex gap-2 flex-row justify-center items-center lgDevice:flex-col">
+        <div className="flex gap-2 flex-row justify-center items-center pc:flex-col">
           <Button
             type="submit"
             buttonTheme="primary"
@@ -127,10 +127,10 @@ function UploadedImageList({
   }
 
   return (
-    <ul className="flex gap-3 w-full overflow-x-auto lgDevice:flex-col lgDevice:overflow-y-auto lgDevice:max-h-[5rem]">
+    <ul className="flex gap-3 w-full overflow-x-auto pc:flex-col pc:overflow-y-auto pc:max-h-[5rem]">
       {srcList.map((src) => {
         return (
-          <li key={src} className="lgDevice:mx-auto">
+          <li key={src} className="pc:mx-auto">
             <UploadedImage
               src={src}
               initialUploadImages={initialUploadImages}

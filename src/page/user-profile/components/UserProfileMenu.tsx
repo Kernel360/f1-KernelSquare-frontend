@@ -10,8 +10,6 @@ import { useClientSession } from "@/hooks/useClientSession"
 import { Icons } from "@/components/icons/Icons"
 import useIntroduction from "../hooks/useIntroduction"
 import Introduction from "./introduction/Introduction"
-import { useParams } from "next/navigation"
-import { twMerge } from "tailwind-merge"
 
 interface UserProfileMenuProps {
   userPayload: UserPayload
@@ -45,7 +43,7 @@ function UserProfileMenu({ userPayload }: UserProfileMenuProps) {
       <Tab
         classNames={{
           wrapper:
-            "h-[52px] sticky top-[calc(var(--height-header)+66px)] sm:top-[calc(var(--height-header))] -mx-[1px]  overflow-hidden",
+            "h-[52px] sticky top-[--height-header] tabletDevice:top-[calc(var(--height-header)+60px)] pc:top-[--height-header] -mx-[1px]  overflow-hidden",
           tab: "flex-1 w-auto",
         }}
         onTab={(label) => setMenu(label as MenuKey)}
@@ -69,7 +67,7 @@ function UserProfileMenu({ userPayload }: UserProfileMenuProps) {
       />
       <Spacing size={16} />
       {/* menu content */}
-      <UserProfileSection className="bg-white border-none shadow-none p-0 sticky">
+      <UserProfileSection className="bg-white border-none shadow-none p-0 -mx-0.5 sticky">
         <MenuContent />
       </UserProfileSection>
     </>
@@ -83,20 +81,12 @@ UserProfileMenu.MenuContentWrapper = function MenuContentWrapper({
 }: {
   children: React.ReactNode
 }) {
-  const { user } = useClientSession()
-  const params = useParams()
-
-  const isMypage = Number(params.id) === user?.member_id
-
-  const classNames = twMerge([
-    "sm:min-h-[calc(584px+(100dvh-732px))]",
-    isMypage
-      ? "min-h-[calc(581px+(100dvh-796px))]"
-      : "min-h-[calc(581px+(100dvh-806px))]",
-  ])
-
   return (
-    <div className={classNames}>
+    <div
+      className={
+        "min-h-[calc(581px+(100dvh-732px))] tabletDevice:min-h-[calc(584px+(100dvh-792px))] pc:min-h-[calc(584px+(100dvh-732px))]"
+      }
+    >
       <div className="bg-white rounded-lg border border-colorsGray h-max p-4">
         {children}
       </div>

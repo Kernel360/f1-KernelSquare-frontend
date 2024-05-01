@@ -12,7 +12,7 @@ import { AxiosError, HttpStatusCode } from "axios"
 import { toast } from "react-toastify"
 import { useResetRecoilState } from "recoil"
 import { useClientSession } from "../useClientSession"
-import { commentLengthLimit } from "@/page/coding-meetings/detail/comment/Comments"
+import { commentLengthLimit } from "@/page/coding-meetings/detail/comment/rules/commentRules"
 
 export function useCommentMutation() {
   const { clientSessionReset } = useClientSession()

@@ -9,29 +9,18 @@ import {
   CodingMeetingComment,
 } from "@/interfaces/coding-meetings"
 import { GetCodingMeetingCommentListPayload } from "@/interfaces/dto/coding-meeting/comment/get-coding-meeting-comment-list.dto"
-import {
-  createCodingMeetingComment,
-  getCodingMeetingComments,
-} from "@/service/coding-meetings"
+import { getCodingMeetingComments } from "@/service/coding-meetings"
 import { useQuery, useQueryClient } from "@tanstack/react-query"
-import { FieldErrors, useForm } from "react-hook-form"
+import { useForm } from "react-hook-form"
 import { twMerge } from "tailwind-merge"
 import { getKorRelativeTime } from "@/util/getDate"
 import dayjs from "dayjs"
 import Skeleton from "react-loading-skeleton"
-import { toast } from "react-toastify"
-import { AxiosError, HttpStatusCode } from "axios"
-import { APIResponse } from "@/interfaces/dto/api-response"
-import { revalidatePage } from "@/util/actions/revalidatePage"
-import { useEffect, useRef, useState } from "react"
-import { FaRegCommentDots } from "react-icons/fa"
+import { useEffect, useMemo, useRef, useState, memo } from "react"
 import useModal from "@/hooks/useModal"
 import LoginForm from "@/components/form/LoginForm"
 import CommentControl from "./CommentControl"
 import CommentContent from "./CommentContent"
-import { useRecoilValue } from "recoil"
-import { codingMeetingEditCommentAtom } from "@/recoil/atoms/coding-meeting/comment"
-import TextCounter from "@/components/shared/TextCounter"
 import UserInfo, { UserProfileInfo } from "@/components/shared/user/UserInfo"
 import CommentsFilter from "./CommentsFilter"
 import {
@@ -39,35 +28,26 @@ import {
   getCodingMeetingCommentsFilter,
   sortCodingMeetingComments,
 } from "@/util/filter/coding-meeting-comments"
+import CommentInputController from "./controller/create/CommentInputController"
+import { CommentFormData, CommentUpdateFormData } from "@/interfaces/form"
+import {
+  CreateCommentErrorCallback,
+  CreateCommentInvalidCallback,
+  CreateCommentSuccessCallback,
+} from "./SubmitButton"
+import { commentFormMessages } from "./rules/commentRules"
+import { toast } from "react-toastify"
+import { AxiosError, HttpStatusCode } from "axios"
+import { APIResponse } from "@/interfaces/dto/api-response"
+import { revalidatePage } from "@/util/actions/revalidatePage"
 
 interface DetailCommentsProps {
   author: CodingMeetingAuthor
   token: string
 }
 
-interface CommentFormData {
-  comment: string
-}
-
-export interface CommentUpdateFormData {
-  commentForUpdate: string
-}
-
-export const commentFormMessages = {
-  required: "댓글을 작성해주세요.",
-  maxLength: "댓글은 최대 300자까지 작성가능합니다.",
-  isEqual: "댓글 내용이 이전과 동일합니다.",
-  isEmpty: "댓글에는 공백만 입력할 수 없습니다.",
-}
-
-export const commentLengthLimit = {
-  min: 1,
-  max: 300,
-}
-
 function DetailComments({ author, token }: DetailCommentsProps) {
-  const { user } = useClientSession()
-
+  const { clientSessionReset } = useClientSession()
   const queryClient = useQueryClient()
 
   const {
@@ -82,80 +62,58 @@ function DetailComments({ author, token }: DetailCommentsProps) {
     },
   })
 
-  const [filter, setFilter] = useState<CodingMeetingCommentsFilterOption>(
-    getCodingMeetingCommentsFilter(),
-  )
+  const { control, setValue, trigger, formState } = useForm<CommentFormData>()
 
-  const codingMeetingEditComment = useRecoilValue(codingMeetingEditCommentAtom)
-  const isCommentEditing = !!codingMeetingEditComment.editingCommentToken
+  const commentData = useMemo(() => {
+    return {
+      comments: comments ?? [],
+      now: dayjs().format(),
+    }
+  }, [comments])
 
-  const {
-    register,
-    handleSubmit,
-    setValue,
-    watch,
-    trigger,
-    formState: { isSubmitting, isValid, errors },
-  } = useForm<CommentFormData>()
+  const onSubmitSuccess: CreateCommentSuccessCallback = () => {
+    setValue("comment", "")
 
-  const formRef = useRef<HTMLFormElement>(null)
-  const submitBtnRef = useRef<HTMLButtonElement>(null)
+    toast.success("댓글 생성에 성공하였습니다.", { position: "top-center" })
 
-  const disableCase = {
-    input: !user || isSubmitting || isCommentEditing,
-    button: !user || !isValid || isSubmitting || isCommentEditing,
+    queryClient.invalidateQueries({
+      queryKey: ["coding-meeting", "comment", token],
+    })
   }
 
-  const onSubmit = async ({ comment }: CommentFormData) => {
-    if (!user || isSubmitting) return
+  const onSubmitError: CreateCommentErrorCallback = (error) => {
+    const toastId = "commentError"
 
-    try {
-      await createCodingMeetingComment({
-        coding_meeting_token: token,
-        coding_meeting_comment_content: comment,
-      })
+    if (error instanceof AxiosError) {
+      const { response } = error as AxiosError<APIResponse>
 
-      toast.success("댓글 생성에 성공하였습니다.", { position: "top-center" })
+      if (response?.status === HttpStatusCode.Unauthorized) {
+        toast.error("로그인후 댓글 생성이 가능합니다.", {
+          position: "top-center",
+          toastId,
+        })
 
-      queryClient.invalidateQueries({
-        queryKey: ["coding-meeting", "comment", token],
-      })
+        setValue("comment", "")
+        clientSessionReset()
 
-      setValue("comment", "")
-      trigger("comment")
-    } catch (error) {
-      const toastId = "commentError"
-
-      if (error instanceof AxiosError) {
-        const { response } = error as AxiosError<APIResponse>
-
-        if (response?.status === HttpStatusCode.Unauthorized) {
-          toast.error("로그인후 댓글 생성이 가능합니다.", {
-            position: "top-center",
-            toastId,
-          })
-
-          revalidatePage("/coding-meetings/[token]", "page")
-
-          return
-        }
-
-        toast.error(
-          response?.data.msg
-            ? response.data.msg.split(" : ")[1]
-            : "댓글 생성에 실패했습니다.",
-          {
-            position: "top-center",
-            toastId,
-          },
-        )
+        revalidatePage("/coding-meetings/[token]", "page")
 
         return
       }
+
+      toast.error(
+        response?.data.msg
+          ? response.data.msg.split(" : ")[1]
+          : "댓글 생성에 실패했습니다.",
+        {
+          position: "top-center",
+          toastId,
+        },
+      )
     }
   }
 
-  const onInvalid = (errors: FieldErrors<CommentFormData>) => {
+  const onInvalid: CreateCommentInvalidCallback = (errors) => {
     const toastId = "commentError"
 
     if (errors.comment?.type === "required") {
@@ -183,45 +141,6 @@ function DetailComments({ author, token }: DetailCommentsProps) {
     }
   }
 
-  const onSubmitButtonClick = () => {
-    formRef.current?.requestSubmit()
-  }
-
-  /*
-    - 개발자 도구에서 disabled 를 강제로 풀고
-    클릭시에도 토스트 팝업이 나오도록 하기 위함,
-    - 이벤트 버블링을 활용하여 수동으로 검사(trigger)하는 것을 
-    통해 react hook form 의 validation이 반영될 수있도록 함
-  */
-  const onFormClickBubble = async (e: React.FormEvent<HTMLFormElement>) => {
-    const closestButton = (e.target as HTMLElement).closest("button")
-    if (!closestButton || closestButton !== submitBtnRef.current) return
-
-    if (isValid) return
-
-    await trigger("comment")
-    onInvalid(errors)
-  }
-
-  const validateEmpty = (value: string) => {
-    if (value.length && value.trim().length !== 0) return true
-
-    return commentFormMessages.isEmpty
-  }
-
-  useEffect(() => {
-    const handleStorageEvent = (e: StorageEvent) => {
-      console.log("storage change", { order: getCodingMeetingCommentsFilter() })
-      setFilter(getCodingMeetingCommentsFilter())
-    }
-
-    window.addEventListener("storage", handleStorageEvent)
-
-    return () => {
-      window.removeEventListener("storage", handleStorageEvent)
-    }
-  }, [])
-
   return (
     <div>
       <div className="flex gap-1 justify-between items-center mb-6">
@@ -233,7 +152,7 @@ function DetailComments({ author, token }: DetailCommentsProps) {
               ? "(0)"
               : status === "pending"
               ? ""
-              : `(${comments?.length})` ?? "(0)"}
+              : `(${comments?.length ?? 0})`}
           </span>
         </div>
         <CommentsFilter />
@@ -243,66 +162,21 @@ function DetailComments({ author, token }: DetailCommentsProps) {
         <Skeleton className="w-full rounded-lg h-[342px]" />
       ) : (
         <>
-          <form
-            ref={formRef}
-            onSubmit={handleSubmit(onSubmit, onInvalid)}
-            onClick={onFormClickBubble}
-            className="relative w-full flex gap-4 justify-center items-center mb-[22px]"
-          >
-            <div className="w-full flex flex-col flex-1">
-              <textarea
-                {...register("comment", {
-                  required: true,
-                  maxLength: {
-                    value: commentLengthLimit.max,
-                    message: commentFormMessages.maxLength,
-                  },
-                  validate: validateEmpty,
-                })}
-                rows={1}
-                disabled={disableCase.input}
-                className="resize-none w-full box-border px-4 py-3 placeholder:text-[#BDBDBD] border border-[#E0E0E0] rounded-lg"
-                placeholder={"댓글을 입력해주세요(300자 이하)"}
-                autoComplete="off"
-              />
-            </div>
-            <Button
-              ref={submitBtnRef}
-              disabled={disableCase.button}
-              type="button"
-              onClick={onSubmitButtonClick}
-              className="w-[87px] h-[49px] disabled:bg-colorsGray disabled:text-colorsDarkGray"
-            >
-              <div className="flex justify-center items-center flex-shrink-0 gap-1">
-                <FaRegCommentDots className="text-white flex-shrink-0" />
-                <span className="text-white text-sm">댓글 작성</span>
-              </div>
-            </Button>
-            <TextCounter
-              className="absolute left-0 -bottom-6"
-              min={commentLengthLimit.min}
-              max={commentLengthLimit.max}
-              text={watch("comment") ?? ""}
-              target={!isCommentEditing && !!watch("comment")}
-              externalValidations={[
-                {
-                  valid: watch("comment")?.trim().length !== 0,
-                  render: (
-                    <span className="text-danger">
-                      {commentFormMessages.isEmpty}
-                    </span>
-                  ),
-                },
-              ]}
+          <form className="relative w-full mb-[22px]">
+            <CommentInputController
+              control={control}
+              formState={formState}
+              token={token}
+              onSubmitSuccess={onSubmitSuccess}
+              onSubmitError={onSubmitError}
+              onInvalid={onInvalid}
             />
           </form>
           <div>
             <CommentList
               author={author}
-              comments={sortCodingMeetingComments({
-                comments: comments ?? [],
-                orderBy: filter,
-              })}
+              comments={commentData.comments}
+              now={commentData.now}
             />
           </div>
         </>
@@ -343,13 +217,19 @@ function Info() {
   )
 }
 
-function CommentList({
+const CommentList = memo(function CommentLists({
   author,
   comments,
+  now,
 }: {
   author: CodingMeetingAuthor
   comments: GetCodingMeetingCommentListPayload
+  now: string
 }) {
+  const [filter, setFilter] = useState<CodingMeetingCommentsFilterOption>(
+    getCodingMeetingCommentsFilter(),
+  )
+
   const wrapperClassNames = (type: "noComments" | "comments") => {
     const classNames = twMerge([
       type === "noComments" &&
@@ -360,7 +240,17 @@ function CommentList({
     return classNames
   }
 
-  const now = dayjs().format()
+  useEffect(() => {
+    const handleStorageEvent = (e: StorageEvent) => {
+      setFilter(getCodingMeetingCommentsFilter())
+    }
+
+    window.addEventListener("storage", handleStorageEvent)
+
+    return () => {
+      window.removeEventListener("storage", handleStorageEvent)
+    }
+  }, [])
 
   if (!comments.length) {
     return (
@@ -378,7 +268,10 @@ function CommentList({
 
   return (
     <ul className={wrapperClassNames("comments")}>
-      {comments.map((comment) => {
+      {sortCodingMeetingComments({
+        comments: comments ?? [],
+        orderBy: filter,
+      }).map((comment) => {
         return (
           <Comment
             key={comment.coding_meeting_comment_token}
@@ -390,7 +283,7 @@ function CommentList({
       })}
     </ul>
   )
-}
+})
 
 function Comment({
   now,
@@ -401,6 +294,8 @@ function Comment({
   author: CodingMeetingAuthor
   comment: CodingMeetingComment
 }) {
+  const { control } = useForm<CommentUpdateFormData>()
+
   const textareaRef = useRef<HTMLTextAreaElement>(null)
 
   const commentAuthor: UserProfileInfo = {
@@ -435,9 +330,9 @@ function Comment({
             </span>
           </div>
         </div>
-        <CommentControl comment={comment} textarea={textareaRef.current} />
+        <CommentControl comment={comment} control={control} />
       </div>
-      <CommentContent ref={textareaRef} comment={comment} />
+      <CommentContent ref={textareaRef} control={control} comment={comment} />
     </li>
   )
 }

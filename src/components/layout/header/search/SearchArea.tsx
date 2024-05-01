@@ -1,78 +1,66 @@
 "use client"
 
 import { Icons } from "@/components/icons/Icons"
-import useModal from "@/hooks/useModal"
-import { useRef } from "react"
 import { Controller, useForm } from "react-hook-form"
 import { useRouter } from "next/navigation"
-import SearchModal from "./SearchModal"
+import RowInput from "@/components/shared/input/RowInput"
+import Button from "@/components/shared/button/Button"
+import { useSetRecoilState } from "recoil"
+import { HeaderMobileMenuOpenAtom } from "@/recoil/atoms/menu/headerMenu"
+
+interface SearchForm {
+  keyword: string
+}
 
 function SearchArea() {
-  const wrapperRef = useRef<HTMLDivElement>(null)
-  const { openModal } = useModal()
-  const { handleSubmit, control } = useForm()
+  const {
+    handleSubmit,
+    control,
+    formState: { isSubmitting },
+    resetField,
+  } = useForm<SearchForm>()
+
   const router = useRouter()
 
-  const handleFocus = (e: React.FocusEvent<HTMLDivElement, Element>) => {
-    if (e.target.tagName === "INPUT") {
-      if (wrapperRef.current) {
-        wrapperRef.current.style.borderColor = "#00c471"
-      }
-    }
+  const setMobileMenuOpen = useSetRecoilState(HeaderMobileMenuOpenAtom)
+
+  const onSubmit = (data: SearchForm) => {
+    if (isSubmitting) return
+
+    setMobileMenuOpen(false)
+
+    resetField("keyword")
+    ;(document.activeElement as HTMLElement)?.blur()
+
+    setTimeout(() => {
+      router.replace(`/search?keyword=${data.keyword}&page=0`)
+    }, 0)
   }
 
-  const handleSubmitData = handleSubmit((data) => {
-    if (data.search) {
-      router.replace(`/search?keyword=${data.search}&page=0`)
-    }
-  })
-
   return (
-    <>
-      <form
-        className="flex flex-col justify-center hidden sm:block"
-        onSubmit={handleSubmitData}
-      >
-        <Controller
-          name="search"
-          control={control}
-          defaultValue=""
-          render={({ field }) => (
-            <div className="relative z-[100] mt-1 inline-flex align-top flex-col max-w-full">
-              <div
-                ref={wrapperRef}
-                className="relative flex sm:w-[400px] sm:border sm:border-colorsGray inline-flex align-top sm:px-4 py-1 justify-between items-center rounded-lg focus:bg-primary"
-              >
-                <input
-                  {...field}
-                  onFocus={handleFocus}
-                  className="w-[90%] text-align-center text-s focus:outline-none border-transparent focus:border-transparent"
-                  placeholder={""}
-                  autoComplete="off"
-                />
-                <div className="mt-1 cursor-pointer">
-                  <button className="cursor-pointer" type="submit">
-                    <Icons.Search />
-                  </button>
-                </div>
-              </div>
-            </div>
-          )}
-        />
-      </form>
-      <button
-        className="cursor-pointer sm:hidden block"
-        onClick={() =>
-          openModal({
-            containsHeader: false,
-            content: <SearchModal />,
-            classNames: "self-start mt-[72px]",
-          })
-        }
-      >
-        <Icons.Search />
-      </button>
-    </>
+    <form className="flex justify-center" onSubmit={handleSubmit(onSubmit)}>
+      <Controller
+        name="keyword"
+        control={control}
+        rules={{ required: true }}
+        defaultValue=""
+        render={({ field }) => (
+          <RowInput
+            {...field}
+            placeholder="검색어를 입력하세요"
+            autoComplete="off"
+            classNames={{
+              container: "w-[380px]",
+            }}
+            sideField={
+              <Button type="submit" className="p-1">
+                <Icons.Search className="text-lg" />
+              </Button>
+            }
+          />
+        )}
+      />
+    </form>
   )
 }
 

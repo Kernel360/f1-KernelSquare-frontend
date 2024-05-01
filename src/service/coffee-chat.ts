@@ -106,19 +106,11 @@ export async function createCoffeeChatPost({
 export async function deleteCoffeeChatPost({
   postId,
 }: DeleteCoffeeChatRequest) {
-  const res = await apiInstance
-    .delete<any, AxiosResponse<DeleteCoffeeChatResponse>, DefaultBodyType>(
-      RouteMap.coffeeChat.deleteCoffeeChatPost(postId),
-    )
-    .catch((err) => {
-      if (err instanceof AxiosError) {
-        const { response } = err as AxiosError<APIResponse>
-
-        console.log({ response: response?.data })
-      }
-      console.log("err", err)
-      throw err
-    })
+  const res = await apiInstance.delete<
+    any,
+    AxiosResponse<DeleteCoffeeChatResponse>,
+    DefaultBodyType
+  >(RouteMap.coffeeChat.deleteCoffeeChatPost(postId))
 
   return res
 }
@@ -130,25 +122,16 @@ export async function makeReservation({
   member_id,
   reservation_start_time,
 }: MakeReservationRequest) {
-  const res = await apiInstance
-    .put<any, AxiosResponse<MakeReservationResponse>, MakeReservationRequest>(
-      RouteMap.coffeeChat.coffeeChatReservation,
-      {
-        reservation_article_id,
-        reservation_id,
-        member_id,
-        reservation_start_time,
-      },
-    )
-    .catch((err) => {
-      if (err instanceof AxiosError) {
-        const { response } = err as AxiosError<APIResponse>
-
-        console.log({ response: response?.data })
-      }
-      console.log("err", err)
-      throw err
-    })
+  const res = await apiInstance.put<
+    any,
+    AxiosResponse<MakeReservationResponse>,
+    MakeReservationRequest
+  >(RouteMap.coffeeChat.coffeeChatReservation, {
+    reservation_article_id,
+    reservation_id,
+    member_id,
+    reservation_start_time,
+  })
 
   return res
 }
@@ -157,19 +140,11 @@ export async function makeReservation({
 export async function deleteCoffeeChatReservation({
   reservationId,
 }: DeleteReservationRequest) {
-  const res = await apiInstance
-    .delete<any, AxiosResponse<DeleteCoffeeChatResponse>, DefaultBodyType>(
-      RouteMap.coffeeChat.deleteCoffeeChatReservation(reservationId),
-    )
-    .catch((err) => {
-      if (err instanceof AxiosError) {
-        const { response } = err as AxiosError<APIResponse>
-
-        console.log({ response: response?.data })
-      }
-      console.log("err", err)
-      throw err
-    })
+  const res = await apiInstance.delete<
+    any,
+    AxiosResponse<DeleteCoffeeChatResponse>,
+    DefaultBodyType
+  >(RouteMap.coffeeChat.deleteCoffeeChatReservation(reservationId))
 
   return res
 }

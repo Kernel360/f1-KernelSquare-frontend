@@ -38,7 +38,6 @@ const useHandleQuestion = () => {
     const onSuccess = async () => {
       try {
         const imageUrl = findImageLinkUrlFromMarkdown(question.content)
-        console.log(imageUrl)
 
         deleteQuestion({
           questionId: question.id,

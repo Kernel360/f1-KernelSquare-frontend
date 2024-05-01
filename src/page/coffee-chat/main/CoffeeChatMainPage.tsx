@@ -15,10 +15,10 @@ import { PopoverClose } from "@radix-ui/react-popover"
 function CoffeeChatMainPage() {
   return (
     <>
-      <section className="sticky z-[8] -mt-[5px] -top-[5px] sm:relative sm:top-0 sm:mt-0 sm:z-0 w-full h-40 tablet:h-60 bg-white">
-        <section className="relative z-[2] box-border w-full h-full flex flex-col justify-center px-6 tablet:px-12 lg:px-[120px] text-white">
+      <section className="sticky z-[7] top-[--height-header] sm:relative sm:top-0 sm:mt-0 sm:z-0 w-full h-40 pc:h-60 bg-white">
+        <section className="relative z-[2] box-border w-full h-full flex flex-col justify-center px-6 tabletDevice:px-12 pc:px-[120px] text-white">
           <section className="w-full flex items-center gap-1">
-            <h3 className="text-2xl font-semibold lg:text-[32px]">커피 챗</h3>
+            <h3 className="text-2xl font-semibold pc:text-[32px]">커피 챗</h3>
             <Popover>
               <PopoverTrigger>
                 <Icons.Info className="text-base" />
@@ -29,7 +29,7 @@ function CoffeeChatMainPage() {
                 align="start"
                 sticky="always"
                 alignOffset={4}
-                className="min-w-[84px] max-w-[calc(100vw-160px)] sm:max-w-none sm:w-[260px] tablet:w-[340px] lg:!w-[400px] border border-[#828282] bg-white rounded-lg text-base p-4"
+                className="min-w-[84px] max-w-[calc(100vw-160px)] sm:max-w-none sm:w-[260px] tabletDevice:w-[340px] pc:!w-[400px] border border-[#828282] bg-white rounded-lg text-base p-4"
               >
                 <section className="relative">
                   <PopoverClose className="absolute -top-2 -right-2">

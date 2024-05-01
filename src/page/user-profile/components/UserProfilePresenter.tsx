@@ -83,7 +83,7 @@ function ProfileImageWrapper({
   const { user } = useClientSession()
 
   return (
-    <div className="w-full flex flex-col justify-center items-center sticky top-0 [margin-block-start:-60px] sm:[margin-block-start:-88px] sm:h-max sm:min-h-[200px] sm:justify-start sm:top-[calc(var(--height-header))] sm:w-max sm:box-border sm:pt-4 sm:-translate-x-[7px]">
+    <div className="w-full flex flex-col justify-center items-center sticky [margin-block-start:-60px] sm:[margin-block-start:-88px] sm:h-max sm:min-h-[200px] sm:justify-start top-[calc(var(--height-header)+16px)] tabletDevice:top-[calc(var(--height-header)+60px)] pc:top-[--height-header] sm:w-max sm:box-border sm:pt-4 sm:-translate-x-[7px]">
       {children}
       <div className="flex flex-col w-full justify-center items-center">
         <Spacing size={16} />

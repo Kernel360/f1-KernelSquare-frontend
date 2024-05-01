@@ -2,12 +2,9 @@
 
 import WithoutResult from "./WithoutResult"
 import { useSearchParams } from "next/navigation"
-import { AxiosError } from "axios"
-import { APIResponse } from "@/interfaces/dto/api-response"
-import { ApiStatus } from "@/constants/response/api"
 import { useSearchQuestion } from "@/react-query/search"
-import QnAList from "@/components/shared/qna/QnAList"
-import { CommonCheckbox } from "@/components/shared/checkbox/CommonCheckbox"
+import QnAList from "../qna/components/QnAList"
+// import { CommonCheckbox } from "@/components/shared/checkbox/CommonCheckbox"
 
 const Search = () => {
   const searchParams = useSearchParams()
@@ -17,23 +14,16 @@ const Search = () => {
   const {
     data: searchResults,
     isPending,
+    isFetching,
     error,
   } = useSearchQuestion({ keyword, page: Number(page) })
 
-  if (isPending) {
+  if (isPending || isFetching) {
     return <QnAList.Loading />
   }
 
-  if (error) {
-    if (error instanceof AxiosError) {
-      const { response } = error as AxiosError<APIResponse>
-      if (
-        response?.data.code ===
-        ApiStatus.Search.searchQuestionList.NotFound.Code
-      ) {
-        return <WithoutResult />
-      }
-    }
+  if (!keyword) {
+    return <WithoutResult keyword={keyword} />
   }
 
   if (
@@ -41,11 +31,11 @@ const Search = () => {
     !searchResults?.pagination.total_page ||
     !searchResults.pagination.pageable
   ) {
-    return <WithoutResult />
+    return <WithoutResult keyword={keyword} />
   }
 
   return (
-    <div>
+    <div className="pb-6">
       <div className="w-[80%] m-auto">
         <div className="text-center text-[1.5em] my-[30px]">
           <div>
@@ -62,31 +52,13 @@ const Search = () => {
             개의 검색 결과가 있습니다.
           </div>
         </div>
-        {/* <div className="flex justify-between w-[95%] m-auto">
-          <div className="flex">
-            <div className="pr-[15px] border-r-[1px] border-r-slate-400 cursor-pointer hover:text-primary hover:font-bold">
-              최신순
-            </div>
-            <div className="px-[15px] border-r-[1px] border-r-slate-400 cursor-pointer hover:text-primary hover:font-bold">
-              등록순
-            </div>
-            <div className="px-[15px] cursor-pointer hover:text-primary hover:font-bold">
-              인기순
-            </div>
-          </div>
-          <div className="flex space-x-2 items-center">
-            <CommonCheckbox id="ongoing" />
-            <div className="grid gap-1.5 leading-none">
-              <label
-                htmlFor="ongoing"
-                className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-              >
-                진행 중인 QnA
-              </label>
-            </div>
-          </div>
-        </div> */}
-        <QnAList questions={searchResults} keyword={keyword} isSearch={true} />
+        <QnAList
+          questions={{
+            pagination: searchResults.pagination,
+            list: searchResults.question_list,
+          }}
+          isSearch
+        />
       </div>
     </div>
   )
