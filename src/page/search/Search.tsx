@@ -27,7 +27,7 @@ const Search = () => {
   }
 
   if (
-    !searchResults ||
+    !searchResults?.total_count ||
     !searchResults?.pagination.total_page ||
     !searchResults.pagination.pageable
   ) {
