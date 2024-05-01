@@ -113,8 +113,6 @@ export default async function CoffeeChatRoomPage({
       throw new EnterRoomError({ type: "notMatch" })
     }
 
-    console.log({ active, room_key, article_title, expiration_time })
-
     return (
       <ChatRoom
         serverUrl={`${process.env.NEXT_PUBLIC_WS}`}

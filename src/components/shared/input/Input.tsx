@@ -14,8 +14,8 @@ interface CompoundInput
 export interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   fullWidth?: boolean
   error?: boolean
-  errorMessage?: string
-  helpMessage?: string
+  errorMessage?: React.ReactNode
+  helpMessage?: React.ReactNode
   wrapperClassName?: string
 }
 
@@ -51,10 +51,18 @@ const forwardInput = forwardRef<HTMLInputElement, InputProps>(
       <div className={wrapperClassNames}>
         <input ref={ref} className={classNames} {...props} />
         {!error && helpMessage ? (
-          <HelpMessage>{helpMessage}</HelpMessage>
+          typeof helpMessage === "string" ? (
+            <HelpMessage>{helpMessage}</HelpMessage>
+          ) : (
+            helpMessage
+          )
         ) : null}
         {error && errorMessage ? (
-          <ErrorMessage className="w-full mt-1">{errorMessage}</ErrorMessage>
+          typeof errorMessage === "string" ? (
+            <ErrorMessage className="w-full mt-1">{errorMessage}</ErrorMessage>
+          ) : (
+            errorMessage
+          )
         ) : null}
       </div>
     )

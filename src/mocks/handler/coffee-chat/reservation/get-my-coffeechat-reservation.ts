@@ -16,7 +16,6 @@ export const mockGetMyCoffeeChatReservationApi = http.get<
   async ({ request }) => {
     try {
       const authHeader = request.headers.get("Authorization")
-      console.log({ authHeader })
 
       const { Code: UnauthorizedCode, HttpStatus: UnauthorizedStatus } =
         ApiStatus.CoffeeChat.getCoffeeChatPostDetail.Unauthorized

@@ -84,7 +84,7 @@ UserProfileMenu.MenuContentWrapper = function MenuContentWrapper({
   return (
     <div
       className={
-        "min-h-[calc(581px+(100dvh-678px))] sm:min-h-[calc(584px+(100dvh-740px))]"
+        "min-h-[calc(581px+(100dvh-732px))] tabletDevice:min-h-[calc(584px+(100dvh-792px))] pc:min-h-[calc(584px+(100dvh-732px))]"
       }
     >
       <div className="bg-white rounded-lg border border-colorsGray h-max p-4">
