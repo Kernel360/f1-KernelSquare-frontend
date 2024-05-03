@@ -62,3 +62,8 @@ export function updateHistorySessionPath() {
     JSON.stringify(session),
   )
 }
+
+//
+export function isQuestionDetailPage(pathname: string) {
+  return /^\/question\/[0-9]+$/g.test(pathname)
+}

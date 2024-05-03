@@ -50,7 +50,7 @@ const useHandleMyAnswer = ({ answerId, questionId }: AnswerProps) => {
   const { checkNullValue } = useQnADetail()
   const { deleteImage } = useDeleteImage()
   const { updateAnswer } = answerQueries.useUpdateAnswer({ answerId })
-  const { deleteAnswer } = answerQueries.useDeleteAnswer()
+  const { deleteAnswer, deleteAnswerStatus } = answerQueries.useDeleteAnswer()
 
   const handleEditValue = ({ submitValue, answer }: EditValueProps) => {
     if (checkNullValue(submitValue)) {
@@ -94,6 +94,10 @@ const useHandleMyAnswer = ({ answerId, questionId }: AnswerProps) => {
     onDeleteError,
   }: DeleteValueProps) => {
     const onSuccess = async () => {
+      if (deleteAnswerStatus.isDeleteAnswer) {
+        return
+      }
+
       deleteAnswer(
         {
           answerId: answer.answer_id,

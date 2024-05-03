@@ -27,7 +27,7 @@ const AnswerListItem: React.FC<AnswerListItemProps> = ({ answer, now }) => {
   ])
 
   const infoWrapperClassName = twMerge([
-    "relative h-[60px] gap-x-6 w-[calc(100%-51px)] pc:w-[calc(100%-62px)] pl-8 pc:pl-6 ml-12 pc:ml-[62px] flex justify-between flex-wrap",
+    "relative h-[60px] gap-x-6 w-[calc(100%-51px)] pc:w-[calc(100%-62px)] pl-4 tabletDevice:pl-6 pc:pl-6 ml-12 pc:ml-[62px] flex justify-between flex-wrap",
     answer.rank_name && "mt-4",
   ])
 
@@ -59,7 +59,7 @@ const AnswerListItem: React.FC<AnswerListItemProps> = ({ answer, now }) => {
             <HandleAnswerBox answer={answer} />
           </div>
         </div>
-        <div className="w-full mt-4 pl-0 sm:-mt-[22px] tabletDevice:pl-8 pc:pl-6 tabletDevice:w-[calc(100%-48px)] pc:w-[calc(100%-62px)] tabletDevice:ml-12 pc:ml-[62px]">
+        <div className="w-full mt-4 pl-0 sm:-mt-[22px] tabletDevice:pl-6 pc:pl-6 tabletDevice:w-[calc(100%-48px)] pc:w-[calc(100%-62px)] tabletDevice:ml-12 pc:ml-[62px]">
           <AnswerContentBox answer={answer} />
         </div>
       </div>

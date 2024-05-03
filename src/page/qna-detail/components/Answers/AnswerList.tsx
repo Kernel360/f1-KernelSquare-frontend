@@ -18,7 +18,8 @@ function AnswerList({ answerList, now }: AnswerListProps) {
         </div>
         <div className="flex flex-col items-center text-sm text-[#828282]">
           <span>내 답변을 찾을 수 없습니다.</span>
-          <span>당신의 의견을 듣고 싶어요! 어떤 생각이든 공유해주세요.</span>
+          <span>당신의 의견을 듣고 싶어요!</span>
+          <span>어떤 생각이든 공유해주세요.</span>
         </div>
       </div>
     )

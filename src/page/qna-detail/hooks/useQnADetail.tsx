@@ -57,21 +57,10 @@ const useQnADetail = () => {
   }
 
   /**
-   * 본인이 쓴 답변이 존재하면 editor 보이지 않게 하기
+   * 답변 중에 이미 내가 작성한 답변이 있을 경우
    */
-  const handleCheckAbilityToWriteAnswer = (
-    list?: Answer[],
-    nickname?: string,
-  ) => {
-    // 질문, 사용자 관련 데이터가 없을 경우
-    if (!list) return false
-    if (!nickname) return false
-    // 답변 중에 이미 내가 작성한 답변이 있을 경우
-    if (list?.some((answer) => answer.member_nickname === user?.nickname))
-      return false
-    // 본인 질문글일 경우
-    if (nickname === user?.nickname) return false
-    return true
+  const hasIncludeMyAnswer = (list?: Answer[]) => {
+    return list?.some((answer) => answer.answer_member_id === user?.member_id)
   }
 
   const createAnswerSubmit = ({
@@ -148,7 +137,7 @@ const useQnADetail = () => {
     handleIsChecked: () => setIsChecked((prev: boolean) => !prev),
     createAnswerSubmit,
     isChecked,
-    handleCheckAbilityToWriteAnswer,
+    hasIncludeMyAnswer,
   }
 }
 

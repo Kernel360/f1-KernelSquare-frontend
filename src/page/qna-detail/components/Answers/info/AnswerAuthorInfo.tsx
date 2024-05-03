@@ -43,7 +43,7 @@ function AnswerAuthorInfo({ answer }: UserInfoProps) {
           {answer.member_nickname}
         </span>
         <div className="flex gap-1 items-center">
-          <div className="text-sm">
+          <div className="text-sm shrink-0">
             LV.<span>{answer.author_level}</span>
           </div>
         </div>

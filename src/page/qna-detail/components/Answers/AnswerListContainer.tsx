@@ -11,7 +11,6 @@ import dayjs from "dayjs"
 import AnswerList from "./AnswerList"
 
 export interface AnswerProps {
-  createdby: string
   questionId: number
   isQuestionAuthor: boolean
 }
@@ -44,6 +43,8 @@ const AnswerListContainer: React.FC<AnswerProps> = ({
     return <NoAnswer isQuestionAuthor={isQuestionAuthor} />
   }
 
+  const filteredAnswerList = filterMyAnswer(answerList)
+
   return (
     <div>
       <div className="flex flex-wrap justify-between">
@@ -60,14 +61,18 @@ const AnswerListContainer: React.FC<AnswerProps> = ({
             </label>
             <Switch
               id={switchId}
-              className="w-12 h-6 border border-[#F2F2F2] data-[state=unchecked]:bg-[#E0E0E0] [&>span]:w-[22px] [&>span]:h-[22px] [&>span]:-mt-[1px] [&>span]:data-[state=checked]:translate-x-6"
+              className="w-12 h-6 border border-[#F2F2F2] data-[state=unchecked]:bg-[#E0E0E0] [&>span]:w-[22.5px] [&>span]:h-[22.5px] [&>span]:data-[state=checked]:translate-x-6"
               onCheckedChange={handleIsChecked}
             />
           </div>
         ) : null}
       </div>
-      <div className={`max-w-full box-border rounded-lg p-6 mt-6`}>
-        <AnswerList answerList={filterMyAnswer(answerList)} now={now} />
+      <div
+        className={`max-w-full box-border mt-6 ${
+          filteredAnswerList?.length ? "p-6" : "p-0"
+        }`}
+      >
+        <AnswerList answerList={filteredAnswerList} now={now} />
       </div>
     </div>
   )

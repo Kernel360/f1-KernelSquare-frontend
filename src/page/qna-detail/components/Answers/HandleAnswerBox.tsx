@@ -30,7 +30,7 @@ const HandleAnswerBox: React.FC<HandleAnswerProps> = ({ answer }) => {
       questionId: Number(answer.question_id),
     })
 
-  const isMyAnswer = user ? user.nickname === answer.member_nickname : false
+  const isMyAnswer = user ? user.member_id === answer.answer_member_id : false
 
   const changeToUpdateMode = () => setIsAnswerEditMode(true)
   const deleteAnswer = () => {

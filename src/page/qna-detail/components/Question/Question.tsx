@@ -1,63 +1,61 @@
 "use client"
-import { questionQueries } from "@/react-query/question"
-import { getDate, getDeadline } from "@/util/getDate"
+
 import dynamic from "next/dynamic"
 import Tag from "@/components/shared/tag/Tag"
-import WriterBox from "./WriterBox"
+import UserInfo, { UserProfileInfo } from "@/components/shared/user/UserInfo"
+import QuestionDueDate from "./QuestionDueDate"
 import HandleQuestionBox from "./HandleQuestionBox"
-import { twJoin } from "tailwind-merge"
-import useQnADetail from "../../hooks/useQnADetail"
+import { Question as QuestionType } from "@/interfaces/question"
 
-const MdViewer = dynamic(() => import("../Markdown/MdViewer"), {
+interface QuestionProps {
+  question: QuestionType
+}
+
+const QuestionMdViewer = dynamic(() => import("../Markdown/MdViewer"), {
   ssr: false,
+  loading(loadingProps) {
+    return <div className="skeleton w-full h-[328px] mt-2.5 rounded-md"></div>
+  },
 })
 
-const Question: React.FC<{ id: number }> = ({ id }) => {
-  const { data } = questionQueries.useQuestionData({
-    id: Number(id),
-  })
-
-  const { user } = useQnADetail()
-
-  const question = data?.data
-
-  const DetailClassName = twJoin([
-    "flex flex-wrap mb-5",
-    user?.nickname === question?.nickname ? "justify-between" : "justify-end",
-  ])
-
-  if (!question) return null
+const Question = ({ question }: QuestionProps) => {
+  const questionAuthor: UserProfileInfo = {
+    id: question.member_id,
+    nickname: question.nickname,
+    profileImageUrl: question.member_image_url,
+    level: question.level,
+    levelImageUrl: question.level_image_url,
+  }
 
   return (
-    <div className="flex flex-col border-box border border-colorsGray rounded-lg p-3 sm:p-10 my-5 max-w-full min-w-[200px]">
-      <h3 className="font-bold text-2xl mb-5 max-w-full md:font-[16px] sm:font-[12px] t text-[#444444]">
-        Q. {question.title}
-      </h3>
-      <ul className="flex gap-1 flex-wrap my-1">
+    <div className="max-w-full min-w-[200px] mb-6">
+      <section className="flex w-full max-w-full gap-x-2 font-bold text-2xl sm:text-xl sm:mt-6 mb-6">
+        <span className="text-primary">Q.</span>
+        <h3 className="text-[#444444]">{question.title}</h3>
+      </section>
+      <div className="flex w-full flex-col sm:flex-row gap-y-2 sm:justify-between sm:items-center pb-4 border-b border-b-[#E0E0E0]">
+        <div className="w-fit">
+          <UserInfo user={questionAuthor} />
+        </div>
+        <div className="ml-2">
+          <QuestionDueDate questionCreatedDate={question.created_date} />
+        </div>
+      </div>
+      <HandleQuestionBox question={question} />
+      <QuestionMdViewer content={question.content} />
+      <ul className="flex gap-x-3 gap-y-2 flex-wrap mt-6">
         {question?.skills.map((skill, index) => {
           return (
             <Tag
-              key={`${id}-${index}-${skill}`}
-              className="px-3 py-2 bg-slate-200 rounded mr-3"
+              key={`${index}-${skill}`}
+              wrapperClassName="bg-[#F2F2F2] rounded-sm inline-flex align-top"
+              className="rounded-sm bg-inherit text-xs shadow-none"
             >
               {skill}
             </Tag>
           )
         })}
       </ul>
-      <div className={DetailClassName}>
-        <HandleQuestionBox question={question!} />
-        <div className="w-full flex justify-end flex-wrap">
-          <div>
-            <div className="mb-1">
-              생성일: {getDate({ date: question.created_date })}
-            </div>
-            <div>마감일: {getDeadline({ date: question.created_date })}</div>
-          </div>
-          <WriterBox question={question} />
-        </div>
-      </div>
-      <MdViewer content={question.content} />
     </div>
   )
 }

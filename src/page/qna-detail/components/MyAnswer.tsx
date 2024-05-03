@@ -21,16 +21,19 @@ import { useClientSession } from "@/hooks/useClientSession"
 export interface MyAnswerProps {
   questionId: number
   list?: Answer[]
-  nickname?: string
+  isQuestionAuthor: boolean
 }
 
-const MyAnswer: React.FC<MyAnswerProps> = ({ questionId, list, nickname }) => {
+const MyAnswer: React.FC<MyAnswerProps> = ({
+  questionId,
+  list,
+  isQuestionAuthor,
+}) => {
   const { clientSessionReset } = useClientSession()
 
   const { openModal } = useModal()
 
-  const { user, createAnswerSubmit, handleCheckAbilityToWriteAnswer } =
-    useQnADetail()
+  const { user, createAnswerSubmit, hasIncludeMyAnswer } = useQnADetail()
 
   const {
     control,
@@ -39,7 +42,8 @@ const MyAnswer: React.FC<MyAnswerProps> = ({ questionId, list, nickname }) => {
   } = useForm<AnswerFormData>()
 
   const [answerField, setAnswerField] = useState("")
-  const writableNewAnswer = handleCheckAbilityToWriteAnswer(list, nickname)
+  const writableNewAnswer =
+    user && !isQuestionAuthor && !hasIncludeMyAnswer(list)
 
   const onEditorChange = useCallback((markdown: string) => {
     setAnswerField(markdown)
@@ -144,7 +148,7 @@ const MyAnswer: React.FC<MyAnswerProps> = ({ questionId, list, nickname }) => {
   }
 
   return (
-    <div className="max-w-full box-border rounded-lg my-6">
+    <div className="max-w-full box-border rounded-lg mb-6">
       <div className="flex items-center gap-2 mb-4">
         <div className="font-semibold text-xl text-secondary">내 답변</div>
         <TextCounter
