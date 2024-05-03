@@ -4,18 +4,28 @@ import { useClientSession } from "@/hooks/useClientSession"
 import { useProgressModal } from "@/hooks/useProgressModal"
 import type { Answer } from "@/interfaces/answer"
 import { useState } from "react"
-import { toast } from "react-toastify"
 import SuccessModalContent from "../components/SuccessModalContent"
 import queryKey from "@/constants/queryKey"
 import useModal from "@/hooks/useModal"
 import { useQueryClient } from "@tanstack/react-query"
 import { answerQueries } from "@/react-query/answers"
 import successMessage from "@/constants/message/success"
-import { validationMessage } from "@/constants/message/validation"
+import { AxiosError, HttpStatusCode } from "axios"
+import { APIResponse } from "@/interfaces/dto/api-response"
 
-export interface SubmitValueProps {
+export interface CreateAnswerSubmitProps {
   questionId: number
-  submitValue: string | undefined
+  answer: string
+  image_url?: string
+  onError?:
+    | ((
+        errorCase: "unauthorized" | "apiError" | "error",
+        error: Error | AxiosError,
+      ) => void)
+    | ((
+        errorCase: "unauthorized" | "apiError" | "error",
+        error: Error | AxiosError,
+      ) => Promise<void>)
 }
 
 const useQnADetail = () => {
@@ -47,70 +57,72 @@ const useQnADetail = () => {
   }
 
   /**
-   * 본인이 쓴 답변이 존재하면 editor 보이지 않게 하기
+   * 답변 중에 이미 내가 작성한 답변이 있을 경우
    */
-  const handleCheckAbilityToWriteAnswer = (
-    list?: Answer[],
-    nickname?: string,
-  ) => {
-    // 질문, 사용자 관련 데이터가 없을 경우
-    if (!list) return false
-    if (!nickname) return false
-    // 답변 중에 이미 내가 작성한 답변이 있을 경우
-    if (list?.some((answer) => answer.member_nickname === user?.nickname))
-      return false
-    // 본인 질문글일 경우
-    if (nickname === user?.nickname) return false
-    return true
+  const hasIncludeMyAnswer = (list?: Answer[]) => {
+    return list?.some((answer) => answer.answer_member_id === user?.member_id)
   }
 
-  const handleSubmitValue = async ({
+  const createAnswerSubmit = ({
     questionId,
-    submitValue,
-  }: SubmitValueProps) => {
-    if (checkNullValue(submitValue)) {
-      toast.error(validationMessage.noContent, {
-        toastId: "emptyAnswerContent",
-        position: "top-center",
-      })
-      return
-    }
-
+    answer,
+    image_url,
+    onError,
+  }: CreateAnswerSubmitProps) => {
     try {
-      if (user?.member_id) {
-        createAnswer(
-          {
-            questionId,
-            member_id: user.member_id,
-            content: submitValue || "",
-          },
-          {
-            onSuccess: () => {
-              openModal({
-                content: (
-                  <SuccessModalContent message={successMessage.createAnswer} />
-                ),
-                onClose() {
-                  queryClient.invalidateQueries({
-                    queryKey: [queryKey.answer, questionId],
-                  })
-                  queryClient.invalidateQueries({
-                    queryKey: [queryKey.question, questionId],
-                  })
-                },
-              })
-              queryClient.invalidateQueries({
-                queryKey: [queryKey.answer, questionId],
-              })
-              queryClient.invalidateQueries({
-                queryKey: [queryKey.question, questionId],
-              })
-            },
-          },
-        )
+      if (!user?.member_id) {
+        onError && onError("unauthorized", new Error("user id is empty"))
+        return
       }
-    } catch (err) {
-      console.error("error", err)
+
+      const invalidateQueries = () => {
+        queryClient.invalidateQueries({
+          queryKey: [queryKey.answer, questionId],
+        })
+        queryClient.invalidateQueries({
+          queryKey: [queryKey.question, questionId],
+        })
+      }
+
+      createAnswer(
+        {
+          questionId,
+          member_id: user.member_id,
+          content: answer,
+          ...(image_url && { image_url }),
+        },
+        {
+          onSuccess: () => {
+            openModal({
+              content: (
+                <SuccessModalContent message={successMessage.createAnswer} />
+              ),
+              onClose() {
+                invalidateQueries()
+              },
+            })
+
+            invalidateQueries()
+          },
+          onError(error) {
+            if (error instanceof AxiosError) {
+              const { response } = error as AxiosError<APIResponse>
+
+              if (response?.status === HttpStatusCode.Unauthorized) {
+                onError && onError("unauthorized", error)
+                return
+              }
+
+              onError && onError("apiError", error)
+              return
+            }
+
+            onError && onError("error", error)
+          },
+        },
+      )
+    } catch (error) {
+      onError && onError("error", error as Error)
     }
   }
 
@@ -123,9 +135,9 @@ const useQnADetail = () => {
     setModalFail: () => setStep("fail"),
     filterMyAnswer,
     handleIsChecked: () => setIsChecked((prev: boolean) => !prev),
-    handleSubmitValue,
+    createAnswerSubmit,
     isChecked,
-    handleCheckAbilityToWriteAnswer,
+    hasIncludeMyAnswer,
   }
 }
 

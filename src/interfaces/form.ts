@@ -15,6 +15,11 @@ export interface SignupHookFormData extends SignupFormData {
   passwordCheck: string
 }
 
+// answer
+export interface AnswerFormData {
+  answer: string
+}
+
 // comment
 export interface CommentFormData {
   comment: string

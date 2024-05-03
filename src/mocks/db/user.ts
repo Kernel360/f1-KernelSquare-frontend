@@ -58,7 +58,7 @@ export const mockUsers = [
     id: 5,
     email: "testUser5@email.com",
     password: "Password5!",
-    nickname: "Mocks",
+    nickname: "Mocks2",
     experience: 2000,
     level: 5,
     authorities: ["ROLE_MENTOR"],

@@ -6,20 +6,16 @@ import { AiOutlineNotification } from "react-icons/ai"
 import { HiOutlineChatBubbleLeftRight } from "react-icons/hi2"
 import { TbMessage2Question } from "react-icons/tb"
 import { GrDocumentUser } from "react-icons/gr"
-import { BsPencilSquare } from "react-icons/bs"
-import {
-  BiSolidLeftArrow,
-  BiSolidRightArrow,
-  BiSolidUpArrow,
-} from "react-icons/bi"
+import { BsPencilSquare, BsTriangleFill } from "react-icons/bs"
+import { BiSolidLeftArrow, BiSolidRightArrow } from "react-icons/bi"
 import { GoChevronLeft } from "react-icons/go"
-import { BiSolidDownArrow } from "react-icons/bi"
 import { TbPencilPlus } from "react-icons/tb"
 import { RiArrowUpSLine } from "react-icons/ri"
 import { MdClose } from "react-icons/md"
 import { MdComputer } from "react-icons/md"
 import { FaMapMarkerAlt } from "react-icons/fa"
 import { IoSearchOutline, IoOptionsOutline } from "react-icons/io5"
+import { twMerge } from "tailwind-merge"
 
 type IconsKey =
   | "Search"
@@ -104,10 +100,11 @@ export const NavigationIcons: Record<NavigationIconsKey, Icon> = {
 
 export const DirectionIcons: Record<DirectionIconsKey, Icon> = {
   Up(props) {
-    return <BiSolidUpArrow {...props} />
+    return <BsTriangleFill {...props} />
   },
-  Down(props) {
-    return <BiSolidDownArrow {...props} />
+  Down({ className, ...props }) {
+    const classNames = twMerge([className, "rotate-180"])
+    return <BsTriangleFill className={classNames} {...props} />
   },
   Left(props) {
     return <BiSolidLeftArrow {...props} />

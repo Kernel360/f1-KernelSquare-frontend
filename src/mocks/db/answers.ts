@@ -18,14 +18,14 @@ const mockAnswers: Answer[] = [
     content:
       "Integer pede justo, lacinia eget, tincidunt eget, tempus vel, pede. Morbi porttitor lorem id ligula. Suspendisse ornare consequat lectus.",
     author_level: seedAnswerUsers["zi존"].level,
-    rank_image_url: null,
+    rank_image_url: badge_url[10],
     rank_name: 1,
     member_image_url: seedAnswerUsers["zi존"].image_url,
     member_nickname: seedAnswerUsers["zi존"].nickname,
     answer_image_url: null,
     created_date: "2023-10-07T10:02:46Z",
     modified_date: "2023-10-07T10:02:47Z",
-    vote_count: 0,
+    vote_count: 1000,
     vote_status: VoteStatus.NONE,
   },
   {
@@ -35,7 +35,7 @@ const mockAnswers: Answer[] = [
     content: "[네이버](www.naver.com)",
     author_level: seedAnswerUsers["홍주광"].level,
     rank_image_url: null,
-    rank_name: 1,
+    rank_name: undefined,
     member_image_url: seedAnswerUsers["홍주광"].image_url,
     member_nickname: seedAnswerUsers["홍주광"].nickname,
     answer_image_url:
@@ -52,8 +52,8 @@ const mockAnswers: Answer[] = [
     content:
       "Integer pede justo, lacinia eget, tincidunt eget, tempus vel, pede. Morbi porttitor lorem id ligula. Suspendisse ornare consequat lectus.",
     author_level: seedAnswerUsers["Mocks"].level,
-    rank_image_url: badge_url[3],
-    rank_name: 3,
+    rank_image_url: null,
+    rank_name: undefined,
     member_image_url: seedAnswerUsers["Mocks"].image_url,
     member_nickname: seedAnswerUsers["Mocks"].nickname,
     answer_image_url:
@@ -70,8 +70,8 @@ const mockAnswers: Answer[] = [
     content:
       "Integer pede justo, lacinia eget, tincidunt eget, tempus vel, pede. Morbi porttitor lorem id ligula. Suspendisse ornare consequat lectus.",
     author_level: seedAnswerUsers["RyanOh"].level,
-    rank_image_url: badge_url[4],
-    rank_name: 4,
+    rank_image_url: badge_url[9],
+    rank_name: 2,
     member_image_url: seedAnswerUsers["RyanOh"].image_url,
     member_nickname: seedAnswerUsers["RyanOh"].nickname,
     answer_image_url:
@@ -88,8 +88,8 @@ const mockAnswers: Answer[] = [
     content:
       "Integer pede justo, lacinia eget, tincidunt eget, tempus vel, pede. Morbi porttitor lorem id ligula. Suspendisse ornare consequat lectus.",
     author_level: seedAnswerUsers["chatchat"].level,
-    rank_image_url: badge_url[1],
-    rank_name: 1,
+    rank_image_url: null,
+    rank_name: undefined,
     member_image_url: seedAnswerUsers["chatchat"].image_url,
     member_nickname: seedAnswerUsers["chatchat"].nickname,
     answer_image_url:
@@ -97,7 +97,7 @@ const mockAnswers: Answer[] = [
     created_date: "2023-10-07T10:02:46Z",
     modified_date: "2023-10-07T10:02:46Z",
     vote_count: 53,
-    vote_status: VoteStatus.DISLIKED,
+    vote_status: VoteStatus.NONE,
   },
   {
     answer_id: 6,

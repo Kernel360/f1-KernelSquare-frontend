@@ -7,6 +7,7 @@ import {
   profileRoute,
 } from "@/constants/navigationRoute"
 import { useClientSession } from "@/hooks/useClientSession"
+import LinkToQnaList from "@/page/qna-detail/components/LinkToQnaList"
 import Link from "next/link"
 import {
   useParams,
@@ -64,8 +65,15 @@ function NavigationTab({ hasHeader }: NavigationTabProps) {
 
   const renderTabs = [...navigationRouteTabs, ...profileRouteTabs]
 
+  const isQuestionDetailPage = /^\/question\/[0-9]+$/g.test(pathname)
+
   return (
     <nav className={wrapperClassNames}>
+      {isQuestionDetailPage ? (
+        <div className="absolute left-0 top-0 h-full flex items-center text-xs [&_svg]:text-xl">
+          <LinkToQnaList />
+        </div>
+      ) : null}
       <Tab
         defaultTab={activeNavItem?.label}
         classNames={{
