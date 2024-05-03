@@ -56,14 +56,14 @@ const useCreateAnswer = () => {
   }
 }
 
-const useUpdateAnswer = () => {
+const useUpdateAnswer = ({ answerId }: { answerId: number }) => {
   const {
     mutate: updateAnswerMutate,
     isPending: isUpdateAnswer,
     isError: isUpdateAnswerError,
     isSuccess: isUpdateAnswerSuccess,
   } = useMutation({
-    mutationKey: [queryKey.answer],
+    mutationKey: ["update", queryKey.answer, answerId],
     mutationFn: ({ answerId, content, image_url }: UpdateAnswerRequest) =>
       updateAnswer({ answerId, content, image_url }),
   })

@@ -7,6 +7,7 @@ const queryKey = {
   profile: "profile",
   chat: "chat",
   codingMeeting: "codingMeeting",
+  uploadImageMutation: "uploadImage",
 }
 
 export default queryKey

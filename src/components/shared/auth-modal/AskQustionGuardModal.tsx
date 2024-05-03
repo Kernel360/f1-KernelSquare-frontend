@@ -21,7 +21,7 @@ function AskQustionGuardModal() {
       정확한 원인은 아직 모르겠음
     */
     setTimeout(() => {
-      replace("/?page=0")
+      replace("/qna?page=0")
 
       openModal({
         containsHeader: false,

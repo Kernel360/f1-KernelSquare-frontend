@@ -17,6 +17,8 @@ import { findImageLinkUrlFromMarkdown } from "@/util/editor"
 import cancleMessage from "@/constants/message/cancle"
 import successMessage from "@/constants/message/success"
 import { validationMessage } from "@/constants/message/validation"
+import { AxiosError } from "axios"
+import { DeleteAnswerRequest } from "@/interfaces/dto/answer/delete-answer.dto"
 
 export interface EditValueProps {
   submitValue: string | undefined
@@ -25,6 +27,12 @@ export interface EditValueProps {
 
 export interface DeleteValueProps {
   answer: Answer
+  onDeleteSuccess?: () => void
+  onDeleteError?: (
+    error: Error | AxiosError,
+    variables: DeleteAnswerRequest,
+    context: unknown,
+  ) => void
   successModal: NonNullable<ModalState["content"]>
 }
 
@@ -41,8 +49,8 @@ const useHandleMyAnswer = ({ answerId, questionId }: AnswerProps) => {
   const { openModal } = useModal()
   const { checkNullValue } = useQnADetail()
   const { deleteImage } = useDeleteImage()
-  const { updateAnswer } = answerQueries.useUpdateAnswer()
-  const { deleteAnswer } = answerQueries.useDeleteAnswer()
+  const { updateAnswer } = answerQueries.useUpdateAnswer({ answerId })
+  const { deleteAnswer, deleteAnswerStatus } = answerQueries.useDeleteAnswer()
 
   const handleEditValue = ({ submitValue, answer }: EditValueProps) => {
     if (checkNullValue(submitValue)) {
@@ -80,34 +88,49 @@ const useHandleMyAnswer = ({ answerId, questionId }: AnswerProps) => {
     )
   }
 
-  const handleDeleteValue = async ({ answer }: DeleteValueProps) => {
+  const handleDeleteValue = async ({
+    answer,
+    onDeleteSuccess,
+    onDeleteError,
+  }: DeleteValueProps) => {
     const onSuccess = async () => {
-      try {
-        deleteAnswer(
-          {
-            answerId: answer.answer_id,
-          },
-          {
-            onSuccess: () => {
-              toast.success(successMessage.deleteAnswer, {
-                toastId: "successToDeleteAnswer",
-                position: "top-center",
-              })
-
-              queryClient.invalidateQueries({
-                queryKey: [queryKey.answer],
-              })
-              queryClient.invalidateQueries({
-                queryKey: [queryKey.question, questionId],
-              })
-
-              if (answer.answer_image_url) deleteImage(answer.answer_image_url)
-            },
-          },
-        )
-      } catch (err) {
-        console.error(err)
+      if (deleteAnswerStatus.isDeleteAnswer) {
+        return
       }
+
+      deleteAnswer(
+        {
+          answerId: answer.answer_id,
+        },
+        {
+          onSuccess: () => {
+            toast.success(successMessage.deleteAnswer, {
+              toastId: "successToDeleteAnswer",
+              position: "top-center",
+            })
+
+            queryClient.invalidateQueries({
+              queryKey: [queryKey.answer],
+            })
+            queryClient.invalidateQueries({
+              queryKey: [queryKey.question, questionId],
+            })
+
+            if (answer.answer_image_url) {
+              try {
+                deleteImage(answer.answer_image_url)
+              } catch (error) {}
+            }
+
+            setTimeout(() => {
+              onDeleteSuccess && onDeleteSuccess()
+            }, 0)
+          },
+          onError(error, variables, context) {
+            onDeleteError && onDeleteError(error, variables, context)
+          },
+        },
+      )
     }
     const onCancel = () => {
       toast.error(cancleMessage.deleteAnswer, {
