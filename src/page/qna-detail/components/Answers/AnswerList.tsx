@@ -1,102 +1,37 @@
 "use client"
 
-import OneAnswer from "./OneAnswer"
-import { answerQueries } from "@/react-query/answers"
-import ContentLoading from "@/components/shared/animation/ContentLoading"
 import LightBulb from "@/components/shared/animation/LightBulb"
-import notificationMessage from "@/constants/message/notification"
-import useQnADetail from "../../hooks/useQnADetail"
-import { useClientSession } from "@/hooks/useClientSession"
+import { Answer } from "@/interfaces/answer"
+import AnswerListItem from "./AnswerListItem"
 
-export interface AnswerProps {
-  createdby: string
-  questionId: number
-  isMyAnswer: boolean
+interface AnswerListProps {
+  answerList: Answer[]
+  now: string
 }
 
-export interface NoAnswerProps {
-  isMyAnswer: boolean
-}
-
-const AnswerList: React.FC<AnswerProps> = ({
-  createdby,
-  questionId,
-  isMyAnswer,
-}) => {
-  const { data, isPending } = answerQueries.useGetAnswers({
-    questionId,
-  })
-  const { user } = useClientSession()
-  const { filterMyAnswer, handleIsChecked } = useQnADetail()
-  const isAnswer = !!data?.data?.answer_responses.length
-
-  if (isPending) return <Loading />
-
-  if (data)
+function AnswerList({ answerList, now }: AnswerListProps) {
+  if (!answerList.length) {
     return (
-      <div>
-        <div className="flex flex-wrap justify-between">
-          <div className="font-bold text-[24px]">Answers</div>
-          {!!user && (
-            <div className="mt-3 flex items-center">
-              <input
-                type="checkbox"
-                id="My Answer"
-                className="mr-3"
-                onChange={handleIsChecked}
-              />
-              <label htmlFor="My Answer">내 답변만 보기</label>
-            </div>
-          )}
+      <div className="w-full border border-[#E0E0E0] rounded-lg flex flex-col gap-6 justify-center items-center py-6">
+        <div className="w-[180px] min-h-[160px]">
+          <LightBulb />
         </div>
-        <div className="max-w-full box-border border border-colorsGray rounded-lg p-10 my-5">
-          {!isAnswer && <NoAnswer isMyAnswer={isMyAnswer} />}
-          {isAnswer &&
-            !!data.data &&
-            filterMyAnswer(data?.data.answer_responses).map((answer) => (
-              <OneAnswer
-                key={answer.answer_id}
-                answer={answer}
-                createdby={createdby}
-              />
-            ))}
+        <div className="flex flex-col items-center text-sm text-[#828282]">
+          <span>내 답변을 찾을 수 없습니다.</span>
+          <span>당신의 의견을 듣고 싶어요!</span>
+          <span>어떤 생각이든 공유해주세요.</span>
         </div>
       </div>
     )
+  }
+
+  return (
+    <ul>
+      {answerList.map((answer) => (
+        <AnswerListItem key={answer.answer_id} answer={answer} now={now} />
+      ))}
+    </ul>
+  )
 }
 
 export default AnswerList
-
-/**
- * [TODO]
- */
-const Wrapper = () => {}
-
-const Loading = () => {
-  return (
-    <div className="h-full">
-      <ContentLoading
-        style={{
-          width: "calc(100% - 80px)",
-          maxWidth: "400px",
-          margin: "0 auto",
-        }}
-      />
-    </div>
-  )
-}
-
-const NoAnswer: React.FC<NoAnswerProps> = ({ isMyAnswer }) => {
-  return (
-    <div className="text-center">
-      <div className="flex justify-center">
-        <LightBulb style={{ color: "#02A35F", width: "250px" }} />
-      </div>
-      <div className="text-xl">
-        {isMyAnswer
-          ? notificationMessage.myQuestion
-          : notificationMessage.noAnswer}
-      </div>
-    </div>
-  )
-}

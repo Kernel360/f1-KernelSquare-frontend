@@ -25,6 +25,30 @@ export function findImageLinkUrlFromMarkdown(markdown?: string) {
   )
 }
 
+export function isUploadImageLinkFormat(url: string) {
+  if (process.env.NEXT_PUBLIC_API_MOCKING === "enabled") {
+    const mockUploadOrigin = `https://picsum.photos`
+
+    return url.startsWith(mockUploadOrigin)
+  }
+
+  const kernelS3Origin = `https://kernel-square-bucket.s3.ap-northeast-2.amazonaws.com`
+
+  return url.startsWith(kernelS3Origin)
+}
+
+export function getUploadedImageLinkFromMarkdown(markdown: string) {
+  const imageLinks = findImageLinkUrlFromMarkdown(markdown)
+
+  if (!imageLinks?.length) return null
+
+  const targetImageLink = imageLinks.find((imageLink) =>
+    isUploadImageLinkFormat(imageLink),
+  )
+
+  return targetImageLink ?? null
+}
+
 export function getImageIdFromLink(imageUrl: string) {
   if (!imageUrl) return null
 

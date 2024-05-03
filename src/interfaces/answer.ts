@@ -35,7 +35,7 @@ export interface Answer {
   question_id: number
   content: string
   rank_image_url: string | null
-  rank_name: number
+  rank_name?: number
   member_image_url: string | null
   member_nickname: string
   author_level: number

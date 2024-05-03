@@ -39,6 +39,7 @@ export function useUploadImage({
     isError: isUploadImageError,
     isSuccess: isUploadImageSuccess,
   } = useMutation({
+    mutationKey: ["uploadImage"],
     mutationFn: ({
       category,
       file,

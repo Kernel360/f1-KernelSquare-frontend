@@ -9,9 +9,15 @@ import { ErrorBoundary } from "react-error-boundary"
 interface ProfileProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   profileImage?: string | null
   className?: string
+  initialProfileClassName?: string
 }
 
-function Profile({ profileImage, className, ...props }: ProfileProps) {
+function Profile({
+  profileImage,
+  className,
+  initialProfileClassName,
+  ...props
+}: ProfileProps) {
   const [imageLoaded, setImageLoaded] = useState(false)
 
   const classNames = {
@@ -23,6 +29,10 @@ function Profile({ profileImage, className, ...props }: ProfileProps) {
       "relative w-8 h-8 rounded-full overflow-hidden p-0 cursor-default hover:cursor-default",
       className,
     ),
+    initialProfile: twMerge([
+      "text-[30px] leading-8 fill-colorsGray shrink-0",
+      initialProfileClassName,
+    ]),
   }
 
   const isValidImageSrc = (src?: string | null) => {
@@ -36,16 +46,14 @@ function Profile({ profileImage, className, ...props }: ProfileProps) {
   if (!isValidImageSrc(profileImage))
     return (
       <Button className={classNames.noProfile} {...props}>
-        <Icons.UserProfile className="text-[30px] leading-8 fill-colorsGray shrink-0" />
+        <Icons.UserProfile className={classNames.initialProfile} />
       </Button>
     )
 
   return (
     <Button className={classNames.withProfile} {...props}>
       <ErrorBoundary
-        fallback={
-          <Icons.UserProfile className="text-[30px] leading-8 fill-colorsGray shrink-0" />
-        }
+        fallback={<Icons.UserProfile className={classNames.initialProfile} />}
       >
         {imageLoaded ? null : (
           <Skeleton

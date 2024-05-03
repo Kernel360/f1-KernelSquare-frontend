@@ -1,112 +1,206 @@
 "use client"
 
-import { useForm } from "react-hook-form"
+import { FieldErrors, useForm } from "react-hook-form"
 import useHandleMyAnswer from "../../hooks/useHandleMyAnswer"
-import { type PropsWithChildren, useRef } from "react"
-import type { Editor } from "@toast-ui/react-editor"
-import Button from "@/components/shared/button/Button"
+import { useEffect, type PropsWithChildren } from "react"
 import dynamic from "next/dynamic"
-import useQnADetail from "../../hooks/useQnADetail"
 import { toast } from "react-toastify"
 import { errorMessage } from "@/constants/message/error"
 import { answerQueries } from "@/react-query/answers"
 import { useQueryClient } from "@tanstack/react-query"
 import queryKey from "@/constants/queryKey"
 import type { Answer } from "@/interfaces/answer"
-import { findImageLinkUrlFromMarkdown } from "@/util/editor"
+import { getUploadedImageLinkFromMarkdown } from "@/util/editor"
 import { UpdateAnswerRequest } from "@/interfaces/dto/answer/update-answer.dto"
 import { deleteImages } from "@/service/images"
-import Limitation from "@/constants/limitation"
-import TextCounter from "@/components/shared/TextCounter"
 import successMessage from "@/constants/message/success"
 import { validationMessage } from "@/constants/message/validation"
+import UpdateAnswerEditor from "./editor/UpdateAnswerEditor"
+import { AnswerFormData } from "@/interfaces/form"
+import Button from "@/components/shared/button/Button"
+import { useRecoilState } from "recoil"
+import { answerEditorAtomFamily } from "@/recoil/atoms/answerEditor"
 
 export type EditAnswerProps = {
   answer: Answer
 }
 
-const MdViewer = dynamic(() => import("../Markdown/MdViewer"), {
+const AnswerMdViewer = dynamic(() => import("../Markdown/MdViewer"), {
   ssr: false,
+  loading(loadingProps) {
+    // 답변 콘텐츠 로딩 (답변 viewer 로딩)
+    return <div className="skeleton w-full h-9 rounded-md mt-2.5" />
+  },
 })
-
-const MdEditor = dynamic(() => import("../Markdown/MdEditor"), {
-  ssr: false,
-})
-
-export interface AnswerFormData {
-  answer: string
-}
 
 const AnswerContentBox: React.FC<EditAnswerProps> = ({ answer }) => {
-  const editorRef = useRef<Editor>(null)
-  const { handleSubmit, register, setValue, watch } = useForm<AnswerFormData>()
+  const queryClient = useQueryClient()
+
+  const {
+    handleSubmit,
+    control,
+    formState: { isSubmitting },
+  } = useForm<AnswerFormData>()
+
+  const [answerEditorAtom, setAnswerEditorAtom] = useRecoilState(
+    answerEditorAtomFamily(answer.answer_id),
+  )
+
   const { isAnswerEditMode, setIsAnswerEditMode } = useHandleMyAnswer({
     answerId: Number(answer.answer_id),
     questionId: Number(answer.question_id),
   })
-  const { checkNullValue } = useQnADetail()
-  const { updateAnswer } = answerQueries.useUpdateAnswer()
-  const queryClient = useQueryClient()
 
-  /**
-   *
-   * @returns 답변 수정
-   */
-  const handleSubmitEditedValue = () => {
-    const previousImage = answer.answer_image_url
-    const submitValue = editorRef.current?.getInstance().getMarkdown()
-    if (!submitValue || checkNullValue(submitValue)) {
-      toast.error(validationMessage.noAnswerContent, {
-        toastId: "emptyAnswerContent",
-        position: "top-center",
-      })
-      return
-    }
-    if (submitValue.length < Limitation.answer_limit_under) {
-      toast.error(validationMessage.underAnswerLimit, {
-        toastId: "underAnswerLimit",
-        position: "top-center",
-      })
-      return
-    }
-    if (submitValue.length > Limitation.answer_limit_over) {
-      toast.error(validationMessage.overAnswerLimit, {
-        toastId: "overAnswerLimit",
-        position: "top-center",
-      })
-      return
-    }
-    const imageUrl = findImageLinkUrlFromMarkdown(submitValue)
-    const updateProps: UpdateAnswerRequest = {
-      answerId: answer.answer_id,
-      content: submitValue,
-      image_url: null,
-    }
-    if (!imageUrl) updateProps.image_url = null
-    if (imageUrl && imageUrl[0]) updateProps.image_url = imageUrl[0]
+  const { updateAnswer } = answerQueries.useUpdateAnswer({
+    answerId: answer.answer_id,
+  })
 
-    updateAnswer(updateProps, {
-      onSuccess: () => {
-        toast.success(successMessage.updateAnswer, {
-          toastId: "successToUpdateAnswer",
-          position: "top-center",
-        })
-        setIsAnswerEditMode(false)
-        if (
-          (previousImage && !imageUrl) ||
-          (previousImage && imageUrl && previousImage !== imageUrl[0])
-        ) {
-          deleteImages({ imageUrl: previousImage })
+  const onSubmit = (data: AnswerFormData) => {
+    const markdown = data.answer
+
+    const previousUploadedImageLink = answer.answer_image_url
+    const uploadedImageLink = getUploadedImageLinkFromMarkdown(markdown)
+
+    function getImagePayload({
+      previousUploadedImageLink,
+      uploadedImageLink,
+    }: {
+      previousUploadedImageLink: string | null
+      uploadedImageLink: string | null
+    }): { image_url: string | null; shouldDelete: boolean } {
+      if (!uploadedImageLink) {
+        /*
+          - 현재 업로드 이미지 주소가 없을 경우 요청 이미지 주소는 null
+          - 만약 이전 업로드 이미지 주소가 있을 경우 삭제 요청
+        */
+        return {
+          image_url: null,
+          shouldDelete: !!previousUploadedImageLink,
         }
-        return queryClient.resetQueries({
+      }
+
+      if (previousUploadedImageLink === uploadedImageLink) {
+        /*
+          - 현재 이미지 주소와 이전 이미지 주소가 같을 경우 
+            이미지 주소는 이전 이미지 주소
+          - 이미지 삭제 요청하지 않음
+        */
+        return {
+          image_url: previousUploadedImageLink,
+          shouldDelete: false,
+        }
+      }
+
+      /*
+        - 현재 이미지 주소가 존재하고, 이전 이미지 주소와 다른 경우 
+          이미지 주소는 현재 이미지 주소
+        - 이전 이미지가 있을 경우 삭제 요청
+      */
+      return {
+        image_url: uploadedImageLink,
+        shouldDelete: !!previousUploadedImageLink,
+      }
+    }
+
+    const imagePayload = getImagePayload({
+      previousUploadedImageLink,
+      uploadedImageLink,
+    })
+
+    const answerPayload: UpdateAnswerRequest = {
+      answerId: answer.answer_id,
+      content: markdown,
+      image_url: imagePayload.image_url,
+    }
+
+    updateAnswer(answerPayload, {
+      onSuccess: async (data, variables, context) => {
+        if (!!previousUploadedImageLink && imagePayload.shouldDelete) {
+          // 이미지 삭제API 에서 에러발생시 에러 전파 X
+          // 이미지 삭제는 답변 수정에 의존하지 않는 개별적인 작업
+          // (답변은 이미지 삭제 API에 의존하지 않음)
+          await deleteImages({ imageUrl: previousUploadedImageLink }).catch(
+            (error) => error,
+          )
+        }
+
+        await queryClient.invalidateQueries({
           queryKey: [queryKey.answer, answer.question_id],
-          exact: true,
         })
+
+        setTimeout(() => {
+          setIsAnswerEditMode(false)
+
+          // 리코일 - update
+          setAnswerEditorAtom((prev) => ({
+            ...prev,
+            content: markdown,
+            fileUploadImageLinks: imagePayload.image_url
+              ? [imagePayload.image_url]
+              : [],
+          }))
+
+          toast.success(successMessage.updateAnswer, {
+            toastId: "successToUpdateAnswer",
+            position: "top-center",
+          })
+        }, 0)
       },
       onError: () =>
         toast.error(errorMessage.updateAnswer, { position: "top-center" }),
     })
   }
+
+  const onInvalid = (errors: FieldErrors<AnswerFormData>) => {
+    if (errors.answer) {
+      const { type } = errors.answer
+
+      if (type === "required") {
+        toast.error(validationMessage.noAnswerContent, {
+          toastId: "emptyAnswerContent",
+          position: "top-center",
+        })
+        return
+      }
+
+      if (type === "whiteSpaceOnly") {
+        toast.error(validationMessage.notAllowedWhiteSpaceOnly, {
+          toastId: "whiteSpaceOnlyAnswerContent",
+          position: "top-center",
+        })
+        return
+      }
+
+      if (type === "minLength") {
+        toast.error(validationMessage.underAnswerLimit, {
+          toastId: "underAnswerLimit",
+          position: "top-center",
+        })
+        return
+      }
+
+      if (type === "maxLength") {
+        toast.error(validationMessage.overAnswerLimit, {
+          toastId: "overAnswerLimit",
+          position: "top-center",
+        })
+        return
+      }
+    }
+  }
+
+  useEffect(() => {
+    // 리코일 - 이미지 initiailize
+    if (
+      !answerEditorAtom.fileUploadImageLinks?.length &&
+      answer.answer_image_url
+    ) {
+      setAnswerEditorAtom((prev) => ({
+        ...prev,
+        fileUploadImageLinks: [answer.answer_image_url!],
+      }))
+    }
+  }, []) /* eslint-disable-line */
 
   /**
    * 답변 보기 상태일 경우
@@ -114,7 +208,7 @@ const AnswerContentBox: React.FC<EditAnswerProps> = ({ answer }) => {
   if (!isAnswerEditMode)
     return (
       <Wrapper>
-        <MdViewer content={answer.content} />
+        <AnswerMdViewer content={answer.content} />
       </Wrapper>
     )
 
@@ -123,34 +217,36 @@ const AnswerContentBox: React.FC<EditAnswerProps> = ({ answer }) => {
    */
   return (
     <Wrapper>
-      <form onSubmit={handleSubmit(handleSubmitEditedValue)}>
-        <MdEditor
-          previous={answer.content}
-          editorRef={editorRef}
-          answerId={answer.answer_id}
-          onChange={() => {
-            setValue(
-              "answer",
-              editorRef.current?.getInstance().getMarkdown() ?? "",
-            )
-          }}
-        />
-        <TextCounterBox text={watch("answer")} />
-        <div className="flex justify-center my-5">
+      <form onSubmit={handleSubmit(onSubmit, onInvalid)}>
+        <UpdateAnswerEditor control={control} answer={answer} />
+        <div className="flex gap-4 justify-center my-5">
           <Button
-            disabled={
-              !watch("answer") ||
-              watch("answer").length < Limitation.answer_limit_under ||
-              watch("answer").length > Limitation.answer_limit_over
-            }
+            type="submit"
+            disabled={isSubmitting}
             buttonTheme="primary"
             className="p-2 w-[100px] disabled:bg-colorsGray disabled:text-colorsDarkGray"
-            type="submit"
           >
-            저장하기
+            작성하기
+          </Button>
+          <Button
+            type="button"
+            disabled={isSubmitting}
+            onClick={() => {
+              setIsAnswerEditMode(false)
+              setAnswerEditorAtom((prev) => ({
+                ...prev,
+                content: answer.content,
+                fileUploadImageLinks: answer.answer_image_url
+                  ? [answer.answer_image_url]
+                  : [],
+              }))
+            }}
+            buttonTheme="third"
+            className="p-2 w-[100px] border-[#828282] text-#828282 hover:bg-[#828282] hover:text-white disabled:bg-colorsGray disabled:text-colorsDarkGray"
+          >
+            작성취소
           </Button>
         </div>
-        <input hidden className="hidden" {...register("answer")} />
       </form>
     </Wrapper>
   )
@@ -159,21 +255,5 @@ const AnswerContentBox: React.FC<EditAnswerProps> = ({ answer }) => {
 export default AnswerContentBox
 
 const Wrapper: React.FC<PropsWithChildren> = ({ children }) => (
-  <div className="w-[90%]">{children}</div>
+  <div>{children}</div>
 )
-
-type TextCounterBoxProps = {
-  text: string | undefined
-}
-
-const TextCounterBox = ({ text }: TextCounterBoxProps) => {
-  if (!text) return
-  return (
-    <TextCounter
-      text={text ?? ""}
-      min={Limitation.answer_limit_under}
-      max={Limitation.answer_limit_over}
-      className="text-lg block text-right h-5 py-2"
-    />
-  )
-}
