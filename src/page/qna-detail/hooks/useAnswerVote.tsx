@@ -9,7 +9,7 @@ import { useQueryClient } from "@tanstack/react-query"
 import { toast } from "react-toastify"
 import { useRecoilState } from "recoil"
 import { twJoin } from "tailwind-merge"
-import type { Answer } from "@/interfaces/answer"
+import { VoteStatus, type Answer } from "@/interfaces/answer"
 import type { ModalState } from "@/interfaces/modal"
 import { answerQueries } from "@/react-query/answers"
 import { pendingMessage } from "@/constants/message/pending"
@@ -35,17 +35,17 @@ const useAnswerVote = ({ answer }: VoteProps) => {
     answerQueries.useDeleteVoteAnswer()
 
   const buttonClass = twJoin([
-    "text-[30px]",
+    "text-base pc:text-2xl text-[#E0E0E0]",
     `${user ? "hover:text-primary cursor-pointer" : "text-slate-300"}`,
   ])
 
   const raiseClass = twJoin([
     buttonClass,
-    `${answer.vote_status === 1 && "text-primary"}`,
+    `${answer.vote_status === VoteStatus.LIKED && "text-primary"}`,
   ])
   const reduceClass = twJoin([
     buttonClass,
-    `${answer.vote_status === -1 && "text-primary"}`,
+    `${answer.vote_status === VoteStatus.DISLIKED && "text-primary"}`,
   ])
 
   const handleRaise = async () => {

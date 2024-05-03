@@ -1,9 +1,7 @@
 "use client"
 
-import dynamic from "next/dynamic"
-import { PropsWithChildren, useRef } from "react"
-import { useForm } from "react-hook-form"
-import { Editor } from "@toast-ui/react-editor"
+import { useCallback, useState } from "react"
+import { FieldErrors, useForm } from "react-hook-form"
 import Button from "@/components/shared/button/Button"
 import CreateAnswerAnime from "@/components/shared/animation/CreateAnswerAnime"
 import useModal from "@/hooks/useModal"
@@ -13,10 +11,12 @@ import { Answer } from "@/interfaces/answer"
 import { toast } from "react-toastify"
 import Limitation from "@/constants/limitation"
 import TextCounter from "@/components/shared/TextCounter"
-import type { AnswerFormData } from "./Answers/AnswerContentBox"
 import buttonMessage from "@/constants/message/button"
-import notificationMessage from "@/constants/message/notification"
 import { validationMessage } from "@/constants/message/validation"
+import { AnswerFormData } from "@/interfaces/form"
+import CreateAnswerEditor from "./Answers/editor/CreateAnswerEditor"
+import { getUploadedImageLinkFromMarkdown } from "@/util/editor"
+import { useClientSession } from "@/hooks/useClientSession"
 
 export interface MyAnswerProps {
   questionId: number
@@ -24,132 +24,151 @@ export interface MyAnswerProps {
   nickname?: string
 }
 
-const MdEditor = dynamic(() => import("../components/Markdown/MdEditor"), {
-  ssr: false,
-})
-
 const MyAnswer: React.FC<MyAnswerProps> = ({ questionId, list, nickname }) => {
+  const { clientSessionReset } = useClientSession()
+
   const { openModal } = useModal()
+
+  const { user, createAnswerSubmit, handleCheckAbilityToWriteAnswer } =
+    useQnADetail()
+
   const {
-    user,
-    handleSubmitValue,
-    handleCheckAbilityToWriteAnswer,
-    checkNullValue,
-  } = useQnADetail()
+    control,
+    handleSubmit,
+    formState: { isValid, isSubmitting },
+  } = useForm<AnswerFormData>()
 
-  const { register, setValue, handleSubmit, watch } = useForm<AnswerFormData>()
-  const editorRef = useRef<Editor>(null)
+  const [answerField, setAnswerField] = useState("")
+  const writableNewAnswer = handleCheckAbilityToWriteAnswer(list, nickname)
 
-  const handleSubmitAnswer = async () => {
-    const submitValue = editorRef.current?.getInstance().getMarkdown()
-    if (!submitValue || checkNullValue(submitValue)) {
-      toast.error(validationMessage.noAnswerContent, {
-        toastId: "emptyAnswerContent",
-        position: "top-center",
-      })
-      return
-    }
-    if (submitValue.length < Limitation.answer_limit_under) {
-      toast.error(validationMessage.underAnswerLimit, {
-        toastId: "underAnswerLimit",
-        position: "top-center",
-      })
-      return
-    }
-    if (submitValue.length > Limitation.answer_limit_over) {
-      toast.error(validationMessage.overAnswerLimit, {
-        toastId: "overAnswerLimit",
-        position: "top-center",
-      })
-      return
-    }
-    handleSubmitValue({ questionId, submitValue })
+  const onEditorChange = useCallback((markdown: string) => {
+    setAnswerField(markdown)
+  }, [])
+
+  const onSubmit = async ({ answer }: AnswerFormData) => {
+    const uploadedImageLink = getUploadedImageLinkFromMarkdown(answer)
+
+    createAnswerSubmit({
+      questionId,
+      answer,
+      onError(errorCase, error) {
+        console.log({ errorCase, error })
+        if (errorCase === "unauthorized") {
+          clientSessionReset()
+
+          setTimeout(() => {
+            toast.error("로그인 후 답변 생성이 가능합니다", {
+              position: "top-center",
+              toastId: "answerUnauthorizedError",
+            })
+          }, 0)
+
+          return
+        }
+
+        toast.error("답변 생성에 실패했습니다", {
+          position: "top-center",
+          toastId: "createAnswerError",
+        })
+      },
+      ...(uploadedImageLink && { image_url: uploadedImageLink }),
+    })
   }
 
-  if (!user)
+  const onInvalid = (errors: FieldErrors<AnswerFormData>) => {
+    if (errors.answer) {
+      const { type } = errors.answer
+
+      if (type === "required") {
+        toast.error(validationMessage.noAnswerContent, {
+          toastId: "emptyAnswerContent",
+          position: "top-center",
+        })
+        return
+      }
+
+      if (type === "whiteSpaceOnly") {
+        toast.error(validationMessage.notAllowedWhiteSpaceOnly, {
+          toastId: "whiteSpaceOnlyAnswerContent",
+          position: "top-center",
+        })
+        return
+      }
+
+      if (type === "minLength") {
+        toast.error(validationMessage.underAnswerLimit, {
+          toastId: "underAnswerLimit",
+          position: "top-center",
+        })
+        return
+      }
+
+      if (type === "maxLength") {
+        toast.error(validationMessage.overAnswerLimit, {
+          toastId: "overAnswerLimit",
+          position: "top-center",
+        })
+        return
+      }
+    }
+  }
+
+  if (!user) {
     return (
-      <Container>
-        <div className="text-center py-5">
-          <CreateAnswerAnime style={{ width: "20%", margin: "0 auto" }} />
-          <div className="text-xl">
-            {notificationMessage.answerWithoutToken}
+      <div className="box-border flex flex-col h-[342px] tablet:h-auto tablet:flex-row justify-between items-center px-[34px] py-6 tablet:py-0 mb-7 border border-[#E0E0E0] rounded-lg">
+        <div className="flex flex-col items-center tablet:flex-row gap-6">
+          <div className="w-[200px] min-h-[173px] tablet:w-[120px] tablet:min-h-[104px]">
+            <CreateAnswerAnime />
           </div>
-          <Button
-            buttonTheme="primary"
-            className="mt-5 px-5 py-2"
-            onClick={() => openModal({ content: <LoginForm /> })}
-          >
-            {buttonMessage.goToLogIn}
-          </Button>
+          <span className="text-primary font-bold">
+            로그인 하고 댓글을 남겨보세요!
+          </span>
         </div>
-      </Container>
+        <Button
+          buttonTheme="primary"
+          className="px-6 py-4"
+          onClick={() => {
+            openModal({
+              content: <LoginForm />,
+            })
+          }}
+        >
+          로그인 하기
+        </Button>
+      </div>
     )
+  }
+
+  if (!writableNewAnswer) {
+    return null
+  }
 
   return (
-    handleCheckAbilityToWriteAnswer(list, nickname) && (
-      <Container>
-        <div>
-          <div className="flex items-center gap-2">
-            <Title title="My Answer" />
-            <TextCounterBox text={watch("answer")} />
-          </div>
-          <form onSubmit={handleSubmit(handleSubmitAnswer)}>
-            <MdEditor
-              editorRef={editorRef}
-              previous=""
-              onChange={() => {
-                setValue(
-                  "answer",
-                  editorRef.current?.getInstance().getMarkdown() ?? "",
-                )
-              }}
-            />
-            <div className="flex justify-center my-[20px]">
-              <Button
-                disabled={
-                  !watch("answer") ||
-                  watch("answer").length < Limitation.answer_limit_under ||
-                  watch("answer").length > Limitation.answer_limit_over
-                }
-                buttonTheme="primary"
-                className="w-[200px] h-[50px] text-lg disabled:bg-colorsGray disabled:text-colorsDarkGray"
-                type="submit"
-              >
-                {buttonMessage.postMyAnswer}
-              </Button>
-            </div>
-            <input hidden className="hidden" {...register("answer")} />
-          </form>
+    <div className="max-w-full box-border rounded-lg my-6">
+      <div className="flex items-center gap-2 mb-4">
+        <div className="font-semibold text-xl text-secondary">내 답변</div>
+        <TextCounter
+          text={answerField ?? ""}
+          min={Limitation.answer_limit_under}
+          max={Limitation.answer_limit_over}
+          className="text-lg"
+        />
+      </div>
+      <form onSubmit={handleSubmit(onSubmit, onInvalid)}>
+        <CreateAnswerEditor control={control} onEditorChange={onEditorChange} />
+        <div className="flex w-full justify-center my-2">
+          <Button
+            disabled={!isValid || isSubmitting}
+            buttonTheme="primary"
+            className="w-[200px] h-fit text-base disabled:bg-colorsGray disabled:text-colorsDarkGray"
+            type="submit"
+          >
+            {isSubmitting ? "답변 생성 중" : buttonMessage.postMyAnswer}
+          </Button>
         </div>
-      </Container>
-    )
+      </form>
+    </div>
   )
 }
 
 export default MyAnswer
-
-const Title: React.FC<{ title: string }> = ({ title }) => (
-  <div className="font-bold text-[24px]">{title}</div>
-)
-
-const Container = ({ children }: PropsWithChildren) => (
-  <div className="max-w-full box-border border border-colorsGray rounded-lg p-5 my-5">
-    {children}
-  </div>
-)
-
-type TextCounterBoxProps = {
-  text: string | undefined
-}
-
-const TextCounterBox = ({ text }: TextCounterBoxProps) => {
-  if (!text) return
-  return (
-    <TextCounter
-      text={text ?? ""}
-      min={Limitation.answer_limit_under}
-      max={Limitation.answer_limit_over}
-      className="text-lg"
-    />
-  )
-}

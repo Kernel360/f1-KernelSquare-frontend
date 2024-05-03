@@ -1,4 +1,3 @@
-import badge_url from "@/assets/images/badges"
 import { Answer } from "@/interfaces/answer"
 import {
   CreateAnswerRequest,
@@ -21,6 +20,19 @@ export const mockCreateAnswerApi = http.post<
 >(
   `${process.env.NEXT_PUBLIC_SERVER}${RouteMap.answer.createAnswer()}`,
   async ({ request, params }) => {
+    const header = request.headers
+    const token = header.get("Authorization")
+
+    if (!token) {
+      return HttpResponse.json(
+        {
+          code: -1,
+          msg: "인증되지 않은 유저입니다.",
+        },
+        { status: HttpStatusCode.Unauthorized },
+      )
+    }
+
     const questionId = Number(params.id)
 
     const { member_id, content, image_url } = await request.json()
@@ -48,8 +60,8 @@ export const mockCreateAnswerApi = http.post<
       answer_member_id: targetMember.id,
       content,
       author_level: targetMember.level,
-      rank_image_url: badge_url[targetMember.level],
-      rank_name: 1,
+      rank_image_url: null,
+      rank_name: undefined,
       member_image_url: targetMember.image_url,
       member_nickname: targetMember.nickname,
       answer_image_url: image_url ? image_url : "",

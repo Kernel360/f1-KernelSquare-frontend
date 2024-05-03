@@ -58,7 +58,7 @@ const MarkdownEditor = (
     twMerge([
       "font-normal text-xs rounded-[4px] border-colorsGray px-4 py-2 w-[84px] rounded-br-none rounded-bl-none border-l-0 first:border-l-[1px]",
       active
-        ? "text-[#555] bg-white border-b-[#f7f9fc]"
+        ? "text-[#555] bg-white border-b-[#f7f9fc] border-t border-l border-r"
         : "text-[#969aa5] bg-[#eaedf1]",
     ])
 
@@ -120,7 +120,6 @@ const MarkdownEditor = (
       <div className="flex w-full -mt-2 box-border pl-4 relative top-2 z-[1] editor:hidden">
         <Button
           data-md-tab-mode="write"
-          buttonTheme="third"
           className={classNames(mode === "write")}
           onClick={handleMdTabMode}
         >
@@ -128,7 +127,6 @@ const MarkdownEditor = (
         </Button>
         <Button
           data-md-tab-mode="preview"
-          buttonTheme="third"
           className={classNames(mode === "preview")}
           onClick={handleMdTabMode}
         >

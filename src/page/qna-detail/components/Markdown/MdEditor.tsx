@@ -79,7 +79,7 @@ const MdEditor: React.FC<EditorProps> = ({
   })
 
   return (
-    <div className="text-[20px] text-left">
+    <div className="text-base text-left">
       {editorRef && (
         <MarkdownEditor
           isImage

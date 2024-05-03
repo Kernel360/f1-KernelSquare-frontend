@@ -4,18 +4,28 @@ import { useClientSession } from "@/hooks/useClientSession"
 import { useProgressModal } from "@/hooks/useProgressModal"
 import type { Answer } from "@/interfaces/answer"
 import { useState } from "react"
-import { toast } from "react-toastify"
 import SuccessModalContent from "../components/SuccessModalContent"
 import queryKey from "@/constants/queryKey"
 import useModal from "@/hooks/useModal"
 import { useQueryClient } from "@tanstack/react-query"
 import { answerQueries } from "@/react-query/answers"
 import successMessage from "@/constants/message/success"
-import { validationMessage } from "@/constants/message/validation"
+import { AxiosError, HttpStatusCode } from "axios"
+import { APIResponse } from "@/interfaces/dto/api-response"
 
-export interface SubmitValueProps {
+export interface CreateAnswerSubmitProps {
   questionId: number
-  submitValue: string | undefined
+  answer: string
+  image_url?: string
+  onError?:
+    | ((
+        errorCase: "unauthorized" | "apiError" | "error",
+        error: Error | AxiosError,
+      ) => void)
+    | ((
+        errorCase: "unauthorized" | "apiError" | "error",
+        error: Error | AxiosError,
+      ) => Promise<void>)
 }
 
 const useQnADetail = () => {
@@ -64,53 +74,66 @@ const useQnADetail = () => {
     return true
   }
 
-  const handleSubmitValue = async ({
+  const createAnswerSubmit = ({
     questionId,
-    submitValue,
-  }: SubmitValueProps) => {
-    if (checkNullValue(submitValue)) {
-      toast.error(validationMessage.noContent, {
-        toastId: "emptyAnswerContent",
-        position: "top-center",
-      })
-      return
-    }
-
+    answer,
+    image_url,
+    onError,
+  }: CreateAnswerSubmitProps) => {
     try {
-      if (user?.member_id) {
-        createAnswer(
-          {
-            questionId,
-            member_id: user.member_id,
-            content: submitValue || "",
-          },
-          {
-            onSuccess: () => {
-              openModal({
-                content: (
-                  <SuccessModalContent message={successMessage.createAnswer} />
-                ),
-                onClose() {
-                  queryClient.invalidateQueries({
-                    queryKey: [queryKey.answer, questionId],
-                  })
-                  queryClient.invalidateQueries({
-                    queryKey: [queryKey.question, questionId],
-                  })
-                },
-              })
-              queryClient.invalidateQueries({
-                queryKey: [queryKey.answer, questionId],
-              })
-              queryClient.invalidateQueries({
-                queryKey: [queryKey.question, questionId],
-              })
-            },
-          },
-        )
+      if (!user?.member_id) {
+        onError && onError("unauthorized", new Error("user id is empty"))
+        return
       }
-    } catch (err) {
-      console.error("error", err)
+
+      const invalidateQueries = () => {
+        queryClient.invalidateQueries({
+          queryKey: [queryKey.answer, questionId],
+        })
+        queryClient.invalidateQueries({
+          queryKey: [queryKey.question, questionId],
+        })
+      }
+
+      createAnswer(
+        {
+          questionId,
+          member_id: user.member_id,
+          content: answer,
+          ...(image_url && { image_url }),
+        },
+        {
+          onSuccess: () => {
+            openModal({
+              content: (
+                <SuccessModalContent message={successMessage.createAnswer} />
+              ),
+              onClose() {
+                invalidateQueries()
+              },
+            })
+
+            invalidateQueries()
+          },
+          onError(error) {
+            if (error instanceof AxiosError) {
+              const { response } = error as AxiosError<APIResponse>
+
+              if (response?.status === HttpStatusCode.Unauthorized) {
+                onError && onError("unauthorized", error)
+                return
+              }
+
+              onError && onError("apiError", error)
+              return
+            }
+
+            onError && onError("error", error)
+          },
+        },
+      )
+    } catch (error) {
+      onError && onError("error", error as Error)
     }
   }
 
@@ -123,7 +146,7 @@ const useQnADetail = () => {
     setModalFail: () => setStep("fail"),
     filterMyAnswer,
     handleIsChecked: () => setIsChecked((prev: boolean) => !prev),
-    handleSubmitValue,
+    createAnswerSubmit,
     isChecked,
     handleCheckAbilityToWriteAnswer,
   }

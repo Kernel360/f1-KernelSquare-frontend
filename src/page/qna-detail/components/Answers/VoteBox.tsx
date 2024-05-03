@@ -13,17 +13,12 @@ export type VoteBoxProps = {
 }
 
 const VoteBox: React.FC<VoteBoxProps> = ({ answer }) => {
-  const {
-    handleRaise,
-    handleReduce,
-    handleCancle,
-    raiseClass,
-    reduceClass,
-    replaceNumber,
-  } = useAnswerVote({
-    answer,
-  })
   const { user } = useClientSession()
+
+  const { handleRaise, handleReduce, handleCancle, raiseClass, reduceClass } =
+    useAnswerVote({
+      answer,
+    })
 
   const handleVoteRaise = () => {
     if (answer.member_nickname === user?.nickname)
@@ -47,17 +42,12 @@ const VoteBox: React.FC<VoteBoxProps> = ({ answer }) => {
   }
 
   return (
-    <form className="mr-5">
-      <div className="flex justify-center">
-        <DirectionIcons.Up className={raiseClass} onClick={handleVoteRaise} />
+    <form className="flex flex-col w-[51px] pc:w-[62px] items-center">
+      <DirectionIcons.Up className={raiseClass} onClick={handleVoteRaise} />
+      <div className="text-center text-xl pc:text-2xl font-semibold">
+        {answer.vote_count > 999 ? "999+" : answer.vote_count}
       </div>
-      <div className="text-[30px]">{replaceNumber(answer.vote_count)}</div>
-      <div className="flex justify-center">
-        <DirectionIcons.Down
-          className={reduceClass}
-          onClick={handleVoteReduce}
-        />
-      </div>
+      <DirectionIcons.Down className={reduceClass} onClick={handleVoteReduce} />
     </form>
   )
 }
