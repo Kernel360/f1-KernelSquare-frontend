@@ -17,6 +17,8 @@ import { toast } from "react-toastify"
 import AlermNavItem from "./AlermNavItem"
 import { useSetRecoilState } from "recoil"
 import { HeaderMobileMenuOpenAtom } from "@/recoil/atoms/menu/headerMenu"
+import { useQueryClient } from "@tanstack/react-query"
+import queryKey from "@/constants/queryKey"
 
 function MobileMenuNavigation() {
   const currentSegment = useSelectedLayoutSegment()
@@ -91,6 +93,7 @@ function MobileMenuNavigation() {
 export default MobileMenuNavigation
 
 const AuthButton = () => {
+  const queryClient = useQueryClient()
   const { user, clientSessionLogout } = useClientSession()
 
   const { openModal, closeModal } = useModal()
@@ -109,6 +112,18 @@ const AuthButton = () => {
       }
       await clientSessionLogout()
 
+      queryClient.invalidateQueries({
+        predicate(query) {
+          if (
+            query.queryKey.toString() ===
+            [queryKey.myChatReservation].toString()
+          ) {
+            return true
+          }
+
+          return false
+        },
+      })
       revalidatePage("*")
 
       setTimeout(() => {

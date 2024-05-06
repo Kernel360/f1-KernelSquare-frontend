@@ -1,6 +1,6 @@
 const CANCLE = "취소되었습니다."
 
-const cancleMessage = {
+const cancelMessage = {
   uploadImage: "사진 저장이 " + CANCLE,
   resetImage: "프로필 이미지 초기화가 " + CANCLE,
   deleteAnswer: "답변 삭제가 " + CANCLE,
@@ -11,4 +11,4 @@ const cancleMessage = {
   createReservation: "커피챗 예약 과정이 " + CANCLE,
 }
 
-export default cancleMessage
+export default cancelMessage

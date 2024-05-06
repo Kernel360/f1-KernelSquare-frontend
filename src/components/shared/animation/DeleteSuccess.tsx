@@ -7,11 +7,13 @@ import { CSSProperties, useLayoutEffect } from "react"
 interface DeleteSuccessProps {
   style?: CSSProperties
   className?: string
+  loop?: boolean
 }
 
-function DeleteSuccess({ style, className }: DeleteSuccessProps) {
+function DeleteSuccess({ style, className, loop = false }: DeleteSuccessProps) {
   const { setSpeed, View } = useLottie({
     animationData: deleteSuccess,
+    loop,
     style: { ...style },
     className,
   })

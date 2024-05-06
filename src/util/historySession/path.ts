@@ -1,3 +1,5 @@
+import { TargetPage } from "@/components/LinkToListPage"
+
 export interface HistorySessionPath {
   prevPath: string | null
   currentPath: string
@@ -27,7 +29,10 @@ export function updateHistorySessionPath() {
   if (!path) {
     const session: HistorySessionPath = {
       prevPath: null,
-      currentPath: globalThis.location.href,
+      currentPath: new URL(
+        globalThis.location.href,
+        process.env.NEXT_PUBLIC_SITE_URL,
+      ).href,
     }
 
     globalThis.sessionStorage.setItem(
@@ -41,10 +46,15 @@ export function updateHistorySessionPath() {
   const correctPath = (currentPath: string) => {
     const baseURL = process.env.NEXT_PUBLIC_SITE_URL
 
-    if (currentPath === `${baseURL}/qna`) return "/qna?page=0"
-    if (currentPath === `${baseURL}/chat`) return "/chat?page=0"
+    let rewritedPath = null
+    if (currentPath === `${baseURL}/qna`) rewritedPath = "/qna?page=0"
+    if (currentPath === `${baseURL}/chat`) rewritedPath = "/chat?page=0"
     if (currentPath === `${baseURL}/coding-meetings`)
-      return "/coding-meetings?page=0&size=10&filter=all"
+      rewritedPath = "/coding-meetings?page=0&size=10&filter=all"
+
+    if (rewritedPath) {
+      return new URL(rewritedPath, process.env.NEXT_PUBLIC_SITE_URL).href
+    }
 
     return globalThis.location.href
   }
@@ -64,6 +74,17 @@ export function updateHistorySessionPath() {
 }
 
 //
+export function pathnameOfBack(pathname: string): TargetPage | null {
+  if (isQuestionDetailPage(pathname)) return "qna"
+  if (isCoffeeChatDetailPage(pathname)) return "chat"
+
+  return null
+}
+
 export function isQuestionDetailPage(pathname: string) {
   return /^\/question\/[0-9]+$/g.test(pathname)
+}
+
+export function isCoffeeChatDetailPage(pathname: string) {
+  return /^\/chat\/[0-9]+$/g.test(pathname)
 }

@@ -1,3 +1,4 @@
+import Holidays from "@/constants/holidays"
 import dayjs from "dayjs"
 import "dayjs/locale/ko"
 
@@ -216,4 +217,8 @@ export function getCollapsedDate({
   return `${startDate.format("YYYY년 MM월 DD일 HH:mm")} ~ ${endDate.format(
     "HH:mm",
   )}`
+}
+
+export function getHoliday(date: Date) {
+  return Holidays.find((day) => day.date === dayjs(date).format("YYYY-MM-DD"))
 }

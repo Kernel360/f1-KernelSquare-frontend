@@ -31,12 +31,17 @@
 
 /*개별 날짜 버튼*/
 .react-calendar__tile {
-  min-height: 60px;
+  height: 60px;
+  padding-top: 4px;
+  padding-bottom: 4px;
   font-weight: bold;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   align-items: center;
+}
+.react-calendar__tile.holiday {
+  color: #d10000;
 }
 
 .react-calendar__tile:disabled {
@@ -44,6 +49,11 @@
   background-color: white;
   font-weight: lighter;
 }
+.react-calendar__tile:disabled.react-calendar__tile--now {
+  color: #828282;
+  font-weight: bold;
+}
+
 .react-calendar__tile:enabled:hover,
 .react-calendar__tile:enabled:focus {
   background: #00c47133;
@@ -69,7 +79,8 @@
   border-color: #00c471;
   border: 1px;
 }
-.react-calendar__tile--active {
+.react-calendar__tile--active,
+.react-calendar__tile--active:not(:focus).holiday {
   background: #00c471;
   border-radius: 6px;
   font-weight: bold;

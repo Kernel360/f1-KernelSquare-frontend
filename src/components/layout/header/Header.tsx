@@ -11,9 +11,9 @@ import {
 import LogoWithRowText from "@/components/icons/LogoWithRowText"
 import MobileArea from "./area/mobileArea"
 import Area from "./area"
-import LinkToQnaList from "@/page/qna-detail/components/LinkToQnaList"
 import { twMerge } from "tailwind-merge"
-import { isQuestionDetailPage } from "@/util/historySession/path"
+import { pathnameOfBack } from "@/util/historySession/path"
+import LinkToListPage from "@/components/LinkToListPage"
 
 function Header() {
   const currentSegment = useSelectedLayoutSegment()
@@ -28,10 +28,10 @@ function Header() {
 
   const open = matchedLayout ? matchedLayout.containLayout.header : true
 
-  const isQuestionDetail = isQuestionDetailPage(pathname)
+  const targetPage = pathnameOfBack(pathname)
 
   const logoClassNames = twMerge([
-    isQuestionDetail
+    targetPage
       ? "pointer-events-none absolute left-0 top-0 w-full h-full flex justify-center items-center sm:pointer-events-auto sm:static sm:left-[unset] sm:top-[unset] sm:w-auto"
       : "flex justify-center items-center",
   ])
@@ -39,9 +39,9 @@ function Header() {
   return open ? (
     <header className="bg-white h-16 p-2 sticky top-0 border-b border-b-colorsGray z-header">
       <Inner className="flex justify-between items-center h-full">
-        {isQuestionDetail ? (
+        {targetPage ? (
           <div className="block sm:hidden [&_span]:hidden [&_svg]:text-xl">
-            <LinkToQnaList />
+            <LinkToListPage to={targetPage} />
           </div>
         ) : null}
         {/* logo - click: move Home */}

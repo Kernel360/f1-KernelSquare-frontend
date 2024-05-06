@@ -37,3 +37,12 @@ export function isBeforeChatStartTime(startTime: string) {
 
   return now.isBefore(startKorTime, "minutes")
 }
+
+export function isPenalty({ time, now }: { time: string; now?: string }) {
+  const dateTargetTime = getKorDayjs(time)
+  const dateNow = getKorDayjs(now ?? dayjs())
+
+  const daysBetween = dateNow.diff(dateTargetTime, "days")
+
+  return daysBetween >= -1
+}

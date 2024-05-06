@@ -4,14 +4,18 @@ import { getDate, getTime } from "@/util/getDate"
 import { CircleIcons } from "@/components/icons/Icons"
 import { basic_profile } from "@/assets/images/basic"
 import Image from "next/image"
-import CustomCalendar from "../CustomCalendar/CustomCalendar"
-import { useEffect, useState } from "react"
-import type { Value } from "../CustomCalendar/Calendar.types"
+import { useEffect } from "react"
 import type { CoffeeChatReservationTime } from "@/interfaces/dto/coffee-chat/coffeechat-reservation-detail.dto"
 import { twJoin } from "tailwind-merge"
 import CoffeeChat from "@/components/shared/animation/CoffeeChat"
 import { revalidatePage } from "@/util/actions/revalidatePage"
 import dynamic from "next/dynamic"
+import ReservationCalendar from "../calendar/ReservationCalendar"
+import { useRecoilValue } from "recoil"
+import { ReservationSelectedDateAtom } from "@/recoil/atoms/coffee-chat/date"
+import SelectedReservationTime from "../mentee/SelectedReservationTime"
+import DetailPageCalendarWrapper from "../DetailPageCalendarWrapper"
+import ChatAuthorCalendar from "../calendar/ChatAuthorCalendar"
 
 interface MentorProps {
   reservation: CoffeeChatReservationTime[]
@@ -35,9 +39,12 @@ const EnterCoffeeChatButton = dynamic(
 )
 
 function ReservationForMentor({ reservation, created, title }: MentorProps) {
-  const [date, setDate] = useState<Value>(new Date(reservation[0].start_time))
+  const selectedDate = useRecoilValue(ReservationSelectedDateAtom)
+  const startTime = reservation[0].start_time
+  const date = selectedDate ?? startTime
+
   const isReserved = (nickname: string | null) =>
-    twJoin(["shrink-0 w-[46px]"], [nickname && "text-primary font-bold"])
+    twJoin(["shrink-0 w-[48px]"], [nickname && "text-primary font-bold"])
   const target = reservation.filter(
     ({ start_time }) =>
       getDate({ date: date + "" }) === getDate({ date: start_time }),
@@ -50,76 +57,72 @@ function ReservationForMentor({ reservation, created, title }: MentorProps) {
   }, [])
 
   return (
-    <section className="text-center mb-20">
+    <section className="text-center">
       <div className="font-bold text-primary text-[28px] mb-5">SCHEDULE</div>
-      <div className="flex justify-around flex-wrap">
-        <div>
-          <CustomCalendar
-            limit={2}
-            start={reservation[0].start_time}
-            date={date}
-            setDate={setDate}
-            isClass
-          />{" "}
-          <div className="flex justify-between">
-            <div className="font-normal mt-3 flex items-center">
-              <div className="w-[10px] h-[10px] rounded-full bg-[#fbf8ce] border-[1px] border-[orange] mr-1"></div>{" "}
-              <div>멘티 모집 기간</div>
-            </div>
-            <div className="font-normal mt-3 flex items-center">
-              <div className="w-[10px] h-[10px] rounded-full bg-[lightgray] mr-1"></div>{" "}
-              <div>예약 확정 기간</div>
-            </div>
-            <div className="font-normal mt-3 flex items-center">
-              <div className="w-[10px] h-[10px] rounded-full bg-primary mr-1"></div>{" "}
-              <div>커피챗 진행 기간</div>
-            </div>
-          </div>
-        </div>
-        <div>
-          <div className="my-3 text-xl text-secondary font-bold">
-            {getDate({ date: date + "" })}
-          </div>
-          <div className="max-h-[300px] overflow-auto border-[1px] border-primary flex justify-center">
-            {!target.length && (
-              <div className="w-[35vw] m-auto text-center py-5">
-                <div className="flex justify-center mb-5">
-                  <CoffeeChat className="w-[250px]" />
-                </div>
-                <div>예약된 커피챗이</div>
-                <div>존재하지 않습니다.</div>
+      <DetailPageCalendarWrapper
+        calendarComponent={
+          <div>
+            <ChatAuthorCalendar startTime={reservation[0].start_time} />{" "}
+            <div className="flex justify-between">
+              <div className="font-normal mt-3 flex items-center">
+                <div className="w-[10px] h-[10px] rounded-full bg-[#fbf8ce] border-[1px] border-[orange] mr-1"></div>{" "}
+                <div>멘티 모집 기간</div>
               </div>
-            )}
-            {!!target.length && (
-              <ul className="flex flex-col w-full gap-4">
-                {target.map((time) => (
-                  <li
-                    key={time.reservation_id}
-                    className={`flex p-4 gap-4 w-full h-max items-center ${
-                      time?.mentee_nickname
-                        ? "hover:bg-info"
-                        : "hover:bg-transparent"
-                    }`}
-                  >
-                    <div className="flex h-full items-center gap-1">
-                      <CircleIcons.Line className="text-[8px] shrink-0" />
-                      <div className={isReserved(time.mentee_nickname)}>
-                        {getTime(time.start_time)}
-                      </div>
-                    </div>
-                    <ReservedTime
-                      time={time}
-                      key={time.reservation_id}
-                      title={title}
-                      reservation_id={time.reservation_id}
-                    />
-                  </li>
-                ))}
-              </ul>
-            )}
+              <div className="font-normal mt-3 flex items-center">
+                <div className="w-[10px] h-[10px] rounded-full bg-[lightgray] mr-1"></div>{" "}
+                <div>예약 확정 기간</div>
+              </div>
+              <div className="font-normal mt-3 flex items-center">
+                <div className="w-[10px] h-[10px] rounded-full bg-primary mr-1"></div>{" "}
+                <div>커피챗 진행 기간</div>
+              </div>
+            </div>
           </div>
-        </div>
-      </div>
+        }
+        dataComponent={
+          <div>
+            <SelectedReservationTime startTime={startTime} />
+            <div className="border border-primary flex justify-center">
+              {!target.length && (
+                <div className="w-[35vw] m-auto text-center py-5">
+                  <div className="flex justify-center mb-5">
+                    <CoffeeChat className="w-[250px]" />
+                  </div>
+                  <div>예약된 커피챗이</div>
+                  <div>존재하지 않습니다.</div>
+                </div>
+              )}
+              {!!target.length && (
+                <ul className="flex flex-col w-full gap-4">
+                  {target.map((time) => (
+                    <li
+                      key={time.reservation_id}
+                      className={`flex p-4 gap-4 w-full h-max items-center ${
+                        time?.mentee_nickname
+                          ? "hover:bg-info"
+                          : "hover:bg-transparent"
+                      }`}
+                    >
+                      <div className="flex h-full items-center gap-1">
+                        <CircleIcons.Line className="text-[8px] shrink-0" />
+                        <div className={isReserved(time.mentee_nickname)}>
+                          {getTime(time.start_time)}
+                        </div>
+                      </div>
+                      <ReservedTime
+                        time={time}
+                        key={time.reservation_id}
+                        title={title}
+                        reservation_id={time.reservation_id}
+                      />
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
+          </div>
+        }
+      />
     </section>
   )
 }
