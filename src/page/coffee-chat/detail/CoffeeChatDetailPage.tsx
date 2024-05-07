@@ -30,7 +30,6 @@ function CoffeeChatDetailPage({
         <ScheduleMentoringSession
           authorId={coffeeChatDetailPayload.member_id}
           reservation={coffeeChatDetailPayload.date_times}
-          createdAt={coffeeChatDetailPayload.created_date}
           title={coffeeChatDetailPayload.title}
         />
       </div>

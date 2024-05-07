@@ -1,16 +1,27 @@
+import { twMerge } from "tailwind-merge"
+
 interface DetailPageCalendarWrapperProps {
   calendarComponent: React.ReactNode
   dataComponent: React.ReactNode
+  classNames?: {
+    dataComponent?: {
+      container?: string
+      wrapper?: string
+    }
+  }
 }
 
 function DetailPageCalendarWrapper({
   calendarComponent,
   dataComponent,
+  classNames,
 }: DetailPageCalendarWrapperProps) {
   return (
     <section className="flex flex-col sm:flex-row">
       <CalendarWrapper>{calendarComponent}</CalendarWrapper>
-      <DataWrapper>{dataComponent}</DataWrapper>
+      <DataWrapper classNames={classNames?.dataComponent}>
+        {dataComponent}
+      </DataWrapper>
     </section>
   )
 }
@@ -25,12 +36,26 @@ const CalendarWrapper = ({ children }: { children: React.ReactNode }) => {
   )
 }
 
-const DataWrapper = ({ children }: { children: React.ReactNode }) => {
+const DataWrapper = ({
+  classNames,
+  children,
+}: {
+  children: React.ReactNode
+  classNames?: { container?: string; wrapper?: string }
+}) => {
+  const containerClassNames = twMerge([
+    "w-full sm:flex-1 sm:flex sm:justify-end xl:justify-center",
+    classNames?.container,
+  ])
+
+  const wrapperClassNames = twMerge([
+    "w-full mx-auto sm:max-w-[350px] xl:max-w-[450px] sm:m-0",
+    classNames?.wrapper,
+  ])
+
   return (
-    <div className="w-full sm:flex-1 sm:flex sm:justify-end xl:justify-center">
-      <div className="w-full mx-auto sm:max-w-[350px] xl:max-w-[450px] sm:m-0">
-        {children}
-      </div>
+    <div className={containerClassNames}>
+      <div className={wrapperClassNames}>{children}</div>
     </div>
   )
 }

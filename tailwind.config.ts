@@ -28,6 +28,9 @@ const config = {
         tabletDevice: { min: "640px", max: "991px" },
         pc: { min: "992px" },
         calendarRow: { min: "695px" },
+        pointerhover: {
+          raw: "(hover: hover) and (pointer: fine)",
+        },
       },
       colors: {
         colorsGray: "#ced4da",

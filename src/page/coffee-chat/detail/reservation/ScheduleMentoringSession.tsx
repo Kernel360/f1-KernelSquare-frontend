@@ -8,14 +8,12 @@ import { CoffeeChatReservationTime } from "@/interfaces/dto/coffee-chat/coffeech
 interface ScheduleMentoringSessionProps {
   authorId: number
   reservation: CoffeeChatReservationTime[]
-  createdAt: string
   title: string
 }
 
 function ScheduleMentoringSession({
   authorId,
   reservation,
-  createdAt,
   title,
 }: ScheduleMentoringSessionProps) {
   const { user } = useClientSession()
@@ -23,13 +21,7 @@ function ScheduleMentoringSession({
   const isCoffeeChatAuthor = user ? user.member_id === authorId : false
 
   if (isCoffeeChatAuthor) {
-    return (
-      <ReservationForMentor
-        reservation={reservation}
-        created={createdAt}
-        title={title}
-      />
-    )
+    return <ReservationForMentor reservation={reservation} title={title} />
   }
 
   return <ReservationForMentee reservation={reservation} />

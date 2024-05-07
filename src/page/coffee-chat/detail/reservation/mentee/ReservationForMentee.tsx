@@ -1,5 +1,5 @@
 import { CoffeeChatReservationTime } from "@/interfaces/dto/coffee-chat/coffeechat-reservation-detail.dto"
-import TimeOptions from "./TimeOptions"
+import TimeOptions from "./reservation-time/TimeOptions"
 import Spacing from "@/components/shared/Spacing"
 import ProgressModal from "./ProgressModal"
 import ReservationCalendar from "../calendar/ReservationCalendar"
@@ -18,10 +18,10 @@ function ReservationForMentee({ reservation }: MenteeProps) {
     <section>
       <ProgressModal />
       <section className="mb-4 sm:mb-6">
-        <h3 className="font-bold text-base sm:text-xl">멘토링 시간 선택</h3>
+        <h3 className="font-bold text-base sm:text-xl">커피 챗 시간 선택</h3>
         <Spacing size={16} />
         <h4 className="text-[#828282]">
-          멘토링이 가능한 시간과 날짜를 선택해주세요.
+          커피 챗이 가능한 날짜와 시간을 선택해주세요.
         </h4>
       </section>
       <DetailPageCalendarWrapper
