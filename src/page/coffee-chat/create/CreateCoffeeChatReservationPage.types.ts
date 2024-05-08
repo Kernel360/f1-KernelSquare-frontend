@@ -13,6 +13,7 @@ export interface CoffeeChatFormData {
   title: string
   content: string
   introduction: string
+  dateTimes: string
 }
 
 export type SubmitAskQuestionData = CoffeeChatFormData

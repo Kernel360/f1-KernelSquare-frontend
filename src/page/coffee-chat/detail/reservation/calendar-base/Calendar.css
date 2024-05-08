@@ -6,10 +6,10 @@
   max-width: 450px;
 }
 
-.react-calendar__tile:not(.disabled).reservation-possible {
+.react-calendar__tile:not(.disabled, .action--create).reservation-possible {
   pointer-events: none;
 }
 
-.react-calendar__tile:not(.disabled).reservation-confirm {
+.react-calendar__tile:not(.disabled, .action--create).reservation-confirm {
   pointer-events: none;
 }

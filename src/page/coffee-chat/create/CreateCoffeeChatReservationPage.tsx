@@ -3,7 +3,7 @@
 import { useForm } from "react-hook-form"
 import { Input } from "@/components/shared/input/Input"
 import Spacing from "@/components/shared/Spacing"
-import { useRef } from "react"
+import { useEffect, useRef } from "react"
 import { Editor } from "@toast-ui/react-editor"
 import { toast } from "react-toastify"
 import { useRouter } from "next/navigation"
@@ -12,10 +12,7 @@ import { useClientSession } from "@/hooks/useClientSession"
 import type { FieldErrors } from "react-hook-form"
 import { EditMode } from "@/page/askQuestion/components/AskQuestionPageControl"
 import Button from "@/components/shared/button/Button"
-import {
-  CoffeeChatFormData,
-  CoffeeChatFormProps,
-} from "./CreateCoffeeChatReservationPage.types"
+import { CoffeeChatFormProps } from "./CreateCoffeeChatReservationPage.types"
 import CoffeeChatSection from "./components/CoffeeChatSection"
 import HashTagsSection from "./components/HashTagsSection"
 import ScheduleSection from "./components/ScheduleSection"
@@ -24,8 +21,6 @@ import { useRecoilState } from "recoil"
 import { HashTagList } from "@/recoil/atoms/coffee-chat/hashtags"
 import { errorMessage } from "@/constants/message/error"
 import dynamic from "next/dynamic"
-import { TimeCount } from "@/recoil/atoms/coffee-chat/schedule"
-import { useGetScheduleList } from "./hooks/useGetScheduleList"
 import Limitation from "@/constants/limitation"
 import { AxiosError } from "axios"
 import { APIResponse } from "@/interfaces/dto/api-response"
@@ -34,6 +29,11 @@ import TextCounter from "@/components/shared/TextCounter"
 import notificationMessage from "@/constants/message/notification"
 import { validationMessage } from "@/constants/message/validation"
 import Textarea from "@/components/shared/textarea/Textarea"
+import { useSelectedChatTimes } from "./hooks/useSelectedChatTimes"
+import { CreateCoffeeChatPostRequest } from "@/interfaces/dto/coffee-chat/create-coffeechat-post.dto"
+import { transformDateTime } from "./controls/util/parse-field"
+import { CoffeeChatFormData } from "@/interfaces/form"
+import { DateTimeRuleValidateType } from "./controls/rules/datetime-rules"
 
 const MdEditor = dynamic(() => import("./components/MdEditor"), {
   ssr: false,
@@ -44,15 +44,14 @@ function CreateCoffeeChatReservationPage({
   post_id,
 }: CoffeeChatFormProps) {
   // 추후 커피챗 게시글 수정 기능 구현 시 사용 예정
-  const editMode: EditMode = initialValues && post_id ? "update" : "create"
+  // const editMode: EditMode = initialValues && post_id ? "update" : "create"
   const [hash_tags, setHash_tags] = useRecoilState(HashTagList)
   const queryClient = useQueryClient()
   const { replace } = useRouter()
-  const [timeCount, setTimeCount] = useRecoilState(TimeCount)
 
   const { user } = useClientSession()
 
-  const { register, handleSubmit, watch, setValue, getValues } =
+  const { register, handleSubmit, watch, setValue, getValues, control } =
     useForm<CoffeeChatFormData>(
       initialValues
         ? {
@@ -67,12 +66,9 @@ function CreateCoffeeChatReservationPage({
 
   const editorRef = useRef<Editor>(null)
 
-  const { createCoffeeChatPost } = CoffeeChatQueries.useCreateCoffeeChatPost()
+  const { clear } = useSelectedChatTimes()
 
-  const first: string[] = useGetScheduleList(0)
-  const twice: string[] = useGetScheduleList(1)
-  const third: string[] = useGetScheduleList(2)
-  setTimeCount(first.concat(twice).concat(third).length)
+  const { createCoffeeChatPost } = CoffeeChatQueries.useCreateCoffeeChatPost()
 
   const onSubmit = async (data: CoffeeChatFormData) => {
     if (!user)
@@ -112,19 +108,20 @@ function CreateCoffeeChatReservationPage({
         position: "top-center",
       })
 
-    if (timeCount === 0)
-      return toast.error(validationMessage.undertimeCntLimit, {
-        toastId: "emptyCoffeeChatTime",
-        position: "top-center",
-      })
+    const payload: CreateCoffeeChatPostRequest = {
+      member_id: user.member_id,
+      title: data.title,
+      introduction: data.introduction,
+      content: editorRef.current?.getInstance().getMarkdown(),
+      hash_tags,
+      date_times: transformDateTime(data.dateTimes!),
+    }
+
+    console.log({ payload })
+
     createCoffeeChatPost(
       {
-        member_id: user.member_id,
-        title: data.title,
-        introduction: data.introduction,
-        content: editorRef.current?.getInstance().getMarkdown(),
-        hash_tags,
-        date_times: first.concat(twice).concat(third),
+        ...payload,
       },
       {
         onSuccess: (res) => {
@@ -169,7 +166,35 @@ function CreateCoffeeChatReservationPage({
 
       return
     }
+
+    if (errors.dateTimes) {
+      const type = errors.dateTimes.type
+
+      if (type === "required") {
+        toast.error(validationMessage.undertimeCntLimit, {
+          toastId: "emptyChatTime",
+          position: "top-center",
+        })
+
+        return
+      }
+
+      if (type === DateTimeRuleValidateType.Maximum) {
+        toast.error(validationMessage.overtimeCntLimit, {
+          toastId: "maxLengthChatTimes",
+          position: "top-center",
+        })
+
+        return
+      }
+    }
   }
+
+  useEffect(() => {
+    return () => {
+      clear()
+    }
+  }, []) /* eslint-disable-line */
 
   if (!user) return
 
@@ -189,13 +214,7 @@ function CreateCoffeeChatReservationPage({
       watch("content").length < Limitation.content_limit_under ||
       watch("content").length > Limitation.content_limit_over
 
-    return (
-      !user ||
-      timeCount === 0 ||
-      isValidTitle() ||
-      isValidIntroduction() ||
-      isValidContent()
-    )
+    return !user || isValidTitle() || isValidIntroduction() || isValidContent()
   }
 
   const TitleInputClass = twJoin([
@@ -283,7 +302,7 @@ function CreateCoffeeChatReservationPage({
         <Spacing size={20} />
         <HashTagsSection />
         <Spacing size={20} />
-        <ScheduleSection />
+        <ScheduleSection control={control} />
         <div className="flex justify-center">
           <Button
             disabled={handleSubmitButtonDisabled()}

@@ -7,6 +7,7 @@ import { useRecoilState } from "recoil"
 import ReservationCalendarBase from "../calendar-base/ReservationCalendarBase"
 import dayjs from "dayjs"
 import isBetween from "dayjs/plugin/isBetween"
+import { getChatPeriods } from "@/util/chat/time"
 
 dayjs.extend(isBetween)
 
@@ -23,7 +24,7 @@ function ChatAuthorCalendar({ startTime }: ChatAuthorCalendarProps) {
     reservationPossible: [reservationPossibleStart, reservationPossibleEnd],
     reservationConfirm,
     chat: [chatStart, chatEnd],
-  } = periods({
+  } = getChatPeriods({
     startTime,
   })
 
@@ -78,16 +79,3 @@ function ChatAuthorCalendar({ startTime }: ChatAuthorCalendarProps) {
 }
 
 export default ChatAuthorCalendar
-
-const periods = ({ startTime }: { startTime: string }) => {
-  const startDate = dayjs(startTime).startOf("days")
-
-  return {
-    reservationPossible: [
-      dayjs(startDate).subtract(6, "days"),
-      dayjs(startDate).subtract(2, "days"),
-    ],
-    reservationConfirm: dayjs(startDate).subtract(1, "days"),
-    chat: [startDate, dayjs(startDate).add(2, "days")],
-  }
-}

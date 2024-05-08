@@ -39,6 +39,7 @@ const config = {
         success: "#198754",
         info: "#ecf5ff",
         danger: "#dc3545",
+        ["light-green"]: "#EAF7F0",
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",

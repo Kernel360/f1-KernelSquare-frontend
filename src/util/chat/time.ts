@@ -46,3 +46,16 @@ export function isPenalty({ time, now }: { time: string; now?: string }) {
 
   return daysBetween >= -1
 }
+
+export function getChatPeriods({ startTime }: { startTime: string }) {
+  const startDate = dayjs(startTime).startOf("days")
+
+  return {
+    reservationPossible: [
+      dayjs(startDate).subtract(6, "days"),
+      dayjs(startDate).subtract(2, "days"),
+    ],
+    reservationConfirm: dayjs(startDate).subtract(1, "days"),
+    chat: [startDate, dayjs(startDate).add(2, "days")],
+  }
+}
