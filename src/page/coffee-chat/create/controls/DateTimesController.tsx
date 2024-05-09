@@ -14,13 +14,14 @@ function DateTimesController({ control }: DateTimesControllerProps) {
   const fieldRef = useRef<DateTimeField>()
 
   useEffect(() => {
-    fieldRef.current?.onChange(selectedChatTimeList ?? undefined)
+    fieldRef.current?.onChange(selectedChatTimeList ?? [])
   }, [count]) /* eslint-disable-line */
 
   return (
     <Controller
       control={control}
       name="dateTimes"
+      defaultValue={[]}
       rules={dateTimeRules}
       render={({ field, fieldState }) => {
         fieldRef.current = field

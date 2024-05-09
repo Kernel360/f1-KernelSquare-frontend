@@ -35,4 +35,11 @@ export interface CoffeeChatFormData {
   content: string
   introduction: string
   dateTimes?: string[]
+  hashTags?: string[]
+}
+
+// hashtag
+
+export interface HashTagFormData {
+  hashTag: string
 }

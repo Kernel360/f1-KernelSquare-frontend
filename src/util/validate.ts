@@ -1,3 +1,5 @@
+import Limitation from "@/constants/limitation"
+import Regex from "@/constants/regex"
 import validator from "validator"
 
 export const validPasswordSpecialList = ["@", "$", "!", "%", "*", "?", "&"]
@@ -87,6 +89,31 @@ export class Validator {
           min: 8,
           max: 16,
         })
+      },
+    }
+  }
+
+  validateHashTag(hashTag: string = "") {
+    return {
+      length() {
+        return hashTag.length && hashTag.length < Limitation.hashtags_word
+      },
+      format() {
+        return (
+          !hashTag.match(Regex.preventSpecialCharacter) &&
+          !hashTag.match(Regex.preventEmoji)
+        )
+      },
+    }
+  }
+
+  validateHashTagList(hashTagList: string[]) {
+    return {
+      length() {
+        return hashTagList.length < Limitation.hashtags_cnt
+      },
+      duplicate(hashTag: string) {
+        return !hashTagList.includes(hashTag)
       },
     }
   }

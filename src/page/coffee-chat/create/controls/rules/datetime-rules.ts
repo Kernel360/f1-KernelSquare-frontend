@@ -14,12 +14,18 @@ export type DateTimeField = ControllerRenderProps<
 >
 
 export const enum DateTimeRuleValidateType {
+  "Empty" = "empty",
   "Maximum" = "maximum",
 }
 
 export const dateTimeRules: DateTimeFieldRules = {
   required: validationMessage.undertimeCntLimit,
   validate: {
+    [DateTimeRuleValidateType.Empty]: (dateTimes) => {
+      if (!dateTimes?.length) {
+        return validationMessage.undertimeCntLimit
+      }
+    },
     [DateTimeRuleValidateType.Maximum]: (dateTimes) => {
       if (!dateTimes) return true
 

@@ -10,15 +10,12 @@ import { useRouter } from "next/navigation"
 import { useQueryClient } from "@tanstack/react-query"
 import { useClientSession } from "@/hooks/useClientSession"
 import type { FieldErrors } from "react-hook-form"
-import { EditMode } from "@/page/askQuestion/components/AskQuestionPageControl"
 import Button from "@/components/shared/button/Button"
 import { CoffeeChatFormProps } from "./CreateCoffeeChatReservationPage.types"
 import CoffeeChatSection from "./components/CoffeeChatSection"
 import HashTagsSection from "./components/HashTagsSection"
 import ScheduleSection from "./components/ScheduleSection"
 import { CoffeeChatQueries } from "@/react-query/coffee-chat"
-import { useRecoilState } from "recoil"
-import { HashTagList } from "@/recoil/atoms/coffee-chat/hashtags"
 import { errorMessage } from "@/constants/message/error"
 import dynamic from "next/dynamic"
 import Limitation from "@/constants/limitation"
@@ -34,6 +31,7 @@ import { CreateCoffeeChatPostRequest } from "@/interfaces/dto/coffee-chat/create
 import { transformDateTime } from "./controls/util/parse-field"
 import { CoffeeChatFormData } from "@/interfaces/form"
 import { DateTimeRuleValidateType } from "./controls/rules/datetime-rules"
+// import { EditMode } from "@/page/askQuestion/components/AskQuestionPageControl"
 
 const MdEditor = dynamic(() => import("./components/MdEditor"), {
   ssr: false,
@@ -45,7 +43,6 @@ function CreateCoffeeChatReservationPage({
 }: CoffeeChatFormProps) {
   // 추후 커피챗 게시글 수정 기능 구현 시 사용 예정
   // const editMode: EditMode = initialValues && post_id ? "update" : "create"
-  const [hash_tags, setHash_tags] = useRecoilState(HashTagList)
   const queryClient = useQueryClient()
   const { replace } = useRouter()
 
@@ -113,11 +110,9 @@ function CreateCoffeeChatReservationPage({
       title: data.title,
       introduction: data.introduction,
       content: editorRef.current?.getInstance().getMarkdown(),
-      hash_tags,
+      hash_tags: data.hashTags ?? [],
       date_times: transformDateTime(data.dateTimes!),
     }
-
-    console.log({ payload })
 
     createCoffeeChatPost(
       {
@@ -130,8 +125,6 @@ function CreateCoffeeChatReservationPage({
           })
 
           replace(`/chat/${res.data.data?.reservation_article_id}`)
-
-          setHash_tags([])
         },
         onError: (error: Error | AxiosError<APIResponse>) => {
           if (error instanceof AxiosError) {
@@ -169,9 +162,10 @@ function CreateCoffeeChatReservationPage({
 
     if (errors.dateTimes) {
       const type = errors.dateTimes.type
+      const message = errors.dateTimes.message
 
-      if (type === "required") {
-        toast.error(validationMessage.undertimeCntLimit, {
+      if (type === "required" || type === DateTimeRuleValidateType.Empty) {
+        toast.error(message ?? validationMessage.undertimeCntLimit, {
           toastId: "emptyChatTime",
           position: "top-center",
         })
@@ -180,7 +174,7 @@ function CreateCoffeeChatReservationPage({
       }
 
       if (type === DateTimeRuleValidateType.Maximum) {
-        toast.error(validationMessage.overtimeCntLimit, {
+        toast.error(message ?? validationMessage.overtimeCntLimit, {
           toastId: "maxLengthChatTimes",
           position: "top-center",
         })
@@ -300,7 +294,7 @@ function CreateCoffeeChatReservationPage({
           </div>
         </CoffeeChatSection>
         <Spacing size={20} />
-        <HashTagsSection />
+        <HashTagsSection control={control} />
         <Spacing size={20} />
         <ScheduleSection control={control} />
         <div className="flex justify-center">
