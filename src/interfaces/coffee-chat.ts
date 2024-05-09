@@ -1,3 +1,4 @@
+import { MyCoffeeChatReservation } from "./dto/coffee-chat/get-my-coffeechat-reservation"
 import { TechTag } from "./tech-tag"
 import { User } from "./user"
 
@@ -21,3 +22,5 @@ export interface CoffeeChat extends Pick<User, "nickname" | "image_url"> {
   post_intro: string
   tags: Array<TechTag>
 }
+
+export type MatchedRoom = MyCoffeeChatReservation

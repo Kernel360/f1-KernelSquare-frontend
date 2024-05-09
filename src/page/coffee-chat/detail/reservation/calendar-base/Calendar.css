@@ -1,0 +1,15 @@
+@import "@/styles/react-calendar/Base.css";
+@import "@/styles/react-calendar/CoffeeChatTile.css";
+
+.react-calendar {
+  width: 100%;
+  max-width: 450px;
+}
+
+.react-calendar__tile:not(.disabled, .action--create).reservation-possible {
+  pointer-events: none;
+}
+
+.react-calendar__tile:not(.disabled, .action--create).reservation-confirm {
+  pointer-events: none;
+}

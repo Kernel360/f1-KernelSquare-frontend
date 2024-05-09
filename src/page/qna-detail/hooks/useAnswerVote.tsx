@@ -13,7 +13,7 @@ import { VoteStatus, type Answer } from "@/interfaces/answer"
 import type { ModalState } from "@/interfaces/modal"
 import { answerQueries } from "@/react-query/answers"
 import { pendingMessage } from "@/constants/message/pending"
-import cancleMessage from "@/constants/message/cancle"
+import cancleMessage from "@/constants/message/cancel"
 import successMessage from "@/constants/message/success"
 import notificationMessage from "@/constants/message/notification"
 

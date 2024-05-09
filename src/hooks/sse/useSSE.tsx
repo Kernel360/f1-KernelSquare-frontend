@@ -31,7 +31,7 @@ export function useSSE({ onMessage, onSSEevent }: UseSSEOptions) {
         const { accessToken } = await getAuthCookie()
 
         if (!accessToken) {
-          if (eventSource.readyState !== eventSource.CLOSED) {
+          if (eventSource && eventSource.readyState !== eventSource.CLOSED) {
             console.log("close", { eventSource })
 
             eventSource.close()
@@ -43,7 +43,7 @@ export function useSSE({ onMessage, onSSEevent }: UseSSEOptions) {
           return
         }
 
-        if (eventSource.readyState === eventSource.CLOSED) {
+        if (eventSource && eventSource.readyState === eventSource.CLOSED) {
           console.log("readyStateClosed", { eventSource })
           eventSource = null
         }

@@ -34,7 +34,7 @@ type MdTabMode = "write" | "preview"
 
 type MarkdownEditorProps = Partial<EditorProps> & {
   isImage: boolean
-  setLoaded: SetterOrUpdater<boolean>
+  setLoaded?: SetterOrUpdater<boolean>
 }
 
 const MarkdownEditor = (
@@ -96,7 +96,7 @@ const MarkdownEditor = (
 
     window.addEventListener("resize", handleResize)
 
-    setLoaded(true)
+    setLoaded && setLoaded(true)
 
     queueMicrotask(() => {
       if (onLoad) {

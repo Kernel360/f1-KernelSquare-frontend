@@ -70,11 +70,11 @@ export const mockMakeCoffeeChatReservationApi = http.put<
       )
     }
 
-    const targetTime = targetArticle.date_times.find(
+    const targetTimeIndex = targetArticle.date_times.findIndex(
       (time) => time.start_time === reservation_start_time,
     )
 
-    if (!targetTime) {
+    if (targetTimeIndex === -1) {
       return HttpResponse.json(
         {
           code: 3408,
@@ -137,6 +137,14 @@ export const mockMakeCoffeeChatReservationApi = http.put<
           status: HttpStatusCode.Forbidden,
         },
       )
+    }
+
+    const prev = targetArticle.date_times[targetTimeIndex]
+
+    targetArticle.date_times[targetTimeIndex] = {
+      ...prev,
+      mentee_nickname: targetMember.nickname,
+      mentee_image_url: targetMember.image_url,
     }
 
     return HttpResponse.json(

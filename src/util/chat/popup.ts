@@ -8,6 +8,10 @@ interface PopupStorageFunctionArgs {
 }
 
 export function getPopupStorage(): PopupStorage {
+  const windowLocalStorage = globalThis.localStorage
+
+  if (!windowLocalStorage) return []
+
   const storage = localStorage.getItem(POPUP_STORAGE_KEY)
 
   if (!storage) {

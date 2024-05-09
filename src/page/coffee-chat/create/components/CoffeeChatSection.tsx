@@ -1,8 +1,12 @@
 import { twMerge } from "tailwind-merge"
-import type {
-  CoffeeChatSectionLabelProps,
-  CoffeeChatSectionProps,
-} from "../CreateCoffeeChatReservationPage.types"
+
+export interface CoffeeChatSectionProps {
+  className?: string
+  children: React.ReactNode
+}
+
+export interface CoffeeChatSectionLabelProps
+  extends React.LabelHTMLAttributes<HTMLLabelElement> {}
 
 const CoffeeChatSection = ({ children, className }: CoffeeChatSectionProps) => {
   const classNames = twMerge([

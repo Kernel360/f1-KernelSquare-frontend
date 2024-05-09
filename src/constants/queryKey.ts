@@ -6,6 +6,7 @@ const queryKey = {
   user: "user",
   profile: "profile",
   chat: "chat",
+  myChatReservation: "myChatReservation",
   codingMeeting: "codingMeeting",
   uploadImageMutation: "uploadImage",
 }
