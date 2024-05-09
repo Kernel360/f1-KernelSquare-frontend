@@ -1,11 +1,7 @@
 import { DirectionIcons } from "@/components/icons/Icons"
 import Button from "@/components/shared/button/Button"
+import { TimeZone } from "@/constants/timeOptions"
 import { useState } from "react"
-
-export const enum TimeZone {
-  AM = "AM",
-  PM = "PM",
-}
 
 interface TimeZoneSectionProps {
   onTimeZoneChange?: (timeZone: TimeZone) => void

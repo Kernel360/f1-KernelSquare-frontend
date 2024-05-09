@@ -46,7 +46,7 @@ function TimeOptionButton({ dateTime }: TimeOptionButtonProps) {
   }
 
   return (
-    <Button className={classNames} onClick={handleTime}>
+    <Button type="button" className={classNames} onClick={handleTime}>
       <time>{getTime(dateTime)}</time>
     </Button>
   )

@@ -1,6 +1,6 @@
-import TimeZoneSection, { TimeZone } from "./TimeZoneSection"
+import TimeZoneSection from "./TimeZoneSection"
 import { useState } from "react"
-import { AM, PM } from "@/constants/timeOptions"
+import { AM, PM, TimeZone } from "@/constants/timeOptions"
 import TimeOptionButton from "../../TimeOptionButton"
 import Spacing from "@/components/shared/Spacing"
 import dayjs from "dayjs"

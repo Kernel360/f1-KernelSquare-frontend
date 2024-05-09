@@ -26,7 +26,7 @@ function DateTimesController({ control }: DateTimesControllerProps) {
       render={({ field, fieldState }) => {
         fieldRef.current = field
 
-        return <input hidden readOnly value={field.value} />
+        return <></>
       }}
     />
   )

@@ -1,3 +1,8 @@
+export const enum TimeZone {
+  AM = "AM",
+  PM = "PM",
+}
+
 export const AM = [
   "00:00",
   "00:30",

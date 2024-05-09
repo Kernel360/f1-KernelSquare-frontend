@@ -38,8 +38,15 @@ export interface CoffeeChatFormData {
   hashTags?: string[]
 }
 
+export type CoffeeChatEditorInitialValues = CoffeeChatFormData
+
+export interface UpdateCoffeeChatData extends CoffeeChatFormData {
+  post_id: number
+}
+
 // hashtag
+type HashTag = string
 
 export interface HashTagFormData {
-  hashTag: string
+  hashTag: HashTag
 }
