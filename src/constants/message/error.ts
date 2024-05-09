@@ -17,7 +17,8 @@ export const errorMessage = {
   deleteCodingMeeting: "모각코 게시물 삭제" + ERROR,
   updateAnswer: "답변 수정" + ERROR,
   reserveCoffeeChat: "커피챗 예약" + ERROR,
-  cancleReservation: "커피챗 예약 취소" + ERROR,
+  cancelReservation: "커피챗 예약 취소" + ERROR,
+  deleteChatReservation: "커피챗 게시글 삭제 중 오류가 발생했습니다.",
   createCodingMeeting: "모각코 생성" + ERROR,
   updateCodingMeeting: "모각코 수정" + ERROR,
 } as const

@@ -56,7 +56,6 @@ const MyAnswer: React.FC<MyAnswerProps> = ({
       questionId,
       answer,
       onError(errorCase, error) {
-        console.log({ errorCase, error })
         if (errorCase === "unauthorized") {
           clientSessionReset()
 

@@ -1,6 +1,9 @@
 import { ApiStatus } from "@/constants/response/api"
 import { GetMyCoffeeChatReservationListResponse } from "@/interfaces/dto/coffee-chat/get-my-coffeechat-reservation"
-import { MockReservations } from "@/mocks/db/coffee-chat"
+import {
+  MockReservations,
+  mockCoffeeChatReservations,
+} from "@/mocks/db/coffee-chat"
 import { RouteMap } from "@/service/route-map"
 import { DefaultBodyType, HttpResponse, PathParams, http } from "msw"
 import { JWT_ACCESS_TOKEN_SECRET } from "@/constants/token"
@@ -57,9 +60,14 @@ export const mockGetMyCoffeeChatReservationApi = http.get<
           )
         }
 
-        const reservation = MockReservations.filter(
-          (post) => post.mentee_nickname === user.nickname,
-        )
+        const reservation = mockCoffeeChatReservations
+          .filter((reservation) =>
+            reservation.date_times.find(
+              (dateTime) => dateTime.mentee_nickname === user.nickname,
+            ),
+          )
+          ?.flatMap((reservation) => reservation.date_times)
+          .filter((dateTime) => dateTime.mentee_nickname === user.nickname)
 
         if (!reservation) {
           const { Code, HttpStatus } =

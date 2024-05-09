@@ -11,7 +11,7 @@ import { useDeleteImage } from "@/hooks/image/useDeleteImage"
 import type { ModalState } from "@/interfaces/modal"
 import type { Question } from "@/interfaces/question"
 import { findImageLinkUrlFromMarkdown } from "@/util/editor"
-import cancleMessage from "@/constants/message/cancle"
+import cancleMessage from "@/constants/message/cancel"
 
 export interface QuestionProps {
   questionId: number

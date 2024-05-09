@@ -6,33 +6,25 @@ import ReservationForMentor from "./mentor/ReservationForMentor"
 import { CoffeeChatReservationTime } from "@/interfaces/dto/coffee-chat/coffeechat-reservation-detail.dto"
 
 interface ScheduleMentoringSessionProps {
-  mentor: number
+  authorId: number
   reservation: CoffeeChatReservationTime[]
-  created: string
   title: string
 }
 
 function ScheduleMentoringSession({
-  mentor,
+  authorId,
   reservation,
-  created,
   title,
 }: ScheduleMentoringSessionProps) {
   const { user } = useClientSession()
 
-  const isMyCoffeeChat =
-    user?.roles.includes("ROLE_MENTOR") && mentor === user.member_id
+  const isCoffeeChatAuthor = user ? user.member_id === authorId : false
 
-  if (isMyCoffeeChat)
-    return (
-      <ReservationForMentor
-        reservation={reservation}
-        created={created}
-        title={title}
-      />
-    )
-  else
-    return <ReservationForMentee reservation={reservation} created={created} />
+  if (isCoffeeChatAuthor) {
+    return <ReservationForMentor reservation={reservation} title={title} />
+  }
+
+  return <ReservationForMentee reservation={reservation} />
 }
 
 export default ScheduleMentoringSession

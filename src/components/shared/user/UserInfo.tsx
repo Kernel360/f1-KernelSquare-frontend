@@ -41,7 +41,9 @@ function UserInfo({ user }: UserInfoProps) {
       <div className="flex gap-2 items-center">
         <Profile
           profileImage={user.profileImageUrl}
-          className={loginUser ? "cursor-pointer" : "cursor-default"}
+          className={`shrink-0 ${
+            loginUser ? "cursor-pointer" : "cursor-default"
+          }`}
         />
         <span className="font-semibold text-sm">{user.nickname}</span>
         <div className="flex gap-1 items-center">

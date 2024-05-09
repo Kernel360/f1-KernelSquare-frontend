@@ -2,7 +2,7 @@ import {
   DeleteReservationRequest,
   DeleteReservationResponse,
 } from "@/interfaces/dto/coffee-chat/delete-reservation.dto"
-import { MockReservations } from "@/mocks/db/coffee-chat"
+import { mockCoffeeChatReservations } from "@/mocks/db/coffee-chat"
 import { RouteMap } from "@/service/route-map"
 import { HttpStatusCode } from "axios"
 import { HttpResponse, http } from "msw"
@@ -18,11 +18,14 @@ export const mockCancelCoffeeChatReservationApi = http.delete<
   async ({ params }) => {
     const reservationId = Number(params.id)
 
-    const targetReservation = MockReservations.findIndex(
-      (res) => res.reservation_id === reservationId,
+    const targetReservationIdx = mockCoffeeChatReservations.findIndex(
+      (reservation) =>
+        reservation.date_times.find(
+          (dateTime) => dateTime.reservation_id === reservationId,
+        ),
     )
 
-    if (!targetReservation) {
+    if (targetReservationIdx === -1) {
       return HttpResponse.json(
         {
           code: 3401,
@@ -32,6 +35,19 @@ export const mockCancelCoffeeChatReservationApi = http.delete<
           status: HttpStatusCode.Forbidden,
         },
       )
+    }
+
+    const reservation = mockCoffeeChatReservations[targetReservationIdx]
+    const targetDateTimeIdx = reservation.date_times.findIndex(
+      (dateTime) => dateTime.reservation_id === reservationId,
+    )
+
+    const prev = reservation.date_times[targetDateTimeIdx]
+
+    reservation.date_times[targetDateTimeIdx] = {
+      ...prev,
+      mentee_nickname: null,
+      mentee_image_url: null,
     }
 
     return HttpResponse.json(

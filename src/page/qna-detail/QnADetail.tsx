@@ -9,8 +9,8 @@ import ContentLoading from "@/components/shared/animation/ContentLoading"
 import { answerQueries } from "@/react-query/answers"
 import { useClientSession } from "@/hooks/useClientSession"
 import NotFound from "@/app/not-found"
-import LinkToQnaList from "./components/LinkToQnaList"
 import Spacing from "@/components/shared/Spacing"
+import LinkToListPage from "@/components/LinkToListPage"
 
 const QnADetail: React.FC<{ id: string }> = ({ id }) => {
   const { data, isPending } = questionQueries.useQuestionData({
@@ -38,7 +38,7 @@ const QnADetail: React.FC<{ id: string }> = ({ id }) => {
     <div className="relative box-border px-6 pb-6 pt-6 tabletDevice:px-12 tabletDevice:pb-12 pc:pt-[72px] pc:pl-[120px] pc:pr-[84px]">
       <div className="w-full break-all">
         <div className="hidden pc:block">
-          <LinkToQnaList />
+          <LinkToListPage to="qna" />
           <Spacing size={24} />
         </div>
         <Question question={data.data} />

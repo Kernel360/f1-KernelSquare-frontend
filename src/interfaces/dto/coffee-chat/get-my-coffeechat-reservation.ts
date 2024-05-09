@@ -3,7 +3,7 @@ import type { APIResponse } from "../api-response"
 export interface GetMyCoffeeChatReservationRequest {}
 
 export interface MyCoffeeChatReservation {
-  reservatoin_id: number
+  reservation_id: number
   room_id: number
   start_time: string
   mentee_nickname: string
