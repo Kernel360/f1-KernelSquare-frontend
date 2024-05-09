@@ -1,7 +1,6 @@
 "use client"
 
 import { useForm } from "react-hook-form"
-import { Input } from "@/components/shared/input/Input"
 import Spacing from "@/components/shared/Spacing"
 import { useEffect, useRef } from "react"
 import { Editor } from "@toast-ui/react-editor"
@@ -21,7 +20,6 @@ import dynamic from "next/dynamic"
 import Limitation from "@/constants/limitation"
 import { AxiosError } from "axios"
 import { APIResponse } from "@/interfaces/dto/api-response"
-import { twJoin } from "tailwind-merge"
 import TextCounter from "@/components/shared/TextCounter"
 import notificationMessage from "@/constants/message/notification"
 import { validationMessage } from "@/constants/message/validation"
@@ -31,6 +29,7 @@ import { CreateCoffeeChatPostRequest } from "@/interfaces/dto/coffee-chat/create
 import { transformDateTime } from "./controls/util/parse-field"
 import { CoffeeChatFormData } from "@/interfaces/form"
 import { DateTimeRuleValidateType } from "./controls/rules/datetime-rules"
+import TitleSection from "./components/sections/title/TitleSection"
 // import { EditMode } from "@/page/askQuestion/components/AskQuestionPageControl"
 
 const MdEditor = dynamic(() => import("./components/MdEditor"), {
@@ -48,7 +47,7 @@ function CreateCoffeeChatReservationPage({
 
   const { user } = useClientSession()
 
-  const { register, handleSubmit, watch, setValue, getValues, control } =
+  const { register, handleSubmit, watch, setValue, control } =
     useForm<CoffeeChatFormData>(
       initialValues
         ? {
@@ -71,16 +70,6 @@ function CreateCoffeeChatReservationPage({
     if (!user)
       return toast.error(notificationMessage.unauthorized, {
         toastId: "unauthorizedToCreateCoffeeChat",
-        position: "top-center",
-      })
-    if (data.title.length < Limitation.title_limit_under)
-      return toast.error(validationMessage.underTitleLimit, {
-        toastId: "underCoffeeChatTitleLimit",
-        position: "top-center",
-      })
-    if (data.title.length > Limitation.title_limit_over)
-      return toast.error(validationMessage.overTitleLimit, {
-        toastId: "overCoffeeChatTitleLimit",
         position: "top-center",
       })
     if (!editorRef.current?.getInstance().getMarkdown())
@@ -146,23 +135,30 @@ function CreateCoffeeChatReservationPage({
   }
 
   const onInvalid = async (errors: FieldErrors<CoffeeChatFormData>) => {
-    if (errors.title?.type === "required") {
-      toast.error(validationMessage.notitle, {
-        toastId: "emptyCoffeeChatTitle",
-        position: "top-center",
-      })
+    if (errors.title) {
+      const { type, message } = errors.title
 
-      window.scroll({
-        top: 0,
-        behavior: "smooth",
-      })
+      if (type === "required") {
+        toast.error(message, {
+          toastId: "emptyCoffeeChatTitle",
+          position: "top-center",
+        })
 
-      return
+        return
+      }
+
+      if (type === "minLength" || type === "maxLength") {
+        toast.error(message, {
+          toastId: "coffeeChatTitleLength",
+          position: "top-center",
+        })
+
+        return
+      }
     }
 
     if (errors.dateTimes) {
-      const type = errors.dateTimes.type
-      const message = errors.dateTimes.message
+      const { type, message } = errors.dateTimes
 
       if (type === "required" || type === DateTimeRuleValidateType.Empty) {
         toast.error(message ?? validationMessage.undertimeCntLimit, {
@@ -193,11 +189,6 @@ function CreateCoffeeChatReservationPage({
   if (!user) return
 
   const handleSubmitButtonDisabled = () => {
-    const isValidTitle = () =>
-      !getValues("title") ||
-      getValues("title").length < Limitation.title_limit_under ||
-      getValues("title").length > Limitation.title_limit_over
-
     const isValidIntroduction = () =>
       !watch("introduction") ||
       watch("introduction").length < Limitation.chat_introduction_limit_under ||
@@ -208,16 +199,8 @@ function CreateCoffeeChatReservationPage({
       watch("content").length < Limitation.content_limit_under ||
       watch("content").length > Limitation.content_limit_over
 
-    return !user || isValidTitle() || isValidIntroduction() || isValidContent()
+    return !user || isValidIntroduction() || isValidContent()
   }
-
-  const TitleInputClass = twJoin([
-    "rounded-none border-r-0 border-l-0 border-t-0 text-3xl placeholder:text-3xl",
-    watch("title") &&
-      (watch("title")?.length < Limitation.title_limit_under ||
-        watch("title")?.length > Limitation.title_limit_over) &&
-      "focus:border-danger border-danger",
-  ])
 
   return (
     <div className="mt-5 px-6 tabletDevice:px-12 xl:px-16">
@@ -227,30 +210,7 @@ function CreateCoffeeChatReservationPage({
       >
         {/* title section */}
         <Spacing size={20} />
-        <CoffeeChatSection className="border-transparent p-0">
-          <Input
-            id="title"
-            spellCheck="false"
-            autoComplete="off"
-            fullWidth
-            className={TitleInputClass}
-            placeholder="제목"
-            {...register("title", {
-              required: true,
-              minLength: Limitation.title_limit_under,
-              maxLength: Limitation.title_limit_over,
-            })}
-          />
-          <div>
-            {watch("title") &&
-              (watch("title")?.length < Limitation.title_limit_under ||
-                watch("title")?.length > Limitation.title_limit_over) && (
-                <Input.ErrorMessage className="text-md">
-                  {"제목은 5자 이상 100자 이하여야 합니다."}
-                </Input.ErrorMessage>
-              )}
-          </div>
-        </CoffeeChatSection>
+        <TitleSection control={control} />
         <Spacing size={20} />
         <CoffeeChatSection>
           <div className="w-full">
