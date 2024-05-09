@@ -10,7 +10,7 @@ import { useQueryClient } from "@tanstack/react-query"
 import { memberQueries } from "@/react-query/member"
 import Limitation from "@/constants/limitation"
 import { useDeleteImage } from "@/hooks/image/useDeleteImage"
-import cancleMessage from "@/constants/message/cancle"
+import cancleMessage from "@/constants/message/cancel"
 import successMessage from "@/constants/message/success"
 import { validationMessage } from "@/constants/message/validation"
 

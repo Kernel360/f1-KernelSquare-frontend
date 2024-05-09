@@ -1,5 +1,6 @@
 "use client"
 
+import LinkToListPage from "@/components/LinkToListPage"
 import Tab from "@/components/shared/tab/Tab"
 import {
   getActiveNavigationItem,
@@ -7,7 +8,7 @@ import {
   profileRoute,
 } from "@/constants/navigationRoute"
 import { useClientSession } from "@/hooks/useClientSession"
-import LinkToQnaList from "@/page/qna-detail/components/LinkToQnaList"
+import { pathnameOfBack } from "@/util/historySession/path"
 import Link from "next/link"
 import {
   useParams,
@@ -29,7 +30,7 @@ function NavigationTab({ hasHeader }: NavigationTabProps) {
   const params = useParams()
 
   const wrapperClassNames = twMerge([
-    "sticky w-full top-[--height-header] z-navigation bg-white hidden tabletDevice:block pc:hidden overflow-auto [&::-webkit-scrollbar]:w-0 [&::-webkit-scrollbar]:h-0 border-b border-colorsGray",
+    "sticky w-full top-[--height-header] z-navigation bg-white hidden sm:block pc:hidden overflow-auto [&::-webkit-scrollbar]:w-0 [&::-webkit-scrollbar]:h-0 border-b border-colorsGray",
     !hasHeader && "top-0",
   ])
 
@@ -65,13 +66,13 @@ function NavigationTab({ hasHeader }: NavigationTabProps) {
 
   const renderTabs = [...navigationRouteTabs, ...profileRouteTabs]
 
-  const isQuestionDetailPage = /^\/question\/[0-9]+$/g.test(pathname)
+  const targetPage = pathnameOfBack(pathname)
 
   return (
     <nav className={wrapperClassNames}>
-      {isQuestionDetailPage ? (
+      {targetPage ? (
         <div className="absolute left-0 top-0 h-full flex items-center text-xs [&_svg]:text-xl">
-          <LinkToQnaList />
+          <LinkToListPage to={targetPage} />
         </div>
       ) : null}
       <Tab

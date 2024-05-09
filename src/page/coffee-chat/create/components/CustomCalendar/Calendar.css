@@ -1,8 +1,0 @@
-@import "@/styles/react-calendar/Base.css";
-@import "@/styles/react-calendar/CoffeeChatTile.css";
-
-.react-calendar {
-  width: 100%;
-  max-width: 450px;
-  margin: 0 auto;
-}

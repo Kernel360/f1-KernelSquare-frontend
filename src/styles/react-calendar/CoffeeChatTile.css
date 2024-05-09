@@ -15,7 +15,16 @@
   color: #fff;
   border-radius: 6px;
 }
-.react-calendar__tile:not(.disabled).mentoring:hover {
-  background: #00c47133;
-  color: #00c471;
+.react-calendar__tile--active.mentoring abbr {
+  color: #ffff80;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .react-calendar__tile:not(.disabled).mentoring:hover {
+    background: #00c47133;
+    color: #00c471;
+  }
+  .react-calendar__tile--active.mentoring:hover abbr {
+    color: #00c471;
+  }
 }

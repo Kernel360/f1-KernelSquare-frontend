@@ -53,7 +53,9 @@ ConfirmModal.ModalContent = function ConfirmModal({
 
   return (
     <div className="w-full sm:w-[320px]">
-      <p className="text-center">{ConfirmModalMessage[situation]}</p>
+      <p className="text-center whitespace-pre-line">
+        {ConfirmModalMessage[situation]}
+      </p>
       <Spacing size={26} />
       <div className="flex w-full justify-center items-center">
         <Button

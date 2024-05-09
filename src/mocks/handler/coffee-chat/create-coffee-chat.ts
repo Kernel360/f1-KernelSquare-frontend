@@ -1,4 +1,5 @@
 import badge_url from "@/assets/images/badges"
+import { ApiStatus } from "@/constants/response/api"
 import {
   CreateCoffeeChatPostRequest,
   CreateCoffeeChatPostResponse,
@@ -20,6 +21,19 @@ export const mockCreateCoffeeChatApi = http.post<
 >(
   `${process.env.NEXT_PUBLIC_SERVER}${RouteMap.coffeeChat.createCoffeeChatPost}`,
   async ({ request }) => {
+    const header = request.headers
+    const token = header.get("Authorization")
+
+    if (!token) {
+      return HttpResponse.json(
+        {
+          code: ApiStatus.CoffeeChat.createCoffeeChatPost.Unauthorized.Code,
+          msg: "인증되지 않은 유저입니다.",
+        },
+        { status: HttpStatusCode.Unauthorized },
+      )
+    }
+
     const { member_id, title, content, hash_tags, date_times } =
       await request.json()
 

@@ -14,6 +14,7 @@ import { getAuthCookie } from "@/util/actions/cookie"
 import { revalidatePage } from "@/util/actions/revalidatePage"
 import type { LoginUserPayload } from "@/interfaces/dto/auth/login.dto"
 import Alerm from "./alerm/Alerm"
+import { useQueryClient } from "@tanstack/react-query"
 // import DeleteMemberModal from "@/app/profile/[id]/_components/deleteMember/DeleteMemberModal"
 
 type ProfileDropdownMenu = {
@@ -58,6 +59,7 @@ function NotLoginedUserArea() {
 }
 
 function LoginedUserArea({ user }: { user: LoginUserPayload }) {
+  const queryClient = useQueryClient()
   const { clientSessionLogout } = useClientSession()
 
   const DropDownMenu = () => {
@@ -79,6 +81,11 @@ function LoginedUserArea({ user }: { user: LoginUserPayload }) {
             }
             await clientSessionLogout()
 
+            queryClient.invalidateQueries({
+              predicate(query) {
+                return true
+              },
+            })
             revalidatePage("*")
 
             setTimeout(() => {

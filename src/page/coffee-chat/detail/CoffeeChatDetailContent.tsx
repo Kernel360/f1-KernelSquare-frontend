@@ -7,20 +7,20 @@ interface CoffeeChatDetailContentProps {
   content: string
 }
 
-const MdViewer = dynamic(
+const CoffeeChatContentMdViewer = dynamic(
   () => import("../../../components/shared/markdown/Viewer/MarkdownViewer"),
   {
     ssr: false,
+    loading(loadingProps) {
+      return <div className="skeleton h-[200px] rounded-lg mt-2.5" />
+    },
   },
 )
 
 function CoffeeChatDetailContent({ content }: CoffeeChatDetailContentProps) {
   return (
-    <div
-      className="min-h-[200px] border border-colorsGray rounded-lg p-2"
-      onClick={(e) => handleViewerLink("chat")(e)}
-    >
-      <MdViewer content={content} />
+    <div className="" onClick={handleViewerLink("chat")}>
+      <CoffeeChatContentMdViewer content={content} />
     </div>
   )
 }

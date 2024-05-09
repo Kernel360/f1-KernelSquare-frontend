@@ -21,6 +21,7 @@ import type { LoginFormData } from "@/interfaces/form"
 import { useRouter } from "next/navigation"
 import PasswordFieldController from "../form-fields/login/password/PasswordFieldController"
 import EmailFieldController from "../form-fields/login/email/EmailFieldController"
+import { useQueryClient } from "@tanstack/react-query"
 
 export interface LoginFormProps {
   onSuccess?: (user: NonNullable<SessionPayload>) => void
@@ -29,6 +30,8 @@ export interface LoginFormProps {
 
 function LoginForm({ onSuccess, continueURL }: LoginFormProps) {
   const { replace, push } = useRouter()
+
+  const queryClient = useQueryClient()
 
   const {
     handleSubmit,
@@ -89,6 +92,12 @@ function LoginForm({ onSuccess, continueURL }: LoginFormProps) {
 
         return
       }
+
+      queryClient.invalidateQueries({
+        predicate(query) {
+          return true
+        },
+      })
 
       await revalidatePage("*")
 
