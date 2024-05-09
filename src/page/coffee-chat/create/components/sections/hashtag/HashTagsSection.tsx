@@ -1,12 +1,12 @@
 "use client"
 
-import CoffeeChatSection from "./CoffeeChatSection"
+import CoffeeChatSection from "../../CoffeeChatSection"
 import Limitation from "@/constants/limitation"
 import { useRecoilValue, useResetRecoilState } from "recoil"
 import { HashTagList } from "@/recoil/atoms/coffee-chat/hashtags"
 import { Control } from "react-hook-form"
 import { CoffeeChatFormData } from "@/interfaces/form"
-import HashTagsController from "../controls/HashTagsController"
+import HashTagsController from "../../../controls/HashTagsController"
 import { useEffect } from "react"
 
 interface HashTagsSectionProps {

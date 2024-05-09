@@ -12,7 +12,7 @@ import type { FieldErrors } from "react-hook-form"
 import Button from "@/components/shared/button/Button"
 import { CoffeeChatFormProps } from "./CreateCoffeeChatReservationPage.types"
 import CoffeeChatSection from "./components/CoffeeChatSection"
-import HashTagsSection from "./components/HashTagsSection"
+import HashTagsSection from "./components/sections/hashtag/HashTagsSection"
 import ScheduleSection from "./components/ScheduleSection"
 import { CoffeeChatQueries } from "@/react-query/coffee-chat"
 import { errorMessage } from "@/constants/message/error"
@@ -23,13 +23,13 @@ import { APIResponse } from "@/interfaces/dto/api-response"
 import TextCounter from "@/components/shared/TextCounter"
 import notificationMessage from "@/constants/message/notification"
 import { validationMessage } from "@/constants/message/validation"
-import Textarea from "@/components/shared/textarea/Textarea"
 import { useSelectedChatTimes } from "./hooks/useSelectedChatTimes"
 import { CreateCoffeeChatPostRequest } from "@/interfaces/dto/coffee-chat/create-coffeechat-post.dto"
 import { transformDateTime } from "./controls/util/parse-field"
 import { CoffeeChatFormData } from "@/interfaces/form"
 import { DateTimeRuleValidateType } from "./controls/rules/datetime-rules"
 import TitleSection from "./components/sections/title/TitleSection"
+import IntroductionSection from "./components/sections/introduction/IntroductionSection"
 // import { EditMode } from "@/page/askQuestion/components/AskQuestionPageControl"
 
 const MdEditor = dynamic(() => import("./components/MdEditor"), {
@@ -157,6 +157,28 @@ function CreateCoffeeChatReservationPage({
       }
     }
 
+    if (errors.introduction) {
+      const { type, message } = errors.introduction
+
+      if (type === "required") {
+        toast.error(message, {
+          toastId: "emptyChatIntroduction",
+          position: "top-center",
+        })
+
+        return
+      }
+
+      if (type === "minLength" || type === "maxLength") {
+        toast.error(message, {
+          toastId: "ChatIntroductionLength",
+          position: "top-center",
+        })
+
+        return
+      }
+    }
+
     if (errors.dateTimes) {
       const { type, message } = errors.dateTimes
 
@@ -189,17 +211,12 @@ function CreateCoffeeChatReservationPage({
   if (!user) return
 
   const handleSubmitButtonDisabled = () => {
-    const isValidIntroduction = () =>
-      !watch("introduction") ||
-      watch("introduction").length < Limitation.chat_introduction_limit_under ||
-      watch("introduction").length > Limitation.chat_introduction_limit_over
-
     const isValidContent = () =>
       !watch("content") ||
       watch("content").length < Limitation.content_limit_under ||
       watch("content").length > Limitation.content_limit_over
 
-    return !user || isValidIntroduction() || isValidContent()
+    return !user || isValidContent()
   }
 
   return (
@@ -212,27 +229,7 @@ function CreateCoffeeChatReservationPage({
         <Spacing size={20} />
         <TitleSection control={control} />
         <Spacing size={20} />
-        <CoffeeChatSection>
-          <div className="w-full">
-            <Textarea
-              className="resize-none w-full min-h-[100px] border-none outline-none focus:outline-none"
-              placeholder="커피챗의 내용이 명확하게 전달되도록 간결하게 요약해주세요. (10자 이상 150자 이하)"
-              {...register("introduction", {
-                required: true,
-                minLength: Limitation.chat_introduction_limit_under,
-                maxLength: Limitation.chat_introduction_limit_over,
-              })}
-            />
-          </div>
-          <div>
-            <TextCounter
-              text={watch("introduction") ?? ""}
-              min={Limitation.chat_introduction_limit_under}
-              max={Limitation.chat_introduction_limit_over}
-              className="text-lg block text-right h-2 mb-5"
-            />
-          </div>
-        </CoffeeChatSection>
+        <IntroductionSection control={control} />
         <Spacing size={20} />
         <CoffeeChatSection>
           <CoffeeChatSection.Label htmlFor="content">
