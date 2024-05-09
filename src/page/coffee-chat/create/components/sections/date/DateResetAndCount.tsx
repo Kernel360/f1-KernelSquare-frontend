@@ -26,7 +26,7 @@ const Reset = () => {
 
   return (
     <Button
-      className="p-0.5 gap-1 pointerhover:hover:text-danger"
+      className="p-0.5 gap-1 pointerhover:hover:text-danger font-bold"
       onClick={() => clear({ dateTime: dayInstance.toDate() })}
     >
       <span>{dayInstance.format("YYYY.MM.DD")}</span>

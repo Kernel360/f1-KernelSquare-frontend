@@ -22,7 +22,7 @@ const ScheduleSection = ({ control }: SheduleSectionProps) => {
   return (
     <CoffeeChatSection>
       <CoffeeChatSection.Label className="w-max max-w-full flex flex-wrap items-center gap-2">
-        <div>커피챗 가능 일시</div>
+        <div>일시</div>
         {selectedDate && <HelpHoverBox />}
       </CoffeeChatSection.Label>
       <section className="my-2 py-2 bg-light-green">

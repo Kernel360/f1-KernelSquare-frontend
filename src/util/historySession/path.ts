@@ -77,6 +77,7 @@ export function updateHistorySessionPath() {
 export function pathnameOfBack(pathname: string): TargetPage | null {
   if (isQuestionDetailPage(pathname)) return "qna"
   if (isCoffeeChatDetailPage(pathname)) return "chat"
+  if (pathname === "/chat/create") return "chat"
 
   return null
 }

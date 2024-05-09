@@ -27,7 +27,7 @@ function TitleSection({ control }: TitleSectionProps) {
                 autoComplete="off"
                 fullWidth
                 className={
-                  "rounded-none border-r-0 border-l-0 border-t-0 text-3xl placeholder:text-3xl"
+                  "rounded-none border-r-0 border-l-0 border-t-0 py-4 text-xl placeholder:text-xl pc:text-2xl pc:placeholder:text-2xl"
                 }
                 placeholder="제목(5자 이상 100자 이하)"
                 value={field.value}
@@ -39,7 +39,7 @@ function TitleSection({ control }: TitleSectionProps) {
                 onChange={field.onChange}
                 onBlur={field.onBlur}
               />
-              <TitleTextCounter text={field.value} />
+              <TitleTextCounter text={field.value} className="mt-1" />
             </div>
           )
         }}
@@ -50,12 +50,19 @@ function TitleSection({ control }: TitleSectionProps) {
 
 export default TitleSection
 
-const TitleTextCounter = ({ text }: { text: string }) => {
+const TitleTextCounter = ({
+  text,
+  className,
+}: {
+  text: string
+  className?: string
+}) => {
   return (
     <TextCounter
       text={text}
       min={Limitation.title_limit_under}
       max={Limitation.title_limit_over}
+      className={className}
     />
   )
 }

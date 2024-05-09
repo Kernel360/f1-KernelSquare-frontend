@@ -22,6 +22,7 @@ import IntroductionSection from "./components/sections/introduction/Introduction
 import ContentSection from "./components/sections/content/ContentSection"
 import { pickError } from "./controls/util/form"
 import { useCreateCoffeeChat } from "./hooks/useCreateCoffeeChat"
+import LinkToListPage from "@/components/LinkToListPage"
 
 export interface CoffeeChatFormProps {
   initialValues?: CoffeeChatEditorInitialValues
@@ -105,20 +106,25 @@ function CreateCoffeeChatReservationPage({
   }, []) /* eslint-disable-line */
 
   return (
-    <div className="mt-5 px-6 tabletDevice:px-12 xl:px-16">
+    <div className="px-6 py-6 sm:px-12 sm:py-2 pc:pl-[120px] pc:pr-[60px] pc:pt-[72px] pc:pb-12">
+      <div className="hidden pc:block">
+        <LinkToListPage to="chat" />
+      </div>
+      <h3 className="my-6 sm:my-8 pc:my-12 font-bold text-2xl pc:text-[32px]">
+        커피챗 개설하기
+      </h3>
       <form
         onSubmit={handleSubmit(onSubmit, onInvalid)}
         className={`transition-opacity animate-in fade-in-0 [animation-duration:1000ms]`}
       >
-        <div className="flex flex-col w-full gap-y-5">
+        <div className="flex flex-col w-full gap-y-6 mb-12 pc:mb-[72px] ">
           <TitleSection control={control} />
           <IntroductionSection control={control} />
           <ContentSection control={control} />
           <HashTagsSection control={control} />
           <ScheduleSection control={control} />
         </div>
-        <Spacing size={20} />
-        <div className="flex justify-center">
+        <div className="flex w-full pc:justify-end">
           <Button
             disabled={
               !isValid ||
@@ -126,7 +132,7 @@ function CreateCoffeeChatReservationPage({
               createCoffeeChatApiStatus === "pending"
             }
             buttonTheme="primary"
-            className="p-5 py-3 my-10 disabled:bg-colorsGray disabled:text-colorsDarkGray"
+            className="w-full pc:w-fit p-5 py-3 my-10 disabled:bg-colorsGray disabled:text-colorsDarkGray"
             type="submit"
           >
             {createCoffeeChatApiStatus === "pending"
