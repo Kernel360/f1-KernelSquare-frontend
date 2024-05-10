@@ -1,19 +1,16 @@
 .react-calendar__tile:not(.disabled).reservation-possible {
   background: #fbf8ce;
-  border-radius: 6px;
 }
 
 .react-calendar__tile:not(.disabled).reservation-confirm {
   background: lightgray;
   color: #fff;
   font-weight: bold;
-  border-radius: 6px;
 }
 
 .react-calendar__tile:not(.disabled).mentoring {
   background: #00c471;
   color: #fff;
-  border-radius: 6px;
 }
 .react-calendar__tile--active.mentoring abbr {
   color: #ffff80;
