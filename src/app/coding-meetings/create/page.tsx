@@ -5,6 +5,7 @@ import CreateCodingMeetingPage from "@/page/coding-meetings/create/CreateCodingM
 import { getServerSession } from "@/util/auth"
 import { Metadata } from "next"
 import { notFound } from "next/navigation"
+import CreateCodingMeetingUnauthorized from "../_components/guard-page/Unauthorized"
 
 export const metadata: Metadata = {
   title: `모각코 생성`,
@@ -33,17 +34,9 @@ export const metadata: Metadata = {
 export default async function CreateCodingMeetingsPage() {
   const { user } = getServerSession()
 
-  // [TODO]
   try {
     if (!user) {
-      return (
-        <div className="text-center">
-          <div className="w-[400px] m-auto mt-[100px]">
-            <Mentee />
-          </div>
-          <div className="text-xl">{notificationMessage.unauthorized}.</div>
-        </div>
-      )
+      return <CreateCodingMeetingUnauthorized />
     }
 
     return <CreateCodingMeetingPage editMode="create" />
