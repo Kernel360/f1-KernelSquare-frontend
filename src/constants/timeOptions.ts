@@ -1,9 +1,32 @@
+export type CodingMeetingHourMinuteTime = {
+  hour:
+    | (typeof CODING_MEETING_HOURS)["AM"][number]
+    | (typeof CODING_MEETING_HOURS)["PM"][number]
+  minute: (typeof CODING_MEETING_MINUTES)[number]
+}
+
+export type CodingMeetingTimeOption = {
+  AM: `${(typeof CODING_MEETING_HOURS)["AM"][number]}:${(typeof CODING_MEETING_MINUTES)[number]}`
+  PM: `${(typeof CODING_MEETING_HOURS)["PM"][number]}:${(typeof CODING_MEETING_MINUTES)[number]}`
+}
+export type CodingMeetingTimeOptions = {
+  AM: Array<CodingMeetingTimeOption["AM"]>
+  PM: Array<CodingMeetingTimeOption["PM"]>
+}
+
 export const enum TimeZone {
   AM = "AM",
   PM = "PM",
 }
 
-export const AM = [
+export const CODING_MEETING_HOURS = {
+  AM: ["00", "01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11"],
+  PM: ["12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23"],
+} as const
+
+export const CODING_MEETING_MINUTES = ["00", "30"] as const
+
+export const CODING_MEETING_AM_OPTIONS: CodingMeetingTimeOptions["AM"] = [
   "00:00",
   "00:30",
   "01:00",
@@ -30,7 +53,7 @@ export const AM = [
   "11:30",
 ]
 
-export const PM = [
+export const CODING_MEETING_PM_OPTIONS: CodingMeetingTimeOptions["PM"] = [
   "12:00",
   "12:30",
   "13:00",
@@ -56,32 +79,3 @@ export const PM = [
   "23:00",
   "23:30",
 ]
-
-const hours = [
-  "00",
-  "01",
-  "02",
-  "03",
-  "04",
-  "05",
-  "06",
-  "07",
-  "08",
-  "09",
-  "10",
-  "11",
-  "12",
-  "13",
-  "14",
-  "15",
-  "16",
-  "17",
-  "18",
-  "19",
-  "20",
-  "21",
-  "22",
-  "23",
-]
-const minutes = ["00", "30"]
-export const timeSelect = { hours, minutes }

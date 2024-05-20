@@ -11,11 +11,11 @@ type ChatContentRules = Omit<
 export const chatContentRules: ChatContentRules = {
   required: validationMessage.noContent,
   minLength: {
-    value: Limitation.content_limit_under,
-    message: validationMessage.underContentLimit,
+    value: Limitation.chat_content_min_length,
+    message: validationMessage.chatContentLength,
   },
   maxLength: {
-    value: Limitation.content_limit_over,
-    message: validationMessage.overContentLimit,
+    value: Limitation.chat_content_max_length,
+    message: validationMessage.chatContentLength,
   },
 }

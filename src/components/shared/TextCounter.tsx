@@ -17,7 +17,7 @@ interface TextCounterProps {
 }
 
 function TextCounter({
-  text,
+  text = "",
   min,
   max,
   className,

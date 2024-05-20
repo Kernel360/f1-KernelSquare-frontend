@@ -4,7 +4,7 @@ import { getHistorySessionPath } from "@/util/historySession/path"
 import { useRouter } from "next/navigation"
 import { DirectionIcons } from "./icons/Icons"
 
-export type TargetPage = "qna" | "chat"
+export type TargetPage = "qna" | "chat" | "coding-meetings"
 
 interface LinkToListPageProps {
   to: TargetPage
@@ -13,11 +13,13 @@ interface LinkToListPageProps {
 const initialPath: Record<TargetPage, string> = {
   qna: "/qna?page=0",
   chat: "/chat?page=0",
+  "coding-meetings": "/coding-meetings?page=0&size=10&filter=all",
 } as const
 
 const targetPathname: Record<TargetPage, string> = {
   qna: "/qna",
   chat: "/chat",
+  "coding-meetings": "/coding-meetings",
 } as const
 
 function LinkToListPage({ to }: LinkToListPageProps) {

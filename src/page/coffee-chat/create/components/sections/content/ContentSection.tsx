@@ -33,8 +33,8 @@ function CoffeeChatContentSection({ control }: CoffeeChatContentSectionProps) {
               </div>
               <TextCounter
                 text={field.value}
-                min={Limitation.content_limit_under}
-                max={Limitation.content_limit_over}
+                min={Limitation.chat_content_min_length}
+                max={Limitation.chat_content_max_length}
                 className="text-lg block text-right h-2 mr-5"
               />
             </div>
