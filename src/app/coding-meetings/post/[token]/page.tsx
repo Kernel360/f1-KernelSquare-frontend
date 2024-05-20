@@ -69,12 +69,13 @@ export default async function UpdateCodingMeetingsPage({
         />
       )
     }
+
     return (
       <div>
         <CreateCodingMeetingPage
           editMode="update"
           coding_meeting_token={params.token}
-          initialValues={codingMeetingPayload.data}
+          initialCodingMeeting={codingMeetingPayload.data}
         />
       </div>
     )

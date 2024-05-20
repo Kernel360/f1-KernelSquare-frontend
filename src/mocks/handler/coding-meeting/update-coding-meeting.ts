@@ -6,6 +6,7 @@ import {
 import mockCodingMeetings from "@/mocks/db/coding-meetings"
 import { RouteMap } from "@/service/route-map"
 import { HttpResponse, http } from "msw"
+import jwt, { JwtPayload } from "jsonwebtoken"
 
 export const mockUpdateCodingMeetingApi = http.put<
   { coding_meeting_token: string },
@@ -18,10 +19,11 @@ export const mockUpdateCodingMeetingApi = http.put<
   async ({ params, request }) => {
     try {
       const header = request.headers
-      const token = header.get("Authorization")
+      const authHeader = header.get("Authorization")
 
-      if (!token) {
-        const { Code, HttpStatus } = ApiStatus.QnA.updateQustion.Unauthorized
+      if (!authHeader) {
+        const { Code, HttpStatus } =
+          ApiStatus.CodingMeetings.updateCodingMeeting.Unauthorized
         return HttpResponse.json(
           {
             code: Code,
@@ -31,29 +33,47 @@ export const mockUpdateCodingMeetingApi = http.put<
         )
       }
 
-      const targetToken = params.coding_meeting_token
+      const accessToken = authHeader.replace(/^Bearer /g, "")
+      const decoded_token = jwt.decode(accessToken) as JwtPayload & {
+        id: number
+      }
 
-      const updatePayload = await request.json()
+      const targetCodingMeetingToken = params.coding_meeting_token
 
-      const targetMockIdx = mockCodingMeetings.findIndex(
-        (post) => post.coding_meeting_token === targetToken,
+      const targetMockCodingMeetingIdx = mockCodingMeetings.findIndex(
+        (post) => post.coding_meeting_token === targetCodingMeetingToken,
       )
 
-      if (targetMockIdx < 0) {
+      if (targetMockCodingMeetingIdx < 0) {
         const { Code, HttpStatus } =
           ApiStatus.CodingMeetings.updateCodingMeeting.NotFound
 
         return HttpResponse.json(
           {
             code: Code,
-            msg: "존재하지 않는 질문",
+            msg: "존재하지 않는 모각코",
           },
           { status: HttpStatus },
         )
       }
 
-      mockCodingMeetings[targetMockIdx] = {
-        ...mockCodingMeetings[targetMockIdx],
+      const targetMockCodingMeeting =
+        mockCodingMeetings[targetMockCodingMeetingIdx]
+
+      if (targetMockCodingMeeting.member_id !== decoded_token.id) {
+        const { Code, HttpStatus } =
+          ApiStatus.CodingMeetings.updateCodingMeeting.Forbidden
+
+        return HttpResponse.json(
+          { code: Code, msg: "해당 모각코를 수정할 권한이 없는 유저입니다" },
+          { status: HttpStatus },
+        )
+      }
+
+      const updatePayload = await request.json()
+
+      mockCodingMeetings[targetMockCodingMeetingIdx] = {
+        ...mockCodingMeetings[targetMockCodingMeetingIdx],
         ...updatePayload,
       }
 
@@ -63,7 +83,7 @@ export const mockUpdateCodingMeetingApi = http.put<
       return HttpResponse.json(
         {
           code: Code,
-          msg: "질문 수정 성공",
+          msg: "모각코 수정 성공",
         },
         { status: HttpStatus },
       )

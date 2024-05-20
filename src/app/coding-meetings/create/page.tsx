@@ -1,7 +1,4 @@
-import Mentee from "@/components/shared/animation/Mentee"
-import notificationMessage from "@/constants/message/notification"
 import CreateCodingMeetingPage from "@/page/coding-meetings/create/CreateCodingMeetingPage"
-
 import { getServerSession } from "@/util/auth"
 import { Metadata } from "next"
 import { notFound } from "next/navigation"

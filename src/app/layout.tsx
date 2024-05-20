@@ -15,6 +15,7 @@ import ScrollTop from "@/components/shared/ScrollTop"
 import ToastDismissEventListener from "@/components/layout/ToastDismissListener"
 import GoogleAnalyticsProvider from "@/google-analytics/GoogleAnalyticsProvider"
 import HistorySession from "@/components/history/HistorySession"
+import CodingMeetingFormProvider from "@/page/coding-meetings/create/CodingMeetingFormProvider"
 
 export const dynamic = "force-dynamic"
 
@@ -68,8 +69,10 @@ export default function RootLayout({
             <HistorySession />
             <PopupEventListener />
             <ScrollTop />
-            <Layout>{children}</Layout>
-            <Modal />
+            <CodingMeetingFormProvider>
+              <Layout>{children}</Layout>
+              <Modal />
+            </CodingMeetingFormProvider>
             <ToastContainer limit={1} />
             <ToastDismissEventListener />
           </ReactQueryProvider>

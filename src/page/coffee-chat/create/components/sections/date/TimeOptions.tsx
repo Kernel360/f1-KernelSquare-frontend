@@ -1,6 +1,10 @@
 import TimeZoneSection from "./TimeZoneSection"
 import { useState } from "react"
-import { AM, PM, TimeZone } from "@/constants/timeOptions"
+import {
+  CODING_MEETING_AM_OPTIONS,
+  CODING_MEETING_PM_OPTIONS,
+  TimeZone,
+} from "@/constants/timeOptions"
 import TimeOptionButton from "../../TimeOptionButton"
 import Spacing from "@/components/shared/Spacing"
 import dayjs from "dayjs"
@@ -12,7 +16,10 @@ interface TimeOptionsProps {
 function TimeOptions({ day }: TimeOptionsProps) {
   const [timeZone, setTimeZone] = useState<TimeZone>(TimeZone.AM)
 
-  const targetOptions = timeZone === TimeZone.AM ? AM : PM
+  const targetOptions =
+    timeZone === TimeZone.AM
+      ? CODING_MEETING_AM_OPTIONS
+      : CODING_MEETING_PM_OPTIONS
 
   return (
     <div>
