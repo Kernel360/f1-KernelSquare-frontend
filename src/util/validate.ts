@@ -104,6 +104,9 @@ export class Validator {
           !hashTag.match(Regex.preventEmoji)
         )
       },
+      whiteSpace() {
+        return !!hashTag && !!hashTag.trim()
+      },
     }
   }
 

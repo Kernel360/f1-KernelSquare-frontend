@@ -1,7 +1,6 @@
 "use client"
 
 import { useForm } from "react-hook-form"
-import Spacing from "@/components/shared/Spacing"
 import { useEffect } from "react"
 import { toast } from "react-toastify"
 import { useClientSession } from "@/hooks/useClientSession"
@@ -20,9 +19,9 @@ import {
 import TitleSection from "./components/sections/title/TitleSection"
 import IntroductionSection from "./components/sections/introduction/IntroductionSection"
 import ContentSection from "./components/sections/content/ContentSection"
-import { pickError } from "./controls/util/form"
 import { useCreateCoffeeChat } from "./hooks/useCreateCoffeeChat"
 import LinkToListPage from "@/components/LinkToListPage"
+import { pickFirstError } from "@/util/hook-form/error"
 
 export interface CoffeeChatFormProps {
   initialValues?: CoffeeChatEditorInitialValues
@@ -91,7 +90,7 @@ function CreateCoffeeChatReservationPage({
         각 필드(title, introduction...)에 대한 리액트 훅 폼 에러메시지를 설정했기 때문에,
         에러 객체의 message를 그대로 활용
     */
-    const { type, message } = pickError(errors)
+    const { type, message } = pickFirstError<CoffeeChatFormData>(errors)
 
     toast.error(message, {
       toastId: `${type}-${message}`,

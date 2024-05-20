@@ -62,3 +62,18 @@ const Limitation = {
 } as const
 
 export default Limitation
+
+export const CODING_MEETING_LIMITS = {
+  title: {
+    minLength: 5,
+    maxLength: 100,
+  },
+  memberCount: {
+    min: 3,
+    max: 6,
+  },
+  content: {
+    minLength: 10,
+    maxLength: 10000,
+  },
+}

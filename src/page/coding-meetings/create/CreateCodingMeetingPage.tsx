@@ -1,410 +1,131 @@
 "use client"
 
-import { useClientSession } from "@/hooks/useClientSession"
-import { CodingMeetingHashTagList } from "@/recoil/atoms/coding-meeting/hashtags"
-import { useQueryClient } from "@tanstack/react-query"
-import { useRouter } from "next/navigation"
-import { FieldErrors, useForm } from "react-hook-form"
+import { FieldErrors, useFormContext } from "react-hook-form"
 import { toast } from "react-toastify"
-import { useRecoilState, useRecoilValue } from "recoil"
-import CodingMeetingSection from "./components/CodingMeetingSection"
-import { Input } from "@/components/shared/input/Input"
 import Spacing from "@/components/shared/Spacing"
-import Textarea from "@/components/shared/textarea/Textarea"
 import Button from "@/components/shared/button/Button"
-import HashTagsSection from "./components/HashTagsSection"
-import LocationSection from "./components/LocationSection"
-import HeadCountSection from "./components/HeadCountSection"
-import DateTimeSection from "./components/DateTimeSection"
-import { CodingMeetingQueries } from "@/react-query/coding-meeting"
-import { CodingMeetingHeadCount } from "@/recoil/atoms/coding-meeting/headcount"
-import { DirectionIcons } from "@/components/icons/Icons"
-import { EndTime, StartTime } from "@/recoil/atoms/coding-meeting/dateTime"
-import { LocationForSubmit } from "@/recoil/atoms/coding-meeting/mapData"
-import Limitation from "@/constants/limitation"
-import type { CodingMeetingDetailPayload } from "@/interfaces/dto/coding-meeting/get-coding-meeting-detail.dto"
-import NotFound from "@/app/not-found"
-import { revalidatePage } from "@/util/actions/revalidatePage"
-import queryKey from "@/constants/queryKey"
-import useHandleCreateCodingMeetingTime from "./hooks/useHandleCreateCodingMeetingTime"
-import { AxiosError } from "axios"
-import { APIResponse } from "@/interfaces/dto/api-response"
-import TextCounter from "@/components/shared/TextCounter"
-import { twJoin } from "tailwind-merge"
-import notificationMessage from "@/constants/message/notification"
-import { validationMessage } from "@/constants/message/validation"
-import { errorMessage } from "@/constants/message/error"
+import HashTagsSection from "./components/section/hash-tags/HashTagsSection"
+import DateTimeSection from "./components/section/date-time/DateTimeSection"
+import { CodingMeetingFormData, CodingMeetingPageMode } from "@/interfaces/form"
+import TitleSection from "./components/section/title/TitleSection"
+import LocationSection from "./components/section/location/LocationSection"
+import MemberCountSection from "./components/section/member-count/MemberCountSection"
+import ContentSection from "./components/section/content/ContentSection"
+import LinkToListPage from "@/components/LinkToListPage"
+import { pickFirstError } from "@/util/hook-form/error"
+import { useCreateCodingMeeting } from "./hooks/useCreateCodingMeeting"
+import { formDataToPayload, payloadToFormData } from "../util/parser"
+import { useUpdateCodingMeeting } from "./hooks/useUpdateCodingMeeting"
+import { CodingMeetingDetailPayload } from "@/interfaces/dto/coding-meeting/get-coding-meeting-detail.dto"
 
 interface CreateCodingMeetingPageProps {
-  editMode: "create" | "update"
-  initialValues?: CodingMeetingDetailPayload
+  editMode: CodingMeetingPageMode
   coding_meeting_token?: string
+  initialCodingMeeting?: CodingMeetingDetailPayload
 }
 
-interface CodingMeetingFormData {
-  title: string
-  content: string
-}
-
-const CreateCodingMeetingPage = ({
+function CreateCodingMeetingPage(props: { editMode: "create" }): JSX.Element
+function CreateCodingMeetingPage(props: {
+  editMode: "update"
+  coding_meeting_token: string
+  initialCodingMeeting: CodingMeetingDetailPayload
+}): JSX.Element
+function CreateCodingMeetingPage({
   editMode,
-  initialValues,
   coding_meeting_token,
-}: CreateCodingMeetingPageProps) => {
-  const [hash_tags, setHash_tags] = useRecoilState(CodingMeetingHashTagList)
-  const [head_cnt, setHead_cnt] = useRecoilState(CodingMeetingHeadCount)
-  const startTime = useRecoilValue(StartTime)
-  const endTime = useRecoilValue(EndTime)
-  const [location, setLocation] = useRecoilState(LocationForSubmit)
-  const queryClient = useQueryClient()
-  const { replace } = useRouter()
-  const { user } = useClientSession()
-  const {
-    resetDateTimes,
-    formatTime,
-    formatByUTC,
-    formattedStartTime,
-    formattedEndTime,
-  } = useHandleCreateCodingMeetingTime()
+  initialCodingMeeting,
+}: CreateCodingMeetingPageProps): JSX.Element {
+  const { handleSubmit } = useFormContext<CodingMeetingFormData>()
 
-  const { register, handleSubmit, watch, getValues } =
-    useForm<CodingMeetingFormData>(
-      initialValues
-        ? {
-            defaultValues: {
-              title: initialValues.coding_meeting_title,
-              content: initialValues.coding_meeting_content,
-            },
-          }
-        : {},
-    )
+  const { createCodingMeetingApi, createCodingMeetingApiStatus } =
+    useCreateCodingMeeting()
 
-  const { createCodingMeetingPost } =
-    CodingMeetingQueries.useCreateCodingMeeting()
-  const { updateCodingMeeting } = CodingMeetingQueries.useUpdateCodingMeeting()
+  const { updateCodingMeetingApi, updateCodingMeetingApiStatus } =
+    useUpdateCodingMeeting()
 
-  const goToListPage = () => replace("/coding-meetings")
+  const initialFormData = initialCodingMeeting
+    ? payloadToFormData(initialCodingMeeting)
+    : null
 
-  const onSubmit = async (data: CodingMeetingFormData) => {
-    // 사용자 권한 인증
-    if (!user)
-      return toast.error(notificationMessage.unauthorized, {
-        toastId: "unauthorizedToCreateCodingMeeting",
-        position: "top-center",
-      })
-    // 장소 유효성 검사
-    if (!location)
-      return toast.error(validationMessage.noLocation, {
-        toastId: "emptyLocation",
-        position: "top-center",
-      })
-    // 인원수 유효성 검사
-    if (head_cnt === "0")
-      return toast.error(validationMessage.noHeadCnt, {
-        toastId: "emptyHeadCnt",
-        position: "top-center",
-      })
-    // 시간 유효성 검사
-    // 시간 값이 없을 경우
-    if (!startTime || !endTime)
-      return toast.error(validationMessage.noTime, {
-        toastId: "emptyCodingMeetingTime",
-        position: "top-center",
-      })
-    // 종료 시간이 시작 시간보다 빠를 경우
-    if (formattedEndTime.isBefore(formattedStartTime))
-      return toast.error(validationMessage.timeError, {
-        toastId: "codingMeetingTimeError",
-        position: "top-center",
-      })
-    // 시작 시간이 종료 시간과 같을 경우
-    if (formattedEndTime.isSame(formattedStartTime, "minute"))
-      return toast.error(validationMessage.sameTime, {
-        toastId: "codingMeetingSameTimeError",
-        position: "top-center",
-      })
-
-    const payload = {
-      coding_meeting_title: data.title,
-      coding_meeting_content: data.content,
-      coding_meeting_hashtags: hash_tags,
-      coding_meeting_location_id: location?.coding_meeting_location_id,
-      coding_meeting_location_place_name:
-        location.coding_meeting_location_place_name,
-      coding_meeting_location_longitude:
-        location.coding_meeting_location_longitude,
-      coding_meeting_location_latitude:
-        location.coding_meeting_location_latitude,
-      coding_meeting_member_upper_limit: Number(head_cnt),
-      coding_meeting_start_time: formatByUTC(formatTime(startTime)),
-      coding_meeting_end_time: formatByUTC(formatTime(endTime)),
-    }
-
+  const onSubmit = async (formData: CodingMeetingFormData) => {
     if (editMode === "create") {
-      createCodingMeetingPost(payload, {
-        onSuccess: (res) => {
-          queryClient.invalidateQueries({
-            queryKey: [queryKey.codingMeeting],
-          })
-
-          replace(`/coding-meetings/${res.data.data?.coding_meeting_token}`)
-
-          setHash_tags([])
-          setHead_cnt("3")
-          resetDateTimes()
-          setLocation(undefined)
-        },
-        onError: (error: Error | AxiosError<APIResponse>) => {
-          if (error instanceof AxiosError) {
-            const { response } = error as AxiosError<APIResponse>
-
-            toast.error(
-              response?.data.msg ?? errorMessage.createCodingMeeting,
-              {
-                toastId: "failToCreateCodingMeeting",
-                position: "top-center",
-              },
-            )
-            return
-          }
-
-          toast.error(errorMessage.createCodingMeeting, {
-            toastId: "failToCreateCodingMeeting",
-            position: "top-center",
-          })
-        },
-      })
+      createCodingMeetingApi(formDataToPayload("create", formData))
+      return
     }
 
-    if (!coding_meeting_token) {
-      return NotFound()
-    }
-
-    if (editMode === "update") {
-      const editPayload = {
-        ...payload,
-        coding_meeting_token,
-      }
-      updateCodingMeeting(editPayload, {
-        onSuccess: async (res) => {
-          queryClient.resetQueries({
-            queryKey: [queryKey.codingMeeting],
-          })
-
-          await revalidatePage("/coding-meetings/[token]", "page")
-
-          setTimeout(() => {
-            replace(`/coding-meetings/${coding_meeting_token}`)
-
-            setHash_tags([])
-            setHead_cnt("3")
-            resetDateTimes()
-            setLocation(undefined)
-          }, 0)
-        },
-        onError: (error: Error | AxiosError<APIResponse>) => {
-          if (error instanceof AxiosError) {
-            const { response } = error as AxiosError<APIResponse>
-
-            toast.error(
-              response?.data.msg ?? errorMessage.updateCodingMeeting,
-              {
-                toastId: "failToUpdateCodingMeeting",
-                position: "top-center",
-              },
-            )
-            return
-          }
-
-          toast.error(errorMessage.updateCodingMeeting, {
-            toastId: "failToUpdateCodingMeeting",
-            position: "top-center",
-          })
-        },
-      })
-    }
+    // update
+    updateCodingMeetingApi(
+      formDataToPayload("update", formData, coding_meeting_token!),
+    )
   }
+
   const onInvalid = async (errors: FieldErrors<CodingMeetingFormData>) => {
-    if (errors?.title) {
-      const titleErrorMessage = ((type: typeof errors.title.type) => {
-        switch (type) {
-          case "required":
-            return validationMessage.notitle
-          case "minLength":
-            return validationMessage.underTitleLimit
-          case "maxLength":
-            return validationMessage.overTitleLimit
-        }
-      })(errors.title.type)
+    const error = pickFirstError<CodingMeetingFormData>(errors)
 
-      toast.error(titleErrorMessage, {
-        position: "top-center",
-        toastId: "createCodingMeetingTitle",
-      })
-
-      window.scroll({
-        top: 0,
-        behavior: "smooth",
-      })
-
-      return
-    }
-
-    if (errors?.content) {
-      const contentErrorMessage = ((type: typeof errors.content.type) => {
-        switch (type) {
-          case "required":
-            return validationMessage.noContent
-          case "minLength":
-            return validationMessage.underContentLimit
-          case "maxLength":
-            return validationMessage.overContentLimit
-        }
-      })(errors.content.type)
-
-      toast.error(contentErrorMessage, {
-        position: "top-center",
-        toastId: "createCodingMeetingContent",
-      })
-      return
-    }
+    toast.error(error.message, {
+      position: "top-center",
+      toastId: "codingMeetingInvalidForm",
+    })
   }
-
-  const TitleInputClass = twJoin([
-    "text-base placeholder:text-base",
-    watch("title") &&
-      (watch("title")?.length < Limitation.title_limit_under ||
-        watch("title")?.length > Limitation.title_limit_over) &&
-      "focus:border-danger border-danger",
-  ])
 
   return (
-    <div className="w-[80%] m-auto">
-      <div
-        className="flex text-[#828282] items-center mt-10 cursor-pointer w-[100px]"
-        onClick={goToListPage}
-      >
-        <DirectionIcons.LeftLine className="text-2xl" />
-        <div className="text-base">목록 보기</div>
+    <div className="px-6 py-6 sm:px-12 sm:pt-8 sm:pb-12 pc:pt-[72px] pc:pl-[80px] pc:pr-[24px] xl:!pr-[40px] pc:pb-[42px]">
+      <div className="hidden pc:block">
+        <LinkToListPage to="coding-meetings" />
+        <Spacing size={48} />
       </div>
-      <div className="text-[32px] font-bold p-6">모각코 모집하기</div>
+      <h3 className="text-2xl pc:text-[32px] font-bold mb-8 pc:mb-14">
+        {editMode === "create" ? "모각코 모집하기" : "모각코 수정하기"}
+      </h3>
       <form
         onSubmit={handleSubmit(onSubmit, onInvalid)}
         className={`transition-opacity duration-1000 m-auto`}
       >
-        <CodingMeetingSection>
-          <CodingMeetingSection.Label htmlFor="title">
-            제목
-          </CodingMeetingSection.Label>
-          <div className="w-full">
-            <Input
-              id="title"
-              spellCheck="false"
-              autoComplete="off"
-              fullWidth
-              className={TitleInputClass}
-              placeholder="제목을 입력해주세요"
-              {...register("title", {
-                required: true,
-                minLength: Limitation.title_limit_under,
-                maxLength: Limitation.title_limit_over,
-              })}
-            />
-            <div>
-              {watch("title") &&
-                (watch("title")?.length < Limitation.title_limit_under ||
-                  watch("title")?.length > Limitation.title_limit_over) && (
-                  <Input.ErrorMessage className="text-md">
-                    {"제목은 5자 이상 100자 이하여야 합니다."}
-                  </Input.ErrorMessage>
-                )}
-            </div>
-          </div>
-        </CodingMeetingSection>
-        <Spacing size={10} />
-        <LocationSection
-          initialLocation={
-            initialValues && {
-              coding_meeting_location_id:
-                initialValues.coding_meeting_location_id,
-              coding_meeting_location_place_name:
-                initialValues.coding_meeting_location_place_name,
-              coding_meeting_location_latitude:
-                initialValues.coding_meeting_location_latitude,
-              coding_meeting_location_longitude:
-                initialValues.coding_meeting_location_longitude,
-            }
-          }
-        />
-        <Spacing size={10} />
-        <HeadCountSection
-          initialCnt={
-            initialValues &&
-            initialValues?.coding_meeting_member_upper_limit + ""
-          }
-        />
-        <Spacing size={10} />
-        <DateTimeSection
-          initialDateTime={
-            initialValues && {
-              coding_meeting_start_time:
-                initialValues?.coding_meeting_start_time,
-              coding_meeting_end_time: initialValues?.coding_meeting_end_time,
-            }
-          }
-        />
-        <Spacing size={10} />
-        <HashTagsSection
-          initialHashTags={
-            initialValues && initialValues?.coding_meeting_hashtags
-          }
-        />
-        <Spacing size={10} />
-        <CodingMeetingSection>
-          <CodingMeetingSection.Label htmlFor="content">
-            소개글
-          </CodingMeetingSection.Label>
-          <div className="w-full">
-            <Textarea
-              className="w-full min-h-[200px]"
-              placeholder="모집글의 내용을 작성해주세요 (최대 10,000자)"
-              {...register("content", {
-                required: true,
-                minLength: Limitation.content_limit_under,
-                maxLength: Limitation.content_limit_over,
-              })}
-            />
-          </div>
-        </CodingMeetingSection>
-        <div>
-          <TextCounter
-            text={watch("content") ?? ""}
-            min={Limitation.content_limit_under}
-            max={Limitation.content_limit_over}
-            className="text-lg block text-right h-2 mr-5"
+        <div className="flex w-full flex-col gap-8">
+          <TitleSection
+            {...(initialFormData && { initialTitle: initialFormData.title })}
+          />
+          <LocationSection
+            {...(initialFormData && {
+              initialLocation: initialFormData.location,
+            })}
+          />
+          <MemberCountSection
+            {...(initialFormData && {
+              initialMemberCount: initialFormData.member_upper_limit,
+            })}
+          />
+          <DateTimeSection
+            {...(initialFormData && { initialDateTime: initialFormData.date })}
+          />
+          <HashTagsSection
+            {...(initialFormData && {
+              initialHashTags: initialFormData.hashtags,
+            })}
+          />
+          <ContentSection
+            {...(initialFormData && {
+              initialContent: initialFormData.content,
+            })}
           />
         </div>
         <Spacing size={10} />
         <div className="flex flex-col sm:flex-row sm:justify-end sm:items-center w-full p-6 sm:p-0 sm:pr-[20px]">
           <Button
-            disabled={
-              !user ||
-              !location ||
-              head_cnt === "0" ||
-              !startTime ||
-              !endTime ||
-              !watch("content") ||
-              watch("content").length < Limitation.answer_limit_under ||
-              watch("content").length > Limitation.answer_limit_over ||
-              !getValues("title") ||
-              getValues("title").length < Limitation.title_limit_under ||
-              getValues("title").length > Limitation.title_limit_over
-            }
             buttonTheme="primary"
-            className="block sm:inline-flex sm:w-[150px] w-full p-5 py-3 my-10 disabled:bg-colorsGray disabled:text-colorsDarkGray"
+            className="block sm:inline-flex sm:w-[150px] w-full p-5 py-3 my-10 disabled:bg-[#E0E0E0] disabled:text-[#BDBDBD] disabled:pointer-events-none"
             type="submit"
+            disabled={
+              createCodingMeetingApiStatus === "pending" ||
+              updateCodingMeetingApiStatus === "pending"
+            }
           >
-            {editMode === "update" ? "모각코 수정하기" : "모각코 개설하기"}
+            {buttonText({
+              editMode,
+              loading:
+                createCodingMeetingApiStatus === "pending" ||
+                updateCodingMeetingApiStatus === "pending",
+            })}
           </Button>
         </div>
       </form>
@@ -413,3 +134,17 @@ const CreateCodingMeetingPage = ({
 }
 
 export default CreateCodingMeetingPage
+
+const buttonText = ({
+  editMode,
+  loading,
+}: {
+  editMode: CodingMeetingPageMode
+  loading: boolean
+}) => {
+  if (editMode === "create") {
+    return loading ? "모각코 개설하는 중" : "모각코 개설하기"
+  }
+
+  return loading ? "모각코 수정하는 중" : "모각코 수정하기"
+}

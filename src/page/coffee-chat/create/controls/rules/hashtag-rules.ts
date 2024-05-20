@@ -16,6 +16,7 @@ export type HashTagListField = ControllerRenderProps<
 
 export const enum HashTagRuleValidateType {
   "InvalidFormat" = "invalidFormat",
+  "WhiteSpace" = "invalidWhiteSpace",
 }
 
 export const enum HashTagListRuleValidateType {
@@ -41,6 +42,13 @@ export const hashTagRules: ({
         }
 
         return validationMessage.preventSpecialCharacter
+      },
+      [HashTagRuleValidateType.WhiteSpace]: (hashTag) => {
+        if (validatorInstance.validateHashTag(hashTag).whiteSpace()) {
+          return true
+        }
+
+        return "해시태그는 공백만 포함할 수 없습니다."
       },
       [HashTagListRuleValidateType.Duplicate]: (hashTag) => {
         if (

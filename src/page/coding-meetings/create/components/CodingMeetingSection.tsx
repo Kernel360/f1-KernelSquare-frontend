@@ -1,29 +1,41 @@
 import { twMerge } from "tailwind-merge"
-import type {
-  CodingMeetingSectionLabelProps,
-  CodingMeetingSectionProps,
-} from "../CreateCodingMeetingPage.types"
+
+interface CodingMeetingSectionProps {
+  children: React.ReactNode
+  className?: string
+}
+
+interface CodingMeetingSectionLabelProps
+  extends React.LabelHTMLAttributes<HTMLLabelElement> {
+  verticalAlign?: "top" | "center"
+}
 
 const CodingMeetingSection = ({
   children,
   className,
 }: CodingMeetingSectionProps) => {
   const classNames = twMerge([
-    "p-6 bg-white flex flex-col sm:flex-row w-full",
+    "bg-white flex w-full flex-col gap-y-2 gap-x-4 pc:flex-row",
     className,
   ])
 
   return <section className={classNames}>{children}</section>
 }
 
+export default CodingMeetingSection
+
 CodingMeetingSection.Label = function CodingMeetingSectionLabel({
+  verticalAlign = "top",
   className,
   children,
   ...props
 }: CodingMeetingSectionLabelProps) {
   const classNames = twMerge([
+    verticalAlign === "top" && "items-start",
+    verticalAlign === "center" && "items-center",
+    "h-fit",
     className,
-    "w-[150px] mr-10 text-colorsDarkGray text-lg font-bold",
+    "w-fit flex shrink-0 pc:w-[122px] text-[#828282] text-base font-bold",
   ])
 
   return (
@@ -32,5 +44,3 @@ CodingMeetingSection.Label = function CodingMeetingSectionLabel({
     </label>
   )
 }
-
-export default CodingMeetingSection
