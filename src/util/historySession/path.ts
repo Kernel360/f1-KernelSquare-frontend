@@ -78,6 +78,11 @@ export function pathnameOfBack(pathname: string): TargetPage | null {
   if (isQuestionDetailPage(pathname)) return "qna"
   if (isCoffeeChatDetailPage(pathname)) return "chat"
   if (pathname === "/chat/create") return "chat"
+  if (
+    pathname !== "/coding-meetings" &&
+    pathname.startsWith("/coding-meetings")
+  )
+    return "coding-meetings"
 
   return null
 }

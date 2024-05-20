@@ -10,6 +10,7 @@ export const validationMessage = {
   noTime: "정확한 시간대를 설정해주세요",
   noLocation: "모임 위치를 설정해주세요",
   noHeadCnt: "모임 인원을 설정해주세요",
+  chatContentLength: `소개글은 최소 ${Limitation.chat_content_min_length}자 이상 ${Limitation.chat_content_max_length}자 이하이어야 합니다.`,
   underContentLimit: `본문 내용은 최소 ${Limitation.content_limit_under}자 이상이어야 합니다.`,
   overContentLimit: `본문 내용은 최대 ${Limitation.content_limit_over}자 이하이어야 합니다.`,
   underAnswerLimit: `댓글 내용은 최소 ${Limitation.answer_limit_under}자 이상이어야 합니다.`,

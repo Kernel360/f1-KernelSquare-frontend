@@ -7,7 +7,6 @@ import { RouteMap } from "@/service/route-map"
 import { HttpResponse, PathParams, http } from "msw"
 import jwt, { JwtPayload } from "jsonwebtoken"
 import { mockUsers } from "@/mocks/db/user"
-import { HttpStatusCode } from "axios"
 import mockCodingMeetings from "@/mocks/db/coding-meetings"
 import { MockCodingMeeting } from "@/interfaces/coding-meetings"
 import badge_url from "@/assets/images/badges"
@@ -23,10 +22,11 @@ export const mockCreateCodingMeetingApi = http.post<
     const { ...createPayload } = await request.json()
 
     const header = request.headers
-    const header_token = header.get("Authorization")
+    const authHeader = header.get("Authorization")
 
-    if (!header_token) {
-      const { Code, HttpStatus } = ApiStatus.QnA.updateQustion.Unauthorized
+    if (!authHeader) {
+      const { Code, HttpStatus } =
+        ApiStatus.CodingMeetings.createCodingMeeting.Unauthorized
       return HttpResponse.json(
         {
           code: Code,
@@ -36,25 +36,30 @@ export const mockCreateCodingMeetingApi = http.post<
       )
     }
 
-    const decoded_token = jwt.decode(header_token) as JwtPayload & {
+    const accessToken = authHeader.replace(/^Bearer /, "")
+
+    const decoded_token = jwt.decode(accessToken) as JwtPayload & {
       id: number
     }
 
     const targetMember = mockUsers.find((user) => user.id === decoded_token.id)
 
     if (!targetMember) {
+      const { Code, HttpStatus } =
+        ApiStatus.CodingMeetings.createCodingMeeting.NotFound
+
       return HttpResponse.json(
         {
-          code: -1,
-          msg: "답변을 입력할 권한이 없습니다.",
+          code: Code,
+          msg: "유저를 찾을 수 없습니다.",
         },
         {
-          status: HttpStatusCode.Forbidden,
+          status: HttpStatus,
         },
       )
     }
 
-    const token = "CMT" + (mockCodingMeetings.length + 10000)
+    const token = "cm_" + (mockCodingMeetings.length + 10000)
 
     const newCodingMeetingPost: MockCodingMeeting = {
       member_id: targetMember.id,
@@ -71,14 +76,16 @@ export const mockCreateCodingMeetingApi = http.post<
 
     mockCodingMeetings.push(newCodingMeetingPost)
 
+    const { Code, HttpStatus } = ApiStatus.CodingMeetings.createCodingMeeting.Ok
+
     return HttpResponse.json(
       {
-        code: 5144,
+        code: Code,
         msg: "모각코 생성 성공",
         data: { coding_meeting_token: token },
       },
       {
-        status: HttpStatusCode.Ok,
+        status: HttpStatus,
       },
     )
   },
