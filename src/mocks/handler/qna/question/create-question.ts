@@ -6,6 +6,7 @@ import {
 import { mockUsers } from "@/mocks/db/user"
 import { createMockQuestion } from "@/mocks/util/mock-question"
 import { RouteMap } from "@/service/route-map"
+import { HttpStatusCode } from "axios"
 import { HttpResponse, PathParams, http } from "msw"
 
 export const mockCreateQuestionApi = http.post<
@@ -16,6 +17,19 @@ export const mockCreateQuestionApi = http.post<
   `${process.env.NEXT_PUBLIC_SERVER}${RouteMap.question.createQuestion}`,
   async ({ request }) => {
     try {
+      const header = request.headers
+      const authHeader = header.get("Authorization")
+
+      if (!authHeader) {
+        return HttpResponse.json(
+          {
+            code: -1,
+            msg: "인증되지 않은 유저입니다",
+          },
+          { status: HttpStatusCode.Unauthorized },
+        )
+      }
+
       const { member_id, title, content, image_url, skills } =
         await request.json()
 

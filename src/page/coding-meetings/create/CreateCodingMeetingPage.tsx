@@ -68,6 +68,10 @@ function CreateCodingMeetingPage({
     })
   }
 
+  const handleSubmitButton = (e: React.MouseEvent<HTMLButtonElement>) => {
+    if (e.detail === 0) e.preventDefault()
+  }
+
   return (
     <div className="px-6 py-6 sm:px-12 sm:pt-8 sm:pb-12 pc:pt-[72px] pc:pl-[80px] pc:pr-[24px] xl:!pr-[40px] pc:pb-[42px]">
       <div className="hidden pc:block">
@@ -119,6 +123,7 @@ function CreateCodingMeetingPage({
               createCodingMeetingApiStatus === "pending" ||
               updateCodingMeetingApiStatus === "pending"
             }
+            onClick={handleSubmitButton}
           >
             {buttonText({
               editMode,

@@ -3,14 +3,20 @@
 import { createQuestion, updateQuestion } from "@/service/question"
 import { AxiosError } from "axios"
 import type { APIResponse } from "@/interfaces/dto/api-response"
-import type {
-  SubmitAskQuestionData,
-  SubmitUpdateQuestionData,
-} from "@/page/askQuestion/components/AskQuestionForm"
+import { CreateQuestionRequest } from "@/interfaces/dto/question/create-question.dto"
+import { UpdateQuestionRequest } from "@/interfaces/dto/question/update-question.dto"
 
-interface SubmitResultBase {
+export interface SubmitResultBase {
   success: boolean
-  error?: any
+  error?: {
+    api?: {
+      status: number
+      message: string
+    }
+    app?: {
+      message: string
+    }
+  }
 }
 
 interface CreateQuestionResult extends SubmitResultBase {
@@ -25,7 +31,7 @@ export async function onSubmitQuestion({
   member_id,
   image_url,
   skills,
-}: SubmitAskQuestionData): Promise<CreateQuestionResult> {
+}: CreateQuestionRequest): Promise<CreateQuestionResult> {
   "use server"
 
   try {
@@ -46,13 +52,28 @@ export async function onSubmitQuestion({
       const { response } = error as AxiosError<APIResponse>
 
       console.log("[질문 작성 submit api 에러]", response?.data)
-    } else {
-      console.log("[질문 작성 submit 에러]", error)
+
+      return {
+        success: false,
+        error: {
+          api: {
+            status: response!.status,
+            message: response?.data.msg ?? "질문 작성 중 에러가 발생했습니다",
+          },
+        },
+      }
     }
+
+    console.log("[질문 작성 submit 에러]", error)
 
     return {
       success: false,
-      error,
+      error: {
+        app: {
+          message:
+            (error as Error).message ?? "질문 작성 중 에러가 발생했습니다",
+        },
+      },
     }
   }
 }
@@ -62,13 +83,13 @@ export async function onSubmitUpdateQuestion({
   content,
   image_url,
   skills,
-  question_id,
-}: SubmitUpdateQuestionData): Promise<UpdateQuestionResult> {
+  questionId,
+}: UpdateQuestionRequest): Promise<UpdateQuestionResult> {
   "use server"
 
   try {
     await updateQuestion({
-      questionId: question_id,
+      questionId,
       title,
       content,
       image_url: image_url || null,
@@ -83,13 +104,28 @@ export async function onSubmitUpdateQuestion({
       const { response } = error as AxiosError<APIResponse>
 
       console.log("[질문 수정 submit api 에러]", response?.data)
-    } else {
-      console.log("[질문 수정 submit 에러]", error)
+
+      return {
+        success: false,
+        error: {
+          api: {
+            status: response!.status,
+            message: response?.data.msg ?? "질문 수정 중 에러가 발생했습니다",
+          },
+        },
+      }
     }
+
+    console.log("[질문 수정 submit 에러]", error)
 
     return {
       success: false,
-      error,
+      error: {
+        app: {
+          message:
+            (error as Error).message ?? "질문 수정 중 에러가 발생했습니다",
+        },
+      },
     }
   }
 }

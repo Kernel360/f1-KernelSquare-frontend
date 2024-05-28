@@ -75,6 +75,7 @@ export function updateHistorySessionPath() {
 
 //
 export function pathnameOfBack(pathname: string): TargetPage | null {
+  if (isQuestionEditPage(pathname)) return "qna"
   if (isQuestionDetailPage(pathname)) return "qna"
   if (isCoffeeChatDetailPage(pathname)) return "chat"
   if (pathname === "/chat/create") return "chat"
@@ -85,6 +86,10 @@ export function pathnameOfBack(pathname: string): TargetPage | null {
     return "coding-meetings"
 
   return null
+}
+
+export function isQuestionEditPage(pathname: string) {
+  return pathname === "/question" || pathname.startsWith("/question/u/")
 }
 
 export function isQuestionDetailPage(pathname: string) {

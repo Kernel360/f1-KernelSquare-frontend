@@ -34,7 +34,7 @@ function UpdateQuestionGuardModal({
           />
         ),
       })
-    }, 0)
+    }, 400)
   }, []) /* eslint-disable-line */
 
   return null

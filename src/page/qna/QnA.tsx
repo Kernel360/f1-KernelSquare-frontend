@@ -1,6 +1,6 @@
 import ListPage from "@/components/shared/page-template/ListPage"
 import QuestionListContainer from "./components/QuestionListContainer"
-import ScrollTopButton from "../coding-meetings/main/ScrollTopButton"
+import ScrollTopButton from "../../components/shared/button/ScrollTopButton"
 
 function QnA() {
   return (

@@ -1,3 +1,5 @@
+import { baseImageLimitInstance } from "./image/image-limit"
+
 type ImageSizeUnit = "KB" | "MB"
 
 const LimitationImage = {
@@ -62,6 +64,25 @@ const Limitation = {
 } as const
 
 export default Limitation
+
+export const QUESTION_LIMITS = {
+  title: {
+    minLength: 5,
+    maxLength: 100,
+  },
+  skill: {
+    maxLength: 5,
+  },
+  content: {
+    minLength: 10,
+    maxLength: 10000,
+  },
+  image: {
+    maxLength: baseImageLimitInstance.maximumLength,
+    maxSize: baseImageLimitInstance.getSize(),
+    accept: baseImageLimitInstance.accept,
+  },
+}
 
 export const CODING_MEETING_LIMITS = {
   title: {
