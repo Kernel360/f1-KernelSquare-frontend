@@ -5,7 +5,7 @@ import { APIResponse } from "@/interfaces/dto/api-response"
 import { notFound } from "next/navigation"
 import { getCodingMeetingDetail } from "@/service/coding-meetings"
 import DetailHeader from "@/page/coding-meetings/detail/DetailHeader"
-import ScrollTopButton from "@/page/coding-meetings/main/ScrollTopButton"
+import ScrollTopButton from "@/components/shared/button/ScrollTopButton"
 import { deSerializeCmToken } from "@/page/coding-meetings/util/cm-token"
 
 export interface CodingMeetingsDetailPageProps {

@@ -6,9 +6,13 @@ import { getQuestion } from "@/service/question"
 import { getServerSession } from "@/util/auth"
 import { AxiosError } from "axios"
 import { Metadata } from "next"
-import dynamic from "next/dynamic"
 import { notFound } from "next/navigation"
 import type { GetQuestionResponse } from "@/interfaces/dto/question/get-question.dto"
+import QuestionFormProvider from "@/page/askQuestion/QuestionFormProvider"
+import LinkToListPage from "@/components/LinkToListPage"
+import QuestionForm from "@/page/askQuestion/components/form/QuestionForm"
+import QuestionControl from "@/page/askQuestion/components/form/QuestionControl"
+import ScrollTopButton from "@/components/shared/button/ScrollTopButton"
 
 export interface QuestionUpdatePageProps {
   params: {
@@ -33,21 +37,6 @@ function isValidPageProps({ params }: QuestionUpdatePageProps) {
 
   return true
 }
-
-// dynamic import (CSR)
-const AskQuestionForm = dynamic(
-  () => import("@/page/askQuestion/components/AskQuestionForm"),
-  {
-    ssr: false,
-  },
-)
-
-const AskQuestionPageControl = dynamic(
-  () => import("@/page/askQuestion/components/AskQuestionPageControl"),
-  {
-    ssr: false,
-  },
-)
 
 export default async function QuestionUpdatePage({
   params,
@@ -84,33 +73,20 @@ export default async function QuestionUpdatePage({
     }
 
     return (
-      <div className="flex flex-col lgDevice:flex-row">
-        <div className="box-border px-4 flex-1 order-2 lgDevice:order-1 lgDevice:px-6">
-          <Spacing size={32} />
-          <AskQuestionForm
-            editMode={"update"}
-            initialValues={{
-              title: questionPayload.data?.title || "",
-              content: questionPayload.data?.content || "",
-              ...(questionPayload.data?.skills?.length && {
-                skills: [...questionPayload.data.skills],
-              }),
-              ...(questionPayload.data?.question_image_url && {
-                uploadImages: [questionPayload.data.question_image_url],
-              }),
-            }}
-            question_id={targetQuestionId}
-          />
-          <Spacing size={120} />
+      <QuestionFormProvider>
+        <div className="px-6 py-6 sm:px-12 sm:py-2 pc:pl-[120px] pc:pr-[60px] xl:!pr-[120px] pc:pt-[72px] pc:pb-12">
+          <div className="hidden pc:block">
+            <LinkToListPage to="qna" />
+          </div>
+          <h3 className="my-6 sm:my-8 pc:my-12 font-bold text-2xl pc:text-[32px]">
+            Q&A 수정하기
+          </h3>
+          <QuestionForm mode="update" questionId={targetQuestionId} />
+          <Spacing size={132} />
+          <QuestionControl mode="update" questionId={targetQuestionId} />
+          <ScrollTopButton wrapperClassName={"bottom-[136px] lg:right-4"} />
         </div>
-        <AskQuestionPageControl
-          editMode={"update"}
-          questionId={targetQuestionId}
-          {...(questionPayload.data?.question_image_url && {
-            initialUploadImages: [questionPayload.data.question_image_url],
-          })}
-        />
-      </div>
+      </QuestionFormProvider>
     )
   } catch (error) {
     if (error instanceof AxiosError) {

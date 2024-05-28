@@ -10,33 +10,30 @@ import { ForwardedRef, forwardRef, useEffect, useRef, useState } from "react"
 import Button from "@/components/shared/button/Button"
 import { twMerge } from "tailwind-merge"
 import { contentEditorToolbarItemsWithImage } from "@/constants/editor"
-import { useSetRecoilState } from "recoil"
-import { questionEditorLoadedAtomFamily } from "@/recoil/atoms/questionEditor"
 import { throttle } from "lodash-es"
 import type { EditorRefObj } from "@/components/shared/toast-ui-editor/editor/EditorWrapper"
 
 type MdTabMode = "write" | "preview"
 
-type ContentEditorProps = Partial<EditorProps> & {
-  initialUploadImages?: Array<string> | null
-  action: "create" | "update"
-}
+type ContentEditorProps = Partial<EditorProps>
 
+/*
+  [TODO] 
+  기존 여러 에디터를 ContentEditor 
+  하나로 통합해서 사용하는 것으로 수정
+*/
 const ContentEditor = (
   {
     minHeight = "300px",
-    action,
-    initialUploadImages,
     onLoad,
     hooks,
+    placeholder,
     ...props
   }: ContentEditorProps,
   ref: ForwardedRef<ToastEditor>,
 ) => {
   const editorRef = ref as EditorRefObj
   const wrapperRef = useRef<HTMLDivElement>(null)
-
-  const setLoaded = useSetRecoilState(questionEditorLoadedAtomFamily(action))
 
   const [mdTabVisible, setMdTabVisible] = useState(true)
   const [mode, setMode] = useState<MdTabMode>("write")
@@ -86,8 +83,6 @@ const ContentEditor = (
 
     window.addEventListener("resize", throttleResize)
 
-    setLoaded(true)
-
     queueMicrotask(() => {
       if (onLoad) {
         onLoad(editorRef.current)
@@ -128,7 +123,7 @@ const ContentEditor = (
         ref={ref}
         mdTabVisible={mdTabVisible}
         toolbarItems={contentEditorToolbarItemsWithImage}
-        placeholder="질문을 작성해주세요"
+        placeholder={placeholder}
         initialEditType="markdown"
         previewStyle="tab"
         hideModeSwitch

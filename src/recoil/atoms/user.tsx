@@ -9,8 +9,11 @@ import {
   getPayloadCookie,
   updateUserPayloadCookie,
 } from "@/util/actions/cookie"
-import { ENCRYPTED_PAYLOAD_KEY } from "@/constants/token"
-import { USER_LOCAL_STORAGE_KEY } from "@/constants/editor"
+import {
+  ENCRYPTED_PAYLOAD_KEY,
+  USER_LOCAL_STORAGE_KEY,
+} from "@/constants/token"
+
 import type { LoginUserPayload } from "@/interfaces/dto/auth/login.dto"
 import type { User } from "@/interfaces/user"
 import notificationMessage from "@/constants/message/notification"
