@@ -28,3 +28,5 @@ export const CustomAuthorizedHeaderValue = {
   Authorized: "true",
   UnAuthorized: "false",
 }
+
+export const USER_LOCAL_STORAGE_KEY = "user"
