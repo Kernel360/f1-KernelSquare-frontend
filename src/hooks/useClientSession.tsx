@@ -1,6 +1,6 @@
 "use client"
 
-import { USER_LOCAL_STORAGE_KEY } from "@/constants/editor"
+import { USER_LOCAL_STORAGE_KEY } from "@/constants/token"
 import { userAtom, userClientSession } from "@/recoil/atoms/user"
 import { deleteAuthCookie } from "@/util/actions/cookie"
 import { useCallback } from "react"

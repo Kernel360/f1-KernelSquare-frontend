@@ -1,7 +1,7 @@
 "use client"
 
 import { Editor, EditorProps } from "@toast-ui/react-editor"
-import { MutableRefObject, useEffect, useLayoutEffect } from "react"
+import { MutableRefObject, useLayoutEffect } from "react"
 
 export type EditorRefObj = MutableRefObject<Editor | null>
 export type HookCallback = (url: string, text?: string) => void
@@ -22,15 +22,35 @@ function EditorWrapper({
   useLayoutEffect(() => {
     const editorRefObj = editorRef.current
 
+    const handleMdEditorClick = (e: MouseEvent) => {
+      const target = e.target as HTMLElement
+
+      !!target.closest(".placeholder") &&
+        editorRefObj?.getInstance().setMarkdown("", true)
+    }
+
     if (editorRefObj) {
       editorRefObj.getRootElement().spellcheck = false
 
-      editorRefObj
-        .getInstance()
-        .setMarkdown(editorRefObj.props.initialValue ?? "")
+      const editorInstance = editorRefObj.getInstance()
+
+      editorInstance.setMarkdown(editorRefObj.props.initialValue ?? "", false)
+      editorInstance
+        .getEditorElements()
+        .mdEditor.addEventListener("click", handleMdEditorClick)
+
+      if (!autofocus) {
+        editorInstance.blur()
+        window.scroll({ top: 0 })
+      }
     }
 
     return () => {
+      editorRefObj
+        ?.getInstance()
+        .getEditorElements()
+        .mdEditor.removeEventListener("click", handleMdEditorClick)
+
       editorRefObj?.getInstance().destroy()
     }
   }, []) /* eslint-disable-line */
@@ -49,14 +69,6 @@ function EditorWrapper({
         : (mdTab.style.display = "none")
     }
   }, [editorRef, mdTabVisible])
-
-  useEffect(() => {
-    if (!autofocus) {
-      setTimeout(() => {
-        editorRef.current?.getInstance().blur()
-      }, 0)
-    }
-  }, []) /* eslint-disable-line */
 
   return <Editor ref={forwardedRef} autofocus={autofocus} {...props} />
 }

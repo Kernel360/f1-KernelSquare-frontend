@@ -4,9 +4,20 @@ import { IoIosArrowUp } from "react-icons/io"
 import { useEffect, useState } from "react"
 import { debounce, throttle } from "lodash-es"
 import buttonMessage from "@/constants/message/button"
+import { twMerge } from "tailwind-merge"
 
-function ScrollTopButton() {
+interface ScrollTopButtonProps {
+  wrapperClassName?: string
+}
+
+function ScrollTopButton({ wrapperClassName }: ScrollTopButtonProps) {
   const [show, setShow] = useState(false)
+
+  const wrapperClassNames = twMerge([
+    `fixed right-2 bottom-9 z-10 transition-opacity ease-in-out lg:right-20`,
+    show ? "pointer-events-auto opacity-100" : "pointer-events-none opacity-0",
+    wrapperClassName,
+  ])
 
   const debounceHandleShow = debounce(() => {
     setShow(false)
@@ -57,13 +68,7 @@ function ScrollTopButton() {
   }, []) /* eslint-disable-line */
 
   return (
-    <div
-      className={`fixed right-2 bottom-9 z-10 transition-opacity ease-in-out lg:right-20 ${
-        show
-          ? "pointer-events-auto opacity-100"
-          : "pointer-events-none opacity-0"
-      }`}
-    >
+    <div className={wrapperClassNames}>
       <button
         className="shadow-[0_0_8px_0_rgba(0,0,0,.16)] flex flex-col justify-center items-center w-12 h-12 lg:w-16 lg:h-16 font-bold rounded-full outline-none box-border p-2 cursor-pointer bg-secondary"
         onClick={scrollToTop}

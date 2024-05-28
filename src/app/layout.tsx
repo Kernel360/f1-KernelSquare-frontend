@@ -16,6 +16,7 @@ import ToastDismissEventListener from "@/components/layout/ToastDismissListener"
 import GoogleAnalyticsProvider from "@/google-analytics/GoogleAnalyticsProvider"
 import HistorySession from "@/components/history/HistorySession"
 import CodingMeetingFormProvider from "@/page/coding-meetings/create/CodingMeetingFormProvider"
+import { Slide } from "react-toastify"
 
 export const dynamic = "force-dynamic"
 
@@ -68,15 +69,15 @@ export default function RootLayout({
             <MSW />
             <HistorySession />
             <PopupEventListener />
-            <ScrollTop />
             <CodingMeetingFormProvider>
               <Layout>{children}</Layout>
               <Modal />
             </CodingMeetingFormProvider>
-            <ToastContainer limit={1} />
+            <ToastContainer limit={1} transition={Slide} />
             <ToastDismissEventListener />
           </ReactQueryProvider>
         </RecoilProvider>
+        <ScrollTop />
       </body>
     </html>
   )

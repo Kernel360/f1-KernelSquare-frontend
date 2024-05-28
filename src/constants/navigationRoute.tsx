@@ -92,8 +92,12 @@ export function getActiveNavigationItem({
 
   // Question Path (/question/**)
   if (segment === "question") {
+    // 질문 작성
+    if (pathname === "/question")
+      return navigationRoutes[NavigationRouteIndex.Qna]
     // 질문 수정
-    if (pathname.startsWith("/question/u/")) return null
+    if (pathname.startsWith("/question/u/"))
+      return navigationRoutes[NavigationRouteIndex.Qna]
     // 질문 상세
     if (pathname.startsWith("/question/"))
       return navigationRoutes[NavigationRouteIndex.Qna]
