@@ -1,19 +1,19 @@
 "use client"
 
 import useHandleQuestion from "../../hooks/useHandleQuestion"
-import SuccessModalContent from "../SuccessModalContent"
 import useQnADetail from "../../hooks/useQnADetail"
-import successMessage from "@/constants/message/success"
-import type { Question } from "@/interfaces/question"
 import buttonMessage from "@/constants/message/button"
 import Button from "@/components/shared/button/Button"
+import type { Question } from "@/interfaces/question"
 
-export interface HandleQuestionBoxProps {
+export interface QuestionControlProps {
   question: Question
 }
 
-const HandleQuestionBox: React.FC<HandleQuestionBoxProps> = ({ question }) => {
-  const { handleEditQuestion, handleDeleteQuestion } = useHandleQuestion()
+const QuestionControl: React.FC<QuestionControlProps> = ({ question }) => {
+  const { navigateEditQuestionPage, deleteQuestion } = useHandleQuestion({
+    questionId: question.id,
+  })
   const { user } = useQnADetail()
 
   if (!user) return null
@@ -22,21 +22,14 @@ const HandleQuestionBox: React.FC<HandleQuestionBoxProps> = ({ question }) => {
   return (
     <div className="flex w-full gap-1 justify-end items-center">
       <Button
-        onClick={() => handleEditQuestion({ questionId: question.id })}
+        onClick={navigateEditQuestionPage}
         className="border-none hover:text-primary font-bold cursor-pointer text-sm shrink-0 p-0.5"
       >
         {buttonMessage.edit}
       </Button>
       <span>&bull;</span>
       <Button
-        onClick={() =>
-          handleDeleteQuestion({
-            question,
-            successModal: (
-              <SuccessModalContent message={successMessage.deleteQuestion} />
-            ),
-          })
-        }
+        onClick={deleteQuestion}
         className="hover:text-danger font-bold cursor-pointer text-sm shrink-0 p-0.5"
       >
         {buttonMessage.delete}
@@ -45,4 +38,4 @@ const HandleQuestionBox: React.FC<HandleQuestionBoxProps> = ({ question }) => {
   )
 }
 
-export default HandleQuestionBox
+export default QuestionControl

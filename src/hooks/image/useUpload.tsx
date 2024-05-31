@@ -1,18 +1,20 @@
 "use client"
 
 import { HookCallback } from "@/components/shared/toast-ui-editor/editor/EditorWrapper"
+import { IMAGE_QUERY_KEY } from "@/constants/queryKey"
+import { ReturnSyncOrPromise } from "@/interfaces/callback"
 import {
   UploadImagesCategory,
   UploadImagesResponse,
 } from "@/interfaces/dto/upload/upload-images.dto"
 import { ImageFieldArrayItem } from "@/interfaces/form/question-form"
+import { uploadImages } from "@/service/images"
 import {
   ImageRuleValidateType,
   ImagesRuleValidateType,
-  questionImageRules,
-  questionImagesRules,
-} from "@/page/askQuestion/components/fields/content/image/question-image-rules"
-import { uploadImages } from "@/service/images"
+  imageRules,
+  imagesRules,
+} from "@/util/rules/image-rules"
 import { useMutation } from "@tanstack/react-query"
 import { AxiosError, AxiosResponse } from "axios"
 
@@ -28,16 +30,16 @@ interface UseUpload {
     data: AxiosResponse<UploadImagesResponse, any>,
     variables: UploadVariables,
     context: unknown,
-  ) => void
+  ) => ReturnSyncOrPromise
   onError?: (
     error: Error | AxiosError,
     variables: UploadVariables,
     context: unknown,
-  ) => void
+  ) => ReturnSyncOrPromise
   onValidateFileError?: (validateFileError: {
     type: ImagesRuleValidateType | ImageRuleValidateType
     message: string
-  }) => void
+  }) => ReturnSyncOrPromise
 }
 
 /*
@@ -53,7 +55,7 @@ export function useUpload({
   onValidateFileError,
 }: UseUpload) {
   const { mutate: uploadImageApi, status: uploadImageApiStatus } = useMutation({
-    mutationKey: ["upload", category],
+    mutationKey: IMAGE_QUERY_KEY.uploadImageWithCategory(category),
     mutationFn: ({ file, images }: UploadVariables) =>
       upload({ category, file, images }),
     onSuccess,
@@ -88,7 +90,7 @@ const upload = async ({
   images?: ImageFieldArrayItem[]
 }) => {
   for (const [validateType, validateFn] of Object.entries(
-    questionImagesRules.validate,
+    imagesRules.validate,
   )) {
     const result = validateFn(images ?? [])
     if (result !== true) {
@@ -97,7 +99,7 @@ const upload = async ({
   }
 
   for (const [validateType, validateFn] of Object.entries(
-    questionImageRules.validate,
+    imageRules.validate,
   )) {
     const result = validateFn(file)
     if (result !== true) {

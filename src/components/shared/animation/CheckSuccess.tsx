@@ -7,13 +7,15 @@ import { CSSProperties, useLayoutEffect } from "react"
 interface CheckSuccessProps {
   style?: CSSProperties
   className?: string
+  loop?: boolean
 }
 
-function CheckSuccess({ style, className }: CheckSuccessProps) {
+function CheckSuccess({ style, className, loop = false }: CheckSuccessProps) {
   const { setSpeed, View } = useLottie({
     animationData: checkSuccess,
     style: { ...style },
     className,
+    loop,
   })
 
   useLayoutEffect(() => {

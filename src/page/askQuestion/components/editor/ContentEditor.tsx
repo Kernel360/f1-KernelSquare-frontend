@@ -1,11 +1,14 @@
 "use client"
 
 import "prismjs/themes/prism.css"
+import "tui-color-picker/dist/tui-color-picker.css"
+import "@toast-ui/editor-plugin-color-syntax/dist/toastui-editor-plugin-color-syntax.css"
+import "@toast-ui/editor-plugin-code-syntax-highlight/dist/toastui-editor-plugin-code-syntax-highlight.css"
 import Prism from "prismjs"
 import { ToastUiEditor } from "@/components/shared/toast-ui-editor"
 import { Editor as ToastEditor, EditorProps } from "@toast-ui/react-editor"
+import colorSyntax from "@toast-ui/editor-plugin-color-syntax"
 import codeSyntaxHighlight from "@toast-ui/editor-plugin-code-syntax-highlight/dist/toastui-editor-plugin-code-syntax-highlight-all.js"
-import "@toast-ui/editor-plugin-code-syntax-highlight/dist/toastui-editor-plugin-code-syntax-highlight.css"
 import { ForwardedRef, forwardRef, useEffect, useRef, useState } from "react"
 import Button from "@/components/shared/button/Button"
 import { twMerge } from "tailwind-merge"
@@ -15,7 +18,9 @@ import type { EditorRefObj } from "@/components/shared/toast-ui-editor/editor/Ed
 
 type MdTabMode = "write" | "preview"
 
-type ContentEditorProps = Partial<EditorProps>
+type ContentEditorProps = Partial<Omit<EditorProps, "plugins">> & {
+  includeColorSyntaxPlugins?: boolean
+}
 
 /*
   [TODO] 
@@ -28,6 +33,8 @@ const ContentEditor = (
     onLoad,
     hooks,
     placeholder,
+    toolbarItems,
+    includeColorSyntaxPlugins,
     ...props
   }: ContentEditorProps,
   ref: ForwardedRef<ToastEditor>,
@@ -37,6 +44,10 @@ const ContentEditor = (
 
   const [mdTabVisible, setMdTabVisible] = useState(true)
   const [mode, setMode] = useState<MdTabMode>("write")
+
+  const plugins: EditorProps["plugins"] = includeColorSyntaxPlugins
+    ? [colorSyntax, [codeSyntaxHighlight as any, { highlighter: Prism }]]
+    : [[codeSyntaxHighlight as any, { highlighter: Prism }]]
 
   const classNames = (active: boolean) =>
     twMerge([
@@ -122,7 +133,7 @@ const ContentEditor = (
       <ToastUiEditor
         ref={ref}
         mdTabVisible={mdTabVisible}
-        toolbarItems={contentEditorToolbarItemsWithImage}
+        toolbarItems={toolbarItems ?? contentEditorToolbarItemsWithImage}
         placeholder={placeholder}
         initialEditType="markdown"
         previewStyle="tab"
@@ -132,7 +143,7 @@ const ContentEditor = (
         minHeight={minHeight}
         onLoad={handleLoad}
         hooks={hooks}
-        plugins={[[codeSyntaxHighlight as any, { highlighter: Prism }]]}
+        plugins={plugins}
         {...props}
       />
     </div>

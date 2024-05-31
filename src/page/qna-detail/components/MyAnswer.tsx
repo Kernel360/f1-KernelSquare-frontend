@@ -1,22 +1,18 @@
 "use client"
 
-import { useCallback, useState } from "react"
-import { FieldErrors, useForm } from "react-hook-form"
+import { useController } from "react-hook-form"
 import Button from "@/components/shared/button/Button"
 import CreateAnswerAnime from "@/components/shared/animation/CreateAnswerAnime"
 import useModal from "@/hooks/useModal"
 import LoginForm from "@/components/form/LoginForm"
-import useQnADetail from "../hooks/useQnADetail"
 import { Answer } from "@/interfaces/answer"
-import { toast } from "react-toastify"
-import Limitation from "@/constants/limitation"
+import { QUESTION_ANSWER_LIMITS } from "@/constants/limitation"
 import TextCounter from "@/components/shared/TextCounter"
-import buttonMessage from "@/constants/message/button"
-import { validationMessage } from "@/constants/message/validation"
-import { AnswerFormData } from "@/interfaces/form"
-import CreateAnswerEditor from "./Answers/editor/CreateAnswerEditor"
-import { getUploadedImageLinkFromMarkdown } from "@/util/editor"
 import { useClientSession } from "@/hooks/useClientSession"
+import UploadedAnswerImages from "@/components/shared/toast-ui-editor/editor/UploadedAnswerImages"
+import AnswerFormProvider from "./formProvider/AnswerFormProvider"
+import { useAnswerFormContext } from "@/hooks/editor/useAnswerFormContext"
+import CreateAnswerForm from "./Answers/form/CreateAnswerForm"
 
 export interface MyAnswerProps {
   questionId: number
@@ -29,92 +25,15 @@ const MyAnswer: React.FC<MyAnswerProps> = ({
   list,
   isQuestionAuthor,
 }) => {
-  const { clientSessionReset } = useClientSession()
-
+  const { user } = useClientSession()
   const { openModal } = useModal()
 
-  const { user, createAnswerSubmit, hasIncludeMyAnswer } = useQnADetail()
+  const hasIncludeMyAnswer = (list?: Answer[]) => {
+    return list?.some((answer) => answer.answer_member_id === user?.member_id)
+  }
 
-  const {
-    control,
-    handleSubmit,
-    formState: { isValid, isSubmitting },
-  } = useForm<AnswerFormData>()
-
-  const [answerField, setAnswerField] = useState("")
   const writableNewAnswer =
     user && !isQuestionAuthor && !hasIncludeMyAnswer(list)
-
-  const onEditorChange = useCallback((markdown: string) => {
-    setAnswerField(markdown)
-  }, [])
-
-  const onSubmit = async ({ answer }: AnswerFormData) => {
-    const uploadedImageLink = getUploadedImageLinkFromMarkdown(answer)
-
-    createAnswerSubmit({
-      questionId,
-      answer,
-      onError(errorCase, error) {
-        if (errorCase === "unauthorized") {
-          clientSessionReset()
-
-          setTimeout(() => {
-            toast.error("로그인 후 답변 생성이 가능합니다", {
-              position: "top-center",
-              toastId: "answerUnauthorizedError",
-            })
-          }, 0)
-
-          return
-        }
-
-        toast.error("답변 생성에 실패했습니다", {
-          position: "top-center",
-          toastId: "createAnswerError",
-        })
-      },
-      ...(uploadedImageLink && { image_url: uploadedImageLink }),
-    })
-  }
-
-  const onInvalid = (errors: FieldErrors<AnswerFormData>) => {
-    if (errors.answer) {
-      const { type } = errors.answer
-
-      if (type === "required") {
-        toast.error(validationMessage.noAnswerContent, {
-          toastId: "emptyAnswerContent",
-          position: "top-center",
-        })
-        return
-      }
-
-      if (type === "whiteSpaceOnly") {
-        toast.error(validationMessage.notAllowedWhiteSpaceOnly, {
-          toastId: "whiteSpaceOnlyAnswerContent",
-          position: "top-center",
-        })
-        return
-      }
-
-      if (type === "minLength") {
-        toast.error(validationMessage.underAnswerLimit, {
-          toastId: "underAnswerLimit",
-          position: "top-center",
-        })
-        return
-      }
-
-      if (type === "maxLength") {
-        toast.error(validationMessage.overAnswerLimit, {
-          toastId: "overAnswerLimit",
-          position: "top-center",
-        })
-        return
-      }
-    }
-  }
 
   if (!user) {
     return (
@@ -147,31 +66,31 @@ const MyAnswer: React.FC<MyAnswerProps> = ({
   }
 
   return (
-    <div className="max-w-full box-border rounded-lg mb-6">
-      <div className="flex items-center gap-2 mb-4">
-        <div className="font-semibold text-xl text-secondary">내 답변</div>
-        <TextCounter
-          text={answerField ?? ""}
-          min={Limitation.answer_limit_under}
-          max={Limitation.answer_limit_over}
-          className="text-lg"
-        />
-      </div>
-      <form onSubmit={handleSubmit(onSubmit, onInvalid)}>
-        <CreateAnswerEditor control={control} onEditorChange={onEditorChange} />
-        <div className="flex w-full justify-center my-2">
-          <Button
-            disabled={!isValid || isSubmitting}
-            buttonTheme="primary"
-            className="w-[200px] h-fit text-base disabled:bg-colorsGray disabled:text-colorsDarkGray"
-            type="submit"
-          >
-            {isSubmitting ? "답변 생성 중" : buttonMessage.postMyAnswer}
-          </Button>
+    <AnswerFormProvider>
+      <div className="max-w-full box-border rounded-lg mb-6">
+        <div className="flex items-center gap-2 mb-4">
+          <div className="font-semibold text-xl text-secondary">내 답변</div>
+          <AnswerTextCounter />
         </div>
-      </form>
-    </div>
+        <UploadedAnswerImages />
+        <CreateAnswerForm questionId={questionId} />
+      </div>
+    </AnswerFormProvider>
   )
 }
 
 export default MyAnswer
+
+const AnswerTextCounter = () => {
+  const { control } = useAnswerFormContext()
+  const { field } = useController({ control, name: "answer" })
+
+  return (
+    <TextCounter
+      text={field.value}
+      min={QUESTION_ANSWER_LIMITS.content.minLength}
+      max={QUESTION_ANSWER_LIMITS.content.maxLength}
+      className="text-lg"
+    />
+  )
+}

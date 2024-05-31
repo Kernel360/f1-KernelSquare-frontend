@@ -11,7 +11,7 @@ import { AxiosError, HttpStatusCode } from "axios"
 import { useEffect, useRef } from "react"
 import { toast } from "react-toastify"
 
-interface UseQuestionUploadImageHook {
+interface UseToastEditorUploadImageHook {
   category: Exclude<UploadImagesCategory, "level">
   images?: ImageFieldArrayItem[]
   onUploadSuccess?: (payload: { file: File | Blob; uploadURL: string }) => void
@@ -27,12 +27,12 @@ interface UseQuestionUploadImageHook {
   토스트 에디터 이미지 훅을 해당 훅 하나를 이용해서
   범용적으로 이용할 수 있도록 수정
 */
-export function useQuestionUploadImageHook({
+export function useToastEditorUploadImageHook({
   category,
   images,
   onUploadSuccess,
   onUploadError,
-}: UseQuestionUploadImageHook) {
+}: UseToastEditorUploadImageHook) {
   const mode = useDomainEditMode()
 
   const imagesRef = useRef(images)

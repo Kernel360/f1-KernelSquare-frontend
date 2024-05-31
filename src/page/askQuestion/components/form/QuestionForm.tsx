@@ -27,6 +27,7 @@ import { useRouter } from "next/navigation"
 import { HttpStatusCode } from "axios"
 import { deleteImages } from "@/service/images"
 import { revalidatePage } from "@/util/actions/revalidatePage"
+import { QUESTION_QUERY_KEY } from "@/constants/queryKey"
 
 interface QuestionFormProps {
   mode: QuestionPageMode
@@ -92,7 +93,7 @@ function QuestionForm({ mode, questionId }: QuestionFormProps) {
         }
 
         await queryClient.invalidateQueries({
-          queryKey: ["question", "list"],
+          queryKey: QUESTION_QUERY_KEY.questionList,
         })
 
         replace(`/question/${createdQuestionId}`)
@@ -148,11 +149,11 @@ function QuestionForm({ mode, questionId }: QuestionFormProps) {
       }
 
       queryClient.invalidateQueries({
-        queryKey: ["question", "list"],
+        queryKey: QUESTION_QUERY_KEY.questionList,
       })
 
       queryClient.resetQueries({
-        queryKey: ["question", questionId],
+        queryKey: QUESTION_QUERY_KEY.questionDetail(questionId!),
       })
 
       replace(`/question/${questionId}`)

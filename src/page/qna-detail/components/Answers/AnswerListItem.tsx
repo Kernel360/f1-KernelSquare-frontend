@@ -2,7 +2,6 @@
 
 import type { Answer } from "@/interfaces/answer"
 import Image from "next/image"
-import useQnADetail from "../../hooks/useQnADetail"
 import { useClientSession } from "@/hooks/useClientSession"
 import VoteBox from "./VoteBox"
 import HandleAnswerBox from "./HandleAnswerBox"
@@ -18,7 +17,6 @@ export interface AnswerListItemProps {
 }
 
 const AnswerListItem: React.FC<AnswerListItemProps> = ({ answer, now }) => {
-  const { ProgressModalView } = useQnADetail()
   const { user } = useClientSession()
 
   const voteWrapperClassName = twMerge([
@@ -63,7 +61,6 @@ const AnswerListItem: React.FC<AnswerListItemProps> = ({ answer, now }) => {
           <AnswerContentBox answer={answer} />
         </div>
       </div>
-      <ProgressModalView />
     </div>
   )
 }

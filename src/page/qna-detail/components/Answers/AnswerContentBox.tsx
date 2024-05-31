@@ -8,7 +8,7 @@ import { toast } from "react-toastify"
 import { errorMessage } from "@/constants/message/error"
 import { answerQueries } from "@/react-query/answers"
 import { useQueryClient } from "@tanstack/react-query"
-import queryKey from "@/constants/queryKey"
+import queryKey, { QUESTION_QUERY_KEY } from "@/constants/queryKey"
 import type { Answer } from "@/interfaces/answer"
 import { getUploadedImageLinkFromMarkdown } from "@/util/editor"
 import { UpdateAnswerRequest } from "@/interfaces/dto/answer/update-answer.dto"
@@ -125,7 +125,7 @@ const AnswerContentBox: React.FC<EditAnswerProps> = ({ answer }) => {
         }
 
         await queryClient.invalidateQueries({
-          queryKey: [queryKey.answer, answer.question_id],
+          queryKey: QUESTION_QUERY_KEY.questionAnswers(answer.question_id),
         })
 
         setTimeout(() => {

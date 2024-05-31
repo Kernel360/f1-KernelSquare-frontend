@@ -4,7 +4,7 @@ import dynamic from "next/dynamic"
 import Tag from "@/components/shared/tag/Tag"
 import UserInfo, { UserProfileInfo } from "@/components/shared/user/UserInfo"
 import QuestionDueDate from "./QuestionDueDate"
-import HandleQuestionBox from "./HandleQuestionBox"
+import QuestionControl from "./QuestionControl"
 import { Question as QuestionType } from "@/interfaces/question"
 
 interface QuestionProps {
@@ -41,7 +41,7 @@ const Question = ({ question }: QuestionProps) => {
           <QuestionDueDate questionCreatedDate={question.created_date} />
         </div>
       </div>
-      <HandleQuestionBox question={question} />
+      <QuestionControl question={question} />
       <QuestionMdViewer content={question.content} />
       <ul className="flex gap-x-3 gap-y-2 flex-wrap mt-6">
         {question?.skills.map((skill, index) => {

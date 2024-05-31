@@ -6,9 +6,8 @@ import { useController } from "react-hook-form"
 import { questionContentRules } from "./question-content-rules"
 import TextCounter from "@/components/shared/TextCounter"
 import { QUESTION_LIMITS } from "@/constants/limitation"
-import { useQuestionUploadImageHook } from "@/page/askQuestion/hooks/useQuestionUploadImageHook"
-import { useMutationState } from "@tanstack/react-query"
-import { UploadImagesCategory } from "@/interfaces/dto/upload/upload-images.dto"
+import { useToastEditorUploadImageHook } from "@/page/askQuestion/hooks/useToastEditorUploadImageHook"
+import ImageIndicator from "@/components/shared/toast-ui-editor/editor/ImageIndicator"
 
 function QuestionContentEditor() {
   const {
@@ -23,7 +22,7 @@ function QuestionContentEditor() {
     rules: questionContentRules,
   })
 
-  const { uploadImageHook } = useQuestionUploadImageHook({
+  const { uploadImageHook } = useToastEditorUploadImageHook({
     category: "question",
     onUploadSuccess({ file, uploadURL }) {
       imageFieldArray.append({ file, uploadURL })
@@ -51,8 +50,7 @@ function QuestionContentEditor() {
           onChange={onChange}
           hooks={{ addImageBlobHook: uploadImageHook }}
         />
-        <ImageUploadIndicator />
-        <ImageDeleteIndicator />
+        <ImageIndicator />
       </div>
       <div className="flex w-full justify-end items-center mt-2">
         <TextCounter
@@ -66,41 +64,3 @@ function QuestionContentEditor() {
 }
 
 export default QuestionContentEditor
-
-const ImageUploadIndicator = () => {
-  const [uploadQuestionImageStatus] = useMutationState({
-    filters: {
-      mutationKey: ["upload", "question" as UploadImagesCategory],
-    },
-    select(mutation) {
-      return mutation.state.status
-    },
-  })
-
-  if (uploadQuestionImageStatus !== "pending") return null
-
-  return (
-    <div className="absolute w-full h-full left-0 top-0 flex justify-center items-center bg-white/50 z-[31]">
-      이미지 업로드 중...
-    </div>
-  )
-}
-
-const ImageDeleteIndicator = () => {
-  const [deleteQuestionImageStatus] = useMutationState({
-    filters: {
-      mutationKey: ["delete", "image"],
-    },
-    select(mutation) {
-      return mutation.state.status
-    },
-  })
-
-  if (deleteQuestionImageStatus !== "pending") return null
-
-  return (
-    <div className="absolute w-full h-full left-0 top-0 flex justify-center items-center bg-white/50 z-[31]">
-      이미지 삭제 중...
-    </div>
-  )
-}

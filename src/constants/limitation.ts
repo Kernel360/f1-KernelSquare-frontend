@@ -84,6 +84,18 @@ export const QUESTION_LIMITS = {
   },
 }
 
+export const QUESTION_ANSWER_LIMITS = {
+  content: {
+    minLength: 10,
+    maxLength: 10000,
+  },
+  image: {
+    maxLength: baseImageLimitInstance.maximumLength,
+    maxSize: baseImageLimitInstance.getSize(),
+    accept: baseImageLimitInstance.accept,
+  },
+}
+
 export const CODING_MEETING_LIMITS = {
   title: {
     minLength: 5,

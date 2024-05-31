@@ -9,6 +9,7 @@ import { Switch } from "@/components/ui/Switch"
 import { useId, useMemo } from "react"
 import dayjs from "dayjs"
 import AnswerList from "./AnswerList"
+import { useGetAnswers } from "../../hooks/answer/useGetAnswers"
 
 export interface AnswerProps {
   questionId: number
@@ -24,9 +25,9 @@ const AnswerListContainer: React.FC<AnswerProps> = ({
   const id = useId()
   const switchId = `${id}-answer`
 
-  const { filterMyAnswer, handleIsChecked } = useQnADetail()
+  const { filterMyAnswer, setChecked } = useQnADetail()
 
-  const { data, isPending } = answerQueries.useGetAnswers({
+  const { data, isPending } = useGetAnswers({
     questionId,
   })
 
@@ -62,7 +63,7 @@ const AnswerListContainer: React.FC<AnswerProps> = ({
             <Switch
               id={switchId}
               className="w-12 h-6 border border-[#F2F2F2] data-[state=unchecked]:bg-[#E0E0E0] [&>span]:w-[22.5px] [&>span]:h-[22.5px] [&>span]:data-[state=checked]:translate-x-6"
-              onCheckedChange={handleIsChecked}
+              onCheckedChange={setChecked}
             />
           </div>
         ) : null}
