@@ -4,7 +4,7 @@ import { CoffeeChatFormData } from "@/interfaces/form"
 import { Control, Controller } from "react-hook-form"
 import CoffeeChatSection from "../../CoffeeChatSection"
 import TextCounter from "@/components/shared/TextCounter"
-import Limitation from "@/constants/limitation"
+import { COFFEE_CHAT_LIMITS } from "@/constants/limitation"
 import { chatContentRules } from "../../../controls/rules/chat-content-rules"
 import dynamic from "next/dynamic"
 
@@ -33,8 +33,8 @@ function CoffeeChatContentSection({ control }: CoffeeChatContentSectionProps) {
               </div>
               <TextCounter
                 text={field.value}
-                min={Limitation.chat_content_min_length}
-                max={Limitation.chat_content_max_length}
+                min={COFFEE_CHAT_LIMITS.content.minLength}
+                max={COFFEE_CHAT_LIMITS.content.maxLength}
                 className="text-lg block text-right h-2 mr-5"
               />
             </div>

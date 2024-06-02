@@ -11,12 +11,15 @@ interface QuestionProps {
   question: QuestionType
 }
 
-const QuestionMdViewer = dynamic(() => import("../Markdown/MdViewer"), {
-  ssr: false,
-  loading(loadingProps) {
-    return <div className="skeleton w-full h-[328px] mt-2.5 rounded-md"></div>
+const QuestionMdViewer = dynamic(
+  () => import("@/components/shared/toast-ui-editor/viewer/ContentViewer"),
+  {
+    ssr: false,
+    loading(loadingProps) {
+      return <div className="skeleton w-full h-[328px] mt-2.5 rounded-md"></div>
+    },
   },
-})
+)
 
 const Question = ({ question }: QuestionProps) => {
   const questionAuthor: UserProfileInfo = {
@@ -42,7 +45,7 @@ const Question = ({ question }: QuestionProps) => {
         </div>
       </div>
       <QuestionControl question={question} />
-      <QuestionMdViewer content={question.content} />
+      <QuestionMdViewer domain="question" content={question.content} />
       <ul className="flex gap-x-3 gap-y-2 flex-wrap mt-6">
         {question?.skills.map((skill, index) => {
           return (

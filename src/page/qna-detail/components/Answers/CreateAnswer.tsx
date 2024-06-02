@@ -10,9 +10,9 @@ import { QUESTION_ANSWER_LIMITS } from "@/constants/limitation"
 import TextCounter from "@/components/shared/TextCounter"
 import { useClientSession } from "@/hooks/useClientSession"
 import UploadedAnswerImages from "@/components/shared/toast-ui-editor/editor/UploadedAnswerImages"
-import AnswerFormProvider from "./formProvider/AnswerFormProvider"
+import AnswerFormProvider from "../formProvider/AnswerFormProvider"
 import { useAnswerFormContext } from "@/hooks/editor/useAnswerFormContext"
-import CreateAnswerForm from "./Answers/form/CreateAnswerForm"
+import CreateAnswerForm from "./form/CreateAnswerForm"
 
 export interface MyAnswerProps {
   questionId: number
@@ -20,7 +20,7 @@ export interface MyAnswerProps {
   isQuestionAuthor: boolean
 }
 
-const MyAnswer: React.FC<MyAnswerProps> = ({
+const CreateAnswer: React.FC<MyAnswerProps> = ({
   questionId,
   list,
   isQuestionAuthor,
@@ -79,7 +79,7 @@ const MyAnswer: React.FC<MyAnswerProps> = ({
   )
 }
 
-export default MyAnswer
+export default CreateAnswer
 
 const AnswerTextCounter = () => {
   const { control } = useAnswerFormContext()

@@ -1,4 +1,4 @@
-import Limitation from "@/constants/limitation"
+import { COFFEE_CHAT_LIMITS } from "@/constants/limitation"
 import { validationMessage } from "@/constants/message/validation"
 import { CoffeeChatFormData } from "@/interfaces/form"
 import { RegisterOptions } from "react-hook-form"
@@ -11,11 +11,11 @@ type ChatContentRules = Omit<
 export const chatContentRules: ChatContentRules = {
   required: validationMessage.noContent,
   minLength: {
-    value: Limitation.chat_content_min_length,
+    value: COFFEE_CHAT_LIMITS.content.minLength,
     message: validationMessage.chatContentLength,
   },
   maxLength: {
-    value: Limitation.chat_content_max_length,
+    value: COFFEE_CHAT_LIMITS.content.maxLength,
     message: validationMessage.chatContentLength,
   },
 }

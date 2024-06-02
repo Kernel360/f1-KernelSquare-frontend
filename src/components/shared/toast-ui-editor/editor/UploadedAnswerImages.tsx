@@ -5,15 +5,20 @@ import { useAnswerFormContext } from "@/hooks/editor/useAnswerFormContext"
 import UploadedImageSection from "./image/ui/UploadedImageSection"
 import UploadedImages from "./image/ui/UploadedImages"
 import UploadedAnswerImage from "./image/UploadedAnswerImage"
+import { ImageFieldArrayItem } from "@/interfaces/form/question-form"
 
 function UploadedAnswerImages() {
-  const { imageFieldArray, editorRef, defaultValues } = useAnswerFormContext()
+  const {
+    imageFieldArray,
+    editorRef,
+    formState: { defaultValues },
+  } = useAnswerFormContext()
 
   return (
     <UploadedImageSection counter={<UploadedImageCount />}>
       <UploadedImages
         images={imageFieldArray.fields}
-        initialImages={defaultValues.images}
+        initialImages={(defaultValues?.images as ImageFieldArrayItem[]) ?? []}
         editor={editorRef.current ?? undefined}
         renderImage={(props) => <UploadedAnswerImage {...props} />}
       />

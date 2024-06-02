@@ -1,12 +1,12 @@
 "use client"
 
 import { useQuestionFormContext } from "@/page/askQuestion/hooks/useQuestionFormContext"
-import ContentEditor from "../../editor/ContentEditor"
+import ContentEditor from "../../../../../components/shared/toast-ui-editor/editor/ContentEditor"
 import { useController } from "react-hook-form"
 import { questionContentRules } from "./question-content-rules"
 import TextCounter from "@/components/shared/TextCounter"
 import { QUESTION_LIMITS } from "@/constants/limitation"
-import { useToastEditorUploadImageHook } from "@/page/askQuestion/hooks/useToastEditorUploadImageHook"
+import { useToastEditorUploadImageHook } from "@/hooks/editor/useToastEditorUploadImageHook"
 import ImageIndicator from "@/components/shared/toast-ui-editor/editor/ImageIndicator"
 
 function QuestionContentEditor() {

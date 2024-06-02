@@ -13,6 +13,18 @@ const queryKey = {
   uploadImageMutation: "uploadImage",
 }
 
+export const USER_QUERY_KEY = {
+  getUser(userId: number) {
+    return ["user", userId, "profile"]
+  },
+  updateProfileImage(userId: number) {
+    return ["user", userId, "update", "image"]
+  },
+  updateIntroduction(userId: number) {
+    return ["user", userId, "update", "introduction"]
+  },
+}
+
 export const QUESTION_QUERY_KEY = {
   questionList: ["question", "list"],
   questionDetail(id: number) {
@@ -24,11 +36,23 @@ export const QUESTION_QUERY_KEY = {
   questionAnswers(questionId: number) {
     return ["question", "answer", questionId]
   },
+  createAIanswer(questionId: number) {
+    return ["question", questionId, "aiAnswer"]
+  },
   createAnswer(questionId: number) {
     return ["question", questionId, "answer", "create"]
   },
   deleteAnswer(answerId: number) {
     return ["question", "answer", "delete", answerId]
+  },
+  updateAnswer(answerId: number) {
+    return ["question", "answer", "update", answerId]
+  },
+  voteAnswer(answerId: number) {
+    return ["question", "answer", "vote", answerId]
+  },
+  deleteVoteAnswer(answerId: number) {
+    return ["question", "answer", "vote", "delete", answerId]
   },
 }
 

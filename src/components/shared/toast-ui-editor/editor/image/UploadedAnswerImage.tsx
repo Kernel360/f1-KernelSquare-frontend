@@ -6,7 +6,7 @@ import { RenderUploadedImageProps } from "./ui/UploadedImages"
 import { toast } from "react-toastify"
 import ConfirmDeleteImageModal from "@/page/askQuestion/components/fields/content/image/ConfirmDeleteImageModal"
 import { useAnswerFormContext } from "@/hooks/editor/useAnswerFormContext"
-import { useDelete } from "@/hooks/image/useDelete"
+import { useDeleteImage } from "@/hooks/image/useDeleteImage"
 
 interface UploadedAnswerImageProps extends RenderUploadedImageProps {}
 
@@ -19,7 +19,7 @@ function UploadedAnswerImage({
   const { openModal, closeModal } = useModal()
 
   const { imageFieldArray, deleteImageFieldArray } = useAnswerFormContext()
-  const { deleteImageApi, deleteImageApiStatus } = useDelete({
+  const { deleteImageApi, deleteImageApiStatus } = useDeleteImage({
     onSuccess() {
       imageFieldArray.remove(imageIndex)
     },

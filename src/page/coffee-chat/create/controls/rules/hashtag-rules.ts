@@ -1,4 +1,4 @@
-import Limitation from "@/constants/limitation"
+import { HASHTAG_LIMITS } from "@/constants/limitation"
 import { validationMessage } from "@/constants/message/validation"
 import { CoffeeChatFormData, HashTagFormData } from "@/interfaces/form"
 import { validatorInstance } from "@/util/validate"
@@ -32,7 +32,7 @@ export const hashTagRules: ({
   return {
     required: validationMessage.noValue,
     maxLength: {
-      value: Limitation.hashtags_word,
+      value: HASHTAG_LIMITS.tag.maxLength,
       message: validationMessage.overHashtagWordLimit,
     },
     validate: {

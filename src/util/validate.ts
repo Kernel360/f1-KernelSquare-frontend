@@ -1,5 +1,4 @@
-import { baseImageLimitInstance } from "@/constants/image/image-limit"
-import Limitation from "@/constants/limitation"
+import Limitation, { HASHTAG_LIMITS } from "@/constants/limitation"
 import Regex from "@/constants/regex"
 import validator from "validator"
 
@@ -97,7 +96,7 @@ export class Validator {
   validateHashTag(hashTag: string = "") {
     return {
       length() {
-        return hashTag.length && hashTag.length < Limitation.hashtags_word
+        return hashTag.length && hashTag.length < HASHTAG_LIMITS.tag.maxLength
       },
       format() {
         return (
@@ -114,21 +113,10 @@ export class Validator {
   validateHashTagList(hashTagList: string[]) {
     return {
       length() {
-        return hashTagList.length < Limitation.hashtags_cnt
+        return hashTagList.length < HASHTAG_LIMITS.tags.maxLength
       },
       duplicate(hashTag: string) {
         return !hashTagList.includes(hashTag)
-      },
-    }
-  }
-
-  validateImageFileBlob(file: File | Blob) {
-    return {
-      accept() {
-        return baseImageLimitInstance.accept.includes(file.type as any)
-      },
-      size() {
-        return file.size <= baseImageLimitInstance.getSize()
       },
     }
   }

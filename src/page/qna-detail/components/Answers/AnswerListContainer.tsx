@@ -1,6 +1,5 @@
 "use client"
 
-import { answerQueries } from "@/react-query/answers"
 import ContentLoading from "@/components/shared/animation/ContentLoading"
 import LightBulb from "@/components/shared/animation/LightBulb"
 import useQnADetail from "../../hooks/useQnADetail"

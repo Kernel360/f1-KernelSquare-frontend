@@ -13,7 +13,7 @@ export type HandleAnswerProps = {
 const HandleAnswerBox: React.FC<HandleAnswerProps> = ({ answer }) => {
   const { user } = useClientSession()
 
-  const { setIsAnswerEditMode, deleteAnswer, isAnswerEditMode } =
+  const { deleteAnswer, answerIsEditMode, answerSetToEditMode } =
     useHandleMyAnswer({
       answerId: Number(answer.answer_id),
       questionId: Number(answer.question_id),
@@ -21,9 +21,11 @@ const HandleAnswerBox: React.FC<HandleAnswerProps> = ({ answer }) => {
 
   const isMyAnswer = user ? user.member_id === answer.answer_member_id : false
 
-  const changeToUpdateMode = () => setIsAnswerEditMode(true)
+  const changeToUpdateMode = () => {
+    answerSetToEditMode()
+  }
 
-  if (user && isMyAnswer && !isAnswerEditMode) {
+  if (user && isMyAnswer && !answerIsEditMode) {
     return (
       <div className="flex w-full [&>*]:text-xs gap-0.5 @[396px]:[&>*]:text-sm @[396px]:gap-3 justify-end items-center h-8">
         <UpdateModeButton onClick={changeToUpdateMode} />

@@ -3,13 +3,13 @@
 import type { Answer } from "@/interfaces/answer"
 import Image from "next/image"
 import { useClientSession } from "@/hooks/useClientSession"
-import VoteBox from "./VoteBox"
 import HandleAnswerBox from "./HandleAnswerBox"
 import AnswerContentBox from "./AnswerContentBox"
 import React from "react"
 import { twMerge } from "tailwind-merge"
 import AnswerAuthorInfo from "./info/AnswerAuthorInfo"
 import AnswerDate from "./info/AnswerDate"
+import VoteAnswer from "./vote/VoteAnswer"
 
 export interface AnswerListItemProps {
   answer: Answer
@@ -17,8 +17,6 @@ export interface AnswerListItemProps {
 }
 
 const AnswerListItem: React.FC<AnswerListItemProps> = ({ answer, now }) => {
-  const { user } = useClientSession()
-
   const voteWrapperClassName = twMerge([
     "absolute left-0 top-0",
     answer.rank_name && "top-10",
@@ -46,7 +44,7 @@ const AnswerListItem: React.FC<AnswerListItemProps> = ({ answer, now }) => {
           rank_image_url={answer.rank_image_url}
         />
         <div className={voteWrapperClassName}>
-          <VoteBox userId={user?.member_id} answer={answer} />
+          <VoteAnswer answer={answer} />
         </div>
         <div className={infoWrapperClassName}>
           <div className="max-w-full self-start flex gap-x-4 gap-y-1 flex-wrap">

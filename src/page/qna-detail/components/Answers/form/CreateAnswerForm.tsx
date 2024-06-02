@@ -10,6 +10,7 @@ import { toast } from "react-toastify"
 import SuccessModalContent from "../../SuccessModalContent"
 import successMessage from "@/constants/message/success"
 import useModal from "@/hooks/useModal"
+import { pickFirstAnswerFormError } from "@/util/hook-form/error"
 
 interface CreateAnswerFormProps {
   questionId: number
@@ -57,7 +58,7 @@ function CreateAnswerForm({ questionId }: CreateAnswerFormProps) {
   }
 
   const onInvalid = (errors: FieldErrors<AnswerFormData>) => {
-    const { errorField, type, message } = pickFirstError(errors)!
+    const { errorField, type, message } = pickFirstAnswerFormError(errors)!
 
     toast.error(message, {
       position: "top-center",
@@ -88,19 +89,3 @@ function CreateAnswerForm({ questionId }: CreateAnswerFormProps) {
 }
 
 export default CreateAnswerForm
-
-const pickFirstError = (errors: FieldErrors<AnswerFormData>) => {
-  const sortedKey: (keyof AnswerFormData)[] = [
-    "answer",
-    "images",
-    "imagesToDelete",
-  ]
-
-  for (const field of sortedKey) {
-    const targetError = errors[field]
-
-    if (targetError) return { ...targetError, errorField: field }
-  }
-
-  return null
-}

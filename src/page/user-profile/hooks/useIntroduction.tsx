@@ -1,95 +1,88 @@
-import { errorMessage } from "@/constants/message/error"
 import { useClientSession } from "@/hooks/useClientSession"
-import { IntroductionEditMode } from "@/recoil/atoms/mode"
 import { toast } from "react-toastify"
-import { useRecoilState } from "recoil"
 import { useQueryClient } from "@tanstack/react-query"
-import queryKey from "@/constants/queryKey"
-import { memberQueries } from "@/react-query/member"
-import cancleMessage from "@/constants/message/cancel"
+import { USER_QUERY_KEY } from "@/constants/queryKey"
 import successMessage from "@/constants/message/success"
-import notificationMessage from "@/constants/message/notification"
-import { validationMessage } from "@/constants/message/validation"
+import {
+  UpdateIntroductionVariables,
+  UpdateUserIntroductionCallback,
+  useUpdateUserIntroduction,
+} from "./introduction/useUpdateIntroduction"
+import { AxiosError, HttpStatusCode } from "axios"
+import { APIResponse } from "@/interfaces/dto/api-response"
 
-const useIntroduction = () => {
-  /**
-   * 자기소개 수정 관련
-   */
-  const [isIntroductionEditMode, setIsIntroductionEditMode] =
-    useRecoilState(IntroductionEditMode)
-  const closeIntroductionEditMode = () => setIsIntroductionEditMode(false)
-  const { updateMemberIntroduction } =
-    memberQueries.useUpdateMemberIntroduction()
+interface UseIntroduction {
+  updateCallback?: UpdateUserIntroductionCallback
+}
 
-  const handleIntroductionEditMode = () =>
-    setIsIntroductionEditMode((prev: boolean) => !prev)
-  const { user } = useClientSession()
+const useIntroduction = ({ updateCallback }: UseIntroduction = {}) => {
   const queryClient = useQueryClient()
+  const { user, clientSessionReset } = useClientSession()
 
-  const handleSubmitIntroduction = (introduction: string) => {
-    if (!user) {
-      toast.error(notificationMessage.unauthorized, {
-        toastId: "unauthorizedToChangeIntroduction",
-        position: "top-center",
-      })
-      return
-    }
-    if (introduction.length < 10) {
-      toast.error(validationMessage.introductionLimitUnder, {
-        toastId: "introductionLimitUnder",
-        position: "top-center",
-      })
-      return
-    }
-    if (introduction.length > 1000) {
-      toast.error(validationMessage.introductionLimitOver, {
-        toastId: "introductionLimitOver",
-        position: "top-center",
-      })
-      return
-    }
+  const { updateUserIntroductionApi, updateUserIntroductionApiStatus } =
+    useUpdateUserIntroduction({
+      async onSuccess(data, variables, context) {
+        toast.success(successMessage.editIntroduction, {
+          toastId: "successToEditIntroduction",
+          position: "top-center",
+        })
 
-    try {
-      updateMemberIntroduction(
-        {
-          memberId: user?.member_id,
-          introduction: introduction,
-        },
-        {
-          onSuccess: () => {
-            toast.success(successMessage.editIntroduction, {
-              toastId: "successToEditIntroduction",
-              position: "top-center",
-            })
-            queryClient.invalidateQueries({
-              queryKey: [queryKey.user, queryKey.profile, user.member_id],
-            })
-            return closeIntroductionEditMode()
-          },
-        },
-      )
-    } catch (err) {
-      toast.error(errorMessage.uploadIntroduction, {
-        toastId: "failToEditIntroduction",
-        position: "top-center",
-      })
-      throw new Error("자기소개 업데이트 중 에러가 발생하였습니다.")
-    }
-  }
+        await queryClient.invalidateQueries({
+          queryKey: USER_QUERY_KEY.getUser(user?.member_id ?? -1),
+        })
 
-  const handleCancleEditIntroduction = () =>
-    toast.error(cancleMessage.editIntroduction, {
-      toastId: "cancleEditIntroduction",
-      position: "top-center",
+        updateCallback?.onSuccess &&
+          updateCallback.onSuccess(data, variables, context)
+      },
+      onError(error, variables, context) {
+        if (error instanceof AxiosError) {
+          const { response } = error as AxiosError<APIResponse>
+
+          if (response?.status === HttpStatusCode.Unauthorized) {
+            clientSessionReset()
+
+            setTimeout(() => {
+              toast.error("로그인 후 이용 가능합니다", {
+                position: "top-center",
+              })
+            }, 0)
+
+            updateCallback?.onError &&
+              updateCallback.onError(error, variables, context)
+
+            return
+          }
+
+          toast.error(
+            response?.data?.msg ?? "자기소개 수정 중 에러가 발생했습니다",
+            { position: "top-center" },
+          )
+          updateCallback?.onError &&
+            updateCallback.onError(error, variables, context)
+
+          return
+        }
+
+        toast.error("자기소개 수정 중 에러가 발생했습니다", {
+          toastId: "failToEditIntroduction",
+          position: "top-center",
+        })
+
+        updateCallback?.onError &&
+          updateCallback.onError(error, variables, context)
+      },
     })
 
+  const updateUserIntroduction = ({
+    introduction,
+  }: UpdateIntroductionVariables) => {
+    if (updateUserIntroductionApiStatus === "pending") return
+
+    updateUserIntroductionApi({ introduction })
+  }
+
   return {
-    isIntroductionEditMode,
-    setIsIntroductionEditMode,
-    closeIntroductionEditMode,
-    handleIntroductionEditMode,
-    handleSubmitIntroduction,
-    handleCancleEditIntroduction,
+    updateUserIntroduction,
   }
 }
 

@@ -1,47 +1,32 @@
 "use client"
 
-import { APIResponse } from "@/interfaces/dto/api-response"
+import { IMAGE_QUERY_KEY } from "@/constants/queryKey"
 import { DeleteImagesResponse } from "@/interfaces/dto/upload/delete-images.dto"
 import { deleteImages } from "@/service/images"
 import { useMutation } from "@tanstack/react-query"
-import { AxiosError, AxiosResponse } from "axios"
+import { AxiosResponse } from "axios"
 
-type DeleteImageVariable = string
+type DeleteVariables = { imageUrl: string }
 
-interface useDeleteImageOption {
+interface UseDelete {
   onSuccess?: (
     data: AxiosResponse<DeleteImagesResponse, any>,
-    variables: DeleteImageVariable,
+    variables: DeleteVariables,
     context: unknown,
-  ) => unknown
-  onError?: (
-    error: Error | AxiosError<APIResponse>,
-    variables: DeleteImageVariable,
-    context: unknown,
-  ) => unknown
+  ) => void
+  onError?: (error: Error, variables: DeleteVariables, context: unknown) => void
 }
 
-export function useDeleteImage({
-  onSuccess,
-  onError,
-}: useDeleteImageOption = {}) {
-  const {
-    mutate: deleteImageMutate,
-    isPending: isDeletingImage,
-    isError: isDeleteImageError,
-    isSuccess: isDeleteImageSuccess,
-  } = useMutation({
-    mutationFn: (imageUrl: DeleteImageVariable) => deleteImages({ imageUrl }),
+export function useDeleteImage({ onSuccess, onError }: UseDelete = {}) {
+  const { mutate, status } = useMutation({
+    mutationKey: IMAGE_QUERY_KEY.deleteImage,
+    mutationFn: ({ imageUrl }: DeleteVariables) => deleteImages({ imageUrl }),
     onSuccess,
     onError,
   })
 
   return {
-    deleteImage: deleteImageMutate,
-    deleteImageStatus: {
-      isDeletingImage,
-      isDeleteImageSuccess,
-      isDeleteImageError,
-    },
+    deleteImageApi: mutate,
+    deleteImageApiStatus: status,
   }
 }

@@ -6,7 +6,7 @@ import { useQuestionFormContext } from "@/page/askQuestion/hooks/useQuestionForm
 import { MdClose } from "react-icons/md"
 import ConfirmDeleteImageModal from "./ConfirmDeleteImageModal"
 import useModal from "@/hooks/useModal"
-import { useDelete } from "@/hooks/image/useDelete"
+import { useDeleteImage } from "@/hooks/image/useDeleteImage"
 import { toast } from "react-toastify"
 
 interface UploadImageControlProps {
@@ -44,7 +44,7 @@ const DeleteUploadImageButton = ({
     formState: { defaultValues },
   } = useQuestionFormContext()
 
-  const { deleteImageApi, deleteImageApiStatus } = useDelete({
+  const { deleteImageApi, deleteImageApiStatus } = useDeleteImage({
     onSuccess() {
       imageFieldArray.remove(imageIndex)
     },

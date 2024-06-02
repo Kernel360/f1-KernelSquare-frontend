@@ -3,7 +3,7 @@ import CoffeeChatSection from "../../CoffeeChatSection"
 import { CoffeeChatFormData } from "@/interfaces/form"
 import { Control, Controller } from "react-hook-form"
 import TextCounter from "@/components/shared/TextCounter"
-import Limitation from "@/constants/limitation"
+import { COFFEE_CHAT_LIMITS } from "@/constants/limitation"
 import { chatTitleRules } from "../../../controls/rules/chat-title-rules"
 
 interface TitleSectionProps {
@@ -11,6 +11,8 @@ interface TitleSectionProps {
 }
 
 function TitleSection({ control }: TitleSectionProps) {
+  const placeholder = `제목(${COFFEE_CHAT_LIMITS.title.minLength}자 이상 ${COFFEE_CHAT_LIMITS.title.maxLength}자 이하)`
+
   return (
     <CoffeeChatSection className="border-transparent p-0">
       <Controller
@@ -29,12 +31,12 @@ function TitleSection({ control }: TitleSectionProps) {
                 className={
                   "rounded-none border-r-0 border-l-0 border-t-0 py-4 text-xl placeholder:text-xl pc:text-2xl pc:placeholder:text-2xl"
                 }
-                placeholder="제목(5자 이상 100자 이하)"
+                placeholder={placeholder}
                 value={field.value}
                 error={
                   !!field.value &&
-                  (field.value.length < Limitation.title_limit_under ||
-                    field.value.length > Limitation.title_limit_over)
+                  (field.value.length < COFFEE_CHAT_LIMITS.title.minLength ||
+                    field.value.length > COFFEE_CHAT_LIMITS.title.maxLength)
                 }
                 onChange={field.onChange}
                 onBlur={field.onBlur}
@@ -60,8 +62,8 @@ const TitleTextCounter = ({
   return (
     <TextCounter
       text={text}
-      min={Limitation.title_limit_under}
-      max={Limitation.title_limit_over}
+      min={COFFEE_CHAT_LIMITS.title.minLength}
+      max={COFFEE_CHAT_LIMITS.title.maxLength}
       className={className}
     />
   )

@@ -2,16 +2,13 @@
 
 import { AnswerFormData } from "@/interfaces/form"
 import { Editor } from "@toast-ui/react-editor"
-import { Dispatch, RefObject, SetStateAction } from "react"
+import { RefObject } from "react"
 import { UseFormReturn, useFormContext } from "react-hook-form"
 import { useAnswerEditorImageFieldArray } from "./useAnswerImageFieldArray"
 import { useAnswerEditorDeleteImageFieldArray } from "./useAnswerDeleteImageFieldArray"
-import { initialAnswerForm } from "@/page/qna-detail/components/formProvider/AnswerFormProvider"
 
 type AnswerFormContext = UseFormReturn<AnswerFormData, any, undefined> & {
   editorRef: RefObject<Editor>
-  defaultValues: AnswerFormData
-  setDefaultValues: Dispatch<SetStateAction<AnswerFormData>>
 }
 
 export function useAnswerFormContext() {
@@ -27,7 +24,6 @@ export function useAnswerFormContext() {
   const formReset = () => {
     formContext.editorRef?.current?.getInstance()?.reset()
     formContext.reset()
-    formContext.setDefaultValues(initialAnswerForm)
   }
 
   return {

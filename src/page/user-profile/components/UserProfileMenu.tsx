@@ -8,8 +8,9 @@ import Button from "@/components/shared/button/Button"
 import Spacing from "@/components/shared/Spacing"
 import { useClientSession } from "@/hooks/useClientSession"
 import { Icons } from "@/components/icons/Icons"
-import useIntroduction from "../hooks/useIntroduction"
 import Introduction from "./introduction/Introduction"
+import { useRecoilState } from "recoil"
+import { IntroductionEditModeAtom } from "@/recoil/atoms/editor/mode"
 
 interface UserProfileMenuProps {
   userPayload: UserPayload
@@ -20,8 +21,12 @@ type MenuKey = "Introduction"
 function UserProfileMenu({ userPayload }: UserProfileMenuProps) {
   const { user } = useClientSession()
   const isMyPage = userPayload.member_id == user?.member_id
+
   const [menu, setMenu] = useState<MenuKey>("Introduction")
-  const { handleIntroductionEditMode } = useIntroduction()
+
+  const [introductionEditMode, setIntroductionEditMode] = useRecoilState(
+    IntroductionEditModeAtom,
+  )
 
   const MenuContent = () => {
     switch (menu) {
@@ -30,7 +35,6 @@ function UserProfileMenu({ userPayload }: UserProfileMenuProps) {
           <Introduction
             introduction={userPayload.introduction}
             isMyPage={isMyPage}
-            userId={user?.member_id}
           />
         )
       default:
@@ -53,10 +57,10 @@ function UserProfileMenu({ userPayload }: UserProfileMenuProps) {
             content: (
               <div className="flex w-full h-full justify-center items-center">
                 <Button>README.md</Button>
-                {isMyPage && (
+                {isMyPage && !introductionEditMode && (
                   <Icons.EditIntro
                     className="ml-[2px] text-[16px] mt-[6px] shrink-0 cursor-pointer"
-                    onClick={handleIntroductionEditMode}
+                    onClick={() => setIntroductionEditMode(true)}
                   />
                 )}
               </div>

@@ -1,7 +1,7 @@
 type ImageSizeUnit = "KB" | "MB"
 type ImageAccept = "image/jpeg" | "image/png" | "image/svg+xml" | "image/gif"
 
-interface ImageLimits {
+export interface ImageLimits {
   unitToSize: Record<ImageSizeUnit, number>
   size: {
     amount: number
@@ -11,6 +11,7 @@ interface ImageLimits {
   maximumLength: number
   getSizeLabel(): string
   getSize(): number
+  getImageAccept(): string
   getAcceptListLabel(): string
 }
 
@@ -46,6 +47,10 @@ class BaseImageLimits implements ImageLimits {
   getSize(): number {
     const { amount, unit } = this.size
     return amount * this.unitToSize[unit]
+  }
+
+  getImageAccept(): string {
+    return this.accept.join(", ")
   }
 
   getAcceptListLabel(): string {

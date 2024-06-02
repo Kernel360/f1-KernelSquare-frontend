@@ -1,6 +1,6 @@
 import { baseImageLimitInstance } from "@/constants/image/image-limit"
-import { validatorInstance } from "../validate"
 import { ImageFieldArrayItem } from "@/interfaces/form/question-form"
+import { imageValidatorInstance } from "../image-validate"
 
 export const enum ImageRuleValidateType {
   "InvalidFormat" = "invalidFormat",
@@ -14,15 +14,17 @@ export const enum ImagesRuleValidateType {
 export const imageRules = {
   validate: {
     [ImageRuleValidateType.InvalidFormat]: (file: File) => {
-      if (!validatorInstance.validateImageFileBlob(file).accept()) {
-        return `이미지는 ${baseImageLimitInstance.getAcceptListLabel()} 확장자만 가능합니다`
+      const validateResult = imageValidatorInstance.validateAccept(file)
+      if (validateResult !== true) {
+        return validateResult.message
       }
 
       return true
     },
     [ImageRuleValidateType.MaximumSize]: (file: File) => {
-      if (!validatorInstance.validateImageFileBlob(file).size()) {
-        return `${baseImageLimitInstance.getSizeLabel()} 이하의 이미지만 업로드할 수 있습니다`
+      const validateResult = imageValidatorInstance.validateSize(file)
+      if (validateResult !== true) {
+        return validateResult.message
       }
 
       return true

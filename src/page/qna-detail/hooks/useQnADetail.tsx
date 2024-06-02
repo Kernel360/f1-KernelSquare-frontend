@@ -2,8 +2,8 @@
 
 import { useClientSession } from "@/hooks/useClientSession"
 import { useProgressModal } from "@/hooks/useProgressModal"
-import type { Answer } from "@/interfaces/answer"
 import { useState } from "react"
+import type { Answer } from "@/interfaces/answer"
 
 const useQnADetail = () => {
   const { ProgressModalView, setStep } = useProgressModal()

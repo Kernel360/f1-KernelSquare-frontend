@@ -2,7 +2,7 @@
 
 import { HookCallback } from "@/components/shared/toast-ui-editor/editor/EditorWrapper"
 import { useDomainEditMode } from "@/hooks/editor/useDomainEditMode"
-import { UploadVariables, useUpload } from "@/hooks/image/useUpload"
+import { UploadVariables, useUploadImage } from "@/hooks/image/useUploadImage"
 import { APIResponse } from "@/interfaces/dto/api-response"
 import { UploadImagesCategory } from "@/interfaces/dto/upload/upload-images.dto"
 import { ImageFieldArrayItem } from "@/interfaces/form/question-form"
@@ -22,11 +22,6 @@ interface UseToastEditorUploadImageHook {
   ) => void
 }
 
-/*
-  [TODO]
-  토스트 에디터 이미지 훅을 해당 훅 하나를 이용해서
-  범용적으로 이용할 수 있도록 수정
-*/
 export function useToastEditorUploadImageHook({
   category,
   images,
@@ -37,7 +32,7 @@ export function useToastEditorUploadImageHook({
 
   const imagesRef = useRef(images)
 
-  const { uploadImageApi } = useUpload({
+  const { uploadImageApi } = useUploadImage({
     category,
     onSuccess(response, { file, toastEditorHookCallback }) {
       const uploadURL = response.data.data!.image_url
