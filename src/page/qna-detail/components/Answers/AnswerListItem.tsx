@@ -2,7 +2,6 @@
 
 import type { Answer } from "@/interfaces/answer"
 import Image from "next/image"
-import { useClientSession } from "@/hooks/useClientSession"
 import HandleAnswerBox from "./HandleAnswerBox"
 import AnswerContentBox from "./AnswerContentBox"
 import React from "react"

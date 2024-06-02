@@ -30,7 +30,7 @@ function Button({
         ? "text-secondary hover:text-white hover:bg-secondary"
         : "text-white bg-secondary hover:bg-[#464e57]"),
     buttonTheme === "third" &&
-      "text-black border-[1px] border-primary hover:bg-primary",
+      "text-black border-[1px] border-primary hover:bg-light-green hover:border-light-green hover:text-secondary",
     ghost && "bg-transparent",
   ])
 
@@ -42,7 +42,7 @@ function Button({
   ])
 
   return (
-    <button type={type ?? "button"} className={classNames} {...props}>
+    <button type={type ?? "button"} className={classNames + ""} {...props}>
       {children}
     </button>
   )

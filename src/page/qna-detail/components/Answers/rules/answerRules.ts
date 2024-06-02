@@ -1,5 +1,4 @@
-import Limitation, { QUESTION_ANSWER_LIMITS } from "@/constants/limitation"
-import { validationMessage } from "@/constants/message/validation"
+import { QUESTION_ANSWER_LIMITS } from "@/constants/limitation"
 import { AnswerFormData } from "@/interfaces/form"
 import { ControllerRenderProps, RegisterOptions } from "react-hook-form"
 
@@ -13,14 +12,16 @@ export const answerRules: Omit<
   RegisterOptions<AnswerFormData, "answer">,
   "valueAsNumber" | "valueAsDate" | "setValueAs" | "disabled"
 > = {
-  required: validationMessage.noAnswerContent,
+  required: "답변 내용을 작성해주세요",
   minLength: {
     value: QUESTION_ANSWER_LIMITS.content.minLength,
-    message: validationMessage.underAnswerLimit,
+    message: `답변은 ${QUESTION_ANSWER_LIMITS.content.minLength}자 이상이어야 합니다`,
   },
   maxLength: {
     value: QUESTION_ANSWER_LIMITS.content.maxLength,
-    message: validationMessage.overAnswerLimit,
+    message: `답변은 ${new Intl.NumberFormat("ko-KR").format(
+      QUESTION_ANSWER_LIMITS.content.maxLength,
+    )}자 이하여야 합니다`,
   },
   validate: {
     [AnswerValidateType.NotAllowOnlySpace]: (answer) => {

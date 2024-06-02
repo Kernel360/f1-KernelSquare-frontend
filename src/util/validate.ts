@@ -1,4 +1,4 @@
-import Limitation, { HASHTAG_LIMITS } from "@/constants/limitation"
+import { HASHTAG_LIMITS } from "@/constants/limitation"
 import Regex from "@/constants/regex"
 import validator from "validator"
 

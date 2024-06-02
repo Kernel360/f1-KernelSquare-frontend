@@ -19,18 +19,18 @@ export const enum DateTimeRuleValidateType {
 }
 
 export const dateTimeRules: DateTimeFieldRules = {
-  required: validationMessage.undertimeCntLimit,
+  required: validationMessage.coffeeChat.emptyReservationTime,
   validate: {
     [DateTimeRuleValidateType.Empty]: (dateTimes) => {
       if (!dateTimes?.length) {
-        return validationMessage.undertimeCntLimit
+        return validationMessage.coffeeChat.emptyReservationTime
       }
     },
     [DateTimeRuleValidateType.Maximum]: (dateTimes) => {
       if (!dateTimes) return true
 
       if (dateTimes.length > MAXIMUM_SELCTE_CHAT_TIME_NUM) {
-        return validationMessage.overtimeCntLimit
+        return validationMessage.coffeeChat.maximumReservationTimeLength
       }
 
       return true

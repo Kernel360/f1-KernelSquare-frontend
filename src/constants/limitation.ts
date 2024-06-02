@@ -1,18 +1,5 @@
 import { baseImageLimitInstance } from "./image/image-limit"
 
-const Limitation = {
-  title_limit_under: 5,
-  title_limit_over: 100,
-  content_limit_under: 10,
-  content_limit_over: 10000,
-  answer_limit_under: 10,
-  answer_limit_over: 10000,
-  introduction_limit_under: 10,
-  introduction_limit_over: 1000,
-} as const
-
-export default Limitation
-
 export const USER_PROFILE_LIMITS = {
   introduction: {
     minLength: 10,

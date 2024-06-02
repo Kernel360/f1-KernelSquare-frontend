@@ -30,10 +30,10 @@ export const hashTagRules: ({
   hashTagList: string[]
 }) => HashTagRules = ({ hashTagList }) => {
   return {
-    required: validationMessage.noValue,
+    required: validationMessage.hashTag.emptyValue,
     maxLength: {
       value: HASHTAG_LIMITS.tag.maxLength,
-      message: validationMessage.overHashtagWordLimit,
+      message: validationMessage.hashTag.maximumHashTagTextLength,
     },
     validate: {
       [HashTagRuleValidateType.InvalidFormat]: (hashTag) => {
@@ -41,7 +41,7 @@ export const hashTagRules: ({
           return true
         }
 
-        return validationMessage.preventSpecialCharacter
+        return validationMessage.hashTag.includeSpecialCharacter
       },
       [HashTagRuleValidateType.WhiteSpace]: (hashTag) => {
         if (validatorInstance.validateHashTag(hashTag).whiteSpace()) {
@@ -57,14 +57,14 @@ export const hashTagRules: ({
           return true
         }
 
-        return validationMessage.preventDuplicateValue
+        return validationMessage.hashTag.duplicatedHashTag
       },
       [HashTagListRuleValidateType.Maximum]: (hashTag) => {
         if (validatorInstance.validateHashTagList(hashTagList).length()) {
           return true
         }
 
-        return validationMessage.overHashtagCntLimit
+        return validationMessage.hashTag.maximumHashTagsLength
       },
     },
   }
