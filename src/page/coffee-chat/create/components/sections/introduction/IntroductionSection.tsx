@@ -1,10 +1,10 @@
-import { CoffeeChatFormData } from "@/interfaces/form"
 import { Control, useController } from "react-hook-form"
 import CoffeeChatSection from "../../CoffeeChatSection"
 import Textarea from "@/components/shared/textarea/Textarea"
 import TextCounter from "@/components/shared/TextCounter"
 import { COFFEE_CHAT_LIMITS } from "@/constants/limitation"
 import { chatIntroductionRules } from "../../../controls/rules/introduction-rules"
+import { CoffeeChatFormData } from "@/interfaces/form/coffee-chat-form"
 
 interface IntroductionSectionProps {
   control: Control<CoffeeChatFormData, any>

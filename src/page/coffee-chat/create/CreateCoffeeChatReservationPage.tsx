@@ -12,16 +12,16 @@ import notificationMessage from "@/constants/message/notification"
 import { useSelectedChatTimes } from "./hooks/useSelectedChatTimes"
 import { CreateCoffeeChatPostRequest } from "@/interfaces/dto/coffee-chat/create-coffeechat-post.dto"
 import { transformDateTime } from "./controls/util/parse-field"
-import {
-  CoffeeChatEditorInitialValues,
-  CoffeeChatFormData,
-} from "@/interfaces/form"
 import TitleSection from "./components/sections/title/TitleSection"
 import IntroductionSection from "./components/sections/introduction/IntroductionSection"
 import ContentSection from "./components/sections/content/ContentSection"
 import { useCreateCoffeeChat } from "./hooks/useCreateCoffeeChat"
 import LinkToListPage from "@/components/LinkToListPage"
 import { pickFirstError } from "@/util/hook-form/error"
+import {
+  CoffeeChatEditorInitialValues,
+  CoffeeChatFormData,
+} from "@/interfaces/form/coffee-chat-form"
 
 export interface CoffeeChatFormProps {
   initialValues?: CoffeeChatEditorInitialValues

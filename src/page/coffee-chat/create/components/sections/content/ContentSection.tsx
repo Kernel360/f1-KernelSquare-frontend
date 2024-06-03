@@ -1,12 +1,12 @@
 "use client"
 
-import { CoffeeChatFormData } from "@/interfaces/form"
 import { Control, Controller } from "react-hook-form"
 import CoffeeChatSection from "../../CoffeeChatSection"
 import TextCounter from "@/components/shared/TextCounter"
 import { COFFEE_CHAT_LIMITS } from "@/constants/limitation"
 import { chatContentRules } from "../../../controls/rules/chat-content-rules"
 import dynamic from "next/dynamic"
+import { CoffeeChatFormData } from "@/interfaces/form/coffee-chat-form"
 
 interface CoffeeChatContentSectionProps {
   control: Control<CoffeeChatFormData, any>

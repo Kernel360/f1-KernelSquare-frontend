@@ -1,10 +1,10 @@
 import { Input } from "@/components/shared/input/Input"
 import CoffeeChatSection from "../../CoffeeChatSection"
-import { CoffeeChatFormData } from "@/interfaces/form"
 import { Control, Controller } from "react-hook-form"
 import TextCounter from "@/components/shared/TextCounter"
 import { COFFEE_CHAT_LIMITS } from "@/constants/limitation"
 import { chatTitleRules } from "../../../controls/rules/chat-title-rules"
+import { CoffeeChatFormData } from "@/interfaces/form/coffee-chat-form"
 
 interface TitleSectionProps {
   control: Control<CoffeeChatFormData, any>

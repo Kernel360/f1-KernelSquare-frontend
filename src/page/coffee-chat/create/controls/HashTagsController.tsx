@@ -1,6 +1,7 @@
 "use client"
 
-import { CoffeeChatFormData, HashTagFormData } from "@/interfaces/form"
+import { HashTagFormData } from "@/interfaces/form"
+import { CoffeeChatFormData } from "@/interfaces/form/coffee-chat-form"
 import {
   Control,
   Controller,

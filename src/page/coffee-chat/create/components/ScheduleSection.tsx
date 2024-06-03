@@ -10,7 +10,7 @@ import HelpHoverBox from "./sections/HelpHoverBox"
 import SelectedTimeList from "./SelectedTimeList"
 import { Control } from "react-hook-form"
 import DateTimesController from "../controls/DateTimesController"
-import { CoffeeChatFormData } from "@/interfaces/form"
+import { CoffeeChatFormData } from "@/interfaces/form/coffee-chat-form"
 
 interface SheduleSectionProps {
   control: Control<CoffeeChatFormData, any>

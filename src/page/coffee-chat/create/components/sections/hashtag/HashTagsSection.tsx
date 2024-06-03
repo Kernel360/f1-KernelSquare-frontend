@@ -5,9 +5,9 @@ import { HASHTAG_LIMITS } from "@/constants/limitation"
 import { useRecoilValue, useResetRecoilState } from "recoil"
 import { HashTagList } from "@/recoil/atoms/coffee-chat/hashtags"
 import { Control } from "react-hook-form"
-import { CoffeeChatFormData } from "@/interfaces/form"
 import HashTagsController from "../../../controls/HashTagsController"
 import { useEffect } from "react"
+import { CoffeeChatFormData } from "@/interfaces/form/coffee-chat-form"
 
 interface HashTagsSectionProps {
   control: Control<CoffeeChatFormData, any>

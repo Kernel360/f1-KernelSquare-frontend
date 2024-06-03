@@ -2,7 +2,7 @@ import { Control, Controller } from "react-hook-form"
 import { useSelectedChatTimes } from "../hooks/useSelectedChatTimes"
 import { DateTimeField, dateTimeRules } from "./rules/datetime-rules"
 import { useEffect, useRef } from "react"
-import { CoffeeChatFormData } from "@/interfaces/form"
+import { CoffeeChatFormData } from "@/interfaces/form/coffee-chat-form"
 
 interface DateTimesControllerProps {
   control: Control<CoffeeChatFormData, any>
