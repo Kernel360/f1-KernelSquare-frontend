@@ -1,7 +1,7 @@
 import AuthGuardModal from "@/components/shared/auth-modal"
 import { UserPayload } from "@/interfaces/dto/member/get-member.dto"
 import { getMemeber } from "@/service/member"
-import { isLogined } from "@/util/auth"
+import { getServerSession } from "@/util/auth"
 import { extractTextFromMarkdown } from "@/util/markdown"
 import { Metadata } from "next"
 import dynamic from "next/dynamic"
@@ -107,13 +107,14 @@ const UserProfile = dynamic(() => import("@/page/user-profile/UserProfile"), {
 })
 
 export default function UserProfilePage({ params }: UserProfilePageProps) {
+  const { user } = getServerSession()
   const id = Number(params.id)
 
   if (!isValidPageProps({ params })) {
     notFound()
   }
 
-  if (!isLogined()) {
+  if (!user) {
     return <AuthGuardModal page="userProfile" />
   }
 

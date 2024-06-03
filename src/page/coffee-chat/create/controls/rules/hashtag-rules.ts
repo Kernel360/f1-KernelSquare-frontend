@@ -1,4 +1,4 @@
-import Limitation from "@/constants/limitation"
+import { HASHTAG_LIMITS } from "@/constants/limitation"
 import { validationMessage } from "@/constants/message/validation"
 import { CoffeeChatFormData, HashTagFormData } from "@/interfaces/form"
 import { validatorInstance } from "@/util/validate"
@@ -30,10 +30,10 @@ export const hashTagRules: ({
   hashTagList: string[]
 }) => HashTagRules = ({ hashTagList }) => {
   return {
-    required: validationMessage.noValue,
+    required: validationMessage.hashTag.emptyValue,
     maxLength: {
-      value: Limitation.hashtags_word,
-      message: validationMessage.overHashtagWordLimit,
+      value: HASHTAG_LIMITS.tag.maxLength,
+      message: validationMessage.hashTag.maximumHashTagTextLength,
     },
     validate: {
       [HashTagRuleValidateType.InvalidFormat]: (hashTag) => {
@@ -41,7 +41,7 @@ export const hashTagRules: ({
           return true
         }
 
-        return validationMessage.preventSpecialCharacter
+        return validationMessage.hashTag.includeSpecialCharacter
       },
       [HashTagRuleValidateType.WhiteSpace]: (hashTag) => {
         if (validatorInstance.validateHashTag(hashTag).whiteSpace()) {
@@ -57,14 +57,14 @@ export const hashTagRules: ({
           return true
         }
 
-        return validationMessage.preventDuplicateValue
+        return validationMessage.hashTag.duplicatedHashTag
       },
       [HashTagListRuleValidateType.Maximum]: (hashTag) => {
         if (validatorInstance.validateHashTagList(hashTagList).length()) {
           return true
         }
 
-        return validationMessage.overHashtagCntLimit
+        return validationMessage.hashTag.maximumHashTagsLength
       },
     },
   }

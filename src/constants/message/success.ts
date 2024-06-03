@@ -8,7 +8,7 @@ const successMessage = {
   deleteQuestion: "질문이 삭제되었습니다.",
   deleteCoffeeChatPost: "커피챗 게시글이 삭제되었습니다.",
   deleteCoffeeChatReservation: "커피챗 예약이 취소되었습니다.",
-  cancleVote: "투표 기록이 삭제되었습니다.",
+  cancelVote: "투표 기록이 삭제되었습니다.",
   reserveCoffeeChat: "해당 시간으로 예약되었습니다.",
   createCoffeeChatPost: "커피챗 등록글이 생성되었습니다.",
 } as const

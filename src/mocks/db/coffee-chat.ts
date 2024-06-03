@@ -74,8 +74,9 @@ export const mockCoffeeChatReservations: Array<MockCoffeechat> = [
   {
     article_id: 2,
     title: "권원상의 CI/CD a부터z까지",
-    content: "콘텐츠 2",
-    introduction: "콘텐츠 2",
+    content:
+      '### 콘텐츠2\n```tsx\n<Textarea\n  maxRows={4}\n  aria-label="maximum height"\n  placeholder="Maximum 4 rows"\n  defaultValue="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt\n    ut labore et dolore magna aliqua."\n/>\n```',
+    introduction: "커피챗소개글입니다.",
     member_id: mockUsers[2].id,
     member_image_url: mockUsers[2].image_url!,
     nickname: mockUsers[2].nickname,

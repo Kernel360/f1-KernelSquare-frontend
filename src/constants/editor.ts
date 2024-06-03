@@ -1,6 +1,7 @@
 import type { EditorProps } from "@toast-ui/react-editor"
 import type { TechTag } from "@/interfaces/tech-tag"
 import { SyntaxHighlightCodeLanguage } from "@/socket/client/code/CodeLanguageSelect"
+import { QUESTION_ANSWER_LIMITS, USER_PROFILE_LIMITS } from "./limitation"
 
 export const TOAST_UI_EDITOR_TOOLBAR_NAME = {
   HEADING: "heading",
@@ -137,3 +138,17 @@ export const SYNTAX_HIGHLIGHT_LANGUAGES: Array<SyntaxHighlightCodeLanguage> = [
   "typescript",
   "yaml",
 ]
+
+// answer editor placeholder
+export const ANSWER_EDITOR_PLACEHOLDER = `답변을 작성해주세요 (${
+  QUESTION_ANSWER_LIMITS.content.minLength
+}자 이상 ${new Intl.NumberFormat("ko-KR").format(
+  QUESTION_ANSWER_LIMITS.content.maxLength,
+)}자 이하)`
+
+// introduction editor placeholder
+export const INTRODUCTION_EDITOR_PLACEHOLDER = `자기소개를 작성해주세요 (${
+  USER_PROFILE_LIMITS.introduction.minLength
+}자 이상 ${new Intl.NumberFormat("ko-KR").format(
+  USER_PROFILE_LIMITS.introduction.maxLength,
+)}자 이하)`

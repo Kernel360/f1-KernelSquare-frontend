@@ -2,18 +2,18 @@
 
 import React from "react"
 import Question from "./components/Question/Question"
-import MyAnswer from "./components/MyAnswer"
+import CreateAnswer from "./components/Answers/CreateAnswer"
 import AnswerListContainer from "./components/Answers/AnswerListContainer"
-import { questionQueries } from "@/react-query/question"
 import ContentLoading from "@/components/shared/animation/ContentLoading"
-import { answerQueries } from "@/react-query/answers"
 import { useClientSession } from "@/hooks/useClientSession"
 import NotFound from "@/app/not-found"
 import Spacing from "@/components/shared/Spacing"
 import LinkToListPage from "@/components/LinkToListPage"
+import { useQuestionDetail } from "./hooks/question/useQuestionDetail"
+import { useGetAnswers } from "./hooks/answer/useGetAnswers"
 
 const QnADetail: React.FC<{ id: string }> = ({ id }) => {
-  const { data, isPending } = questionQueries.useQuestionData({
+  const { data, isPending } = useQuestionDetail({
     id: Number(id),
   })
 
@@ -23,7 +23,7 @@ const QnADetail: React.FC<{ id: string }> = ({ id }) => {
     data: answers,
     isPending: isAnswerPending,
     isError,
-  } = answerQueries.useGetAnswers({
+  } = useGetAnswers({
     questionId: Number(id),
   })
 
@@ -43,7 +43,7 @@ const QnADetail: React.FC<{ id: string }> = ({ id }) => {
         </div>
         <Question question={data.data} />
         <Spacing size={48} />
-        <MyAnswer
+        <CreateAnswer
           questionId={Number(id)}
           list={answers.data?.answer_responses}
           isQuestionAuthor={isQuestionAuthor}

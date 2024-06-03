@@ -101,7 +101,7 @@ export const mockQuestions: Array<Question> = [
     id: 6,
     title: "질문6",
     content:
-      "### <code>getServerSideProps( )</code> ```js function Page({ data }) { // 데이터를 렌더링하는 코드~ } // 모든 요청에서 호출된다. export async function getServerSideProps() { // 외부 API에서 전송되는 데이터를 fetch const res = await fetch(`https://.../data`); const data = await res.json(); // Props를 사용해 페이지로 데이터를 전달한다. return { props: { data } };} export default Page;```",
+      "### getServerSideProps()\n\n```js\nfunction Page({ data }) { \n// 데이터를 렌더링하는 코드~ \n} \n// 모든 요청에서 호출된다. \nexport async function getServerSideProps() { \n  // 외부 API에서 전송되는 데이터를 fetch\n  const res = await fetch(`https://.../data`); \n  const data = await res.json(); // Props를 사용해 페이지로 데이터를 전달한다. \n\n  return { props: { data } };\n} \n\nexport default Page;\n```",
     question_image_url: "",
     view_count: 9,
     close_status: false,

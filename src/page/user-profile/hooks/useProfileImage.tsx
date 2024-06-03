@@ -2,202 +2,192 @@ import ConfirmModal from "@/components/shared/confirm-modal/ConfirmModal"
 import { errorMessage } from "@/constants/message/error"
 import { useClientSession } from "@/hooks/useClientSession"
 import useModal from "@/hooks/useModal"
-import { uploadImages } from "@/service/images"
-import { useState, type ChangeEvent, type RefObject } from "react"
 import { toast } from "react-toastify"
-import queryKey from "@/constants/queryKey"
 import { useQueryClient } from "@tanstack/react-query"
-import { memberQueries } from "@/react-query/member"
-import Limitation from "@/constants/limitation"
-import { useDeleteImage } from "@/hooks/image/useDeleteImage"
-import cancleMessage from "@/constants/message/cancel"
 import successMessage from "@/constants/message/success"
-import { validationMessage } from "@/constants/message/validation"
+import { useUpdateUserProfileImage } from "./introduction/useUpdateUserProfileImage"
+import { useUploadImage } from "@/hooks/image/useUploadImage"
+import { AxiosError, HttpStatusCode } from "axios"
+import { APIResponse } from "@/interfaces/dto/api-response"
+import { QUESTION_QUERY_KEY, USER_QUERY_KEY } from "@/constants/queryKey"
+import { revalidatePage } from "@/util/actions/revalidatePage"
+import { useDeleteImage } from "@/hooks/image/useDeleteImage"
 
-export interface SaveImageProps {
-  image: File
-  memberId: number
-}
-
-export interface ResetImageProps {}
-
-const useProfileImage = (image_url: string | null) => {
-  const { user, clientSessionUpdate } = useClientSession()
-  const { openModal } = useModal()
-  const { deleteImage } = useDeleteImage()
-  const [image, setImage] = useState<string | ArrayBuffer | null>(image_url)
-  const [preview, setPreview] = useState<string>("")
+const useProfileImage = () => {
   const queryClient = useQueryClient()
-  const { updateMemberProfileImage } =
-    memberQueries.useUpdateMemberProfileImage()
+  const { user, clientSessionUpdate, clientSessionReset } = useClientSession()
 
-  const handleSaveImage = async ({ image, memberId }: SaveImageProps) => {
-    const onSuccess = async () => {
-      try {
-        const imageUploadResponse = await uploadImages({
-          category: "member",
-          file: image,
-        })
-        updateMemberProfileImage(
-          {
-            memberId: memberId,
-            image_url: imageUploadResponse.data.data?.image_url,
-          },
-          {
-            onSuccess: () => {
-              toast.success(successMessage.editProfileImage, {
+  const { openModal, closeModal } = useModal()
+
+  const { deleteImageApi } = useDeleteImage()
+
+  const { updateUserProfileImageApi, updateUserProfileImageApiStatus } =
+    useUpdateUserProfileImage({
+      onError(error, variables, context) {
+        if (error instanceof AxiosError) {
+          const { response } = error as AxiosError<APIResponse>
+
+          if (response?.status === HttpStatusCode.Unauthorized) {
+            clientSessionReset()
+
+            setTimeout(() => {
+              toast.error("로그인 후 이용 가능합니다", {
                 position: "top-center",
-                toastId: "successToUploadProfileImage",
               })
-              clientSessionUpdate({
-                image_url: imageUploadResponse.data.data?.image_url,
-              })
-              queryClient.invalidateQueries({
-                queryKey: [queryKey.user, queryKey.profile, memberId],
-              })
-              queryClient.invalidateQueries({
-                queryKey: [queryKey.question],
-              })
-              queryClient.invalidateQueries({
-                queryKey: [queryKey.answer],
-              })
-            },
-          },
-        )
-      } catch (error) {
-        toast.error(errorMessage.uploadImage, {
-          position: "top-center",
-          toastId: "failToUploadProfileImage",
-        })
-      }
-    }
+            }, 0)
 
-    const onCancel = () => {
-      toast.error(cancleMessage.uploadImage, {
-        position: "top-center",
-        toastId: "cancleUploadProfileImage",
-      })
-    }
-
-    openModal({
-      containsHeader: false,
-      content: (
-        <ConfirmModal.ModalContent
-          onSuccess={onSuccess}
-          onCancel={onCancel}
-          situation="editProfileImage"
-        />
-      ),
-    })
-  }
-
-  const handleImageChange = (
-    event: ChangeEvent<HTMLInputElement>,
-    memberId: number,
-  ) => {
-    if (event.target.files) {
-      const file = event.target.files[0]
-
-      // 파일 용량 제한
-      if (file.size > Limitation.image.size) {
-        toast.error(validationMessage.imageLimitOver, {
-          position: "top-center",
-          toastId: "profileImageLimitOver",
-        })
-        return
-      }
-
-      // 파일 확장자 제한
-      if (
-        !file.type.includes("png") &&
-        !file.type.includes("svg") &&
-        !file.type.includes("jpeg") &&
-        !file.type.includes("gif")
-      ) {
-        toast.error(validationMessage.invalidImageExtension, {
-          position: "top-center",
-          toastId: "invalidImageExtension",
-        })
-        return
-      }
-
-      setPreview((prevPreview) => {
-        if (prevPreview) {
-          URL.revokeObjectURL(prevPreview)
+            return
+          }
         }
 
-        return URL.createObjectURL(file)
+        toast.error("이미지 업로드 중 에러가 발생했습니다", {
+          position: "top-center",
+          toastId: "updateProfileImageError",
+        })
+      },
+    })
+
+  const { uploadImageApi, uploadImageApiStatus } = useUploadImage({
+    category: "member",
+    onSuccess(response, variables, context) {
+      const image_url = response.data.data!.image_url
+
+      updateUserProfileImageApi(
+        { image_url },
+        {
+          onSuccess(data, variables, context) {
+            clientSessionUpdate({
+              image_url,
+            })
+
+            queryClient.invalidateQueries({
+              queryKey: QUESTION_QUERY_KEY.questionList,
+            })
+
+            queryClient.invalidateQueries({
+              queryKey: USER_QUERY_KEY.getUser(user!.member_id),
+            })
+
+            revalidatePage("/", "layout")
+
+            setTimeout(() => {
+              toast.success("이미지 변경 성공", {
+                position: "top-center",
+              })
+            }, 0)
+          },
+          onError(error, variables, context) {
+            toast.error(errorMessage.uploadImage, {
+              position: "top-center",
+              toastId: "failToUpdateProfileImage",
+            })
+          },
+        },
+      )
+    },
+    onError(error, variables, context) {
+      if (error instanceof AxiosError) {
+        const { response } = error as AxiosError<APIResponse>
+
+        if (response?.status === HttpStatusCode.Unauthorized) {
+          clientSessionReset()
+
+          setTimeout(() => {
+            toast.error("로그인 후 이용 가능합니다", {
+              position: "top-center",
+            })
+          }, 0)
+
+          return
+        }
+
+        toast.error(
+          response?.data.msg ?? "이미지 업로드 중 에러가 발생했습니다",
+          {
+            position: "top-center",
+          },
+        )
+
+        return
+      }
+
+      toast.error("이미지 업로드 중 에러가 발생했습니다", {
+        position: "top-center",
+        toastId: "updateProfileImageError",
+      })
+    },
+    onValidateFileError(validateFileError) {
+      toast.error(validateFileError.message, {
+        position: "top-center",
+        toastId: `uploadImageValidate:${validateFileError.type}`,
+      })
+    },
+  })
+
+  const updateUserProfileImage = ({ file }: { file: File }) => {
+    if (uploadImageApiStatus === "pending") return
+    if (updateUserProfileImageApiStatus === "pending") return
+
+    uploadImageApi({ file })
+  }
+
+  const resetUserProfileImage = () => {
+    const currentImageUrl = user?.image_url
+
+    if (!currentImageUrl) {
+      toast.error("현재 기본 프로필 이미지로 설정 되있습니다", {
+        position: "top-center",
+        toastId: "alreadyInitialImage",
       })
 
-      const reader = new FileReader()
-      reader.readAsDataURL(file)
-
-      reader.onload = () => {
-        setImage(reader.result || null)
-
-        handleSaveImage({ image: file, memberId })
-      }
+      return
     }
-  }
 
-  const handleUpload = (imageUploadRef: RefObject<HTMLInputElement>) => {
-    const fileInput = imageUploadRef?.current
-    if (fileInput) fileInput.click()
-  }
+    if (updateUserProfileImageApiStatus === "pending") return
 
-  const handleResetImage = async (memberId: number) => {
-    const onSuccess = async () => {
-      const previousImage = image_url
-      try {
-        updateMemberProfileImage(
-          {
-            memberId: memberId,
-            image_url: null,
-          },
-          {
-            onSuccess: () => {
-              if (previousImage) deleteImage(previousImage)
+    const resetProfileImage = () =>
+      updateUserProfileImageApi(
+        { image_url: null },
+        {
+          onSuccess(data, variables, context) {
+            clientSessionUpdate({
+              image_url: null,
+            })
+
+            queryClient.invalidateQueries({
+              queryKey: QUESTION_QUERY_KEY.questionList,
+            })
+
+            queryClient.invalidateQueries({
+              queryKey: USER_QUERY_KEY.getUser(user!.member_id),
+            })
+
+            revalidatePage("/", "layout")
+
+            setTimeout(() => {
               toast.success(successMessage.editResetProfileImage, {
                 position: "top-center",
                 toastId: "successToResetProfileImage",
               })
-              clientSessionUpdate({
-                image_url: null,
-              })
-              queryClient.invalidateQueries({
-                queryKey: [queryKey.user, queryKey.profile, memberId],
-              })
-              queryClient.invalidateQueries({
-                queryKey: [queryKey.question],
-              })
-              queryClient.invalidateQueries({
-                queryKey: [queryKey.answer],
-              })
-            },
-          },
-        )
-      } catch (error) {
-        toast.error(errorMessage.resetImage, {
-          position: "top-center",
-          toastId: "failToResetProfileImage",
-        })
-        console.error("Error", error)
-      }
-    }
 
-    const onCancel = () => {
-      toast.error(cancleMessage.resetImage, {
-        position: "top-center",
-        toastId: "cancleResetProfileImage",
-      })
-    }
+              deleteImageApi({ imageUrl: currentImageUrl })
+            }, 0)
+          },
+          onError(error, variables, context) {
+            toast.error(errorMessage.resetImage, {
+              position: "top-center",
+              toastId: "failToResetProfileImage",
+            })
+          },
+        },
+      )
 
     openModal({
       containsHeader: false,
       content: (
         <ConfirmModal.ModalContent
-          onSuccess={onSuccess}
-          onCancel={onCancel}
+          onSuccess={resetProfileImage}
+          onCancel={closeModal}
           situation="resetProfileImage"
         />
       ),
@@ -205,15 +195,15 @@ const useProfileImage = (image_url: string | null) => {
   }
 
   return {
-    user,
-    handleSaveImage,
-    handleUpload,
-    image,
-    setImage,
-    preview,
-    setPreview,
-    handleImageChange,
-    handleResetImage,
+    updateUserProfileImage,
+    resetUserProfileImage,
+    updateUserProfileIsPending:
+      uploadImageApiStatus === "pending" ||
+      updateUserProfileImageApiStatus === "pending",
+    resetUserProfileIsPending: updateUserProfileImageApiStatus === "pending",
+    isPending:
+      uploadImageApiStatus === "pending" ||
+      updateUserProfileImageApiStatus === "pending",
   }
 }
 

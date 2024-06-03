@@ -85,7 +85,7 @@ const CodingMeetingsDetailPage = ({
 
   return (
     <>
-      <div className="mb-12 py-6">
+      <div className="mb-12 pt-0 pb-6">
         <section className="mt-6 w-full flex justify-between items-center">
           <h3 className="font-semibold text-xl lg:text-2xl">
             {detail.coding_meeting_title}
