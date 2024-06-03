@@ -1,4 +1,4 @@
-import Limitation from "@/constants/limitation"
+import { COFFEE_CHAT_LIMITS } from "@/constants/limitation"
 import { CoffeeChatFormData } from "@/interfaces/form"
 import { RegisterOptions } from "react-hook-form"
 
@@ -10,11 +10,11 @@ type ChatIntroductionRules = Omit<
 export const chatIntroductionRules: ChatIntroductionRules = {
   required: "커피챗 요약 글을 작성해주세요.",
   minLength: {
-    value: Limitation.chat_introduction_limit_under,
-    message: `커피챗 요약 글은 ${Limitation.chat_introduction_limit_under}자 이상 ${Limitation.chat_introduction_limit_over}자 이하여야 합니다.`,
+    value: COFFEE_CHAT_LIMITS.introduction.minLength,
+    message: `커피챗 요약 글은 ${COFFEE_CHAT_LIMITS.introduction.minLength}자 이상 ${COFFEE_CHAT_LIMITS.introduction.maxLength}자 이하여야 합니다.`,
   },
   maxLength: {
-    value: Limitation.chat_introduction_limit_over,
-    message: `커피챗 요약 글은 ${Limitation.chat_introduction_limit_under}자 이상 ${Limitation.chat_introduction_limit_over}자 이하여야 합니다.`,
+    value: COFFEE_CHAT_LIMITS.introduction.maxLength,
+    message: `커피챗 요약 글은 ${COFFEE_CHAT_LIMITS.introduction.minLength}자 이상 ${COFFEE_CHAT_LIMITS.introduction.maxLength}자 이하여야 합니다.`,
   },
 }

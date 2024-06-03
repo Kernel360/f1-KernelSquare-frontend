@@ -1,119 +1,58 @@
 "use client"
 
-import { useForm } from "react-hook-form"
-import useIntroduction from "../../hooks/useIntroduction"
-import { useRef } from "react"
 import notificationMessage from "@/constants/message/notification"
-import Button from "@/components/shared/button/Button"
 import UserProfileMenu from "../UserProfileMenu"
 import dynamic from "next/dynamic"
-import { Editor } from "@toast-ui/react-editor"
-import TextCounter from "@/components/shared/TextCounter"
-import Limitation from "@/constants/limitation"
-import buttonMessage from "@/constants/message/button"
-
-const MdEditor = dynamic(() => import("./MdEditor"), {
-  ssr: false,
-})
-
-const MdViewer = dynamic(() => import("./MdViewer"), {
-  ssr: false,
-})
+import UpdateIntroductionForm from "./form/UpdateIntroductionForm"
+import { IntroductionEditModeAtom } from "@/recoil/atoms/editor/mode"
+import { useRecoilValue } from "recoil"
 
 interface IntroductionProps {
   introduction?: string
   isMyPage: boolean
-  userId: number | undefined
 }
 
-function Introduction({ introduction, userId }: IntroductionProps) {
-  const editorRef = useRef<Editor>(null)
-  const {
-    closeIntroductionEditMode,
-    handleSubmitIntroduction,
-    isIntroductionEditMode,
-  } = useIntroduction()
-  const { handleSubmit, watch, register, setValue } = useForm<{
-    introduction: string
-  }>()
+const IntroductionContentViewer = dynamic(
+  () => import("@/components/shared/toast-ui-editor/viewer/ContentViewer"),
+  {
+    ssr: false,
+    loading(loadingProps) {
+      return <div className="skeleton h-[200px] rounded-lg" />
+    },
+  },
+)
 
-  const onsubmit = () => {
-    const introduction = editorRef.current?.getInstance().getMarkdown()
-    handleSubmitIntroduction(introduction ?? "")
-  }
+function Introduction({ introduction, isMyPage }: IntroductionProps) {
+  const introductionEditMode = useRecoilValue(IntroductionEditModeAtom)
 
-  if (isIntroductionEditMode)
+  if (introductionEditMode && isMyPage)
     return (
       <UserProfileMenu.MenuContentWrapper>
         <div>
-          <form className="w-full" onSubmit={handleSubmit(onsubmit)}>
-            <MdEditor
-              previous={introduction}
-              editorRef={editorRef}
-              userId={userId!}
-              onChange={() => {
-                setValue(
-                  "introduction",
-                  editorRef.current?.getInstance().getMarkdown() ?? "",
-                )
-              }}
-            />
-            <TextCounterBox text={watch("introduction")} />
-            <div className="flex justify-center mt-[20px]">
-              <Button
-                buttonTheme="third"
-                className="w-[70px] mr-[10px]"
-                onClick={closeIntroductionEditMode}
-              >
-                {buttonMessage.cancle}
-              </Button>
-              <Button
-                buttonTheme="primary"
-                className="w-[70px] disabled:bg-colorsGray disabled:text-colorsDarkGray"
-                type="submit"
-                disabled={
-                  !watch("introduction") ||
-                  watch("introduction").length <
-                    Limitation.introduction_limit_under ||
-                  watch("introduction").length >
-                    Limitation.introduction_limit_over
-                }
-              >
-                {buttonMessage.save}
-              </Button>
-            </div>
-            <input hidden className="hidden" {...register("introduction")} />
-          </form>
-        </div>{" "}
+          <UpdateIntroductionForm initialIntroduction={introduction} />
+        </div>
       </UserProfileMenu.MenuContentWrapper>
     )
 
   return (
     <UserProfileMenu.MenuContentWrapper>
-      {!introduction && (
-        <div className="text-center text-slate-400">
-          {notificationMessage.noIntroduction}
-        </div>
-      )}
-      {introduction && <MdViewer content={introduction} />}
+      <IntroductionContent introduction={introduction} />
     </UserProfileMenu.MenuContentWrapper>
   )
 }
 
 export default Introduction
 
-type TextCounterBoxProps = {
-  text: string | undefined
-}
+const IntroductionContent = ({ introduction }: { introduction?: string }) => {
+  if (!introduction) {
+    return (
+      <div className="flex w-full justify-center">
+        <span className="text-slate-400">
+          {notificationMessage.noIntroduction}
+        </span>
+      </div>
+    )
+  }
 
-const TextCounterBox = ({ text }: TextCounterBoxProps) => {
-  if (!text) return
-  return (
-    <TextCounter
-      text={text ?? ""}
-      min={Limitation.introduction_limit_under}
-      max={Limitation.introduction_limit_over}
-      className="text-lg block text-right h-5 py-2 font-light"
-    />
-  )
+  return <IntroductionContentViewer domain="profile" content={introduction} />
 }

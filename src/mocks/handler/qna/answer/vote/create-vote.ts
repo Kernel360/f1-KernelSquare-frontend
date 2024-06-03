@@ -14,7 +14,18 @@ export const mockCreateVoteApi = http.post<
 >(
   `${process.env.NEXT_PUBLIC_SERVER}${RouteMap.answer.voteAnswer()}`,
   async ({ request, params }) => {
+    const header = request.headers
+    const authHeader = header.get("Authorization")
+
+    if (!authHeader) {
+      return HttpResponse.json(
+        { code: HttpStatusCode.Unauthorized, msg: "인증되지 않은 유저입니다" },
+        { status: HttpStatusCode.Unauthorized },
+      )
+    }
+
     const answerId = Number(params.id)
+
     try {
       const { status } = await request.json()
 

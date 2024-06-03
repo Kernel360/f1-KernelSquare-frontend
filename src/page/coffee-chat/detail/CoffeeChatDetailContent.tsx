@@ -1,6 +1,5 @@
 "use client"
 
-import { handleViewerLink } from "@/util/editor"
 import dynamic from "next/dynamic"
 
 interface CoffeeChatDetailContentProps {
@@ -8,7 +7,7 @@ interface CoffeeChatDetailContentProps {
 }
 
 const CoffeeChatContentMdViewer = dynamic(
-  () => import("../../../components/shared/markdown/Viewer/MarkdownViewer"),
+  () => import("@/components/shared/toast-ui-editor/viewer/ContentViewer"),
   {
     ssr: false,
     loading(loadingProps) {
@@ -19,8 +18,8 @@ const CoffeeChatContentMdViewer = dynamic(
 
 function CoffeeChatDetailContent({ content }: CoffeeChatDetailContentProps) {
   return (
-    <div className="" onClick={handleViewerLink("chat")}>
-      <CoffeeChatContentMdViewer content={content} />
+    <div>
+      <CoffeeChatContentMdViewer domain="chat" content={content} />
     </div>
   )
 }

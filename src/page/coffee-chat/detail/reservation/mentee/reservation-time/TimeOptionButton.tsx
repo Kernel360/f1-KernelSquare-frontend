@@ -11,7 +11,6 @@ import { twMerge } from "tailwind-merge"
 import { useCreateChatReservation } from "../hooks/useCreateChatReservation"
 import { useDeleteChatReservation } from "../hooks/useDeleteChatReservation"
 import { toast } from "react-toastify"
-import { validationMessage } from "@/constants/message/validation"
 import useModal from "@/hooks/useModal"
 import ConfirmModal from "@/components/shared/confirm-modal/ConfirmModal"
 import cancelMessage from "@/constants/message/cancel"
@@ -89,7 +88,7 @@ function TimeOptionButton({
 
     // 지난 시간을 예약했을 경우
     if (isAfter) {
-      toast.error(validationMessage.beforeNow, {
+      toast.error("지난 시간의 커피챗은 예약할 수 없습니다.", {
         toastId: "beforeNow",
         position: "top-center",
       })
@@ -99,7 +98,7 @@ function TimeOptionButton({
 
     // 이미 해당 커피챗의 다른 시간을 예약했을 경우
     if (hasReservation) {
-      toast.error(validationMessage.youAlreadyReserved, {
+      toast.error("예약된 시간대가 있어 커피챗을 예약할 수 없습니다", {
         toastId: "youAlreadyReserved",
         position: "top-center",
       })
@@ -108,7 +107,7 @@ function TimeOptionButton({
 
     // 다른 사람이 이미 예약한 시간대를 선택했을 경우
     if (!!user && reservationInfo.mentee_nickname && !isReservedByMe) {
-      toast.error(validationMessage.alreadyReserved, {
+      toast.error("이미 예약된 시간대입니다", {
         toastId: "othersAlreadyReserved",
         position: "top-center",
       })

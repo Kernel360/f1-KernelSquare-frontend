@@ -3,7 +3,7 @@ import { Input } from "@/components/shared/input/Input"
 import { CodingMeetingFormData } from "@/interfaces/form"
 import { useController, useFormContext } from "react-hook-form"
 import CodingMeetingSection from "../components/CodingMeetingSection"
-import Limitation from "@/constants/limitation"
+import { CODING_MEETING_LIMITS } from "@/constants/limitation"
 import { codingMeetingTitleRules } from "./rules/title/title-rules"
 
 interface TitleControllerProps {
@@ -19,6 +19,8 @@ function TitleController({ initialTitle }: TitleControllerProps) {
     defaultValue: initialTitle ?? "",
   })
 
+  const placeholder = `제목을 입력해주세요(${CODING_MEETING_LIMITS.title.minLength}자 이상 ${CODING_MEETING_LIMITS.title.maxLength}자 이하)`
+
   return (
     <CodingMeetingSection>
       <CodingMeetingSection.Label
@@ -30,8 +32,8 @@ function TitleController({ initialTitle }: TitleControllerProps) {
         <TextCounter
           target={!!field.value}
           text={field.value}
-          min={Limitation.title_limit_under}
-          max={Limitation.title_limit_over}
+          min={CODING_MEETING_LIMITS.title.minLength}
+          max={CODING_MEETING_LIMITS.title.maxLength}
         />
       </CodingMeetingSection.Label>
       <div className="w-full">
@@ -40,7 +42,7 @@ function TitleController({ initialTitle }: TitleControllerProps) {
           name={field.name}
           id={field.name}
           className={"text-base placeholder:text-base"}
-          placeholder="제목을 입력해주세요(5자 이상 100자 이하)"
+          placeholder={placeholder}
           spellCheck="false"
           autoComplete="off"
           fullWidth

@@ -1,7 +1,7 @@
 import AuthGuardModal from "@/components/shared/auth-modal"
 import { layoutMeta } from "@/constants/layoutMeta"
 import Signup from "@/page/signup/Signup"
-import { isLogined } from "@/util/auth"
+import { getServerSession } from "@/util/auth"
 import { Metadata } from "next"
 
 export const revalidate = 0
@@ -32,7 +32,9 @@ export const metadata: Metadata = {
 }
 
 export default async function SignupPage() {
-  if (isLogined()) {
+  const { user } = getServerSession()
+
+  if (user) {
     return <AuthGuardModal page="signup" />
   }
 

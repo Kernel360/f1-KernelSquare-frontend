@@ -1,4 +1,4 @@
-import { CodingMeetingFormData } from "@/interfaces/form"
+import { AnswerFormData, CodingMeetingFormData } from "@/interfaces/form"
 import { FieldError, FieldErrors, FieldValues, Merge } from "react-hook-form"
 
 type ErrorType =
@@ -47,4 +47,21 @@ export function pickFirstError<T extends FieldValues = FieldValues>(
   }
 
   return errorPayload
+}
+
+// answer
+export function pickFirstAnswerFormError(errors: FieldErrors<AnswerFormData>) {
+  const sortedKey: (keyof AnswerFormData)[] = [
+    "answer",
+    "images",
+    "imagesToDelete",
+  ]
+
+  for (const field of sortedKey) {
+    const targetError = errors[field]
+
+    if (targetError) return { ...targetError, errorField: field }
+  }
+
+  return null
 }

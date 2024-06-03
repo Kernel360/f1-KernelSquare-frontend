@@ -21,7 +21,7 @@ import {
 } from "react-hook-form"
 import { toast } from "react-toastify"
 import CodingMeetingSection from "../../CodingMeetingSection"
-import Limitation from "@/constants/limitation"
+import { HASHTAG_LIMITS } from "@/constants/limitation"
 
 interface HashTagsControllerProps {
   initialHashTags?: CodingMeetingFormData["hashtags"]
@@ -48,7 +48,7 @@ function HashTagsController({ initialHashTags }: HashTagsControllerProps) {
         <span>&nbsp;&#40;&nbsp;</span>
         <span
           className={`${
-            fields.length <= Limitation.hashtags_cnt
+            fields.length <= HASHTAG_LIMITS.tags.maxLength
               ? "text-primary"
               : "text-danger"
           }`}
@@ -56,7 +56,7 @@ function HashTagsController({ initialHashTags }: HashTagsControllerProps) {
           {fields.length}
         </span>
         <span>&nbsp;/&nbsp;</span>
-        <span>{Limitation.hashtags_cnt}</span>
+        <span>{HASHTAG_LIMITS.tags.maxLength}</span>
         <span>&nbsp;&#41;</span>
       </CodingMeetingSection.Label>
       <div>

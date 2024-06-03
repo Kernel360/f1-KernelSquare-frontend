@@ -133,6 +133,9 @@ function CreateCoffeeChatReservationPage({
             buttonTheme="primary"
             className="w-full pc:w-fit p-5 py-3 my-10 disabled:bg-colorsGray disabled:text-colorsDarkGray"
             type="submit"
+            onClick={(e) => {
+              if (e.detail === 0) e.preventDefault()
+            }}
           >
             {createCoffeeChatApiStatus === "pending"
               ? "처리 중"

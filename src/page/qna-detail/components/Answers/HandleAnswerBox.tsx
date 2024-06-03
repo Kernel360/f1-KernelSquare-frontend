@@ -2,29 +2,18 @@
 
 import buttonMessage from "@/constants/message/button"
 import useHandleMyAnswer from "../../hooks/useHandleMyAnswer"
-import SuccessModalContent from "../SuccessModalContent"
-import type { Answer } from "@/interfaces/answer"
-import successMessage from "@/constants/message/success"
 import { useClientSession } from "@/hooks/useClientSession"
 import Button from "@/components/shared/button/Button"
-import { useResetRecoilState } from "recoil"
-import { answerEditorAtomFamily } from "@/recoil/atoms/answerEditor"
-import { toast } from "react-toastify"
-import { AxiosError, HttpStatusCode } from "axios"
-import { APIResponse } from "@/interfaces/dto/api-response"
+import type { Answer } from "@/interfaces/answer"
 
 export type HandleAnswerProps = {
   answer: Answer
 }
 
 const HandleAnswerBox: React.FC<HandleAnswerProps> = ({ answer }) => {
-  const { user, clientSessionReset } = useClientSession()
+  const { user } = useClientSession()
 
-  const resetAnswerEditorAtom = useResetRecoilState(
-    answerEditorAtomFamily(answer.answer_id),
-  )
-
-  const { setIsAnswerEditMode, handleDeleteValue, isAnswerEditMode } =
+  const { deleteAnswer, answerIsEditMode, answerSetToEditMode } =
     useHandleMyAnswer({
       answerId: Number(answer.answer_id),
       questionId: Number(answer.question_id),
@@ -32,50 +21,11 @@ const HandleAnswerBox: React.FC<HandleAnswerProps> = ({ answer }) => {
 
   const isMyAnswer = user ? user.member_id === answer.answer_member_id : false
 
-  const changeToUpdateMode = () => setIsAnswerEditMode(true)
-  const deleteAnswer = () => {
-    handleDeleteValue({
-      answer,
-      onDeleteSuccess() {
-        resetAnswerEditorAtom()
-      },
-      onDeleteError(error) {
-        if (error instanceof AxiosError) {
-          const { response } = error as AxiosError<APIResponse>
-
-          if (response?.status === HttpStatusCode.Unauthorized) {
-            clientSessionReset()
-
-            setTimeout(() => {
-              toast.error("로그인 후 답변 삭제가 가능합니다.", {
-                position: "top-center",
-                toastId: "deleteAnswerUnauthorizedError",
-              })
-            }, 0)
-
-            return
-          }
-
-          toast.error("답변 삭제에 실패했습니다.", {
-            position: "top-center",
-            toastId: "deleteAnswerError",
-          })
-
-          return
-        }
-
-        toast.error("답변 삭제에 실패했습니다.", {
-          position: "top-center",
-          toastId: "deleteAnswerError",
-        })
-      },
-      successModal: (
-        <SuccessModalContent message={successMessage.deleteAnswer} />
-      ),
-    })
+  const changeToUpdateMode = () => {
+    answerSetToEditMode()
   }
 
-  if (user && isMyAnswer && !isAnswerEditMode) {
+  if (user && isMyAnswer && !answerIsEditMode) {
     return (
       <div className="flex w-full [&>*]:text-xs gap-0.5 @[396px]:[&>*]:text-sm @[396px]:gap-3 justify-end items-center h-8">
         <UpdateModeButton onClick={changeToUpdateMode} />

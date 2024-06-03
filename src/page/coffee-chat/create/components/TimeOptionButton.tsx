@@ -32,7 +32,7 @@ function TimeOptionButton({ dateTime }: TimeOptionButtonProps) {
 
   const handleTime = () => {
     if (!selected && count >= MAXIMUM_SELCTE_CHAT_TIME_NUM) {
-      toast.error(validationMessage.overtimeCntLimit, {
+      toast.error(validationMessage.coffeeChat.maximumReservationTimeLength, {
         position: "top-center",
         toastId: "maxChatTimes",
       })

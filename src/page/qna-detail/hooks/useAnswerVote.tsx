@@ -1,21 +1,15 @@
 import ConfirmModal from "@/components/shared/confirm-modal/ConfirmModal"
-import { errorMessage } from "@/constants/message/error"
-import queryKey from "@/constants/queryKey"
+import { QUESTION_QUERY_KEY } from "@/constants/queryKey"
 import { useClientSession } from "@/hooks/useClientSession"
 import useModal from "@/hooks/useModal"
-import voteAtoms from "@/recoil/atoms/vote"
-import { sleep } from "@/util/sleep"
 import { useQueryClient } from "@tanstack/react-query"
 import { toast } from "react-toastify"
-import { useRecoilState } from "recoil"
-import { twJoin } from "tailwind-merge"
 import { VoteStatus, type Answer } from "@/interfaces/answer"
 import type { ModalState } from "@/interfaces/modal"
-import { answerQueries } from "@/react-query/answers"
-import { pendingMessage } from "@/constants/message/pending"
-import cancleMessage from "@/constants/message/cancel"
 import successMessage from "@/constants/message/success"
-import notificationMessage from "@/constants/message/notification"
+import { useVoteAnswer } from "./answer/vote/useVoteAnswer"
+import { useDeleteVoteAnswer } from "./answer/vote/useDeleteVoteAnswer"
+import { validationMessage } from "@/constants/message/validation"
 
 export interface VoteProps {
   answer: Answer
@@ -26,166 +20,121 @@ export interface DeleteVoteProps {
 }
 
 const useAnswerVote = ({ answer }: VoteProps) => {
-  const [vote, setVote] = useRecoilState(voteAtoms(answer?.member_nickname))
   const queryClient = useQueryClient()
   const { user } = useClientSession()
-  const { openModal } = useModal()
-  const { voteAnswer, voteAnswerStatus } = answerQueries.useVoteAnswer()
-  const { deleteVoteAnswer, deleteVoteAnswerStatus } =
-    answerQueries.useDeleteVoteAnswer()
 
-  const buttonClass = twJoin([
-    "text-base pc:text-2xl text-[#E0E0E0]",
-    `${user ? "hover:text-primary cursor-pointer" : "text-slate-300"}`,
-  ])
+  const { openModal, closeModal } = useModal()
 
-  const raiseClass = twJoin([
-    buttonClass,
-    `${answer.vote_status === VoteStatus.LIKED && "text-primary"}`,
-  ])
-  const reduceClass = twJoin([
-    buttonClass,
-    `${answer.vote_status === VoteStatus.DISLIKED && "text-primary"}`,
-  ])
+  const { voteAnswerApi, voteAnswerApiStatus } = useVoteAnswer({
+    answerId: answer.answer_id,
+    onSuccess(data, variables, context) {
+      queryClient.invalidateQueries({
+        queryKey: QUESTION_QUERY_KEY.questionAnswers(answer.question_id),
+      })
 
-  const handleRaise = async () => {
-    if (!user)
-      return toast.error(notificationMessage.unauthorized, {
-        toastId: "upauthorizedToVote",
-        position: "top-center",
-      })
-    try {
-      if (voteAnswerStatus.isVoteAnswer)
-        return toast.error(pendingMessage.votePending, {
-          toastId: "votePending",
-          position: "top-center",
-        })
-      voteAnswer(
-        {
-          answerId: answer?.answer_id,
-          member_id: user.member_id,
-          status: 1,
-        },
-        {
-          onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: [queryKey.answer] })
-          },
-        },
-      )
-    } catch (err) {
-      toast.error(errorMessage.vote, {
-        toastId: "failToVote",
-        position: "top-center",
-      })
-      throw new Error(errorMessage.vote)
-    }
-  }
-
-  const handleReduce = async () => {
-    if (!user)
-      return toast.error(notificationMessage.unauthorized, {
-        toastId: "upauthorizedToVote",
-        position: "top-center",
-      })
-    try {
-      if (voteAnswerStatus.isVoteAnswer)
-        return toast.error(pendingMessage.votePending, {
-          toastId: "votePending",
-          position: "top-center",
-        })
-      voteAnswer(
-        {
-          answerId: answer.answer_id,
-          member_id: user.member_id,
-          status: -1,
-        },
-        {
-          onSuccess: () =>
-            queryClient.invalidateQueries({ queryKey: [queryKey.answer] }),
-        },
-      )
-    } catch (err) {
-      toast.error(errorMessage.vote, {
-        toastId: "failToVote",
-        position: "top-center",
-      })
-      throw new Error(errorMessage.vote)
-    }
-  }
-
-  const handleCancle = () => {
-    if (!user)
-      return toast.error(notificationMessage.unauthorized, {
-        toastId: "upauthorizedToVote",
-        position: "top-center",
-      })
-    if (deleteVoteAnswerStatus.isDeleteVoteAnswer)
-      return toast.error(pendingMessage.votePending, {
-        toastId: "votePending",
-        position: "top-center",
-      })
-    const onSuccess = async () => {
-      try {
-        deleteVoteAnswer(
+      setTimeout(() => {
+        toast.success(
+          variables.voteStatus === VoteStatus.LIKED
+            ? "UP(추천) 투표를 성공했습니다"
+            : "DOWN(비추천) 투표를 성공했습니다",
           {
-            answerId: answer.answer_id,
-          },
-          {
-            onSuccess: () => {
-              queryClient.invalidateQueries({
-                queryKey: [queryKey.answer],
-              })
-              toast.success(successMessage.cancleVote, {
-                position: "top-center",
-              })
-              sleep(5000).then(() => {
-                queryClient.invalidateQueries({
-                  queryKey: [queryKey.answer],
-                })
-              })
-            },
+            position: "top-center",
           },
         )
-      } catch (err) {
-        toast.error(errorMessage.vote, {
-          toastId: "failToVote",
-          position: "top-center",
+      }, 0)
+    },
+  })
+
+  const { deleteVoteAnswerApi, deleteVoteAnswerApiStatus } =
+    useDeleteVoteAnswer({
+      answerId: answer.answer_id,
+      onSuccess(data, variables, context) {
+        queryClient.invalidateQueries({
+          queryKey: QUESTION_QUERY_KEY.questionAnswers(answer.question_id),
         })
-        throw new Error(errorMessage.vote)
-      }
+
+        setTimeout(() => {
+          toast.success(successMessage.cancelVote, {
+            position: "top-center",
+          })
+        }, 0)
+      },
+    })
+
+  const deleteVoteAnswer = () => {
+    if (deleteVoteAnswerApiStatus === "pending") return
+
+    const onAgreeDeleteVoteAnswer = () => {
+      deleteVoteAnswerApi()
     }
-    const onCancel = () => {
-      toast.error(cancleMessage.deleteVote, {
-        toastId: "cancleDeleteVote",
-        position: "top-center",
-      })
-    }
+
     openModal({
       containsHeader: false,
       content: (
         <ConfirmModal.ModalContent
-          onSuccess={onSuccess}
-          onCancel={onCancel}
-          situation="cancleVote"
+          onSuccess={onAgreeDeleteVoteAnswer}
+          onCancel={closeModal}
+          situation="cancelVote"
         />
       ),
     })
   }
 
-  const replaceNumber = (num: number) => {
-    if (0 <= num && num < 10) return "0" + num
-    return num
+  const voteLikeAnswer = () => {
+    if (!user) {
+      toast.error("로그인 후 투표가 가능합니다", {
+        toastId: "NotLogined",
+        position: "top-center",
+      })
+
+      return
+    }
+
+    if (answer.member_nickname === user?.nickname) {
+      toast.error(validationMessage.voteForMe, {
+        toastId: "voteForMe",
+        position: "top-center",
+      })
+
+      return
+    }
+
+    if (voteAnswerApiStatus === "pending") return
+
+    answer.vote_status === VoteStatus.NONE
+      ? voteAnswerApi({ voteStatus: VoteStatus.LIKED })
+      : deleteVoteAnswer()
+  }
+
+  const voteDisLikeAnswer = () => {
+    if (!user) {
+      toast.error("로그인 후 투표가 가능합니다", {
+        toastId: "NotLogined",
+        position: "top-center",
+      })
+
+      return
+    }
+
+    if (answer.member_nickname === user?.nickname) {
+      toast.error(validationMessage.voteForMe, {
+        toastId: "voteForMe",
+        position: "top-center",
+      })
+
+      return
+    }
+
+    if (voteAnswerApiStatus === "pending") return
+
+    answer.vote_status === VoteStatus.NONE
+      ? voteAnswerApi({ voteStatus: VoteStatus.DISLIKED })
+      : deleteVoteAnswer()
   }
 
   return {
-    vote,
-    setVote,
-    handleRaise,
-    handleReduce,
-    handleCancle,
-    raiseClass,
-    reduceClass,
-    replaceNumber,
+    voteLikeAnswer,
+    voteDisLikeAnswer,
   }
 }
 
