@@ -1,5 +1,6 @@
 import { CodingMeetingHourMinuteTime } from "@/constants/timeOptions"
 import { CodingMeetingHashTag } from "./coding-meetings"
+import { ImageFieldArrayItem } from "./form/question-form"
 export interface LoginFormData {
   email: string
   password: string
@@ -20,6 +21,8 @@ export interface SignupHookFormData extends SignupFormData {
 // answer
 export interface AnswerFormData {
   answer: string
+  images: ImageFieldArrayItem[]
+  imagesToDelete: ImageFieldArrayItem[]
 }
 
 // coding-meeting

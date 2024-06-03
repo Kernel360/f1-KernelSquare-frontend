@@ -1,7 +1,7 @@
 "use client"
 
 import CoffeeChatSection from "../../CoffeeChatSection"
-import Limitation from "@/constants/limitation"
+import { HASHTAG_LIMITS } from "@/constants/limitation"
 import { useRecoilValue, useResetRecoilState } from "recoil"
 import { HashTagList } from "@/recoil/atoms/coffee-chat/hashtags"
 import { Control } from "react-hook-form"
@@ -41,7 +41,7 @@ const HashTagLabel = () => {
       <span>&nbsp;&#40;&nbsp;</span>
       <span
         className={`${
-          hashTagList.length <= Limitation.hashtags_cnt
+          hashTagList.length <= HASHTAG_LIMITS.tags.maxLength
             ? "text-primary"
             : "text-danger"
         }`}
@@ -49,7 +49,7 @@ const HashTagLabel = () => {
         {hashTagList.length}
       </span>
       <span>&nbsp;/&nbsp;</span>
-      <span>{Limitation.hashtags_cnt}</span>
+      <span>{HASHTAG_LIMITS.tags.maxLength}</span>
       <span>&nbsp;&#41;</span>
     </CoffeeChatSection.Label>
   )

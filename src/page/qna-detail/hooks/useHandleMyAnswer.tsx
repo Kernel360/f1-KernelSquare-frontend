@@ -1,143 +1,83 @@
 "use client"
 
 import ConfirmModal from "@/components/shared/confirm-modal/ConfirmModal"
-import { errorMessage } from "@/constants/message/error"
 import useModal from "@/hooks/useModal"
 import { useQueryClient } from "@tanstack/react-query"
-import { toast } from "react-toastify"
-import useQnADetail from "./useQnADetail"
-import { useRecoilState } from "recoil"
-import { AnswerEditMode } from "@/recoil/atoms/mode"
-import queryKey from "@/constants/queryKey"
-import { useDeleteImage } from "@/hooks/image/useDeleteImage"
-import { answerQueries } from "@/react-query/answers"
-import type { Answer } from "@/interfaces/answer"
-import type { ModalState } from "@/interfaces/modal"
-import { findImageLinkUrlFromMarkdown } from "@/util/editor"
-import cancleMessage from "@/constants/message/cancel"
+import { QUESTION_QUERY_KEY } from "@/constants/queryKey"
 import successMessage from "@/constants/message/success"
-import { validationMessage } from "@/constants/message/validation"
-import { AxiosError } from "axios"
-import { DeleteAnswerRequest } from "@/interfaces/dto/answer/delete-answer.dto"
+import { useDeleteAnswer } from "./answer/useDeleteAnswer"
+import SuccessModalContent from "../components/SuccessModalContent"
+import { useAnswerEditState } from "@/hooks/editor/useAnswerEditState"
+import {
+  UpdateAnswerCallback,
+  UpdateAnswerVariables,
+  useUpdateAnswer,
+} from "./answer/useUpdateAnswer"
 
-export interface EditValueProps {
-  submitValue: string | undefined
-  answer: Answer
-}
-
-export interface DeleteValueProps {
-  answer: Answer
-  onDeleteSuccess?: () => void
-  onDeleteError?: (
-    error: Error | AxiosError,
-    variables: DeleteAnswerRequest,
-    context: unknown,
-  ) => void
-  successModal: NonNullable<ModalState["content"]>
-}
-
-export interface AnswerProps {
+export interface UseHandleMyAnswer {
   answerId: number
   questionId: number
+  updateAnswerCallback?: UpdateAnswerCallback
 }
 
-const useHandleMyAnswer = ({ answerId, questionId }: AnswerProps) => {
-  const [isAnswerEditMode, setIsAnswerEditMode] = useRecoilState(
-    AnswerEditMode(answerId),
-  )
+const useHandleMyAnswer = ({
+  answerId,
+  questionId,
+  updateAnswerCallback,
+}: UseHandleMyAnswer) => {
   const queryClient = useQueryClient()
+
   const { openModal } = useModal()
-  const { checkNullValue } = useQnADetail()
-  const { deleteImage } = useDeleteImage()
-  const { updateAnswer } = answerQueries.useUpdateAnswer({ answerId })
-  const { deleteAnswer, deleteAnswerStatus } = answerQueries.useDeleteAnswer()
 
-  const handleEditValue = ({ submitValue, answer }: EditValueProps) => {
-    if (checkNullValue(submitValue)) {
-      toast.error(validationMessage.noContent, {
-        toastId: "emptyAnswerContent",
-        position: "top-center",
+  const { answerIsEditMode, answerSetToEditMode, answerSetToViewMode } =
+    useAnswerEditState()
+
+  // update
+  const { updateAnswerApi, updateAnswerApiStatus } = useUpdateAnswer({
+    answerId,
+    onSuccess: async (data, variables, context) => {
+      await queryClient.invalidateQueries({
+        queryKey: QUESTION_QUERY_KEY.questionAnswers(questionId),
       })
-      return
-    }
-    const imageUrl = findImageLinkUrlFromMarkdown(submitValue)
 
-    updateAnswer(
-      {
-        answerId: answer.answer_id,
-        content: submitValue as string,
-        image_url: imageUrl && imageUrl[0],
-      },
-      {
-        onSuccess: () => {
-          toast.success(successMessage.updateAnswer, {
-            toastId: "successToUpdateAnswer",
-            position: "top-center",
-          })
-          setIsAnswerEditMode(false)
-          return queryClient.invalidateQueries({
-            queryKey: [queryKey.answer],
-          })
-        },
-        onError: () =>
-          toast.error(errorMessage.updateAnswer, {
-            toastId: "failToUpdateAnswer",
-            position: "top-center",
-          }),
-      },
-    )
+      setTimeout(() => {
+        updateAnswerCallback?.onSuccess &&
+          updateAnswerCallback.onSuccess(data, variables, context)
+      }, 0)
+    },
+    onError: updateAnswerCallback?.onError,
+  })
+
+  const updateAnswer = ({ content, image_url }: UpdateAnswerVariables) => {
+    if (updateAnswerApiStatus === "pending") return
+
+    updateAnswerApi({ content, image_url })
   }
 
-  const handleDeleteValue = async ({
-    answer,
-    onDeleteSuccess,
-    onDeleteError,
-  }: DeleteValueProps) => {
+  // delete
+  const { deleteAnswerApi, deleteAnswerApiStatus } = useDeleteAnswer({
+    answerId,
+    questionId,
+    onSuccess(data, variables, context) {
+      setTimeout(() => {
+        openModal({
+          content: (
+            <SuccessModalContent message={successMessage.deleteAnswer} />
+          ),
+        })
+      }, 400)
+    },
+  })
+
+  const deleteAnswer = () => {
     const onSuccess = async () => {
-      if (deleteAnswerStatus.isDeleteAnswer) {
-        return
-      }
+      if (deleteAnswerApiStatus === "pending") return
 
-      deleteAnswer(
-        {
-          answerId: answer.answer_id,
-        },
-        {
-          onSuccess: () => {
-            toast.success(successMessage.deleteAnswer, {
-              toastId: "successToDeleteAnswer",
-              position: "top-center",
-            })
-
-            queryClient.invalidateQueries({
-              queryKey: [queryKey.answer],
-            })
-            queryClient.invalidateQueries({
-              queryKey: [queryKey.question, questionId],
-            })
-
-            if (answer.answer_image_url) {
-              try {
-                deleteImage(answer.answer_image_url)
-              } catch (error) {}
-            }
-
-            setTimeout(() => {
-              onDeleteSuccess && onDeleteSuccess()
-            }, 0)
-          },
-          onError(error, variables, context) {
-            onDeleteError && onDeleteError(error, variables, context)
-          },
-        },
-      )
+      deleteAnswerApi()
     }
-    const onCancel = () => {
-      toast.error(cancleMessage.deleteAnswer, {
-        toastId: "cancleDeleteAnswer",
-        position: "top-center",
-      })
-    }
+
+    const onCancel = () => {}
+
     openModal({
       containsHeader: false,
       content: (
@@ -150,14 +90,12 @@ const useHandleMyAnswer = ({ answerId, questionId }: AnswerProps) => {
     })
   }
 
-  const handleEditMode = () => setIsAnswerEditMode((prev: boolean) => !prev)
-
   return {
-    isAnswerEditMode,
-    setIsAnswerEditMode,
-    handleEditMode,
-    handleEditValue,
-    handleDeleteValue,
+    answerIsEditMode: answerIsEditMode(answerId),
+    answerSetToEditMode: () => answerSetToEditMode(answerId),
+    answerSetToViewMode,
+    updateAnswer,
+    deleteAnswer,
   }
 }
 

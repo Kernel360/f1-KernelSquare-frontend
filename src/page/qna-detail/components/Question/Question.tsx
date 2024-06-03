@@ -4,19 +4,22 @@ import dynamic from "next/dynamic"
 import Tag from "@/components/shared/tag/Tag"
 import UserInfo, { UserProfileInfo } from "@/components/shared/user/UserInfo"
 import QuestionDueDate from "./QuestionDueDate"
-import HandleQuestionBox from "./HandleQuestionBox"
+import QuestionControl from "./QuestionControl"
 import { Question as QuestionType } from "@/interfaces/question"
 
 interface QuestionProps {
   question: QuestionType
 }
 
-const QuestionMdViewer = dynamic(() => import("../Markdown/MdViewer"), {
-  ssr: false,
-  loading(loadingProps) {
-    return <div className="skeleton w-full h-[328px] mt-2.5 rounded-md"></div>
+const QuestionMdViewer = dynamic(
+  () => import("@/components/shared/toast-ui-editor/viewer/ContentViewer"),
+  {
+    ssr: false,
+    loading(loadingProps) {
+      return <div className="skeleton w-full h-[328px] mt-2.5 rounded-md"></div>
+    },
   },
-})
+)
 
 const Question = ({ question }: QuestionProps) => {
   const questionAuthor: UserProfileInfo = {
@@ -41,8 +44,8 @@ const Question = ({ question }: QuestionProps) => {
           <QuestionDueDate questionCreatedDate={question.created_date} />
         </div>
       </div>
-      <HandleQuestionBox question={question} />
-      <QuestionMdViewer content={question.content} />
+      <QuestionControl question={question} />
+      <QuestionMdViewer domain="question" content={question.content} />
       <ul className="flex gap-x-3 gap-y-2 flex-wrap mt-6">
         {question?.skills.map((skill, index) => {
           return (

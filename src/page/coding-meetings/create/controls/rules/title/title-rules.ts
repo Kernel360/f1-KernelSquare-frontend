@@ -12,10 +12,10 @@ export const codingMeetingTitleRules: CodingMeetingTitleRules = {
   required: validationMessage.notitle,
   minLength: {
     value: CODING_MEETING_LIMITS.title.minLength,
-    message: validationMessage.underTitleLimit,
+    message: `제목은 ${CODING_MEETING_LIMITS.title.minLength}자 이상이어야 합니다`,
   },
   maxLength: {
     value: CODING_MEETING_LIMITS.title.maxLength,
-    message: validationMessage.overTitleLimit,
+    message: `제목은 ${CODING_MEETING_LIMITS.title.maxLength}자 이하여야 합니다`,
   },
 }

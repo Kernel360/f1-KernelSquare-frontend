@@ -3,81 +3,106 @@
 import ConfirmModal from "@/components/shared/confirm-modal/ConfirmModal"
 import queryKey from "@/constants/queryKey"
 import useModal from "@/hooks/useModal"
-import { deleteQuestion } from "@/service/question"
 import { useQueryClient } from "@tanstack/react-query"
 import { useRouter } from "next/navigation"
 import { toast } from "react-toastify"
-import { useDeleteImage } from "@/hooks/image/useDeleteImage"
-import type { ModalState } from "@/interfaces/modal"
-import type { Question } from "@/interfaces/question"
-import { findImageLinkUrlFromMarkdown } from "@/util/editor"
-import cancleMessage from "@/constants/message/cancel"
+import { useDeleteQuestion } from "./question/useDeleteQuestion"
+import { AxiosError, HttpStatusCode } from "axios"
+import { APIResponse } from "@/interfaces/dto/api-response"
+import { useClientSession } from "@/hooks/useClientSession"
+import cancelMessage from "@/constants/message/cancel"
+import SuccessModalContent from "../components/SuccessModalContent"
+import successMessage from "@/constants/message/success"
 
-export interface QuestionProps {
+interface UseHandleQuestion {
   questionId: number
 }
 
-export interface DeleteQuestionProps {
-  question: Question
-  successModal: NonNullable<ModalState["content"]>
-}
-
-const useHandleQuestion = () => {
-  const router = useRouter()
-  const { openModal } = useModal()
+const useHandleQuestion = ({ questionId }: UseHandleQuestion) => {
   const queryClient = useQueryClient()
-  const { deleteImage } = useDeleteImage()
+  const { clientSessionReset } = useClientSession()
+  const { push, replace } = useRouter()
 
-  const handleEditQuestion = ({ questionId }: QuestionProps) =>
-    router.push(`/question/u/${questionId}`)
+  const { openModal } = useModal()
 
-  const handleDeleteQuestion = async ({
-    question,
-    successModal,
-  }: DeleteQuestionProps) => {
-    const onSuccess = async () => {
-      try {
-        const imageUrl = findImageLinkUrlFromMarkdown(question.content)
+  const { deleteQuestionApi, deleteQuestionApiStatus } = useDeleteQuestion({
+    questionId,
+    async onSuccess() {
+      await queryClient.invalidateQueries({
+        queryKey: [queryKey.question, "list"],
+      })
 
-        deleteQuestion({
-          questionId: question.id,
+      replace("/qna")
+
+      setTimeout(() => {
+        queueMicrotask(() => {
+          openModal({
+            content: (
+              <SuccessModalContent message={successMessage.deleteQuestion} />
+            ),
+          })
         })
-        openModal({
-          content: successModal,
-          onClose() {
-            queryClient.invalidateQueries({
-              queryKey: [queryKey.question, question.id],
-            })
-          },
+      }, 700)
+    },
+    onError(error, variables, context) {
+      if (error instanceof AxiosError) {
+        const { response } = error as AxiosError<APIResponse>
+
+        if (response?.status === HttpStatusCode.Unauthorized) {
+          clientSessionReset()
+
+          toast.error("로그인 이후 다시 시도해주세요", {
+            position: "top-center",
+          })
+
+          return
+        }
+
+        toast.error(response?.data.msg ?? "질문 삭제에 실패했습니다", {
+          position: "top-center",
         })
-        if (imageUrl) deleteImage(imageUrl[0])
-        queryClient.invalidateQueries({
-          queryKey: [queryKey.question],
-        })
-        router.replace("/qna")
-      } catch (err) {
-        console.error(err)
+
+        return
       }
+
+      toast.error("질문 삭제에 실패했습니다", {
+        position: "top-center",
+        toastId: "deleteQuestionError",
+      })
+    },
+  })
+
+  const navigateEditQuestionPage = () => {
+    push(`/question/u/${questionId}`)
+  }
+
+  const deleteQuestion = () => {
+    const onAgreeDeleteQuestion = () => {
+      if (deleteQuestionApiStatus === "pending") return
+
+      deleteQuestionApi()
     }
-    const onCancel = () => {
-      toast.error(cancleMessage.deleteQuestion, {
+
+    const onCancelDeleteQuestion = () => {
+      toast.error(cancelMessage.deleteQuestion, {
         toastId: "cancleDeleteQuestion",
         position: "top-center",
       })
     }
+
     openModal({
       containsHeader: false,
       content: (
         <ConfirmModal.ModalContent
-          onSuccess={onSuccess}
-          onCancel={onCancel}
+          onSuccess={onAgreeDeleteQuestion}
+          onCancel={onCancelDeleteQuestion}
           situation="deleteContent"
         />
       ),
     })
   }
 
-  return { handleEditQuestion, handleDeleteQuestion }
+  return { navigateEditQuestionPage, deleteQuestion }
 }
 
 export default useHandleQuestion

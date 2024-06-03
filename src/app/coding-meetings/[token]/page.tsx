@@ -4,9 +4,9 @@ import { AxiosError } from "axios"
 import { APIResponse } from "@/interfaces/dto/api-response"
 import { notFound } from "next/navigation"
 import { getCodingMeetingDetail } from "@/service/coding-meetings"
-import DetailHeader from "@/page/coding-meetings/detail/DetailHeader"
 import ScrollTopButton from "@/components/shared/button/ScrollTopButton"
 import { deSerializeCmToken } from "@/page/coding-meetings/util/cm-token"
+import LinkToListPage from "@/components/LinkToListPage"
 
 export interface CodingMeetingsDetailPageProps {
   params: {
@@ -85,7 +85,9 @@ export default async function CodingMeetingsDetailPage({
     return (
       <div className="flex w-full px-6 pt-5 pb-8 tablet:px-12 tablet:pb-12 lg:mt-[72px] box-border">
         <div className="flex-1 max-w-full break-all">
-          <DetailHeader />
+          <div className="hidden pc:block">
+            <LinkToListPage to="coding-meetings" />
+          </div>
           <CodingMeetingsDetail detail={detailResponse.data.data!} />
         </div>
         <aside className="bg-transparent min-h-screen hidden lg:block lg:w-32" />
