@@ -2,11 +2,8 @@
 
 import CoffeeChatSection from "../../CoffeeChatSection"
 import { HASHTAG_LIMITS } from "@/constants/limitation"
-import { useRecoilValue, useResetRecoilState } from "recoil"
-import { HashTagList } from "@/recoil/atoms/coffee-chat/hashtags"
-import { Control } from "react-hook-form"
+import { Control, useController } from "react-hook-form"
 import HashTagsController from "../../../controls/HashTagsController"
-import { useEffect } from "react"
 import { CoffeeChatFormData } from "@/interfaces/form/coffee-chat-form"
 
 interface HashTagsSectionProps {
@@ -14,17 +11,9 @@ interface HashTagsSectionProps {
 }
 
 const HashTagsSection = ({ control }: HashTagsSectionProps) => {
-  const resetHashTagList = useResetRecoilState(HashTagList)
-
-  useEffect(() => {
-    return () => {
-      resetHashTagList()
-    }
-  }, []) /* eslint-disable-line */
-
   return (
     <CoffeeChatSection className="overflow-hidden">
-      <HashTagLabel />
+      <HashTagLabel control={control} />
       <HashTagsController control={control} />
     </CoffeeChatSection>
   )
@@ -32,8 +21,12 @@ const HashTagsSection = ({ control }: HashTagsSectionProps) => {
 
 export default HashTagsSection
 
-const HashTagLabel = () => {
-  const hashTagList = useRecoilValue(HashTagList)
+const HashTagLabel = ({
+  control,
+}: {
+  control: Control<CoffeeChatFormData, any>
+}) => {
+  const { field } = useController({ control, name: "hashTags" })
 
   return (
     <CoffeeChatSection.Label htmlFor="hashTag" className="block w-max">
@@ -41,12 +34,13 @@ const HashTagLabel = () => {
       <span>&nbsp;&#40;&nbsp;</span>
       <span
         className={`${
-          hashTagList.length <= HASHTAG_LIMITS.tags.maxLength
+          !field?.value?.length ||
+          field.value.length <= HASHTAG_LIMITS.tags.maxLength
             ? "text-primary"
             : "text-danger"
         }`}
       >
-        {hashTagList.length}
+        {field?.value?.length ?? 0}
       </span>
       <span>&nbsp;/&nbsp;</span>
       <span>{HASHTAG_LIMITS.tags.maxLength}</span>

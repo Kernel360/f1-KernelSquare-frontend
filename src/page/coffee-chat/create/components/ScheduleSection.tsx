@@ -11,32 +11,40 @@ import SelectedTimeList from "./SelectedTimeList"
 import { Control } from "react-hook-form"
 import DateTimesController from "../controls/DateTimesController"
 import { CoffeeChatFormData } from "@/interfaces/form/coffee-chat-form"
+import { useDomainEditMode } from "@/hooks/editor/useDomainEditMode"
 
 interface SheduleSectionProps {
   control: Control<CoffeeChatFormData, any>
+  initialDateTime?: string[]
 }
 
-const ScheduleSection = ({ control }: SheduleSectionProps) => {
+const ScheduleSection = ({ control, initialDateTime }: SheduleSectionProps) => {
+  const editMode = useDomainEditMode()
+
   const selectedDate = useRecoilValue(ReservationSelectedDateAtom)
 
   return (
     <CoffeeChatSection>
       <CoffeeChatSection.Label className="w-max max-w-full flex flex-wrap items-center gap-2">
         <div>일시</div>
-        {selectedDate && <HelpHoverBox />}
+        {selectedDate && editMode !== "update" && <HelpHoverBox />}
       </CoffeeChatSection.Label>
       <section className="my-2 py-2 bg-light-green">
         <SelectedTimeList />
       </section>
-      <DetailPageCalendarWrapper
-        classNames={{
-          dataComponent: {
-            container: "mt-3 sm:mt-0",
-          },
-        }}
-        calendarComponent={<CalendarSection />}
-        dataComponent={<DateSection />}
-      />
+      {editMode === "update" ? null : (
+        <DetailPageCalendarWrapper
+          classNames={{
+            dataComponent: {
+              container: "mt-3 sm:mt-0",
+            },
+          }}
+          calendarComponent={
+            <CalendarSection initialDateTime={initialDateTime} />
+          }
+          dataComponent={<DateSection />}
+        />
+      )}
       <DateTimesController control={control} />
     </CoffeeChatSection>
   )

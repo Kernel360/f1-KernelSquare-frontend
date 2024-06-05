@@ -3,13 +3,18 @@
 import { ReservationSelectedDateAtom } from "@/recoil/atoms/coffee-chat/date"
 import { getChatPeriods } from "@/util/chat/time"
 import dayjs from "dayjs"
-import { useLayoutEffect } from "react"
 import { CalendarProps, TileArgs } from "react-calendar"
 import { useRecoilState } from "recoil"
 import ReservationCalendarBase from "../../detail/reservation/calendar-base/ReservationCalendarBase"
 import { useSelectedChatTimes } from "../hooks/useSelectedChatTimes"
 
-function ChatScheduleCalendar() {
+interface ChatScheduleCanlendarProps {
+  initialStartDate?: Date
+}
+
+function ChatScheduleCalendar({
+  initialStartDate,
+}: ChatScheduleCanlendarProps) {
   const [selectedDate, setSelectedDate] = useRecoilState(
     ReservationSelectedDateAtom,
   )
@@ -67,20 +72,21 @@ function ChatScheduleCalendar() {
     return undefined
   }
 
-  useLayoutEffect(() => {
-    return () => {
-      setSelectedDate(null)
-    }
-  }, []) /* eslint-disable-line */
-
   return (
     <ReservationCalendarBase
       start={startDate}
       limit={21}
+      minDate={
+        initialStartDate
+          ? dayjs(initialStartDate).startOf("days").toDate()
+          : startDate
+      }
       date={selectedDate}
       onDateChange={onDateChange}
       tileClassName={tileClassname}
-      minDate={startDate}
+      tileDisabled={({ date }) => {
+        return dayjs(date).isBefore(dayjs().add(7, "days").startOf("days"))
+      }}
     />
   )
 }

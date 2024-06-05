@@ -9,9 +9,10 @@ import { validationMessage } from "@/constants/message/validation"
 
 interface TimeOptionButtonProps {
   dateTime: Date
+  disabled?: boolean
 }
 
-function TimeOptionButton({ dateTime }: TimeOptionButtonProps) {
+function TimeOptionButton({ dateTime, disabled }: TimeOptionButtonProps) {
   const {
     selectedChatTimeList,
     count,
@@ -46,7 +47,12 @@ function TimeOptionButton({ dateTime }: TimeOptionButtonProps) {
   }
 
   return (
-    <Button type="button" className={classNames} onClick={handleTime}>
+    <Button
+      type="button"
+      className={classNames}
+      disabled={disabled}
+      onClick={disabled ? undefined : handleTime}
+    >
       <time>{getTime(dateTime)}</time>
     </Button>
   )

@@ -4,12 +4,22 @@ import Button from "@/components/shared/button/Button"
 import dayjs from "dayjs"
 import { IoCloseCircle } from "react-icons/io5"
 import { useRecoilValue } from "recoil"
+import { useDomainEditMode } from "@/hooks/editor/useDomainEditMode"
 
 function SelectedTimeList() {
+  const editMode = useDomainEditMode()
   const selectedDate = useRecoilValue(ReservationSelectedDateAtom)
 
   const { selectedChatTimeList, count, removeSelectedChatTime } =
     useSelectedChatTimes()
+
+  if (editMode === "update") {
+    return (
+      <div className="flex w-full h-9 items-center px-2 text-sm text-[#828282] font-semibold bg-light-green">
+        현재 커피 챗의 일시 수정은 할 수 없습니다.
+      </div>
+    )
+  }
 
   if (!selectedDate) {
     return (

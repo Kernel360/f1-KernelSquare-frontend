@@ -56,6 +56,16 @@ export const QUESTION_QUERY_KEY = {
   },
 }
 
+export const COFFEE_CHAT_QUERY_KEY = {
+  getChatList(page?: number) {
+    return page === undefined ? ["chat", "list"] : ["chat", "list", page]
+  },
+  createCoffeeChat: ["chat", "create"],
+  updateCoffeeChat(articleId: number) {
+    return ["chat", "update", articleId]
+  },
+}
+
 export const IMAGE_QUERY_KEY = {
   uploadImageWithoutCategory: ["upload", "image"],
   uploadImageWithCategory(category: UploadImagesCategory) {

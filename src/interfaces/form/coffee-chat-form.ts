@@ -1,3 +1,7 @@
+import { CoffeeChatReservationDetailPayload } from "../dto/coffee-chat/coffeechat-reservation-detail.dto"
+
+export type CoffeeChatPageMode = "create" | "update"
+
 export interface CoffeeChatFormData {
   title: string
   content: string
@@ -6,8 +10,6 @@ export interface CoffeeChatFormData {
   hashTags?: string[]
 }
 
-export type CoffeeChatEditorInitialValues = CoffeeChatFormData
-
-export interface UpdateCoffeeChatData extends CoffeeChatFormData {
-  post_id: number
+export type InitialCoffeeChat = CoffeeChatReservationDetailPayload & {
+  introduction: string
 }

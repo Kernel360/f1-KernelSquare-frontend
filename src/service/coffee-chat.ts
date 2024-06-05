@@ -33,6 +33,10 @@ import type {
   GetMyCoffeeChatReservationListResponse,
   GetMyCoffeeChatReservationRequest,
 } from "@/interfaces/dto/coffee-chat/get-my-coffeechat-reservation"
+import {
+  UpdateCoffeeChatPostRequest,
+  UpdateCoffeeChatPostResponse,
+} from "@/interfaces/dto/coffee-chat/update-coffeechat-post.dto"
 
 export async function getCoffeeChatReservationList(
   { page = 0, size = 5 }: GetCoffeeChatReservationListRequest = {
@@ -97,6 +101,23 @@ export async function createCoffeeChatPost({
     hash_tags,
     date_times,
     introduction,
+  })
+
+  return res
+}
+
+// 커피챗 등록글 수정
+export async function updateCoffeeChatPost({
+  article_id,
+  ...payload
+}: UpdateCoffeeChatPostRequest) {
+  const res = await apiInstance.put<
+    any,
+    AxiosResponse<UpdateCoffeeChatPostResponse>,
+    UpdateCoffeeChatPostRequest
+  >(RouteMap.coffeeChat.updateCoffeeChatPost(article_id), {
+    article_id,
+    ...payload,
   })
 
   return res

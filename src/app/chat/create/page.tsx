@@ -41,7 +41,7 @@ export default function CreateCoffeeChatPage() {
       return <CreateChatForbidden />
     }
 
-    return <CreateCoffeeChatReservationPage />
+    return <CreateCoffeeChatReservationPage editMode="create" />
   } catch (error) {
     notFound()
   }

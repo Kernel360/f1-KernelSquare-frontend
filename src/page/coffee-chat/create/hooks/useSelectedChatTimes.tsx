@@ -66,18 +66,57 @@ export function useSelectedChatTimes() {
     }))
   }
 
-  const addSelectedChatTime = ({ dateTime }: { dateTime: Date }) => {
+  const addSelectedChatTime = ({ dateTime }: { dateTime: Date | Date[] }) => {
+    if (Array.isArray(dateTime)) {
+      setSelectedChatTimesMap((prev) => {
+        const map = dateTime.reduce((acc, cur) => {
+          const key = dayjs(cur).format("YYYY-MM-DD")
+
+          if (key in acc) {
+            const value = uniqWith([...acc[key], cur], (a, b) =>
+              dayjs(a as Date).isSame(dayjs(b as Date)),
+            ).sort((a, b) => dayjs(a as Date).diff(dayjs(b as Date)))
+
+            acc[key] = value
+
+            return acc
+          }
+
+          return {
+            ...acc,
+            [key]: [cur],
+          }
+        }, prev ?? ({} as any))
+
+        return { ...map }
+      })
+
+      return
+    }
+
     setSelectedChatTimesMap((prev) => {
       const key = dayjs(dateTime).format("YYYY-MM-DD")
-      const prevTarget = prev ? prev[key] : []
 
-      const value = uniqWith([...prevTarget, dateTime], (a, b) =>
-        dayjs(a as Date).isSame(dayjs(b as Date)),
-      ).sort((a, b) => dayjs(a as Date).diff(dayjs(b as Date)))
+      if (!prev || !Object.keys(prev).length) {
+        return {
+          [key]: [dateTime],
+        }
+      }
+
+      if (key in prev) {
+        const value = uniqWith([...prev[key], dateTime], (a, b) =>
+          dayjs(a as Date).isSame(dayjs(b as Date)),
+        ).sort((a, b) => dayjs(a as Date).diff(dayjs(b as Date)))
+
+        return {
+          ...prev,
+          [key]: value,
+        }
+      }
 
       return {
         ...prev,
-        [key]: value,
+        [key]: [dateTime],
       }
     })
   }
@@ -108,7 +147,7 @@ export function useSelectedChatTimes() {
     if (dateTime) {
       setSelectedChatTimesMap((prev) => {
         const key = dayjs(dateTime).format("YYYY-MM-DD")
-        const prevTarget = prev ? prev[key] : null
+        const prevTarget = prev && key in prev ? prev[key] : null
 
         if (!prevTarget) {
           return {

@@ -1,20 +1,23 @@
 import type { APIResponse } from "../api-response"
 
-const enum Changed {
-  REMOVE = "remove",
-  ADD = "add",
-}
+export const COFFEE_CHAT_CHANGE = {
+  REMOVE: "remove",
+  ADD: "add",
+} as const
 
-type ChangeHashTag = {
+type CoffeeChatChange =
+  (typeof COFFEE_CHAT_CHANGE)[keyof typeof COFFEE_CHAT_CHANGE]
+
+export type ChangeHashTag = {
   hashtag_id: number | null
   content: string
-  changed: Changed
+  changed: CoffeeChatChange
 }
 
-type ChangeReservation = {
+export type ChangeReservation = {
   reservation_id: number | null
   start_time: string
-  changed: Changed
+  changed: CoffeeChatChange
 }
 
 export interface UpdateCoffeeChatPostRequest {
@@ -24,12 +27,7 @@ export interface UpdateCoffeeChatPostRequest {
   content: string
   introduction: string
   change_hashtags?: Array<ChangeHashTag>
-  chage_reservations?: Array<ChangeReservation>
+  change_reservations?: Array<ChangeReservation>
 }
 
-export interface UpdateCoffeeChatPostPayload {
-  reservation_article_id: number
-}
-
-export interface UpdateCoffeeChatPostResponse
-  extends APIResponse<UpdateCoffeeChatPostPayload> {}
+export interface UpdateCoffeeChatPostResponse extends APIResponse {}
