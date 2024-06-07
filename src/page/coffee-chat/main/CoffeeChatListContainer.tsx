@@ -11,6 +11,7 @@ import { keyframes } from "@emotion/react"
 import styled from "@emotion/styled"
 import ListPage from "@/components/shared/page-template/ListPage"
 import type { APIResponse } from "@/interfaces/dto/api-response"
+import { COFFEE_CHAT_QUERY_KEY } from "@/constants/queryKey"
 
 function CoffeeChatListContainer() {
   const searchParams = useSearchParams()
@@ -23,7 +24,7 @@ function CoffeeChatListContainer() {
     isPending,
     error,
   } = useQuery({
-    queryKey: ["chat", "list", page],
+    queryKey: COFFEE_CHAT_QUERY_KEY.getChatList(Number(page)),
     queryFn: () => getCoffeeChatReservationList({ page: Number(page) }),
     placeholderData: keepPreviousData,
     staleTime: 1000 * 60 * 5,

@@ -1,28 +1,28 @@
 "use client"
 
-import { ReservationSelectedDateAtom } from "@/recoil/atoms/coffee-chat/date"
-import { getChatPeriods } from "@/util/chat/time"
 import dayjs from "dayjs"
-import { useLayoutEffect } from "react"
 import { CalendarProps, TileArgs } from "react-calendar"
-import { useRecoilState } from "recoil"
 import ReservationCalendarBase from "../../detail/reservation/calendar-base/ReservationCalendarBase"
-import { useSelectedChatTimes } from "../hooks/useSelectedChatTimes"
+import { useSelectedChatTime } from "../hooks/useSelectedChatTime"
+import { useCoffeeChatFormContext } from "../../hooks/useCoffeeChatFormContext"
+import useModal from "@/hooks/useModal"
+import Button from "@/components/shared/button/Button"
+import Spacing from "@/components/shared/Spacing"
 
-function ChatScheduleCalendar() {
-  const [selectedDate, setSelectedDate] = useRecoilState(
-    ReservationSelectedDateAtom,
-  )
+interface ChatScheduleCanlendarProps {
+  initialStartDate?: Date
+}
 
-  const { addPeriodToMap } = useSelectedChatTimes()
+function ChatScheduleCalendar({
+  initialStartDate,
+}: ChatScheduleCanlendarProps) {
+  const { dateTimeFieldArray } = useCoffeeChatFormContext()
+  const { selectedDate, setSelectedDate, coffeeChatPeriods } =
+    useSelectedChatTime()
+
+  const { openModal, closeModal } = useModal()
 
   const startDate = dayjs().add(7, "days").startOf("days").toDate()
-
-  const periods = selectedDate
-    ? getChatPeriods({
-        startTime: dayjs(selectedDate as Date).format(),
-      })
-    : null
 
   const onDateChange: NonNullable<CalendarProps["onChange"]> = (
     value,
@@ -32,8 +32,28 @@ function ChatScheduleCalendar() {
       return
     }
 
+    if (selectedDate) {
+      openModal({
+        containsHeader: false,
+        closeableDim: false,
+        content: (
+          <ConfirmChangeDateModal
+            targetDate={value as Date}
+            onAgree={() => {
+              dateTimeFieldArray.clearDateTime()
+              setSelectedDate(value)
+
+              closeModal()
+            }}
+            onCancel={closeModal}
+          />
+        ),
+      })
+
+      return
+    }
+
     setSelectedDate(value)
-    addPeriodToMap(value as Date)
   }
 
   const tileClassname = ({ date }: TileArgs) => {
@@ -41,16 +61,12 @@ function ChatScheduleCalendar() {
 
     if (!selectedDate) return undefined
 
-    const {
-      reservationPossible: [reservationPossibleStart, reservationPossibleEnd],
-      reservationConfirm,
-      chat: [chatStart, chatEnd],
-    } = periods!
+    const { reservationPossible, reservationConfirm, chat } = coffeeChatPeriods!
 
     if (
       dayjs(date).isBetween(
-        reservationPossibleStart,
-        reservationPossibleEnd,
+        reservationPossible.start,
+        reservationPossible.end,
         "minutes",
         "[]",
       )
@@ -60,29 +76,70 @@ function ChatScheduleCalendar() {
     if (dayjs(date).isSame(reservationConfirm)) {
       return `${prefix} reservation-confirm`
     }
-    if (dayjs(date).isBetween(chatStart, chatEnd, "minutes", "[]")) {
+    if (dayjs(date).isBetween(chat.start, chat.end, "minutes", "[]")) {
       return `${prefix} mentoring`
     }
 
     return undefined
   }
 
-  useLayoutEffect(() => {
-    return () => {
-      setSelectedDate(null)
-    }
-  }, []) /* eslint-disable-line */
-
   return (
     <ReservationCalendarBase
       start={startDate}
       limit={21}
+      minDate={
+        initialStartDate
+          ? dayjs(initialStartDate).startOf("days").toDate()
+          : startDate
+      }
       date={selectedDate}
       onDateChange={onDateChange}
       tileClassName={tileClassname}
-      minDate={startDate}
+      tileDisabled={({ date }) => {
+        return dayjs(date).isBefore(dayjs().add(7, "days").startOf("days"))
+      }}
     />
   )
 }
 
 export default ChatScheduleCalendar
+
+const ConfirmChangeDateModal = ({
+  targetDate,
+  onAgree,
+  onCancel,
+}: {
+  targetDate: Date
+  onAgree: () => void
+  onCancel: () => void
+}) => {
+  return (
+    <div className="w-full sm:w-[400px] bg-white">
+      <div className="flex flex-col w-full gap-y-2 justify-center">
+        <div className="font-bold inline-block align-top mx-auto">
+          커피챗 시작 일시를 &nbsp;
+          <span className="text-primary">
+            {dayjs(targetDate).format("YYYY년 M월 D일")}
+          </span>
+          &nbsp; 로 변경하시겠습니까?
+        </div>
+        <div className="text-orange-400 text-xs inline-block align-top mx-auto">
+          기간이 재설정되어 선택한 일시가 초기화 될 수 있습니다.
+        </div>
+      </div>
+      <Spacing size={16} />
+      <div className="flex w-full justify-center gap-x-3">
+        <Button buttonTheme="primary" onClick={onAgree}>
+          확인
+        </Button>
+        <Button
+          buttonTheme="third"
+          className="border-transparent hover:bg-light-green hover:text-secondary"
+          onClick={onCancel}
+        >
+          취소
+        </Button>
+      </div>
+    </div>
+  )
+}

@@ -1,4 +1,5 @@
 import { AnswerFormData, CodingMeetingFormData } from "@/interfaces/form"
+import { CoffeeChatFormData } from "@/interfaces/form/coffee-chat-form"
 import { FieldError, FieldErrors, FieldValues, Merge } from "react-hook-form"
 
 type ErrorType =
@@ -47,6 +48,32 @@ export function pickFirstError<T extends FieldValues = FieldValues>(
   }
 
   return errorPayload
+}
+
+// coffee chat
+export function pickFirstCoffeeChatFormError(
+  errors: FieldErrors<CoffeeChatFormData>,
+) {
+  const sortedKey: (keyof CoffeeChatFormData)[] = [
+    "title",
+    "introduction",
+    "content",
+    "dateTimes",
+  ]
+
+  for (const field of sortedKey) {
+    const targetError = errors[field]
+
+    if (targetError) {
+      if (field === "dateTimes") {
+        return { ...targetError?.root, errorField: field }
+      }
+
+      return { ...targetError, errorField: field }
+    }
+  }
+
+  return null
 }
 
 // answer

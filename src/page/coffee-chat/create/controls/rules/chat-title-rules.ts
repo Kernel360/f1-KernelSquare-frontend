@@ -1,6 +1,6 @@
 import { COFFEE_CHAT_LIMITS } from "@/constants/limitation"
 import { validationMessage } from "@/constants/message/validation"
-import { CoffeeChatFormData } from "@/interfaces/form"
+import { CoffeeChatFormData } from "@/interfaces/form/coffee-chat-form"
 import { RegisterOptions } from "react-hook-form"
 
 type ChatTitleRules = Omit<
