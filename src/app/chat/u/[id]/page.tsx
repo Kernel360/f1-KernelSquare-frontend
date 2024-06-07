@@ -8,6 +8,7 @@ import { AxiosError, HttpStatusCode } from "axios"
 import { GetCoffeeChatReservationDetailResponse } from "@/interfaces/dto/coffee-chat/coffeechat-reservation-detail.dto"
 import CreateCoffeeChatReservationPage from "@/page/coffee-chat/create/CreateCoffeeChatReservationPage"
 import { getIntroduction } from "@/util/chat/getIntroduction"
+import CoffeeChatFormProvider from "@/page/coffee-chat/CoffeeChatFormProvider"
 
 export interface CoffeeChatUpdatePageProps {
   params: {
@@ -86,15 +87,19 @@ export default async function UpdateCoffeeChatPage({
       articleId: targetCoffeeChatId,
     }).catch((err) => null)
 
+    const initialCoffeeChat = {
+      ...coffeeChatDetailPayload.data,
+      introduction: introduction ?? "",
+    }
+
     return (
-      <CreateCoffeeChatReservationPage
-        editMode="update"
-        post_id={targetCoffeeChatId}
-        initialCoffeeChat={{
-          ...coffeeChatDetailPayload.data,
-          introduction: introduction ?? "",
-        }}
-      />
+      <CoffeeChatFormProvider coffeeChat={initialCoffeeChat}>
+        <CreateCoffeeChatReservationPage
+          editMode="update"
+          post_id={targetCoffeeChatId}
+          initialCoffeeChat={initialCoffeeChat}
+        />
+      </CoffeeChatFormProvider>
     )
   } catch (error) {
     if (error instanceof AxiosError) {

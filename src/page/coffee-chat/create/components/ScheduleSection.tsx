@@ -8,17 +8,13 @@ import DateSection from "./sections/date/DateSection"
 import { ReservationSelectedDateAtom } from "@/recoil/atoms/coffee-chat/date"
 import HelpHoverBox from "./sections/HelpHoverBox"
 import SelectedTimeList from "./SelectedTimeList"
-import { Control } from "react-hook-form"
-import DateTimesController from "../controls/DateTimesController"
-import { CoffeeChatFormData } from "@/interfaces/form/coffee-chat-form"
 import { useDomainEditMode } from "@/hooks/editor/useDomainEditMode"
 
 interface SheduleSectionProps {
-  control: Control<CoffeeChatFormData, any>
   initialDateTime?: string[]
 }
 
-const ScheduleSection = ({ control, initialDateTime }: SheduleSectionProps) => {
+const ScheduleSection = ({ initialDateTime }: SheduleSectionProps) => {
   const editMode = useDomainEditMode()
 
   const selectedDate = useRecoilValue(ReservationSelectedDateAtom)
@@ -45,7 +41,6 @@ const ScheduleSection = ({ control, initialDateTime }: SheduleSectionProps) => {
           dataComponent={<DateSection />}
         />
       )}
-      <DateTimesController control={control} />
     </CoffeeChatSection>
   )
 }

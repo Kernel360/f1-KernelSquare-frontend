@@ -1,6 +1,5 @@
 import { apiInstance } from "./axios"
 import { RouteMap } from "./route-map"
-import { AxiosError } from "axios"
 import { DefaultBodyType } from "msw"
 import type {
   GetCoffeeChatReservationListRequest,
@@ -23,7 +22,6 @@ import type {
   DeleteCoffeeChatRequest,
   DeleteCoffeeChatResponse,
 } from "@/interfaces/dto/coffee-chat/delete-coffeechat.dto"
-import type { APIResponse } from "@/interfaces/dto/api-response"
 import type {
   MakeReservationRequest,
   MakeReservationResponse,

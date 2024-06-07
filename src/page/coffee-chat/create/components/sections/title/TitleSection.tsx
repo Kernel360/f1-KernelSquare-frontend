@@ -1,16 +1,13 @@
 import { Input } from "@/components/shared/input/Input"
 import CoffeeChatSection from "../../CoffeeChatSection"
-import { Control, useController } from "react-hook-form"
+import { useController } from "react-hook-form"
 import TextCounter from "@/components/shared/TextCounter"
 import { COFFEE_CHAT_LIMITS } from "@/constants/limitation"
 import { chatTitleRules } from "../../../controls/rules/chat-title-rules"
-import { CoffeeChatFormData } from "@/interfaces/form/coffee-chat-form"
+import { useCoffeeChatFormContext } from "@/page/coffee-chat/hooks/useCoffeeChatFormContext"
 
-interface TitleSectionProps {
-  control: Control<CoffeeChatFormData, any>
-}
-
-function TitleSection({ control }: TitleSectionProps) {
+function TitleSection() {
+  const { control } = useCoffeeChatFormContext()
   const { field } = useController({
     control,
     name: "title",
@@ -23,6 +20,7 @@ function TitleSection({ control }: TitleSectionProps) {
     <CoffeeChatSection className="border-transparent p-0">
       <div>
         <Input
+          ref={field.ref}
           id="title"
           spellCheck="false"
           autoComplete="off"

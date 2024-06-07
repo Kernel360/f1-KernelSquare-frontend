@@ -1,20 +1,16 @@
 "use client"
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/Tabs"
-import {
-  ReservationSelectedDateAtom,
-  SelectedDayTab,
-} from "@/recoil/atoms/coffee-chat/date"
-import { getChatPeriods } from "@/util/chat/time"
 import dayjs from "dayjs"
-import { useEffect, useId, useMemo, useState } from "react"
-import { useRecoilValue, useSetRecoilState } from "recoil"
+import { useEffect, useId, useState } from "react"
 import TimeOptions from "./sections/date/TimeOptions"
+import { useSelectedDayTab } from "../hooks/useSelectedDayTab"
+import { useSelectedChatTime } from "../hooks/useSelectedChatTime"
 
 function DaySelectTabs() {
-  const startDate = useRecoilValue(ReservationSelectedDateAtom)
+  const { selectedDate: startDate } = useSelectedChatTime()
 
-  const setSelectedDayTab = useSetRecoilState(SelectedDayTab)
+  const { setSelectedDayTab, selectedDayTabOptions } = useSelectedDayTab()
 
   const [selectedDay, setSelectedDay] = useState<string>(
     startDate
@@ -23,22 +19,6 @@ function DaySelectTabs() {
   )
 
   const uniqueId = useId()
-
-  const selectedDayOptions = useMemo(() => {
-    const {
-      chat: [chatStart, chatEnd],
-    } = getChatPeriods({
-      startTime: startDate
-        ? dayjs(startDate as Date).format()
-        : dayjs().add(7, "days").format(),
-    })
-
-    return [
-      chatStart.format("YYYY-MM-DD"),
-      chatStart.add(1, "days").format("YYYY-MM-DD"),
-      chatEnd.format("YYYY-MM-DD"),
-    ]
-  }, [startDate])
 
   useEffect(() => {
     const dayInstance = dayjs(startDate as Date)
@@ -57,7 +37,7 @@ function DaySelectTabs() {
       className="w-full"
     >
       <TabsList className="grid w-full grid-cols-3 self-center p-0 h-full">
-        {selectedDayOptions.map((day, i) => {
+        {selectedDayTabOptions?.map((day, i) => {
           return (
             <TabsTrigger
               key={`${uniqueId}-trigger-${day}-${i}`}
@@ -68,7 +48,7 @@ function DaySelectTabs() {
             </TabsTrigger>
           )
         })}
-        {selectedDayOptions.map((day, i) => {
+        {selectedDayTabOptions?.map((day, i) => {
           return (
             <TabsContent
               key={`${uniqueId}-content-${day}-${i}`}

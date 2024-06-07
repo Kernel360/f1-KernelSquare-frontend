@@ -1,23 +1,20 @@
 "use client"
 
-import { useForm } from "react-hook-form"
 import { useEffect } from "react"
 import { toast } from "react-toastify"
 import { useClientSession } from "@/hooks/useClientSession"
 import type { FieldErrors } from "react-hook-form"
 import Button from "@/components/shared/button/Button"
-import HashTagsSection from "./components/sections/hashtag/HashTagsSection"
-import ScheduleSection from "./components/ScheduleSection"
-import notificationMessage from "@/constants/message/notification"
-import { useSelectedChatTimes } from "./hooks/useSelectedChatTimes"
 import { CreateCoffeeChatPostRequest } from "@/interfaces/dto/coffee-chat/create-coffeechat-post.dto"
 import { transformDateTime } from "./controls/util/parse-field"
 import TitleSection from "./components/sections/title/TitleSection"
 import IntroductionSection from "./components/sections/introduction/IntroductionSection"
 import ContentSection from "./components/sections/content/ContentSection"
+import HashTagsSection from "./components/sections/hashtag/HashTagsSection"
+import ScheduleSection from "./components/ScheduleSection"
 import { useCreateCoffeeChat } from "./hooks/useCreateCoffeeChat"
 import LinkToListPage from "@/components/LinkToListPage"
-import { pickFirstError } from "@/util/hook-form/error"
+import { pickFirstCoffeeChatFormError } from "@/util/hook-form/error"
 import {
   CoffeeChatFormData,
   CoffeeChatPageMode,
@@ -30,15 +27,14 @@ import {
 import {
   createChangeDateTimesPayload,
   createChangeHashTagsPayload,
-  payloadToFormData,
 } from "../utill/parser"
 import { INITIAL_COFFEE_CHAT_INTRODUCTION } from "@/constants/form/coffee-chat-form"
 import { useRouter } from "next/navigation"
 import { revalidatePage } from "@/util/actions/revalidatePage"
 import { AxiosError, HttpStatusCode } from "axios"
 import { APIResponse } from "@/interfaces/dto/api-response"
-import { useResetRecoilState } from "recoil"
-import { ReservationSelectedDateAtom } from "@/recoil/atoms/coffee-chat/date"
+import { useCoffeeChatFormContext } from "../hooks/useCoffeeChatFormContext"
+import { useSelectedChatTime } from "./hooks/useSelectedChatTime"
 
 export interface CoffeeChatFormProps {
   editMode: CoffeeChatPageMode
@@ -59,22 +55,17 @@ function CreateCoffeeChatReservationPage({
   post_id,
   initialCoffeeChat,
 }: CoffeeChatFormProps) {
-  const { user, clientSessionReset } = useClientSession()
+  const { user } = useClientSession()
 
   const { replace } = useRouter()
 
-  const formDefaultValues: CoffeeChatFormData =
-    payloadToFormData(initialCoffeeChat)
-
   const {
     handleSubmit,
-    control,
     formState: { isValid, isSubmitting },
-  } = useForm<CoffeeChatFormData>({
-    defaultValues: {
-      ...formDefaultValues,
-    },
-  })
+    formReset,
+  } = useCoffeeChatFormContext()
+
+  const { resetSelectedDate } = useSelectedChatTime()
 
   const { createCoffeeChatApi, createCoffeeChatApiStatus } =
     useCreateCoffeeChat()
@@ -86,6 +77,8 @@ function CreateCoffeeChatReservationPage({
         await revalidatePage("/chat/[id]", "page")
 
         setTimeout(() => {
+          formReset()
+
           replace(`/chat/${post_id}`)
         }, 0)
       },
@@ -94,7 +87,7 @@ function CreateCoffeeChatReservationPage({
           const { response } = error as AxiosError<APIResponse>
 
           if (response?.status === HttpStatusCode.Unauthorized) {
-            clientSessionReset()
+            revalidatePage("/chat/u/[id]", "page")
 
             setTimeout(() => {
               toast.error("로그인이 필요합니다", {
@@ -121,9 +114,6 @@ function CreateCoffeeChatReservationPage({
       },
     })
 
-  const resetSelectedDay = useResetRecoilState(ReservationSelectedDateAtom)
-  const { clear } = useSelectedChatTimes()
-
   const onSubmit = async ({
     title,
     introduction,
@@ -131,25 +121,28 @@ function CreateCoffeeChatReservationPage({
     hashTags,
     dateTimes,
   }: CoffeeChatFormData) => {
-    if (!user)
-      return toast.error(notificationMessage.unauthorized, {
-        toastId: "unauthorizedToCreateCoffeeChat",
-        position: "top-center",
-      })
-
     const payload: CreateCoffeeChatPostRequest = {
-      member_id: user.member_id,
+      member_id: user?.member_id ?? -1,
       title,
       introduction,
       content,
-      hash_tags: hashTags ?? [],
-      date_times: transformDateTime(dateTimes ?? []),
+      hash_tags: hashTags?.map((tag) => tag.content) ?? [],
+      date_times: transformDateTime(
+        dateTimes?.map((dateTime) => dateTime.startTime) ?? [],
+      ),
     }
 
     if (editMode === "create") {
-      createCoffeeChatApi({
-        ...payload,
-      })
+      createCoffeeChatApi(
+        {
+          ...payload,
+        },
+        {
+          onSuccess(data, variables, context) {
+            formReset()
+          },
+        },
+      )
 
       return
     }
@@ -178,18 +171,17 @@ function CreateCoffeeChatReservationPage({
   }
 
   const onInvalid = (errors: FieldErrors<CoffeeChatFormData>) => {
-    const { type, message } = pickFirstError<CoffeeChatFormData>(errors)
+    const { errorField, type, message } = pickFirstCoffeeChatFormError(errors)!
 
     toast.error(message, {
-      toastId: `${type}-${message}`,
+      toastId: `${errorField}-${type}-${message}`,
       position: "top-center",
     })
   }
 
   useEffect(() => {
     return () => {
-      resetSelectedDay()
-      clear()
+      resetSelectedDate()
     }
   }, []) /* eslint-disable-line */
 
@@ -206,15 +198,11 @@ function CreateCoffeeChatReservationPage({
         className={`transition-opacity animate-in fade-in-0 [animation-duration:1000ms]`}
       >
         <div className="flex flex-col w-full gap-y-6 mb-12 pc:mb-[72px] ">
-          <TitleSection control={control} />
-          <IntroductionSection control={control} />
-          <ContentSection
-            initialContent={initialCoffeeChat?.content}
-            control={control}
-          />
-          <HashTagsSection control={control} />
+          <TitleSection />
+          <IntroductionSection />
+          <ContentSection />
+          <HashTagsSection />
           <ScheduleSection
-            control={control}
             initialDateTime={
               initialCoffeeChat?.date_times?.map(
                 (dateTime) => dateTime.start_time,

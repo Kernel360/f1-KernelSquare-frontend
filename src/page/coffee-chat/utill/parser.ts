@@ -26,8 +26,14 @@ export function payloadToFormData(
     title,
     introduction,
     content,
-    dateTimes: date_times.map(({ start_time }) => start_time),
-    hashTags: hashtags.map(({ content }) => content),
+    dateTimes: date_times.map(({ reservation_id, start_time }) => ({
+      reservationId: reservation_id,
+      startTime: start_time,
+    })),
+    hashTags: hashtags.map(({ hashtag_id, content }) => ({
+      hashTagId: hashtag_id,
+      content,
+    })),
   }
 }
 
@@ -46,7 +52,7 @@ export function createChangeHashTagsPayload({
     return payload.map((hashTag) => ({
       changed: "add",
       hashtag_id: null,
-      content: hashTag,
+      content: hashTag.content,
     })) as ChangeHashTag[]
   }
 
@@ -65,15 +71,15 @@ export function createChangeHashTagsPayload({
 
   // remove target hashtag
   for (const { hashtag_id, content } of initialHashTags) {
-    if (!payload.includes(content)) {
+    if (!payload.find((tag) => tag.content === content)) {
       result.push({ changed: "remove", hashtag_id, content })
     }
   }
 
   // add target hashtag
-  for (const content of payload) {
-    if (!initialHashTagContents.includes(content)) {
-      result.push({ changed: "add", hashtag_id: null, content })
+  for (const tag of payload) {
+    if (!initialHashTagContents.includes(tag.content)) {
+      result.push({ changed: "add", hashtag_id: null, content: tag.content })
     }
   }
 
@@ -95,7 +101,7 @@ export function createChangeDateTimesPayload({
     return payload.map((dateTime) => ({
       changed: "add",
       reservation_id: null,
-      start_time: dateTime,
+      start_time: dateTime.startTime,
     })) as ChangeReservation[]
   }
 
@@ -106,18 +112,18 @@ export function createChangeDateTimesPayload({
 
   // remove target reservation
   for (const { reservation_id, start_time } of initialDateTimes) {
-    if (!payload.includes(start_time)) {
+    if (!payload.find((dateTime) => dateTime.startTime === start_time)) {
       result.push({ changed: "remove", reservation_id, start_time })
     }
   }
 
   // add target reservation
-  for (const startTime of payload) {
-    if (!initialDateTimeStartTimes.includes(startTime)) {
+  for (const dateTime of payload) {
+    if (!initialDateTimeStartTimes.includes(dateTime.startTime)) {
       result.push({
         changed: "add",
         reservation_id: null,
-        start_time: startTime,
+        start_time: dateTime.startTime,
       })
     }
   }

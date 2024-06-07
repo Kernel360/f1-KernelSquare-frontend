@@ -1,19 +1,10 @@
 "use client"
 
 import { HashTagFormData } from "@/interfaces/form"
-import { CoffeeChatFormData } from "@/interfaces/form/coffee-chat-form"
+import { FieldError, FieldErrors } from "react-hook-form"
 import {
-  Control,
-  FieldError,
-  FieldErrors,
-  useController,
-  useForm,
-} from "react-hook-form"
-import {
-  HashTagListField,
   HashTagListRuleValidateType,
   HashTagRuleValidateType,
-  hashTagRules,
 } from "./rules/hashtag-rules"
 import { Input } from "@/components/shared/input/Input"
 import Button from "@/components/shared/button/Button"
@@ -21,41 +12,22 @@ import { toast } from "react-toastify"
 import HashTag from "@/components/shared/tag/HashTag"
 import { Icons } from "@/components/icons/Icons"
 import { useId } from "react"
+import { useCoffeeChatFormContext } from "../../hooks/useCoffeeChatFormContext"
 
-interface HashTagsControllerProps {
-  control: Control<CoffeeChatFormData, any>
-}
-
-function HashTagsController({ control }: HashTagsControllerProps) {
-  const { field: hashTagListField } = useController({
-    control,
-    name: "hashTags",
-  })
+function HashTagsController() {
+  const { hashTagFieldArray } = useCoffeeChatFormContext()
 
   const uniqueId = useId()
 
-  const handleDeleteHashTags = ({
-    field,
-    hashTag,
-  }: {
-    field: HashTagListField
-    hashTag: string
-  }) => {
-    const hashTagList = field.value!.filter((_hashTag) => _hashTag !== hashTag)
-
-    field.onChange(hashTagList)
+  const handleDeleteHashTags = ({ index }: { index: number }) => {
+    hashTagFieldArray.remove(index)
   }
 
   return (
     <div>
       <HashTagField
-        hashTagListValue={hashTagListField.value ?? []}
         onValidHashTag={(hashTag) => {
-          const hashTagList = hashTagListField.value
-            ? [...hashTagListField.value, hashTag]
-            : [hashTag]
-
-          hashTagListField.onChange(hashTagList)
+          hashTagFieldArray.append({ content: hashTag })
         }}
         onInvalidHashTagList={(error) => {
           if (error.type === HashTagListRuleValidateType.Maximum) {
@@ -78,17 +50,17 @@ function HashTagsController({ control }: HashTagsControllerProps) {
         }}
       />
       <div className="min-h-[30px] mt-5 flex flex-wrap gap-3">
-        {hashTagListField.value?.map((hashTag) => (
+        {hashTagFieldArray.fields?.map((hashTag, index) => (
           <div
-            key={`${uniqueId}-${hashTag}`}
+            key={`${uniqueId}-${hashTag.content}`}
             className="inline-flex rounded-lg items-center bg-colorsLightGray pr-2"
           >
-            <HashTag className="bg-transparent shadow-none">{hashTag}</HashTag>
+            <HashTag className="bg-transparent shadow-none">
+              {hashTag.content}
+            </HashTag>
             <div
               className="cursor-pointer transition-colors w-5 h-5 p-1 rounded-full border flex justify-center items-center bg-white hover:bg-secondary hover:text-white"
-              onClick={() =>
-                handleDeleteHashTags({ field: hashTagListField, hashTag })
-              }
+              onClick={() => handleDeleteHashTags({ index })}
             >
               <Icons.Close />
             </div>
@@ -102,24 +74,17 @@ function HashTagsController({ control }: HashTagsControllerProps) {
 export default HashTagsController
 
 const HashTagField = ({
-  hashTagListValue,
   onValidHashTag,
   onInvalidHashTagList,
 }: {
-  hashTagListValue: string[]
   onValidHashTag: (hashTag: string) => void
   onInvalidHashTagList: (error: FieldError) => void
 }) => {
-  const { resetField, control } = useForm<HashTagFormData>()
-  const { field } = useController({
-    control,
-    name: "hashTag",
-    rules: hashTagRules({ hashTagList: hashTagListValue }),
-    defaultValue: "",
-  })
+  const { hashTag: hashTagForm } = useCoffeeChatFormContext()
 
   const onSubmit = ({ hashTag }: HashTagFormData) => {
-    resetField("hashTag", { defaultValue: "" })
+    hashTagForm.resetField("hashTag")
+
     onValidHashTag(hashTag)
   }
 
@@ -163,21 +128,21 @@ const HashTagField = ({
     }
   }
 
-  const controlHashTagData = control.handleSubmit(onSubmit, onInvalid)
+  const controlHashTagData = hashTagForm.handleSubmit(onSubmit, onInvalid)
 
   return (
     <div className="flex gap-3">
       <Input
-        ref={field.ref}
-        id={field.name}
+        ref={hashTagForm.field.ref}
+        id={hashTagForm.field.name}
         spellCheck="false"
         autoComplete="off"
         wrapperClassName="max-w-[282px] w-[64%]"
         className="rounded-none border-r-0 border-l-0 border-t-0 text-sm"
         placeholder="해시태그를 추가해보세요"
-        value={field.value}
-        onChange={field.onChange}
-        onBlur={field.onBlur}
+        value={hashTagForm.field.value}
+        onChange={hashTagForm.field.onChange}
+        onBlur={hashTagForm.field.onBlur}
       />
       <div className="flex flex-col justify-center">
         <Button

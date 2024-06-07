@@ -1,16 +1,13 @@
-import { Control, useController } from "react-hook-form"
+import { useController } from "react-hook-form"
 import CoffeeChatSection from "../../CoffeeChatSection"
 import Textarea from "@/components/shared/textarea/Textarea"
 import TextCounter from "@/components/shared/TextCounter"
 import { COFFEE_CHAT_LIMITS } from "@/constants/limitation"
 import { chatIntroductionRules } from "../../../controls/rules/introduction-rules"
-import { CoffeeChatFormData } from "@/interfaces/form/coffee-chat-form"
+import { useCoffeeChatFormContext } from "@/page/coffee-chat/hooks/useCoffeeChatFormContext"
 
-interface IntroductionSectionProps {
-  control: Control<CoffeeChatFormData, any>
-}
-
-function IntroductionSection({ control }: IntroductionSectionProps) {
+function IntroductionSection() {
+  const { control } = useCoffeeChatFormContext()
   const { field } = useController({
     control,
     name: "introduction",

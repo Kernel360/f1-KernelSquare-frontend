@@ -1,27 +1,34 @@
 "use client"
 
-import { useRef } from "react"
-import { Editor } from "@toast-ui/react-editor"
+import { useCoffeeChatFormContext } from "@/page/coffee-chat/hooks/useCoffeeChatFormContext"
+import { useController } from "react-hook-form"
+import { chatContentRules } from "../../../controls/rules/chat-content-rules"
 import CoffeeChatContentEditor from "@/components/shared/toast-ui-editor/editor/ContentEditor"
 
-interface ContentEditorProps {
-  onChange: (markdown: string) => void
-  initialValue?: string
-}
-
-function ContentEditor({ onChange, initialValue = "" }: ContentEditorProps) {
-  const editorRef = useRef<Editor>(null)
+function ContentEditor() {
+  const {
+    control,
+    editorRef,
+    formState: { defaultValues },
+  } = useCoffeeChatFormContext()
+  const { field } = useController({
+    control,
+    name: "content",
+    rules: chatContentRules,
+  })
 
   return (
-    <CoffeeChatContentEditor
-      ref={editorRef}
-      initialValue={initialValue}
-      includeImageToolbarItem={false}
-      placeholder="생성할 커피챗에 대해 설명해보세요."
-      onChange={() => {
-        onChange(editorRef.current?.getInstance()?.getMarkdown() ?? "")
-      }}
-    />
+    <div tabIndex={0} ref={field.ref}>
+      <CoffeeChatContentEditor
+        ref={editorRef}
+        initialValue={defaultValues?.content ?? ""}
+        includeImageToolbarItem={false}
+        placeholder="생성할 커피챗에 대해 설명해보세요."
+        onChange={() => {
+          field.onChange(editorRef?.current?.getInstance()?.getMarkdown() ?? "")
+        }}
+      />
+    </div>
   )
 }
 

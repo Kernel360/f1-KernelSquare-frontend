@@ -1,11 +1,8 @@
 import Button from "@/components/shared/button/Button"
-import { useSelectedChatTimes } from "../../../hooks/useSelectedChatTimes"
-import {
-  MAXIMUM_SELCTE_CHAT_TIME_NUM,
-  SelectedDayTab,
-} from "@/recoil/atoms/coffee-chat/date"
-import { useRecoilValue } from "recoil"
+import { MAXIMUM_SELCTE_CHAT_TIME_NUM } from "@/recoil/atoms/coffee-chat/date"
 import dayjs from "dayjs"
+import { useCoffeeChatFormContext } from "@/page/coffee-chat/hooks/useCoffeeChatFormContext"
+import { useSelectedDayTab } from "../../../hooks/useSelectedDayTab"
 
 function DateResetAndCount() {
   return (
@@ -19,15 +16,15 @@ function DateResetAndCount() {
 export default DateResetAndCount
 
 const Reset = () => {
-  const selectedDayTab = useRecoilValue(SelectedDayTab)
-  const { clear } = useSelectedChatTimes()
+  const { selectedDayTab } = useSelectedDayTab()
+  const { dateTimeFieldArray } = useCoffeeChatFormContext()
 
   const dayInstance = dayjs(selectedDayTab as Date)
 
   return (
     <Button
       className="p-0.5 gap-1 pointerhover:hover:text-danger font-bold"
-      onClick={() => clear({ dateTime: dayInstance.toDate() })}
+      onClick={() => dateTimeFieldArray.clearDate(dayInstance.toDate())}
     >
       <span>{dayInstance.format("YYYY.MM.DD")}</span>
       <span>시간 초기화</span>
@@ -36,19 +33,20 @@ const Reset = () => {
 }
 
 const Count = () => {
-  const { count } = useSelectedChatTimes()
+  const { dateTimeFieldArray } = useCoffeeChatFormContext()
 
   return (
     <div>
       <span>&#40;&nbsp;</span>
       <span
         className={`font-semibold ${
-          count > 0 && count <= MAXIMUM_SELCTE_CHAT_TIME_NUM
+          dateTimeFieldArray.fields.length > 0 &&
+          dateTimeFieldArray.fields.length <= MAXIMUM_SELCTE_CHAT_TIME_NUM
             ? "text-primary"
             : "text-danger"
         }`}
       >
-        {count}
+        {dateTimeFieldArray.fields.length}
       </span>
       <span className="font-medium">&nbsp;/&nbsp;</span>
       <span className="font-semibold text-secondary">
