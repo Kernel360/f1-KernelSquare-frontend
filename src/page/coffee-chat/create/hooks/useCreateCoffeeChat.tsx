@@ -2,7 +2,7 @@
 
 import { errorMessage } from "@/constants/message/error"
 import notificationMessage from "@/constants/message/notification"
-import queryKey from "@/constants/queryKey"
+import { COFFEE_CHAT_QUERY_KEY } from "@/constants/queryKey"
 import { APIResponse } from "@/interfaces/dto/api-response"
 import {
   CreateCoffeeChatPostRequest,
@@ -16,7 +16,6 @@ import { useRouter } from "next/navigation"
 import { toast } from "react-toastify"
 
 interface UseCreateCoffeeChat {
-  memberId: number
   handleManual?: boolean
   onSuccess?: (
     data: AxiosResponse<CreateCoffeeChatPostResponse, any>,
@@ -31,17 +30,16 @@ interface UseCreateCoffeeChat {
 }
 
 export function useCreateCoffeeChat({
-  memberId,
   handleManual,
   onSuccess,
   onError,
-}: UseCreateCoffeeChat) {
+}: UseCreateCoffeeChat = {}) {
   const queryClient = useQueryClient()
   const { replace } = useRouter()
 
   const { mutate: createCoffeeChatApi, status: createCoffeeChatApiStatus } =
     useMutation({
-      mutationKey: [queryKey.chat, "createChat", "by", memberId],
+      mutationKey: COFFEE_CHAT_QUERY_KEY.createCoffeeChat,
       mutationFn: (request: CreateCoffeeChatPostRequest) =>
         createCoffeeChatPost({ ...request }),
       onSuccess(response, variables, context) {
@@ -53,7 +51,9 @@ export function useCreateCoffeeChat({
         const payload = response.data.data
         const createdChatId = payload?.reservation_article_id
 
-        queryClient.invalidateQueries({ queryKey: [queryKey.chat] })
+        queryClient.invalidateQueries({
+          queryKey: COFFEE_CHAT_QUERY_KEY.getChatList(),
+        })
 
         replace(createdChatId ? `/chat/${createdChatId}` : "/chat?page=0")
       },

@@ -242,8 +242,8 @@ export class RouteMap {
   static coffeeChat = {
     getCoffeeChatList: `${RouteMap.routeGroupBaseURL.coffeeChat}/posts`,
     createCoffeeChatPost: `${RouteMap.routeGroupBaseURL.coffeeChat}/posts`,
-    updateCoffeeChatPost(postId: number) {
-      return `${RouteMap.routeGroupBaseURL.coffeeChat}/posts/${postId}`
+    updateCoffeeChatPost(postId?: number) {
+      return `${RouteMap.routeGroupBaseURL.coffeeChat}/posts/${postId ?? ":id"}`
     },
     deleteCoffeeChatPost(postId?: number) {
       return `${RouteMap.routeGroupBaseURL.coffeeChat}/posts/${postId ?? ":id"}`

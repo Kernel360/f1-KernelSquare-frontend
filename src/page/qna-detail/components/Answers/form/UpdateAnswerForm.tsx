@@ -46,9 +46,7 @@ function UpdateAnswerForm({ answer }: UpdateAnswerFormProps) {
     },
   })
 
-  const onSubmit = ({ answer, images, imagesToDelete }: AnswerFormData) => {
-    console.log("[update answer Submit]", { answer, images, imagesToDelete })
-
+  const onSubmit = ({ answer, images }: AnswerFormData) => {
     updateAnswer({
       content: answer,
       image_url: images.length ? images[0].uploadURL : null,

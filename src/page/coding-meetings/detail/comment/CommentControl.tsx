@@ -88,9 +88,6 @@ function CommentControl({ comment, control }: CommentControlProps) {
 
   const disableCase =
     updateCommentStatus === "pending" || deleteCommentStatus === "pending"
-  // (!!codingMeetingEditComment.editingCommentToken &&
-  //   codingMeetingEditComment.editingCommentToken !==
-  //     comment.coding_meeting_comment_token)
 
   const commentAuthor: CodingMeetingCommentAuthor = {
     member_id: comment.member_id,

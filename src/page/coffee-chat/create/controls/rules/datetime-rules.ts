@@ -1,7 +1,7 @@
 import { RegisterOptions, ControllerRenderProps } from "react-hook-form"
 import { MAXIMUM_SELCTE_CHAT_TIME_NUM } from "@/recoil/atoms/coffee-chat/date"
 import { validationMessage } from "@/constants/message/validation"
-import { CoffeeChatFormData } from "@/interfaces/form"
+import { CoffeeChatFormData } from "@/interfaces/form/coffee-chat-form"
 
 type DateTimeFieldRules = Omit<
   RegisterOptions<CoffeeChatFormData, "dateTimes">,

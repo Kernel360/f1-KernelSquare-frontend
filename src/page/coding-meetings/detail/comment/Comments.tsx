@@ -62,7 +62,7 @@ function DetailComments({ author, token }: DetailCommentsProps) {
     },
   })
 
-  const { control, setValue, trigger, formState } = useForm<CommentFormData>()
+  const { control, setValue, formState } = useForm<CommentFormData>()
 
   const commentData = useMemo(() => {
     return {
@@ -294,7 +294,11 @@ function Comment({
   author: CodingMeetingAuthor
   comment: CodingMeetingComment
 }) {
-  const { control } = useForm<CommentUpdateFormData>()
+  const { control } = useForm<CommentUpdateFormData>({
+    defaultValues: {
+      commentForUpdate: comment.coding_meeting_comment_content,
+    },
+  })
 
   const textareaRef = useRef<HTMLTextAreaElement>(null)
 

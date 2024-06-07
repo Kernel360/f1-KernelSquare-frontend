@@ -1,16 +1,13 @@
-import { CoffeeChatFormData } from "@/interfaces/form"
-import { Control, useController } from "react-hook-form"
+import { useController } from "react-hook-form"
 import CoffeeChatSection from "../../CoffeeChatSection"
-import Textarea from "@/components/shared/textarea/Textarea"
 import TextCounter from "@/components/shared/TextCounter"
 import { COFFEE_CHAT_LIMITS } from "@/constants/limitation"
 import { chatIntroductionRules } from "../../../controls/rules/introduction-rules"
+import { useCoffeeChatFormContext } from "@/page/coffee-chat/hooks/useCoffeeChatFormContext"
+import AutoResizeTextArea from "@/components/shared/textarea/AutoResizeTextArea"
 
-interface IntroductionSectionProps {
-  control: Control<CoffeeChatFormData, any>
-}
-
-function IntroductionSection({ control }: IntroductionSectionProps) {
+function IntroductionSection() {
+  const { control } = useCoffeeChatFormContext()
   const { field } = useController({
     control,
     name: "introduction",
@@ -22,13 +19,15 @@ function IntroductionSection({ control }: IntroductionSectionProps) {
   return (
     <CoffeeChatSection>
       <div className="w-full">
-        <Textarea
+        <AutoResizeTextArea
+          fullWidth
           ref={field.ref}
-          className="resize-none w-full min-h-[100px] border-none outline-none focus:outline-none"
-          placeholder={placeholder}
           value={field.value}
+          placeholder={placeholder}
+          minRows={1}
+          maxRows={8}
+          className="border-none outline-none focus:outline-none"
           onChange={field.onChange}
-          onBlur={field.onBlur}
         />
       </div>
       <div>

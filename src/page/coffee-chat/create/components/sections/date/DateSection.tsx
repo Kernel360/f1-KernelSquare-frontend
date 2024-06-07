@@ -1,12 +1,11 @@
-import { ReservationSelectedDateAtom } from "@/recoil/atoms/coffee-chat/date"
-import { useRecoilValue } from "recoil"
 import DaySelectTabs from "../../DaySelectTabs"
 import Spacing from "@/components/shared/Spacing"
 import { FaAngleLeft, FaAngleUp } from "react-icons/fa"
 import DateResetAndCount from "./DateResetAndCount"
+import { useSelectedChatTime } from "../../../hooks/useSelectedChatTime"
 
 function DateSection() {
-  const selectedDate = useRecoilValue(ReservationSelectedDateAtom)
+  const { selectedDate } = useSelectedChatTime()
 
   if (!selectedDate)
     return (
