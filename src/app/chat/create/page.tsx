@@ -4,6 +4,7 @@ import { Metadata } from "next"
 import { notFound } from "next/navigation"
 import CreateChatPageUnauthorized from "../_components/guard-page/create-chat/Unauthorized"
 import CreateChatForbidden from "../_components/guard-page/create-chat/Forbidden"
+import CoffeeChatFormProvider from "@/page/coffee-chat/CoffeeChatFormProvider"
 
 export const metadata: Metadata = {
   title: `커피챗 생성`,
@@ -41,7 +42,11 @@ export default function CreateCoffeeChatPage() {
       return <CreateChatForbidden />
     }
 
-    return <CreateCoffeeChatReservationPage />
+    return (
+      <CoffeeChatFormProvider>
+        <CreateCoffeeChatReservationPage editMode="create" />
+      </CoffeeChatFormProvider>
+    )
   } catch (error) {
     notFound()
   }

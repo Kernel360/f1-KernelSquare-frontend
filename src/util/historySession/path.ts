@@ -77,8 +77,8 @@ export function updateHistorySessionPath() {
 export function pathnameOfBack(pathname: string): TargetPage | null {
   if (isQuestionEditPage(pathname)) return "qna"
   if (isQuestionDetailPage(pathname)) return "qna"
+  if (isCoffeeChatEditPage(pathname)) return "chat"
   if (isCoffeeChatDetailPage(pathname)) return "chat"
-  if (pathname === "/chat/create") return "chat"
   if (
     pathname !== "/coding-meetings" &&
     pathname.startsWith("/coding-meetings")
@@ -94,6 +94,13 @@ export function isQuestionEditPage(pathname: string) {
 
 export function isQuestionDetailPage(pathname: string) {
   return /^\/question\/[0-9]+$/g.test(pathname)
+}
+
+export function isCoffeeChatEditPage(pathname: string) {
+  if (pathname === "/chat/create") return true
+  if (pathname.startsWith("/chat/u/")) return true
+
+  return false
 }
 
 export function isCoffeeChatDetailPage(pathname: string) {

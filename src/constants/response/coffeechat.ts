@@ -9,6 +9,13 @@ type EnterChatRoomExpandStatusType = {
   ForbiddenRole?: Status
 }
 
+type UpdateChatExpandStatusType = {
+  NotChatAuthor?: Status
+  MaximumHashTags?: Status
+  MaximumReservations?: Status
+  InvalidPeriods?: Status
+}
+
 export const CoffeeChatApiStatus = {
   /**
    * 모든 커피챗 등록글 조회 관련 api status
@@ -123,6 +130,46 @@ export const CoffeeChatApiStatus = {
     },
   },
   /**
+   * 커피챗 수정 관련 api status
+   */
+  updateCoffeeChatPost: {
+    /**
+     * (커피챗 등록글 수정) 수정 성공
+     */
+    Ok: {
+      Code: 3144,
+      HttpStatus: HttpStatusCode.Ok,
+    },
+    /**
+     * (커피챗 등록글 수정) 생성한 멘토와 불일치
+     */
+    NotChatAuthor: {
+      Code: 3102,
+      HttpStatus: HttpStatusCode.BadRequest,
+    },
+    /**
+     * (커피챗 등록글 수정) 최대 해시태그 수 초과
+     */
+    MaximumHashTags: {
+      Code: 3103,
+      HttpStatus: HttpStatusCode.BadRequest,
+    },
+    /**
+     * (커피챗 등록글 수정) 최대 예약 수 초과
+     */
+    MaximumReservations: {
+      Code: 3104,
+      HttpStatus: HttpStatusCode.BadRequest,
+    },
+    /**
+     * (커피챗 등록글 수정) 최대 예약 기간 초과
+     */
+    InvalidPeriods: {
+      Code: 3105,
+      HttpStatus: HttpStatusCode.BadRequest,
+    },
+  },
+  /**
    * 커피챗 등록글 상세보기 관련 api status
    */
   getCoffeeChatPostDetail: {
@@ -153,7 +200,7 @@ export const CoffeeChatApiStatus = {
      * (커피챗 등록글 상세보기) 존재하지 않는 커피챗
      */
     NotFound: {
-      Code: 1400,
+      Code: 3100,
       HttpStatus: HttpStatusCode.NotFound,
     },
     /**
@@ -206,4 +253,7 @@ export const CoffeeChatApiStatus = {
       HttpStatus: HttpStatusCode.BadRequest,
     },
   },
-} satisfies Record<string, ApiStatus & EnterChatRoomExpandStatusType>
+} satisfies Record<
+  string,
+  ApiStatus & EnterChatRoomExpandStatusType & UpdateChatExpandStatusType
+>

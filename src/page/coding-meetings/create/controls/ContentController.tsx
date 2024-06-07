@@ -1,11 +1,11 @@
 "use client"
 
 import TextCounter from "@/components/shared/TextCounter"
-import Textarea from "@/components/shared/textarea/Textarea"
 import { CODING_MEETING_LIMITS } from "@/constants/limitation"
 import { CodingMeetingFormData } from "@/interfaces/form"
 import { useController, useFormContext } from "react-hook-form"
 import { codingMeetingContentRules } from "./rules/content/coding-meeting-content-rules"
+import AutoResizeTextArea from "@/components/shared/textarea/AutoResizeTextArea"
 
 interface ContentControllerProps {
   initialContent?: CodingMeetingFormData["content"]
@@ -20,15 +20,21 @@ function ContentController({ initialContent }: ContentControllerProps) {
     defaultValue: initialContent ?? "",
   })
 
+  const placeholder = `모집글의 내용을 작성해주세요\n(최대 ${Intl.NumberFormat(
+    "ko-KR",
+  ).format(CODING_MEETING_LIMITS.content.maxLength)}자)`
+
   return (
     <div className="w-full">
-      <Textarea
+      <AutoResizeTextArea
         ref={field.ref}
         id="meeting-content"
-        className="resize-none w-full h-[200px]"
-        placeholder="모집글의 내용을 작성해주세요 (최대 10,000자)"
-        onChange={field.onChange}
+        className="px-2 py-1 outline-none border border-colorsGray rounded-lg"
         value={field.value}
+        placeholder={placeholder}
+        fullWidth
+        minRows={2}
+        onChange={field.onChange}
       />
       <div className="h-5 text-end">
         <TextCounter

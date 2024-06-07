@@ -3,10 +3,11 @@
 import Button from "@/components/shared/button/Button"
 import ConfirmModal from "@/components/shared/confirm-modal/ConfirmModal"
 import { UserProfileInfo } from "@/components/shared/user/UserInfo"
+import buttonMessage from "@/constants/message/button"
 import cancelMessage from "@/constants/message/cancel"
 import { errorMessage } from "@/constants/message/error"
 import successMessage from "@/constants/message/success"
-import queryKey from "@/constants/queryKey"
+import { COFFEE_CHAT_QUERY_KEY } from "@/constants/queryKey"
 import { useClientSession } from "@/hooks/useClientSession"
 import useModal from "@/hooks/useModal"
 import { APIResponse } from "@/interfaces/dto/api-response"
@@ -45,12 +46,16 @@ CoffeeChatAuthorMenu.Delete = function CoffeeChatAuthorMenuDelete({
 }: {
   articleId: number
 }) {
-  const { replace } = useRouter()
+  const { push, replace } = useRouter()
 
   const queryClient = useQueryClient()
   const { openModal } = useModal()
 
-  const onSuccess = async () => {
+  const navigateEditChatPage = () => {
+    push(`/chat/u/${articleId}`)
+  }
+
+  const onAgreeDeleteChat = async () => {
     try {
       const res = await deleteCoffeeChatPost({
         postId: articleId,
@@ -60,18 +65,13 @@ CoffeeChatAuthorMenu.Delete = function CoffeeChatAuthorMenuDelete({
         content: (
           <SuccessModalContent message={successMessage.deleteCoffeeChatPost} />
         ),
-        onClose() {
-          queryClient.invalidateQueries({
-            queryKey: [queryKey.chat],
-          })
-        },
       })
 
-      queryClient.invalidateQueries({
-        queryKey: [queryKey.question],
+      await queryClient.invalidateQueries({
+        queryKey: COFFEE_CHAT_QUERY_KEY.getChatList(),
       })
 
-      replace("/chat")
+      replace("/chat?page=0")
     } catch (err) {
       if (err instanceof AxiosError) {
         const { response } = err as AxiosError<APIResponse>
@@ -102,7 +102,7 @@ CoffeeChatAuthorMenu.Delete = function CoffeeChatAuthorMenuDelete({
       content: (
         <ConfirmModal.ModalContent
           situation="deleteContent"
-          onSuccess={onSuccess}
+          onSuccess={onAgreeDeleteChat}
           onCancel={onCancel}
         />
       ),
@@ -110,11 +110,20 @@ CoffeeChatAuthorMenu.Delete = function CoffeeChatAuthorMenuDelete({
   }
 
   return (
-    <Button
-      className="hover:text-danger font-bold cursor-pointer text-sm shrink-0 p-0.5"
-      onClick={openDeleteConfirmModal}
-    >
-      삭제하기
-    </Button>
+    <div className="flex w-full gap-1 justify-end items-center">
+      <Button
+        onClick={navigateEditChatPage}
+        className="border-none hover:text-primary font-bold cursor-pointer text-sm shrink-0 p-0.5"
+      >
+        {buttonMessage.edit}
+      </Button>
+      <span>&bull;</span>
+      <Button
+        className="hover:text-danger font-bold cursor-pointer text-sm shrink-0 p-0.5"
+        onClick={openDeleteConfirmModal}
+      >
+        {buttonMessage.delete}
+      </Button>
+    </div>
   )
 }

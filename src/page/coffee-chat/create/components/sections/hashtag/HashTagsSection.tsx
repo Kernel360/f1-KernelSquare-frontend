@@ -2,30 +2,14 @@
 
 import CoffeeChatSection from "../../CoffeeChatSection"
 import { HASHTAG_LIMITS } from "@/constants/limitation"
-import { useRecoilValue, useResetRecoilState } from "recoil"
-import { HashTagList } from "@/recoil/atoms/coffee-chat/hashtags"
-import { Control } from "react-hook-form"
-import { CoffeeChatFormData } from "@/interfaces/form"
 import HashTagsController from "../../../controls/HashTagsController"
-import { useEffect } from "react"
+import { useCoffeeChatFormContext } from "@/page/coffee-chat/hooks/useCoffeeChatFormContext"
 
-interface HashTagsSectionProps {
-  control: Control<CoffeeChatFormData, any>
-}
-
-const HashTagsSection = ({ control }: HashTagsSectionProps) => {
-  const resetHashTagList = useResetRecoilState(HashTagList)
-
-  useEffect(() => {
-    return () => {
-      resetHashTagList()
-    }
-  }, []) /* eslint-disable-line */
-
+const HashTagsSection = () => {
   return (
     <CoffeeChatSection className="overflow-hidden">
       <HashTagLabel />
-      <HashTagsController control={control} />
+      <HashTagsController />
     </CoffeeChatSection>
   )
 }
@@ -33,7 +17,7 @@ const HashTagsSection = ({ control }: HashTagsSectionProps) => {
 export default HashTagsSection
 
 const HashTagLabel = () => {
-  const hashTagList = useRecoilValue(HashTagList)
+  const { hashTagFieldArray } = useCoffeeChatFormContext()
 
   return (
     <CoffeeChatSection.Label htmlFor="hashTag" className="block w-max">
@@ -41,12 +25,13 @@ const HashTagLabel = () => {
       <span>&nbsp;&#40;&nbsp;</span>
       <span
         className={`${
-          hashTagList.length <= HASHTAG_LIMITS.tags.maxLength
+          !hashTagFieldArray.fields?.length ||
+          hashTagFieldArray.fields.length <= HASHTAG_LIMITS.tags.maxLength
             ? "text-primary"
             : "text-danger"
         }`}
       >
-        {hashTagList.length}
+        {hashTagFieldArray.fields?.length ?? 0}
       </span>
       <span>&nbsp;/&nbsp;</span>
       <span>{HASHTAG_LIMITS.tags.maxLength}</span>

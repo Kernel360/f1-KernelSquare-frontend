@@ -74,7 +74,7 @@ function SubmitButton({
       onClick={() => {
         control.handleSubmit(onSubmit, onInvalid)()
       }}
-      className="w-[87px] h-[49px] disabled:bg-colorsGray disabled:text-colorsDarkGray"
+      className="self-start w-max h-[49px] disabled:bg-colorsGray disabled:text-colorsDarkGray"
     >
       <div className="flex justify-center items-center flex-shrink-0 gap-1">
         <FaRegCommentDots className="text-white flex-shrink-0" />
