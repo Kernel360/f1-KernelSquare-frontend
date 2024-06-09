@@ -1,82 +1,145 @@
-## 협업 링크
+## 사이트 링크
 
-[kernel square 노션 링크](https://www.notion.so/KernelSquare-96828531139a49a2983ec2a09a0df0ae?pvs=4)
+[kernel square](https://kernelsquare.live)
+
+## 소개
+
+### 랜딩 페이지
+
+![렌딩페이지_gif](https://github.com/KernelSquare/Frontend/assets/110394773/7928756b-ff61-447b-982a-25d393c9f7d5)
+
+### 회원 가입, 로그인
+
+#### 회원 가입
+
+![회원가입_gif](https://github.com/KernelSquare/Frontend/assets/110394773/8410dc67-ad50-4218-ab63-b1affbe8c8e7)
+
+가이드라인을 통해 어떤 규칙을 만족하는지 확인하면서, 회원가입을 할 수 있습니다
+
+#### 로그인
+
+![로그인_gif](https://github.com/KernelSquare/Frontend/assets/110394773/5519fb79-2853-4eff-881c-3cb66f8550c6)
+
+일반 로그인과 깃허브 로그인이 가능합니다
+
+### 검색
+
+| | |
+| --- | --- |
+| ![검색_랜딩페이지_gif](https://github.com/KernelSquare/Frontend/assets/110394773/6f9d4215-5a87-4801-b7d0-3a1ffd3cf95b) | ![search-domain](https://github.com/KernelSquare/Frontend/assets/110394773/f55cf7f8-3f48-4cc5-b756-51984b8b231f) |
+
+랜딩 페이지와 사이트 내에서 개발자 Q&A에 대한 검색을 할 수 있습니다
+
+### 알림
+
+<img src="https://github.com/KernelSquare/Frontend/assets/110394773/42cc9426-643e-4132-8737-34d3661ce496" alt="알림_gif" height="400" />
+
+자신의 질문에 답변이 달렸을 때, 자신의 답변이 랭킹에 들었을 때 알림을 확인할 수 있습니다
+
+### 프로필
+
+| | |
+| --- | --- |
+| ![프로필_소개_수정_gif](https://github.com/KernelSquare/Frontend/assets/110394773/c74fbf9f-aa68-4eb0-87be-ea68e9db23b3) | ![프로필_닉네임_수정_gif](https://github.com/KernelSquare/Frontend/assets/110394773/620e5ee3-8aa6-4911-a6bd-3ad578acf7e0) |
+
+회원 정보를 볼 수 있는 프로필 페이지입니다.<br />본인이라면 프로필 사진, 닉네임, 자기소개를 변경할 수 있습니다.
+
+### Q&A
+
+#### 질문
+
+![질문생성_gif](https://github.com/KernelSquare/Frontend/assets/110394773/373b8289-cab3-403d-b724-5e474ccc5d9e)
+
+제목, 기술 스택, 내용을 입력하여 질문을 생성할 수 있습니다.<br />질문을 등록하면 AI가 답변을 해줍니다.
+
+![코드복사_gif](https://github.com/KernelSquare/Frontend/assets/110394773/8dce2322-3b05-4a1b-a222-4113e5b1b34b)
+
+`code syntax highlight` 및 생성, 수정시 코드블록에서 지정한 언어를 보여주고, 코드의 클립보드 복사가 가능합니다
+
+#### 답변(댓글)
+
+![답변_gif](https://github.com/KernelSquare/Frontend/assets/110394773/c6bd50f8-725a-44ad-a713-e2dceee905b7)
+
+마크다운 형식으로 답변을 작성할 수 있습니다. 질문과 동일하게 코드의 클립보드 복사가 가능합니다
+
+![투표_gif](https://github.com/KernelSquare/Frontend/assets/110394773/7a6eed71-a443-4f6a-9d1f-c20eeea588b3)
+
+답변에 대해 투표(추천, 비추천)를 할 수 있습니다
+
+### 커피챗
+
+#### 생성
+
+![커피챗_생성_gif](https://github.com/KernelSquare/Frontend/assets/110394773/002a6ea9-13bc-4452-90e8-2c6bcbeb2a2d)
+
+멘토는 제목, 커피챗 요약, 태그, 소개글, 일시를 작성하여 커피챗을 생성할 수 있습니다
+
+#### 참가
+
+![시간_선택_멘티_gif](https://github.com/KernelSquare/Frontend/assets/110394773/3fe01539-f53a-4734-a212-e65f8eb7206e)
+
+커피챗 상세페이지에서 달력을 통해 가능한 일시를 확인하여 신청할 수 있습니다
+
+#### 채팅
+
+![멘토_채팅_gif](https://github.com/KernelSquare/Frontend/assets/110394773/286fbc21-037c-4b7e-838a-81c440c12aa0)
+
+시작 시간부터 30분 동안 채팅이 가능하며, 클립보드 복사 및 코드 보내기 기능을 제공합니다
+
+### 모각코
+
+#### 생성
+
+![모각코_생성_gif](https://github.com/KernelSquare/Frontend/assets/110394773/6cd15b34-059b-48b2-9eae-9ea14a22e6c0)
+
+제목, 장소, 시간, 태그, 모집글을 작성하여 모각코를 생성할 수 있으며,<br/>장소 검색 시 자동완성을 제공합니다
+
+#### 답변(댓글)
+
+| | |
+| --- | --- |
+| ![모각코_답변_gif](https://github.com/KernelSquare/Frontend/assets/110394773/bf76c6d4-248b-44ca-89da-da5dacbd3ff6) | ![cd-answer](https://github.com/KernelSquare/Frontend/assets/110394773/cc4da467-c308-40bd-aa71-6de61326903d) |
+
+답변을 통해 서로 소통할 수 있으며, 답변에 대한 필터 및 더보기 접기 기능을 제공합니다
+
+---
 
 ## 주요 기술 스택
 
 ![Group 148](https://github.com/KernelSquare/Frontend/assets/123251211/37a1f214-c768-4731-9db3-ffb044ade7c9)
 
+## 협업
 
-## 관련 링크(초대를 해야 볼 수 있어서 링크 누르셔도 보지 못하실수 있음)
+- notion
+  - API 문서 등을 노션을 통해 백엔드와 공유
 
-- [whimsical 링크](https://whimsical.com/kernelsquare-wireframe-Fg9Nsfmc73hfrCAD7waAxH)
-  - 백엔드와 같이 작업하였으며, px 단위까지 맞추거나 반응형 등은 고려하지 않은 대략적인 와이어 프레임 입니다. 별도의 타이포그래피나 컬러 토큰 등은 디자이너가 있는 상황이 아니고 프론트 팀이 별도로 디자인 시스템까지 구축하기에는 시간이 소요될 것 같아서 진행하지 못했습니다. 다만, 재사용할 것 같은 색상들에 대해서는 tailwindcss나 css 변수로 선언해서 사용하고 있습니다
-- [피그마 링크](https://www.figma.com/file/C06BL9d90R8S0aGZ7g9u2R/Untitled?type=design&node-id=0%3A1&mode=design&t=O7pBHyVWpDTRgJ0M-1)
-  - 유저 프로필 페이지를 확장할 경우 대략적으로 어떤 레이아웃으로 구성하면 좋을지에 대해 논의해서 만들었습니다.
-  - 별도의 피그마로 만든 계기: 요청으로 인해 유저 프로필 페이지를 만들었지만, 현재는 api에서 주는 데이터가 한정적이며 이후 시간이 될 경우 백엔드와 협업하여 개선될 수 있어서 간략하게 미리 구상해 보았습니다 (지금 적용은 못하지만, 백엔드도 시간이 될 경우 나중에 논의해서 진행할 의사가 있음을 확인했습니다)
-  - 이후 작성이 필요한 것들이 있다면 추가하고 있는 중 입니다
+- whimsical
+  - 백엔드와 협의된 초기 기획(기능)에 따른 대략적인 와이어프레임을 백엔드와 같이 협업
 
-## 팀원 역할
+- 피그마(figma)
+  - 와이어 프레임에서 좀 더 구체적인 디자인으로 작업
 
-> 특정 역할을 나누지 않고 주로 페이지 단위로 이슈를 만들어서 서로 배정 후 진행을 했기 때문에, 페이지 위주로 역할을 작성했습니다
+- 깃헙 프로젝트
+  - 깃헙 프로젝트 칸반보드를 통해 작업 상황 공유
+
+## 프론트엔드 팀원
 
 | <a href="https://github.com/Ryan-TheLion" target="_blank"><img src="https://avatars.githubusercontent.com/u/110394773?v=4" width="100" height="100" /></a> | <a href="https://github.com/JeongwooHam" target="_blank"><img src="https://avatars.githubusercontent.com/u/123251211?v=4" width="100" height="100" /></a> |
-| :--------------------------------------------------------------------------------------------------------------------------------------------------------: | :-------------------------------------------------------------------------------------------------------------------------------------------------------: |
-|                                                    **[Ryan-TheLion](https://github.com/Ryan-TheLion)**                                                     |                                                     **[JeongwooHam](https://github.com/JeongwooHam)**                                                     |
-|                                                                    레이아웃, 네비게이션                                                                    |                                                                        마이페이지                                                                         |
-|                                                               질문 리스트, 질문 수정 페이지                                                                |                                                                     질문 상세 페이지                                                                      |
-|                                                            api 커스텀 응답 코드 상수 모듈 작업                                                             |                                                            api 커스텀 응답 코드 상수 모듈 작업                                                            |
-|                                                                     유저 프로필 페이지                                                                     |                                                                             -                                                                             |
+| --- | --- | 
+| **[Ryan-TheLion](https://github.com/Ryan-TheLion)** | **[JeongwooHam](https://github.com/JeongwooHam)** |
+                      
+## 성능 최적화 등을 위해 시도한 점
 
-## 진행 상황
-
-- 기본 레이아웃, 네비게이션(반응형)
-- LottieFiles 에서 제공해주는 무료 lottie json 파일을 이용하여 필요하다고 생각될 경우 작업하면서 추가하여 일부 애니메이션을 처리
-- 백엔드와 협업하여 OAuth 를 해야 되는 것을 고려하여 next auth 사용하지 않고(next auth에서 백엔드에서 설정한 별도의 api 와 매칭해서 커스텀할 수 있는지 확인이 필요한 부분, 현재는 풀스택에 적합하고 별도로 커스텀하기에는 어렵다고 생각되어 사용하지 않고 있음), 유 저 상태관리를 직접 구현하여 관리
-- 로그인, 로그아웃 페이지
-  - 모달을 통해 로그인을 해서 페이지 이동 없이 로그인을 할 수 있도록 함
-  - Nextjs 병렬 라우팅은 하드 네비게이션(새로고침, 직접 주소입력)시 이전 화면을 유지하지 못하는 것 같아서, 사용하지 않고 별도의 모달 컴포넌트로 구현 함
-  - 로그아웃은 별도의 페이지 없이 드롭다운 메뉴 클릭으로 진행하고 유저 상태를 초기화하여 진행
-- 회원가입 페이지
-- 마이 페이지, 마이 페이지 수정
-- 유저 프로필 페이지
-- 전체 질문글 페이지
-- 질문 작성 / 상세 / 수정 페이지
-  - [toast ui editor](https://ui.toast.com/tui-editor) 를 통해 에디터 제공
-
-## 성능 최적화를 위해 시도한 점
-
+- 랜딩 페이지 비디오 용량 및 형식을 수정하여, 영상 렌더링 시간 최적화
 - tailwindcss 를 최대한 활용해 빌드 타임에 만들어진 css 파일을 사용하는 것으로 css 적용 시간을 줄이려고 함
   - css-in-js 를 적용해야 되는 상황이 있을 수도 있기 때문에, emotion을 설치하기는 하였으나 인라인 style로 처리해도 괜찮은 경우라면 인라인 스타일을 적용
-- 문자열 처리시 정규표현식 활용
-- 리렌더링을 최소화 하기 위해 useCallbak 등을 사용
-- debounce를 통해 불필요한 요청 줄이기
+- 최대한 반응형 사이트로 만들려고 하였으며, 화면크기로 분기되는 것이 애매하다고 생각되는 일부 컴포넌트에 css `@container` 쿼리 적용해 봄
+- 모각코 답변 입력시 마다 리렌더링되어 작성 시간이 입력할 때마다 갱신됨 => useMemo, memo를 활용하여 수정 등으로 인한 revalidate 외에 답변이 리렌더링 되지 않도록 함
+- 모각코 장소 선택에서 검색어 입력시 debounce를 적용하여 API 호출 횟수 최적화 및 렌더링 개선
+- form
+  - react hook form 의 formProvider를 통해 Props drilling 개선
+  - react hook form 의 fieldArray를 통해 배열 폼 데이터 관리
 
 ## 트러블 슈팅
 
 - [toast ui editor 트러블 슈팅 깃헙 Wiki](<https://github.com/KernelSquare/Frontend/wiki/@toast%E2%80%90ui-editor-%EC%9D%B4%EC%8A%88-(with-Next.js-14-app-router)>) (문제를 발견하고 해결한 과정의 기록)
-
-## 질문 사항
-
-- Nextjs 를 하면서 Sentry를 도입해보고 싶은데, 도입했을 때 신경써야 되는 점 등의 인사이트로 알려주실만한 내용이 있으신지 궁금합니다.
-- 백엔드 팀과 협업하여 웹소켓 기능(채팅)을 stomp, sockjs로 구현(백엔드 요청)하려고 합니다. 개발 효율성을 위해 MSW와 같은 목서버를 활용해서 진행하고 싶은데, 찾아보았을 때에는 socket.io 을 지원해주는 라이브러리들이 많이 보였던 것 같습니다. 괜찮은 웹소켓 목업 라이브러리가 있는지 궁금하고, 직접 Nextjs에 간단한 웹소켓 서버를 만들어서 개발모드를 실행할 때 같이 서버를 띄워서 진행하는 것이 오히려 더 좋을지 궁금합니다.
-- 나중에, github action 과 docker 를 활용하여 aws ec2 에 자동 배포를 진행해보고 싶은데, 그 때 궁금한 것이 있을 경우 문의드려도 괜찮을까요? 수동으로 도커 이미지를 빌드하고 ec2에서 pull 받아서 컨테이너를 구동하는 것은 해보았으나, 이번 프로젝트를 통해 자동화를 적용해보고 싶어서 그렇습니다
-- 프론트엔드 개발자와 협업을 하실 때 멘토님께서 신경쓰시는 부분이나, 선호하시는 협업 도구 및 방식은 어떤 것인지 궁금합니다.
-  - 이슈를 반영하고 시간이 지나서 얘기를 나누었을 때 같은 역할을 하는 컴포넌트를 중복으로 각자 만든 것을 알게되었습니다. 원활한 소통이 되지 못해서 생긴 문제라고 생각하여 협업방식을 개선하고 싶습니다.
-  - 비대면으로 일하는 시간이 많고, 특별한 이유가 없으면 서로 DM을 주고 받지 않아서 그런거 같은데, 매일 시간을 정해서 진행상황과 의견을 나누는 시간을 고정으로 가지는 것(데일리 스크럼)이 좋을까요?
-
-## 방향성
-
-- 사용자 경험 개선
-
-  - 직관적이고 효율적인 UI 구현하기
-  - 다양한 use-case 파악을 통해 UI/UX 개선 방안 고민해보기
-
-- 협업 강화 / 백엔드와의 지속적인 소통 및 프론트엔드 팀원 간 협업 방식 개선하기
-
-- 탄력적인 개발
-
-- 스프린트 방식을 통해 생산적으로 태스크 관리하기
-
-- 개발 효율성 향상을 위한 기술 스택 도입 적극 고려해보기
-
