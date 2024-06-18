@@ -66,5 +66,21 @@ const createAPIInstance = (domain?: "alert") => {
   return axiosInstance
 }
 
+const createFireBaseApiInstance = () => {
+  const axiosInstance = axios.create({
+    baseURL: process.env.NEXT_PUBLIC_SITE_URL,
+    withCredentials: true,
+  })
+
+  axiosInstance.interceptors.request.use((request) => {
+    request.headers.Authorization = process.env.NEXT_PUBLIC_FIREBASE_ACCESS_KEY
+
+    return request
+  })
+
+  return axiosInstance
+}
+
 export const apiInstance = createAPIInstance()
 export const alertApiInstance = createAPIInstance("alert")
+export const firebaseApiInstance = createFireBaseApiInstance()
