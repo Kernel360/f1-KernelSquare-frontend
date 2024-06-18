@@ -1,4 +1,4 @@
-import type { Metadata } from "next"
+import type { Metadata, Viewport } from "next"
 import dynamicComponent from "next/dynamic"
 import "./globals.css"
 import "rc-dropdown/assets/index.css"
@@ -17,8 +17,14 @@ import GoogleAnalyticsProvider from "@/google-analytics/GoogleAnalyticsProvider"
 import HistorySession from "@/components/history/HistorySession"
 import CodingMeetingFormProvider from "@/page/coding-meetings/create/CodingMeetingFormProvider"
 import { Slide } from "react-toastify"
+import NotificationPermissionSnackBar from "../components/snack-bar/NotificationPermissionSnackBar"
+import { APPLE_SPLASH_SCREENS } from "@/constants/layoutMeta"
 
 export const dynamic = "force-dynamic"
+
+export const viewport: Viewport = {
+  themeColor: "#97e75c",
+}
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://kernelsquare.live"),
@@ -48,6 +54,9 @@ export const metadata: Metadata = {
       alt: "Kernel Square",
     },
   },
+  appleWebApp: {
+    startupImage: APPLE_SPLASH_SCREENS,
+  },
 }
 
 const PopupEventListener = dynamicComponent(
@@ -66,6 +75,7 @@ export default function RootLayout({
         <GoogleAnalyticsProvider />
         <RecoilProvider>
           <ReactQueryProvider>
+            <NotificationPermissionSnackBar />
             <MSW />
             <HistorySession />
             <PopupEventListener />

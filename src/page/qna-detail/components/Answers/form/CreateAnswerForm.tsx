@@ -1,3 +1,5 @@
+"use client"
+
 import Button from "@/components/shared/button/Button"
 import buttonMessage from "@/constants/message/button"
 import { useAnswerFormContext } from "@/hooks/editor/useAnswerFormContext"
@@ -11,16 +13,18 @@ import SuccessModalContent from "../../SuccessModalContent"
 import successMessage from "@/constants/message/success"
 import useModal from "@/hooks/useModal"
 import { pickFirstAnswerFormError } from "@/util/hook-form/error"
+import { Question } from "@/interfaces/question"
+import { useFCM } from "@/hooks/firebase/useFCM"
 
 interface CreateAnswerFormProps {
-  questionId: number
+  question: Question
 }
 
 const CreateAnswerEditor = lazy(
   () => import("../../Answers/editor/CreateAnswerEditor"),
 )
 
-function CreateAnswerForm({ questionId }: CreateAnswerFormProps) {
+function CreateAnswerForm({ question }: CreateAnswerFormProps) {
   const { user } = useClientSession()
 
   const { openModal } = useModal()
@@ -31,10 +35,21 @@ function CreateAnswerForm({ questionId }: CreateAnswerFormProps) {
     formReset,
   } = useAnswerFormContext()
 
+  const { send } = useFCM()
+
   const { createAnswerApi, createAnswerApiStatus } = useCreateAnswer({
-    questionId,
+    questionId: question.id,
     onSuccess() {
       formReset()
+
+      send("answer", {
+        title: "커널스퀘어 답변 알림",
+        body: `${question.title} 글에 ${user?.nickname} 님이 답변했습니다.`,
+        data: {
+          postId: `${question.id}`,
+          questionAuthorId: `${question.member_id}`,
+        },
+      })
 
       setTimeout(() => {
         openModal({
@@ -50,7 +65,7 @@ function CreateAnswerForm({ questionId }: CreateAnswerFormProps) {
     if (createAnswerApiStatus === "pending") return
 
     createAnswerApi({
-      questionId,
+      questionId: question.id,
       content: answer,
       member_id: user?.member_id ?? -1,
       ...(images.length && { image_url: images[0].uploadURL }),
