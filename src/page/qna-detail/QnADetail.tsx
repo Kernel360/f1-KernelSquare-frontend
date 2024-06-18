@@ -44,7 +44,7 @@ const QnADetail: React.FC<{ id: string }> = ({ id }) => {
         <Question question={data.data} />
         <Spacing size={48} />
         <CreateAnswer
-          questionId={Number(id)}
+          question={data.data}
           list={answers.data?.answer_responses}
           isQuestionAuthor={isQuestionAuthor}
         />

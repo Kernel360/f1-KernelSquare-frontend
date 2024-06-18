@@ -13,15 +13,16 @@ import UploadedAnswerImages from "@/components/shared/toast-ui-editor/editor/Upl
 import AnswerFormProvider from "../formProvider/AnswerFormProvider"
 import { useAnswerFormContext } from "@/hooks/editor/useAnswerFormContext"
 import CreateAnswerForm from "./form/CreateAnswerForm"
+import { Question } from "@/interfaces/question"
 
 export interface MyAnswerProps {
-  questionId: number
+  question: Question
   list?: Answer[]
   isQuestionAuthor: boolean
 }
 
 const CreateAnswer: React.FC<MyAnswerProps> = ({
-  questionId,
+  question,
   list,
   isQuestionAuthor,
 }) => {
@@ -73,7 +74,7 @@ const CreateAnswer: React.FC<MyAnswerProps> = ({
           <AnswerTextCounter />
         </div>
         <UploadedAnswerImages />
-        <CreateAnswerForm questionId={questionId} />
+        <CreateAnswerForm question={question} />
       </div>
     </AnswerFormProvider>
   )
