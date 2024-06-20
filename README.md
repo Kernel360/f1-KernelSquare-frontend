@@ -32,9 +32,16 @@
 
 ### 알림
 
-<img src="https://github.com/KernelSquare/Frontend/assets/110394773/42cc9426-643e-4132-8737-34d3661ce496" alt="알림_gif" height="400" />
+| SSE | Web Push |
+| :---: | :---: |
+| <img src="https://github.com/KernelSquare/Frontend/assets/110394773/42cc9426-643e-4132-8737-34d3661ce496" alt="알림_gif" height="400" /> | <img src="https://github.com/KernelSquare/Frontend/assets/110394773/d92321df-658a-4c5d-86fa-6029ae8ebc62" alt="푸시_gif" height="400" /> |
 
-자신의 질문에 답변이 달렸을 때, 자신의 답변이 랭킹에 들었을 때 알림을 확인할 수 있습니다
+#### SSE(Server Sent Event) 알림
+자신의 질문에 답변이 달렸을 때, 자신의 답변이 랭킹에 들었을 때 SSE 알림을 확인할 수 있습니다
+
+#### Web Push 알림
+자신의 질문에 답변이 달렸을 때 모바일, PC에서 푸시 알림을 확인 할 수 있습니다
+ - 해당 기능을 지원하는 브라우저(디바이스) 및 알림 권한을 승인한 유저에 한함
 
 ### 프로필
 
@@ -106,6 +113,8 @@
 
 ![반응형_gif](https://github.com/KernelSquare/Frontend/assets/110394773/b6f51389-9700-44c3-9151-8630381cf068)
 
+하나의 웹 사이트로 다양한 디바이스(스마트폰, 테블릿 등)에 대응하는 레이아웃을 제공하여 유저경험(UX)을 향상시키고자 함 
+
 ---
 
 ## 주요 기술 스택
@@ -137,13 +146,30 @@
 - 랜딩 페이지 비디오 용량 및 형식을 수정하여, 영상 렌더링 시간 최적화
 - tailwindcss 를 최대한 활용해 빌드 타임에 만들어진 css 파일을 사용하는 것으로 css 적용 시간을 줄이려고 함
   - css-in-js 를 적용해야 되는 상황이 있을 수도 있기 때문에, emotion을 설치하기는 하였으나 인라인 style로 처리해도 괜찮은 경우라면 인라인 스타일을 적용
-- 최대한 반응형 사이트로 만들려고 하였으며, 화면크기로 분기되는 것이 애매하다고 생각되는 일부 컴포넌트에 css `@container` 쿼리 적용해 봄
+- 최대한 반응형 사이트로 만들려고 하였으며, 화면크기로 분기되는 것이 애매하다고 생각되는 일부 컴포넌트에 css `@container` 쿼리 적용
 - 모각코 답변 입력시 마다 리렌더링되어 작성 시간이 입력할 때마다 갱신됨 => useMemo, memo를 활용하여 수정 등으로 인한 revalidate 외에 답변이 리렌더링 되지 않도록 함
 - 모각코 장소 선택에서 검색어 입력시 debounce를 적용하여 API 호출 횟수 최적화 및 렌더링 개선
 - form
   - react hook form 의 formProvider를 통해 Props drilling 개선
-  - react hook form 의 fieldArray를 통해 배열 폼 데이터 관리
+  - react hook form 의 fieldArray를 통해 동적인 배열 폼 데이터 관리
+  - useController를 활용하여 watch없이 필드 값을 참조할 수 있도록 함
+- 알림
+  - 유저 id를 알림 토큰 DB의 id로 하고 doc 필드에 포함(FireStore)
+    - 모든 유저 대상이 아니라, 특정 유저를 대상으로 하기에 유저id를 기반으로 알림 토큰 DB를 관리하여 조회 개선 및 유지보수를 용이하게 해보고자 함
 
 ## 트러블 슈팅
 
 - [toast ui editor 트러블 슈팅 깃헙 Wiki](<https://github.com/KernelSquare/Frontend/wiki/@toast%E2%80%90ui-editor-%EC%9D%B4%EC%8A%88-(with-Next.js-14-app-router)>) (문제를 발견하고 해결한 과정의 기록)
+
+## 느낀 점
+
+- react hook form 을 다양하게 활용하는 방법을 생각해보고 적용해보게 되어 좋았음
+- 이번 프로젝트에서는 react hook form의 rules를 통해 유효성 관리를 하였지만, 이후에는 zod를 통해 프론트 및 백엔드 로직에 범용적으로 적용가능한 유효성 관리를 하는 것도 괜찮을 것 같다고 생각함
+- GA(Google Analytics)를 적용하고 이를 통해 방문한 유저의 기기 등을 확인해보고 분석해보는 기회를 가지게 되어 좋았음
+
+## 아쉬운 점
+
+- 프로젝트 종료 이후 개인적으로 리팩토링 및 기능 추가를 하는 과정에서 백엔드 수정이 필요한 경우 요청하여 수정할 수 없음
+  - 답변 푸시 알림은 풀스택으로 구현
+  - 채팅 입장 가능 푸시 알림등을 제외하고 공지사항 등 대부분은 풀스택으로 가능하다고 생각되지만, 유지 비용등을 고려하게 되서 하지 못 함
+- Google 서치 콘솔에서는 사이트 맵이 정상적으로 동작하는 것 같지만, 네이버 서치 어드바이저에서는 정상 등록은 되나 수집하여 인덱스 처리가 되지 않음
