@@ -152,24 +152,8 @@
 - form
   - react hook form 의 formProvider를 통해 Props drilling 개선
   - react hook form 의 fieldArray를 통해 동적인 배열 폼 데이터 관리
-  - useController를 활용하여 watch없이 필드 값을 참조할 수 있도록 함
-- 알림
-  - 유저 id를 알림 토큰 DB의 id로 하고 doc 필드에 포함(FireStore)
-    - 모든 유저 대상이 아니라, 특정 유저를 대상으로 하기에 유저id를 기반으로 알림 토큰 DB를 관리하여 조회 개선 및 유지보수를 용이하게 해보고자 함
+  - useController를 활용하여 watch없이 필드 값을 참조하고, 폼 필드 데이터를 변경할 수 있도록 함
 
 ## 트러블 슈팅
 
 - [toast ui editor 트러블 슈팅 깃헙 Wiki](<https://github.com/KernelSquare/Frontend/wiki/@toast%E2%80%90ui-editor-%EC%9D%B4%EC%8A%88-(with-Next.js-14-app-router)>) (문제를 발견하고 해결한 과정의 기록)
-
-## 느낀 점
-
-- react hook form 을 다양하게 활용하는 방법을 생각해보고 적용해보게 되어 좋았음
-- 이번 프로젝트에서는 react hook form의 rules를 통해 유효성 관리를 하였지만, 이후에는 zod를 통해 프론트 및 백엔드 로직에 범용적으로 적용가능한 유효성 관리를 하는 것도 괜찮을 것 같다고 생각함
-- GA(Google Analytics)를 적용하고 이를 통해 방문한 유저의 기기 등을 확인해보고 분석해보는 기회를 가지게 되어 좋았음
-
-## 아쉬운 점
-
-- 프로젝트 종료 이후 개인적으로 리팩토링 및 기능 추가를 하는 과정에서 백엔드 수정이 필요한 경우 요청하여 수정할 수 없음
-  - 답변 푸시 알림은 풀스택으로 구현
-  - 채팅 입장 가능 푸시 알림등을 제외하고 공지사항 등 대부분은 풀스택으로 가능하다고 생각되지만, 유지 비용등을 고려하게 되서 하지 못 함
-- Google 서치 콘솔에서는 사이트 맵이 정상적으로 동작하는 것 같지만, 네이버 서치 어드바이저에서는 정상 등록은 되나 수집하여 인덱스 처리가 되지 않음
