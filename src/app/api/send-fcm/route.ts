@@ -43,7 +43,7 @@ export async function POST(request: NextRequest) {
   const notification = payload.notification
 
   if (type === "answer" && isAppNotificationPayload("answer", notification)) {
-    const { data, ...notificationPayload } = notification
+    const { data, icon, ...notificationPayload } = notification
 
     const { postId, questionAuthorId } = data
 
@@ -78,17 +78,7 @@ export async function POST(request: NextRequest) {
                   badge:
                     process.env.NEXT_PUBLIC_SITE_URL +
                     "/icons/outline-badge-icon.png",
-                  icon: process.env.NEXT_PUBLIC_SITE_URL + "/icon.png",
-                  actions: [
-                    {
-                      action: "answer:view",
-                      title: "글 보기",
-                    },
-                    {
-                      action: "answer:close",
-                      title: "알림 닫기",
-                    },
-                  ],
+                  icon: icon ?? `${process.env.NEXT_PUBLIC_SITE_URL}/icon.png`,
                 },
                 fcmOptions: {
                   link: `${process.env.NEXT_PUBLIC_SITE_URL}/question/${postId}`,

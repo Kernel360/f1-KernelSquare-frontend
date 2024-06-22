@@ -49,6 +49,7 @@ function CreateAnswerForm({ question }: CreateAnswerFormProps) {
           postId: `${question.id}`,
           questionAuthorId: `${question.member_id}`,
         },
+        ...(user?.image_url && { icon: user.image_url }),
       })
 
       setTimeout(() => {
