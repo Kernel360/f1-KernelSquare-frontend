@@ -12,6 +12,7 @@ export type FcmNotification<TData extends NotificationType> = {
   title: string
   body: string
   imageUrl?: string
+  icon?: string
   data: FcmNotificationData<TData>
 }
 
