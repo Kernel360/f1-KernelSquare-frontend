@@ -70,7 +70,32 @@ export async function POST(request: NextRequest) {
               notification: {
                 ...notificationPayload,
               },
+              webpush: {
+                notification: {
+                  title: notificationPayload.title,
+                  body: notificationPayload.body,
+                  image: notificationPayload.imageUrl,
+                  badge:
+                    process.env.NEXT_PUBLIC_SITE_URL +
+                    "/icons/outline-badge-icon.png",
+                  icon: process.env.NEXT_PUBLIC_SITE_URL + "/icon.png",
+                  actions: [
+                    {
+                      action: "answer:view",
+                      title: "글 보기",
+                    },
+                    {
+                      action: "answer:close",
+                      title: "알림 닫기",
+                    },
+                  ],
+                },
+                fcmOptions: {
+                  link: `${process.env.NEXT_PUBLIC_SITE_URL}/question/${postId}`,
+                },
+              },
               data: {
+                type: "answer",
                 postId: `${postId}`,
               },
             })
