@@ -1,18 +1,18 @@
 import { FcmNotificationData, NotificationType } from "../dto/fcm/send-fcm.dto"
-import { NotificationActions } from "./push-action"
 
 export interface AppPushNotification extends Notification {
+  image?: string
   click_action?: string
-  actions?: NotificationActions
 }
 
 export type AppPushNotificationData = Omit<
   FcmNotificationData<"answer">,
   "questionAuthorId"
->
+> & {
+  type: NotificationType
+}
 
 export type AppNotificationClickData = AppPushNotificationData & {
-  type: NotificationType
   click_action?: string
 }
 

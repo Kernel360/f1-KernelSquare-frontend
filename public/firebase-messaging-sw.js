@@ -17,8 +17,8 @@ self.addEventListener("push", (/** @type {PushEvent} */ event) => {
       requireInteraction: true,
       body: notification.body,
       badge: notification.badge ?? "/icons/outline-badge-icon.png",
+      image: notification.image,
       icon: notification.icon ?? "/icon.png",
-      actions: notification.actions ?? actions[data.type],
       data: {
         ...data,
         ...(notification.click_action && {
@@ -32,8 +32,6 @@ self.addEventListener("push", (/** @type {PushEvent} */ event) => {
 self.addEventListener(
   "notificationclick",
   async function (/** @type {NotificationEvent} */ event) {
-    /** @type {import ('../src/interfaces/push/push-action').NotificationAction['action']} */
-    const action = event.action
     /** @type {import ("../src/interfaces/push/push-notification").AppPushNotification} */
     const notification = event.notification
     /** @type {import ("../src/interfaces/push/push-notification").AppNotificationClickData} */
@@ -43,12 +41,10 @@ self.addEventListener(
     const worker = event.currentTarget
 
     if (data.type === "answer") {
-      if (action === "answer:close") return
+      notification.close()
 
       const linkUrl =
         data.click_action ?? `https://kernelsquare.live/question/${data.postId}`
-
-      notification.close()
 
       event.waitUntil(worker.clients.openWindow(linkUrl))
     }
